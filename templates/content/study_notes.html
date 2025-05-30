@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+
+{% block title %}Describing with Adjectives - Study Notes - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .study-content {
+        line-height: 1.8;
+    }
+    .study-content h2 {
+        color: #3B82F6;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .study-content h3 {
+        color: #6366F1;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .example-box {
+        background: linear-gradient(135deg, #EBF8FF 0%, #E0E7FF 100%);
+        border-left: 4px solid #3B82F6;
+    }
+    .highlight {
+        background-color: #FEF3C7;
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Mobile-first container with full width on mobile -->
+<div class="w-full">
+    <!-- Breadcrumb - only show on larger screens -->
+    <div class="hidden sm:block container mx-auto px-4 py-4">
+        <div class="breadcrumbs text-sm mb-6">
+            <ul>
+                <li><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'subjects:list' %}">Subjects</a></li>
+                <li><a href="#">English</a></li>
+                <li><a href="#">Class 2</a></li>
+                <li>Describing with Adjectives</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl mb-4 sm:mb-6">
+        <div class="container mx-auto px-4 py-6 sm:py-8">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between">
+                <div class="flex-1">
+                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Describing with Adjectives</h1>
+                    <p class="text-white/90 mb-4 text-base sm:text-lg">
+                        Learn how adjectives describe nouns and make sentences more interesting.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <div class="bg-white/20 px-3 py-1 rounded-full text-sm">Topic 3 of 8</div>
+                        <div class="bg-white/20 px-3 py-1 rounded-full text-sm">18 min read</div>
+                        <div class="bg-white/20 px-3 py-1 rounded-full text-sm">Elementary</div>
+                    </div>
+                </div>
+                <div class="mt-4 lg:mt-0 w-full lg:w-auto">
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-4 text-center lg:text-left">
+                        <div class="text-white/80 text-sm mb-1">Reading Progress</div>
+                        <div class="text-white text-3xl font-bold">60%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="container mx-auto px-0 sm:px-4 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-8">
+            <!-- Study Content - Full width on mobile -->
+            <div class="lg:col-span-3">
+                <div class="bg-white shadow-none sm:shadow-xl sm:rounded-xl">
+                    <div class="p-4 sm:p-6 lg:p-8 study-content">
+                    <!-- Learning Objectives -->
+                    <div class="alert alert-info mb-6">
+                        <i class="fas fa-bullseye"></i>
+                        <div>
+                            <h3 class="font-bold">Learning Objectives</h3>
+                            <div class="text-sm">
+                                By the end of this topic, you will be able to:
+                                <ul class="list-disc list-inside mt-2 space-y-1">
+                                    <li>Identify adjectives in sentences</li>
+                                    <li>Use adjectives to describe nouns</li>
+                                    <li>Place adjectives correctly in sentences</li>
+                                    <li>Choose appropriate adjectives for different situations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <h2>What are Adjectives?</h2>
+                    <p>
+                        <span class="highlight">Adjectives</span> are words that describe or give more information about nouns.
+                        They help us understand what something looks like, feels like, sounds like, or what kind of thing it is.
+                    </p>
+
+                    <p>
+                        Think of adjectives as "describing words" that make our sentences more interesting and help others
+                        understand exactly what we're talking about.
+                    </p>
+
+                    <div class="example-box p-4 rounded-lg my-6">
+                        <h4 class="font-bold text-primary mb-2">
+                            <i class="fas fa-lightbulb mr-2"></i>Examples
+                        </h4>
+                        <div class="space-y-2">
+                            <p>• The <span class="highlight">big</span> dog barked loudly.</p>
+                            <p>• She wore a <span class="highlight">beautiful</span> dress to the party.</p>
+                            <p>• The <span class="highlight">cold</span> water felt refreshing.</p>
+                            <p>• We live in a <span class="highlight">small</span> house.</p>
+                        </div>
+                    </div>
+
+                    <h2>Types of Adjectives</h2>
+
+                    <h3>1. Size Adjectives</h3>
+                    <p>These adjectives tell us how big or small something is.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
+                        <div class="badge badge-outline">big</div>
+                        <div class="badge badge-outline">small</div>
+                        <div class="badge badge-outline">large</div>
+                        <div class="badge badge-outline">tiny</div>
+                        <div class="badge badge-outline">huge</div>
+                        <div class="badge badge-outline">little</div>
+                        <div class="badge badge-outline">enormous</div>
+                        <div class="badge badge-outline">mini</div>
+                    </div>
+
+                    <h3>2. Color Adjectives</h3>
+                    <p>These adjectives tell us what color something is.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
+                        <div class="badge badge-outline">red</div>
+                        <div class="badge badge-outline">blue</div>
+                        <div class="badge badge-outline">green</div>
+                        <div class="badge badge-outline">yellow</div>
+                        <div class="badge badge-outline">black</div>
+                        <div class="badge badge-outline">white</div>
+                        <div class="badge badge-outline">purple</div>
+                        <div class="badge badge-outline">orange</div>
+                    </div>
+
+                    <h3>3. Shape Adjectives</h3>
+                    <p>These adjectives describe the shape of things.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
+                        <div class="badge badge-outline">round</div>
+                        <div class="badge badge-outline">square</div>
+                        <div class="badge badge-outline">long</div>
+                        <div class="badge badge-outline">short</div>
+                        <div class="badge badge-outline">flat</div>
+                        <div class="badge badge-outline">curved</div>
+                        <div class="badge badge-outline">straight</div>
+                        <div class="badge badge-outline">thick</div>
+                    </div>
+
+                    <h3>4. Feeling Adjectives</h3>
+                    <p>These adjectives describe how something feels or how we feel.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
+                        <div class="badge badge-outline">happy</div>
+                        <div class="badge badge-outline">sad</div>
+                        <div class="badge badge-outline">angry</div>
+                        <div class="badge badge-outline">excited</div>
+                        <div class="badge badge-outline">tired</div>
+                        <div class="badge badge-outline">scared</div>
+                        <div class="badge badge-outline">proud</div>
+                        <div class="badge badge-outline">worried</div>
+                    </div>
+
+                    <h2>Where Do Adjectives Go?</h2>
+                    <p>
+                        In English, adjectives usually come <span class="highlight">before</span> the noun they describe.
+                    </p>
+
+                    <div class="example-box p-4 rounded-lg my-6">
+                        <h4 class="font-bold text-primary mb-2">
+                            <i class="fas fa-check-circle mr-2"></i>Correct Examples
+                        </h4>
+                        <div class="space-y-2">
+                            <p>• The <span class="highlight">red</span> car is fast.</p>
+                            <p>• I have a <span class="highlight">new</span> book.</p>
+                            <p>• She is a <span class="highlight">kind</span> teacher.</p>
+                            <p>• We saw a <span class="highlight">funny</span> movie.</p>
+                        </div>
+                    </div>
+
+                    <h2>Practice Activity</h2>
+                    <p>Try to identify the adjectives in these sentences:</p>
+
+                    <div class="space-y-4 my-6">
+                        <div class="card bg-base-200 shadow">
+                            <div class="card-body py-4">
+                                <p class="font-mono">1. The brave soldier saved the village.</p>
+                                <details class="mt-2">
+                                    <summary class="cursor-pointer text-primary">Show Answer</summary>
+                                    <p class="mt-2 text-success">Answer: <span class="highlight">brave</span> (describes the soldier)</p>
+                                </details>
+                            </div>
+                        </div>
+
+                        <div class="card bg-base-200 shadow">
+                            <div class="card-body py-4">
+                                <p class="font-mono">2. My grandmother baked delicious cookies.</p>
+                                <details class="mt-2">
+                                    <summary class="cursor-pointer text-primary">Show Answer</summary>
+                                    <p class="mt-2 text-success">Answer: <span class="highlight">delicious</span> (describes the cookies)</p>
+                                </details>
+                            </div>
+                        </div>
+
+                        <div class="card bg-base-200 shadow">
+                            <div class="card-body py-4">
+                                <p class="font-mono">3. The old tree has green leaves.</p>
+                                <details class="mt-2">
+                                    <summary class="cursor-pointer text-primary">Show Answer</summary>
+                                    <p class="mt-2 text-success">Answer: <span class="highlight">old</span> (describes the tree) and <span class="highlight">green</span> (describes the leaves)</p>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3 class="font-bold">Key Points to Remember</h3>
+                            <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+                                <li>Adjectives describe nouns</li>
+                                <li>They usually come before the noun</li>
+                                <li>Adjectives can describe size, color, shape, feelings, and more</li>
+                                <li>Using adjectives makes your writing more interesting</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+            <!-- Progress -->
+            <div class="card bg-base-100 shadow-xl mb-6">
+                <div class="card-body">
+                    <h3 class="card-title text-lg">Your Progress</h3>
+                    <div class="radial-progress text-primary mb-4" style="--value:60;" role="progressbar">60%</div>
+                    <p class="text-sm text-base-content/70 mb-4">Keep reading to complete this topic</p>
+                    <button class="btn btn-primary btn-sm w-full" onclick="markAsRead()">
+                        <i class="fas fa-check mr-2"></i>
+                        Mark as Read
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card bg-base-100 shadow-xl mb-6">
+                <div class="card-body">
+                    <h3 class="card-title text-lg">Quick Actions</h3>
+                    <div class="space-y-2">
+                        <a href="#" class="btn btn-outline btn-sm w-full">
+                            <i class="fas fa-question-circle mr-2"></i>
+                            Take Quiz
+                        </a>
+                        <a href="#" class="btn btn-outline btn-sm w-full">
+                            <i class="fas fa-file-alt mr-2"></i>
+                            Take Test
+                        </a>
+                        <a href="#" class="btn btn-outline btn-sm w-full">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Back to Topics
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Tips -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-lg">
+                        <i class="fas fa-lightbulb text-warning mr-2"></i>
+                        Study Tips
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <span>Read each example out loud</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <span>Try to think of your own examples</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <span>Practice identifying adjectives in books</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <span>Take notes of new adjectives you learn</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function markAsRead() {
+    // Update progress
+    const progressElement = document.querySelector('.radial-progress');
+    progressElement.style.setProperty('--value', '100');
+    progressElement.textContent = '100%';
+
+    // Update button
+    const button = event.target;
+    button.innerHTML = '<i class="fas fa-check mr-2"></i>Completed';
+    button.classList.remove('btn-primary');
+    button.classList.add('btn-success');
+    button.disabled = true;
+
+    // Show success message
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success mt-4';
+    alert.innerHTML = '<i class="fas fa-check-circle"></i><span>Topic marked as read! You can now take the quiz.</span>';
+    button.parentNode.appendChild(alert);
+}
+</script>
+{% endblock %}

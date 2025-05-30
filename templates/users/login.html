@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+        min-height: calc(100vh - 80px);
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E5E7EB;
+    }
+
+    .form-input {
+        border: 2px solid #E5E7EB;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: #F9FAFB;
+    }
+
+    .form-input:focus {
+        border-color: var(--primary-blue);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+        border: none;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        font-weight: 600;
+        font-size: 1rem;
+        color: white;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+    }
+
+    .welcome-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center px-4 py-6">
+    <div class="w-full max-w-sm">
+        <!-- Welcome Header -->
+        <div class="text-center mb-6">
+            <div class="welcome-icon mx-auto mb-4">
+                <i class="fas fa-graduation-cap text-white text-2xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
+            <p class="text-gray-600">Continue your learning journey with Mentora</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-card p-6">
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- Email/Username Field -->
+                <div>
+                    <label class="form-label block">
+                        <i class="fas fa-envelope text-blue-500 mr-1"></i>
+                        Email or Username
+                    </label>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter your email or username"
+                        class="form-input w-full"
+                        required
+                        autofocus
+                        autocomplete="username"
+                    >
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label class="form-label block">
+                        <i class="fas fa-lock text-purple-500 mr-1"></i>
+                        Password
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            class="form-input w-full pr-12"
+                            required
+                            autocomplete="current-password"
+                            id="password-input"
+                        >
+                        <button
+                            type="button"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            onclick="togglePassword()"
+                            id="password-toggle"
+                        >
+                            <i class="fas fa-eye" id="password-icon"></i>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <div class="text-xs text-gray-500">
+                            <i class="fas fa-shield-alt mr-1"></i>
+                            Secure
+                        </div>
+                        <a href="{% url 'users:password_reset' %}" class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                            Forgot password?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center">
+                    <input
+                        type="checkbox"
+                        name="remember_me"
+                        id="remember_me"
+                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    >
+                    <label for="remember_me" class="ml-3 text-sm text-gray-700 font-medium">
+                        Keep me signed in for 2 weeks
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary-custom w-full mb-4">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In to Mentora
+                </button>
+            </form>
+
+            <!-- Register Link -->
+            <div class="text-center">
+                <p class="text-sm text-gray-600 mb-3">New to Mentora?</p>
+                <a href="{% url 'users:register' %}" class="btn btn-outline w-full border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700 hover:text-blue-600 font-medium py-3 rounded-xl">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Your Free Account
+                </a>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="mt-6 text-center">
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-center mb-2">
+                    <i class="fas fa-question-circle text-blue-500 mr-2"></i>
+                    <span class="font-medium text-gray-800 text-sm">Need Help?</span>
+                </div>
+                <div class="flex flex-col gap-2 justify-center text-xs">
+                    <a href="{% url 'users:resend_verification' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        Resend Email Verification
+                    </a>
+                    <a href="{% url 'core:contact' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password-input');
+    const passwordIcon = document.getElementById('password-icon');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        passwordIcon.className = 'fas fa-eye';
+    }
+}
+
+// Auto-focus on first empty field
+document.addEventListener('DOMContentLoaded', function() {
+    const usernameField = document.querySelector('input[name="username"]');
+    const passwordField = document.querySelector('input[name="password"]');
+
+    if (usernameField.value === '') {
+        usernameField.focus();
+    } else {
+        passwordField.focus();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}Help Center - Mentora{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-question-circle text-white text-3xl"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Help Center</h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Find answers to common questions and learn how to make the most of Mentora.
+        </p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {% if not user.is_authenticated %}
+            <a href="{% url 'users:register' %}" class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-plus text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Get Started</h3>
+                <p class="text-gray-600 text-sm">Create your free account and start learning today</p>
+            </a>
+        {% endif %}
+        
+        <a href="{% url 'subjects:list' %}" class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-book text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Browse Subjects</h3>
+            <p class="text-gray-600 text-sm">Explore our educational content and subjects</p>
+        </a>
+        
+        <a href="{% url 'core:contact' %}" class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-envelope text-purple-600 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Contact Support</h3>
+            <p class="text-gray-600 text-sm">Get personalized help from our support team</p>
+        </a>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Frequently Asked Questions</h2>
+        
+        <div class="space-y-4">
+            <!-- FAQ Item 1 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <button class="w-full text-left p-6 focus:outline-none" onclick="toggleFAQ(1)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">How do I create an account?</h3>
+                        <i class="fas fa-chevron-down text-gray-500" id="faq-icon-1"></i>
+                    </div>
+                </button>
+                <div class="hidden px-6 pb-6" id="faq-content-1">
+                    <p class="text-gray-600">
+                        Creating an account is simple and free! Click the "Get Started" button on our homepage or navigation bar, 
+                        fill in your basic information, and verify your email address. You'll be ready to start learning immediately.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <button class="w-full text-left p-6 focus:outline-none" onclick="toggleFAQ(2)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">Is Mentora really free?</h3>
+                        <i class="fas fa-chevron-down text-gray-500" id="faq-icon-2"></i>
+                    </div>
+                </button>
+                <div class="hidden px-6 pb-6" id="faq-content-2">
+                    <p class="text-gray-600">
+                        Yes! Mentora is completely free with no hidden costs, subscription fees, or premium features. 
+                        We believe quality education should be accessible to everyone, regardless of economic circumstances.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <button class="w-full text-left p-6 focus:outline-none" onclick="toggleFAQ(3)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">Can I use Mentora on my mobile phone?</h3>
+                        <i class="fas fa-chevron-down text-gray-500" id="faq-icon-3"></i>
+                    </div>
+                </button>
+                <div class="hidden px-6 pb-6" id="faq-content-3">
+                    <p class="text-gray-600">
+                        Absolutely! Mentora is designed with a mobile-first approach. It works perfectly on smartphones, 
+                        tablets, and computers. You can learn anywhere, anytime, even with limited internet connectivity.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <button class="w-full text-left p-6 focus:outline-none" onclick="toggleFAQ(4)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">What subjects are available?</h3>
+                        <i class="fas fa-chevron-down text-gray-500" id="faq-icon-4"></i>
+                    </div>
+                </button>
+                <div class="hidden px-6 pb-6" id="faq-content-4">
+                    <p class="text-gray-600">
+                        Our curriculum is aligned with the the World Educational System standards and covers core subjects including 
+                        English, Mathematics, Science, Social Studies, and more. Content is organized by class levels to match 
+                        your learning needs.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <button class="w-full text-left p-6 focus:outline-none" onclick="toggleFAQ(5)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">How do I track my progress?</h3>
+                        <i class="fas fa-chevron-down text-gray-500" id="faq-icon-5"></i>
+                    </div>
+                </button>
+                <div class="hidden px-6 pb-6" id="faq-content-5">
+                    <p class="text-gray-600">
+                        Once you're logged in, you can access your progress dashboard to see completed lessons, quiz scores, 
+                        achievements, and learning statistics. Your progress is automatically saved as you learn.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="bg-white rounded-lg shadow-md">
+                <button class="w-full text-left p-6 focus:outline-none" onclick="toggleFAQ(6)">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">What if I need help or have technical issues?</h3>
+                        <i class="fas fa-chevron-down text-gray-500" id="faq-icon-6"></i>
+                    </div>
+                </button>
+                <div class="hidden px-6 pb-6" id="faq-content-6">
+                    <p class="text-gray-600">
+                        Our support team is here to help! You can contact us through the Contact page, and we typically 
+                        respond within 24 hours. We're committed to ensuring you have the best learning experience possible.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact CTA -->
+    <div class="text-center mt-12">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-8 max-w-2xl mx-auto">
+            <h3 class="text-2xl font-bold mb-4">Still have questions?</h3>
+            <p class="text-lg mb-6">Our support team is ready to help you succeed in your learning journey.</p>
+            <a href="{% url 'core:contact' %}" class="btn bg-white text-blue-600 hover:bg-gray-100 font-semibold px-6 py-3">
+                <i class="fas fa-envelope mr-2"></i>
+                Contact Support
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleFAQ(id) {
+    const content = document.getElementById(`faq-content-${id}`);
+    const icon = document.getElementById(`faq-icon-${id}`);
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+    } else {
+        content.classList.add('hidden');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+    }
+}
+</script>
+{% endblock %}

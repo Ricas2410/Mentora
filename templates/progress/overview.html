@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+
+{% block title %}Progress Overview - Mentora{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-4">Your Learning Progress</h1>
+        <p class="text-xl text-base-content/70">Track your journey and celebrate your achievements</p>
+    </div>
+
+    <!-- Overall Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="stat bg-base-100 shadow rounded-lg">
+            <div class="stat-figure text-primary">
+                <i class="fas fa-graduation-cap text-3xl"></i>
+            </div>
+            <div class="stat-title">Subjects Enrolled</div>
+            <div class="stat-value text-primary">3</div>
+            <div class="stat-desc">English, Math, Science</div>
+        </div>
+        
+        <div class="stat bg-base-100 shadow rounded-lg">
+            <div class="stat-figure text-success">
+                <i class="fas fa-layer-group text-3xl"></i>
+            </div>
+            <div class="stat-title">Levels Completed</div>
+            <div class="stat-value text-success">5</div>
+            <div class="stat-desc">↗︎ 2 this month</div>
+        </div>
+        
+        <div class="stat bg-base-100 shadow rounded-lg">
+            <div class="stat-figure text-warning">
+                <i class="fas fa-clock text-3xl"></i>
+            </div>
+            <div class="stat-title">Study Time</div>
+            <div class="stat-value text-warning">24h</div>
+            <div class="stat-desc">This month</div>
+        </div>
+        
+        <div class="stat bg-base-100 shadow rounded-lg">
+            <div class="stat-figure text-secondary">
+                <i class="fas fa-trophy text-3xl"></i>
+            </div>
+            <div class="stat-title">Achievements</div>
+            <div class="stat-value text-secondary">12</div>
+            <div class="stat-desc">↗︎ 3 new badges</div>
+        </div>
+    </div>
+
+    <!-- Subject Progress -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- English Progress -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="text-3xl mr-4">📚</div>
+                        <div>
+                            <h2 class="card-title">English</h2>
+                            <p class="text-base-content/70">Grammar & Communication</p>
+                        </div>
+                    </div>
+                    <div class="radial-progress text-primary" style="--value:60;" role="progressbar">60%</div>
+                </div>
+                
+                <div class="space-y-3">
+                    <!-- Level 1 -->
+                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-success mr-3"></i>
+                            <span class="font-semibold">Class 1 - Basic English</span>
+                        </div>
+                        <div class="badge badge-success">Completed</div>
+                    </div>
+                    
+                    <!-- Level 2 -->
+                    <div class="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-play-circle text-primary mr-3"></i>
+                            <span class="font-semibold">Class 2 - Grammar Basics</span>
+                        </div>
+                        <div class="badge badge-primary">60% Complete</div>
+                    </div>
+                    
+                    <!-- Level 3 -->
+                    <div class="flex items-center justify-between p-3 bg-base-200 rounded-lg opacity-75">
+                        <div class="flex items-center">
+                            <i class="fas fa-lock text-base-content/50 mr-3"></i>
+                            <span class="font-semibold text-base-content/70">Class 3 - Reading</span>
+                        </div>
+                        <div class="badge badge-ghost">Locked</div>
+                    </div>
+                </div>
+                
+                <div class="card-actions justify-end mt-4">
+                    <a href="#" class="btn btn-primary btn-sm">Continue Learning</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mathematics Progress -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="text-3xl mr-4">🔢</div>
+                        <div>
+                            <h2 class="card-title">Mathematics</h2>
+                            <p class="text-base-content/70">Numbers & Problem Solving</p>
+                        </div>
+                    </div>
+                    <div class="radial-progress text-success" style="--value:100;" role="progressbar">100%</div>
+                </div>
+                
+                <div class="space-y-3">
+                    <!-- Level 1 -->
+                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-success mr-3"></i>
+                            <span class="font-semibold">Class 1 - Basic Numbers</span>
+                        </div>
+                        <div class="badge badge-success">Completed</div>
+                    </div>
+                    
+                    <!-- Level 2 -->
+                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-success mr-3"></i>
+                            <span class="font-semibold">Class 2 - Addition & Subtraction</span>
+                        </div>
+                        <div class="badge badge-success">Completed</div>
+                    </div>
+                    
+                    <!-- Level 3 -->
+                    <div class="flex items-center justify-between p-3 bg-info/10 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-unlock text-info mr-3"></i>
+                            <span class="font-semibold">Class 3 - Multiplication</span>
+                        </div>
+                        <div class="badge badge-info">Available</div>
+                    </div>
+                </div>
+                
+                <div class="card-actions justify-end mt-4">
+                    <a href="#" class="btn btn-success btn-sm">Start Next Level</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <!-- Recent Achievements -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <i class="fas fa-trophy text-warning mr-2"></i>
+                    Recent Achievements
+                </h2>
+                <div class="space-y-3 mt-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-warning/20 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Quiz Master</p>
+                            <p class="text-sm text-base-content/70">Score 80%+ on first quiz</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-graduation-cap text-success"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Level Complete</p>
+                            <p class="text-sm text-base-content/70">Finished Math Class 2</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-fire text-primary"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Study Streak</p>
+                            <p class="text-sm text-base-content/70">7 days in a row</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{% url 'progress:achievements' %}" class="btn btn-outline btn-sm">View All</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Calendar -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <i class="fas fa-calendar text-primary mr-2"></i>
+                    This Week's Activity
+                </h2>
+                <div class="grid grid-cols-7 gap-1 mt-4">
+                    <div class="text-center text-xs font-semibold p-2">M</div>
+                    <div class="text-center text-xs font-semibold p-2">T</div>
+                    <div class="text-center text-xs font-semibold p-2">W</div>
+                    <div class="text-center text-xs font-semibold p-2">T</div>
+                    <div class="text-center text-xs font-semibold p-2">F</div>
+                    <div class="text-center text-xs font-semibold p-2">S</div>
+                    <div class="text-center text-xs font-semibold p-2">S</div>
+                    
+                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-8 h-8 bg-warning rounded-full flex items-center justify-center text-xs text-white">!</div>
+                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-8 h-8 bg-base-300 rounded-full flex items-center justify-center text-xs"></div>
+                    <div class="w-8 h-8 bg-base-300 rounded-full flex items-center justify-center text-xs"></div>
+                </div>
+                <div class="mt-4 text-sm">
+                    <div class="flex items-center justify-between">
+                        <span>Study Streak</span>
+                        <span class="font-bold text-success">5 days</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>This Week</span>
+                        <span class="font-bold">4/7 days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <i class="fas fa-chart-bar text-info mr-2"></i>
+                    Quick Stats
+                </h2>
+                <div class="space-y-4 mt-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Quizzes Passed</span>
+                            <span>15/18</span>
+                        </div>
+                        <progress class="progress progress-success w-full" value="83" max="100"></progress>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Tests Passed</span>
+                            <span>8/10</span>
+                        </div>
+                        <progress class="progress progress-primary w-full" value="80" max="100"></progress>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Average Score</span>
+                            <span>78%</span>
+                        </div>
+                        <progress class="progress progress-warning w-full" value="78" max="100"></progress>
+                    </div>
+                </div>
+                <div class="card-actions justify-end mt-4">
+                    <a href="#" class="btn btn-outline btn-sm">Detailed Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learning Goals -->
+    <div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-4">
+                <i class="fas fa-target mr-2"></i>
+                Your Learning Goals
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🎯</div>
+                    <h3 class="font-bold mb-2">Complete English Class 2</h3>
+                    <div class="radial-progress text-primary-content border-4 border-primary-content/30" style="--value:60;">60%</div>
+                    <p class="text-sm mt-2 text-primary-content/80">3 of 8 topics remaining</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">📊</div>
+                    <h3 class="font-bold mb-2">Maintain 80% Average</h3>
+                    <div class="radial-progress text-primary-content border-4 border-primary-content/30" style="--value:78;">78%</div>
+                    <p class="text-sm mt-2 text-primary-content/80">Close to target!</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🔥</div>
+                    <h3 class="font-bold mb-2">Study 30 Days Straight</h3>
+                    <div class="radial-progress text-primary-content border-4 border-primary-content/30" style="--value:23;">23%</div>
+                    <p class="text-sm mt-2 text-primary-content/80">7 of 30 days completed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

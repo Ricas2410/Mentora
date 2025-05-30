@@ -1,0 +1,930 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Site Settings{% endblock %}
+{% block page_title %}Site Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>
+                    General Settings
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Site Information -->
+                    <h6 class="border-bottom pb-2 mb-3">Site Information</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.site_name.id_for_label }}" class="form-label">
+                                Site Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.site_name }}
+                            {% if form.site_name.errors %}
+                                <div class="text-danger small">{{ form.site_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.site_description.id_for_label }}" class="form-label">
+                                Site Description
+                            </label>
+                            {{ form.site_description }}
+                            {% if form.site_description.errors %}
+                                <div class="text-danger small">{{ form.site_description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.site_description.id_for_label }}" class="form-label">
+                            Site Description
+                        </label>
+                        {{ form.site_description }}
+                        {% if form.site_description.errors %}
+                            <div class="text-danger small">{{ form.site_description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Contact Information -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Contact Information</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.contact_email.id_for_label }}" class="form-label">
+                                Contact Email
+                            </label>
+                            {{ form.contact_email }}
+                            {% if form.contact_email.errors %}
+                                <div class="text-danger small">{{ form.contact_email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.contact_phone.id_for_label }}" class="form-label">
+                                Contact Phone
+                            </label>
+                            {{ form.contact_phone }}
+                            {% if form.contact_phone.errors %}
+                                <div class="text-danger small">{{ form.contact_phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.contact_address.id_for_label }}" class="form-label">
+                            Contact Address
+                        </label>
+                        {{ form.contact_address }}
+                        {% if form.contact_address.errors %}
+                            <div class="text-danger small">{{ form.contact_address.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Quiz Settings -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Quiz Settings</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.quiz_time_limit.id_for_label }}" class="form-label">
+                                Quiz Time Limit (seconds)
+                            </label>
+                            {{ form.quiz_time_limit }}
+                            {% if form.quiz_time_limit.errors %}
+                                <div class="text-danger small">{{ form.quiz_time_limit.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.quiz_questions_per_topic.id_for_label }}" class="form-label">
+                                Questions per Quiz
+                            </label>
+                            {{ form.quiz_questions_per_topic }}
+                            {% if form.quiz_questions_per_topic.errors %}
+                                <div class="text-danger small">{{ form.quiz_questions_per_topic.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.minimum_pass_percentage.id_for_label }}" class="form-label">
+                                Passing Score (%)
+                            </label>
+                            {{ form.minimum_pass_percentage }}
+                            {% if form.minimum_pass_percentage.errors %}
+                                <div class="text-danger small">{{ form.minimum_pass_percentage.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.question_time_limit.id_for_label }}" class="form-label">
+                                Question Time Limit (seconds)
+                            </label>
+                            {{ form.question_time_limit }}
+                            {% if form.question_time_limit.errors %}
+                                <div class="text-danger small">{{ form.question_time_limit.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check mt-4">
+                                {{ form.allow_retakes }}
+                                <label class="form-check-label" for="{{ form.allow_retakes.id_for_label }}">
+                                    Allow Quiz Retakes
+                                </label>
+                            </div>
+                            {% if form.allow_retakes.errors %}
+                                <div class="text-danger small">{{ form.allow_retakes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.max_retake_attempts.id_for_label }}" class="form-label">
+                                Max Retake Attempts
+                            </label>
+                            {{ form.max_retake_attempts }}
+                            {% if form.max_retake_attempts.errors %}
+                                <div class="text-danger small">{{ form.max_retake_attempts.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- System Settings -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">System Settings</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_email_notifications }}
+                                <label class="form-check-label" for="{{ form.enable_email_notifications.id_for_label }}">
+                                    Enable Email Notifications
+                                </label>
+                            </div>
+                            {% if form.enable_email_notifications.errors %}
+                                <div class="text-danger small">{{ form.enable_email_notifications.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.email_verification_required }}
+                                <label class="form-check-label" for="{{ form.email_verification_required.id_for_label }}">
+                                    Require Email Verification
+                                </label>
+                            </div>
+                            {% if form.email_verification_required.errors %}
+                                <div class="text-danger small">{{ form.email_verification_required.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.require_all_subjects_completion }}
+                                <label class="form-check-label" for="{{ form.require_all_subjects_completion.id_for_label }}">
+                                    Require All Subjects Completion
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Require completion of all subjects before level promotion
+                            </div>
+                            {% if form.require_all_subjects_completion.errors %}
+                                <div class="text-danger small">{{ form.require_all_subjects_completion.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+
+
+                    </div>
+
+                    <!-- File Upload Settings -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">File Upload Settings</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                {{ form.allow_file_uploads }}
+                                <label class="form-check-label" for="{{ form.allow_file_uploads.id_for_label }}">
+                                    Allow File Uploads
+                                </label>
+                            </div>
+                            {% if form.allow_file_uploads.errors %}
+                                <div class="text-danger small">{{ form.allow_file_uploads.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.max_file_size_mb.id_for_label }}" class="form-label">
+                                Max File Size (MB)
+                            </label>
+                            {{ form.max_file_size_mb }}
+                            {% if form.max_file_size_mb.errors %}
+                                <div class="text-danger small">{{ form.max_file_size_mb.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                {{ form.auto_approve_uploads }}
+                                <label class="form-check-label" for="{{ form.auto_approve_uploads.id_for_label }}">
+                                    Auto-approve Uploads
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Automatically approve user file uploads
+                            </div>
+                            {% if form.auto_approve_uploads.errors %}
+                                <div class="text-danger small">{{ form.auto_approve_uploads.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.allowed_file_types.id_for_label }}" class="form-label">
+                            Allowed File Types
+                        </label>
+                        {{ form.allowed_file_types }}
+                        <div class="form-text">
+                            Comma-separated list (e.g., pdf,doc,jpg,mp4,mp3)
+                        </div>
+                        {% if form.allowed_file_types.errors %}
+                            <div class="text-danger small">{{ form.allowed_file_types.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Default Images/Fallbacks -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Default Images & Fallbacks</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.default_user_avatar.id_for_label }}" class="form-label">
+                                Default User Avatar
+                            </label>
+                            {{ form.default_user_avatar }}
+                            <div class="form-text">
+                                Default avatar for users without profile pictures
+                            </div>
+                            {% if settings.default_user_avatar %}
+                                <div class="mt-2">
+                                    <img src="{{ settings.default_user_avatar.url }}" alt="Current default avatar" class="img-thumbnail" style="max-width: 100px;">
+                                    <div class="form-text">Current default avatar</div>
+                                </div>
+                            {% else %}
+                                <div class="mt-2">
+                                    <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                        <i class="fas fa-user fa-2x text-muted"></i>
+                                    </div>
+                                    <div class="form-text">No default avatar set (using system default)</div>
+                                </div>
+                            {% endif %}
+                            {% if form.default_user_avatar.errors %}
+                                <div class="text-danger small">{{ form.default_user_avatar.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.default_subject_icon.id_for_label }}" class="form-label">
+                                Default Subject Icon
+                            </label>
+                            {{ form.default_subject_icon }}
+                            <div class="form-text">
+                                Default icon for subjects without custom icons
+                            </div>
+                            {% if settings.default_subject_icon %}
+                                <div class="mt-2">
+                                    <img src="{{ settings.default_subject_icon.url }}" alt="Current default subject icon" class="img-thumbnail" style="max-width: 100px;">
+                                    <div class="form-text">Current default subject icon</div>
+                                </div>
+                            {% else %}
+                                <div class="mt-2">
+                                    <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                        <i class="fas fa-book fa-2x text-muted"></i>
+                                    </div>
+                                    <div class="form-text">No default icon set (using system default)</div>
+                                </div>
+                            {% endif %}
+                            {% if form.default_subject_icon.errors %}
+                                <div class="text-danger small">{{ form.default_subject_icon.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.default_hero_image.id_for_label }}" class="form-label">
+                                Default Hero Image
+                            </label>
+                            {{ form.default_hero_image }}
+                            <div class="form-text">
+                                Default hero image when no custom hero is set
+                            </div>
+                            {% if settings.default_hero_image %}
+                                <div class="mt-2">
+                                    <img src="{{ settings.default_hero_image.url }}" alt="Current default hero image" class="img-thumbnail" style="max-width: 100px;">
+                                    <div class="form-text">Current default hero image</div>
+                                </div>
+                            {% else %}
+                                <div class="mt-2">
+                                    <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="width: 100px; height: 60px;">
+                                        <i class="fas fa-image fa-2x text-muted"></i>
+                                    </div>
+                                    <div class="form-text">No default hero set (using system default)</div>
+                                </div>
+                            {% endif %}
+                            {% if form.default_hero_image.errors %}
+                                <div class="text-danger small">{{ form.default_hero_image.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Security Settings</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_user_registration }}
+                                <label class="form-check-label" for="{{ form.enable_user_registration.id_for_label }}">
+                                    Enable User Registration
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Allow new users to create accounts
+                            </div>
+                            {% if form.enable_user_registration.errors %}
+                                <div class="text-danger small">{{ form.enable_user_registration.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.require_strong_passwords }}
+                                <label class="form-check-label" for="{{ form.require_strong_passwords.id_for_label }}">
+                                    Require Strong Passwords
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Enforce strong password requirements
+                            </div>
+                            {% if form.require_strong_passwords.errors %}
+                                <div class="text-danger small">{{ form.require_strong_passwords.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.session_timeout_minutes.id_for_label }}" class="form-label">
+                                Keep Users Logged In
+                            </label>
+                            {{ form.session_timeout_minutes }}
+                            <div class="form-text">
+                                How long users stay logged in on mobile devices. Shorter is more secure.
+                            </div>
+                            {% if form.session_timeout_minutes.errors %}
+                                <div class="text-danger small">{{ form.session_timeout_minutes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.max_login_attempts.id_for_label }}" class="form-label">
+                                Max Login Attempts
+                            </label>
+                            {{ form.max_login_attempts }}
+                            <div class="form-text">
+                                Failed attempts before account lockout
+                            </div>
+                            {% if form.max_login_attempts.errors %}
+                                <div class="text-danger small">{{ form.max_login_attempts.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Learning Features -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Learning Features</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_offline_mode }}
+                                <label class="form-check-label" for="{{ form.enable_offline_mode.id_for_label }}">
+                                    Enable Offline Mode
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Allow users to download content for offline learning
+                            </div>
+                            {% if form.enable_offline_mode.errors %}
+                                <div class="text-danger small">{{ form.enable_offline_mode.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_progress_tracking }}
+                                <label class="form-check-label" for="{{ form.enable_progress_tracking.id_for_label }}">
+                                    Enable Progress Tracking
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Track and display user learning progress
+                            </div>
+                            {% if form.enable_progress_tracking.errors %}
+                                <div class="text-danger small">{{ form.enable_progress_tracking.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_achievements }}
+                                <label class="form-check-label" for="{{ form.enable_achievements.id_for_label }}">
+                                    Enable Achievements
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Enable achievement badges and rewards system
+                            </div>
+                            {% if form.enable_achievements.errors %}
+                                <div class="text-danger small">{{ form.enable_achievements.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_leaderboards }}
+                                <label class="form-check-label" for="{{ form.enable_leaderboards.id_for_label }}">
+                                    Enable Leaderboards
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Show leaderboards and competitive features
+                            </div>
+                            {% if form.enable_leaderboards.errors %}
+                                <div class="text-danger small">{{ form.enable_leaderboards.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Notification Settings</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_push_notifications }}
+                                <label class="form-check-label" for="{{ form.enable_push_notifications.id_for_label }}">
+                                    Enable Push Notifications
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Enable browser push notifications
+                            </div>
+                            {% if form.enable_push_notifications.errors %}
+                                <div class="text-danger small">{{ form.enable_push_notifications.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_sms_notifications }}
+                                <label class="form-check-label" for="{{ form.enable_sms_notifications.id_for_label }}">
+                                    Enable SMS Notifications
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Enable SMS notifications (requires SMS service)
+                            </div>
+                            {% if form.enable_sms_notifications.errors %}
+                                <div class="text-danger small">{{ form.enable_sms_notifications.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.daily_reminder_time.id_for_label }}" class="form-label">
+                                Daily Reminder Time
+                            </label>
+                            {{ form.daily_reminder_time }}
+                            <div class="form-text">
+                                Default time for daily learning reminders
+                            </div>
+                            {% if form.daily_reminder_time.errors %}
+                                <div class="text-danger small">{{ form.daily_reminder_time.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Content Moderation -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Content Moderation</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.enable_content_moderation }}
+                                <label class="form-check-label" for="{{ form.enable_content_moderation.id_for_label }}">
+                                    Enable Content Moderation
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Enable automatic content moderation
+                            </div>
+                            {% if form.enable_content_moderation.errors %}
+                                <div class="text-danger small">{{ form.enable_content_moderation.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Maintenance Settings -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Maintenance Settings</h6>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-check">
+                                {{ form.maintenance_mode }}
+                                <label class="form-check-label" for="{{ form.maintenance_mode.id_for_label }}">
+                                    <span class="text-warning">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        Enable Maintenance Mode
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-text text-warning">
+                                This will make the site unavailable to regular users
+                            </div>
+                            {% if form.maintenance_mode.errors %}
+                                <div class="text-danger small">{{ form.maintenance_mode.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.maintenance_message.id_for_label }}" class="form-label">
+                            Maintenance Message
+                        </label>
+                        {{ form.maintenance_message }}
+                        <div class="form-text">
+                            Message to display to users during maintenance
+                        </div>
+                        {% if form.maintenance_message.errors %}
+                            <div class="text-danger small">{{ form.maintenance_message.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            Save Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Current Settings Summary -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Current Settings
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Site Name:</strong><br>
+                    <span class="text-muted">{{ settings.site_name }}</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Quiz Time Limit:</strong><br>
+                    <span class="text-muted">
+                        {% if settings.quiz_time_limit %}
+                            {% if settings.quiz_time_limit >= 60 %}
+                                {% widthratio settings.quiz_time_limit 60 1 %} minute{% if settings.quiz_time_limit != 60 %}s{% endif %}
+                            {% else %}
+                                {{ settings.quiz_time_limit }} seconds
+                            {% endif %}
+                        {% else %}
+                            5 minutes (default)
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Questions per Quiz:</strong><br>
+                    <span class="text-muted">{{ settings.quiz_questions_per_topic|default:"10" }}</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Passing Score:</strong><br>
+                    <span class="text-muted">{{ settings.minimum_pass_percentage|default:"60" }}%</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Keep Users Logged In:</strong><br>
+                    <span class="text-muted">
+                        {% if settings.session_timeout_minutes == 30 %}30 minutes
+                        {% elif settings.session_timeout_minutes == 60 %}1 hour
+                        {% elif settings.session_timeout_minutes == 120 %}2 hours
+                        {% elif settings.session_timeout_minutes == 240 %}4 hours
+                        {% elif settings.session_timeout_minutes == 480 %}8 hours
+                        {% else %}{{ settings.session_timeout_minutes|default:"60" }} minutes
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Email Verification:</strong><br>
+                    <span class="badge {% if settings.email_verification_required %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if settings.email_verification_required %}Required{% else %}Not Required{% endif %}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Email Notifications:</strong><br>
+                    <span class="badge {% if settings.enable_email_notifications %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if settings.enable_email_notifications %}Enabled{% else %}Disabled{% endif %}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Quiz Retakes:</strong><br>
+                    <span class="badge {% if settings.allow_retakes %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if settings.allow_retakes %}Allowed ({{ settings.max_retake_attempts }} max){% else %}Not Allowed{% endif %}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>User Registration:</strong><br>
+                    <span class="badge {% if settings.enable_user_registration %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if settings.enable_user_registration %}Open{% else %}Closed{% endif %}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>File Uploads:</strong><br>
+                    <span class="badge {% if settings.allow_file_uploads %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if settings.allow_file_uploads %}Enabled ({{ settings.max_file_size_mb }}MB max){% else %}Disabled{% endif %}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Learning Features:</strong><br>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% if settings.enable_progress_tracking %}
+                            <span class="badge bg-success">Progress</span>
+                        {% endif %}
+                        {% if settings.enable_achievements %}
+                            <span class="badge bg-success">Achievements</span>
+                        {% endif %}
+                        {% if settings.enable_offline_mode %}
+                            <span class="badge bg-success">Offline</span>
+                        {% endif %}
+                        {% if settings.enable_leaderboards %}
+                            <span class="badge bg-info">Leaderboards</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Notifications:</strong><br>
+                    <div class="d-flex flex-wrap gap-1">
+                        {% if settings.enable_email_notifications %}
+                            <span class="badge bg-success">Email</span>
+                        {% endif %}
+                        {% if settings.enable_push_notifications %}
+                            <span class="badge bg-success">Push</span>
+                        {% endif %}
+                        {% if settings.enable_sms_notifications %}
+                            <span class="badge bg-success">SMS</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Maintenance Mode:</strong><br>
+                    <span class="badge {% if settings.maintenance_mode %}bg-warning{% else %}bg-success{% endif %}">
+                        {% if settings.maintenance_mode %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-server me-2"></i>
+                    System Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Django Version:</strong><br>
+                    <span class="text-muted">{{ django_version|default:"5.2.1" }}</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Python Version:</strong><br>
+                    <span class="text-muted">{{ python_version|default:"3.12" }}</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Database:</strong><br>
+                    <span class="text-muted">SQLite</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Last Updated:</strong><br>
+                    <span class="text-muted">{{ settings.updated_at|date:"M d, Y H:i" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Maintenance mode warning
+    const maintenanceCheckbox = document.getElementById('{{ form.maintenance_mode.id_for_label }}');
+
+    if (maintenanceCheckbox) {
+        maintenanceCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                if (!confirm('Are you sure you want to enable maintenance mode? This will make the site unavailable to regular users.')) {
+                    this.checked = false;
+                }
+            }
+        });
+    }
+
+    // File upload preview functionality
+    function setupFilePreview(inputId, previewId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+
+        if (input && preview) {
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = preview.querySelector('img');
+                        if (img) {
+                            img.src = e.target.result;
+                        } else {
+                            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="img-thumbnail" style="max-width: 100px;">`;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    }
+
+    // Setup file previews for default images
+    setupFilePreview('{{ form.default_user_avatar.id_for_label }}', 'default-avatar-preview');
+    setupFilePreview('{{ form.default_subject_icon.id_for_label }}', 'default-subject-preview');
+    setupFilePreview('{{ form.default_hero_image.id_for_label }}', 'default-hero-preview');
+
+    // File upload settings dependency
+    const allowUploadsCheckbox = document.getElementById('{{ form.allow_file_uploads.id_for_label }}');
+    const uploadRelatedFields = [
+        '{{ form.max_file_size_mb.id_for_label }}',
+        '{{ form.allowed_file_types.id_for_label }}',
+        '{{ form.auto_approve_uploads.id_for_label }}'
+    ];
+
+    function toggleUploadFields() {
+        const isEnabled = allowUploadsCheckbox.checked;
+        uploadRelatedFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.disabled = !isEnabled;
+                field.closest('.mb-3').style.opacity = isEnabled ? '1' : '0.5';
+            }
+        });
+    }
+
+    if (allowUploadsCheckbox) {
+        allowUploadsCheckbox.addEventListener('change', toggleUploadFields);
+        toggleUploadFields(); // Initial state
+    }
+
+    // User registration dependency
+    const userRegCheckbox = document.getElementById('{{ form.enable_user_registration.id_for_label }}');
+    const emailVerificationCheckbox = document.getElementById('{{ form.email_verification_required.id_for_label }}');
+
+    function toggleEmailVerification() {
+        if (userRegCheckbox && emailVerificationCheckbox) {
+            emailVerificationCheckbox.disabled = !userRegCheckbox.checked;
+            emailVerificationCheckbox.closest('.mb-3').style.opacity = userRegCheckbox.checked ? '1' : '0.5';
+        }
+    }
+
+    if (userRegCheckbox) {
+        userRegCheckbox.addEventListener('change', toggleEmailVerification);
+        toggleEmailVerification(); // Initial state
+    }
+
+    // SMS notifications warning
+    const smsCheckbox = document.getElementById('{{ form.enable_sms_notifications.id_for_label }}');
+    if (smsCheckbox) {
+        smsCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                alert('Note: SMS notifications require additional SMS service configuration. Please ensure your SMS service is properly set up before enabling this feature.');
+            }
+        });
+    }
+
+    // Strong password warning
+    const strongPasswordCheckbox = document.getElementById('{{ form.require_strong_passwords.id_for_label }}');
+    if (strongPasswordCheckbox) {
+        strongPasswordCheckbox.addEventListener('change', function() {
+            if (!this.checked) {
+                if (!confirm('Disabling strong password requirements may reduce security. Are you sure you want to continue?')) {
+                    this.checked = true;
+                }
+            }
+        });
+    }
+
+    // Auto-save indicator
+    let saveTimeout;
+    const form = document.querySelector('form');
+    const saveButton = document.querySelector('button[type="submit"]');
+    const originalButtonText = saveButton.textContent;
+
+    function showSaveIndicator() {
+        clearTimeout(saveTimeout);
+        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+        saveButton.disabled = true;
+
+        saveTimeout = setTimeout(() => {
+            saveButton.innerHTML = originalButtonText;
+            saveButton.disabled = false;
+        }, 2000);
+    }
+
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        showSaveIndicator();
+    });
+
+    // Real-time validation feedback
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.hasAttribute('required') && !this.value.trim()) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+
+    // Collapsible sections
+    const sectionHeaders = document.querySelectorAll('h6.border-bottom');
+    sectionHeaders.forEach(header => {
+        header.style.cursor = 'pointer';
+        header.innerHTML += ' <i class="fas fa-chevron-up float-end"></i>';
+
+        header.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('.fa-chevron-up, .fa-chevron-down');
+
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                content.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

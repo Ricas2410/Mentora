@@ -1,0 +1,325 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Reports & Analytics{% endblock %}
+{% block page_title %}Reports & Analytics{% endblock %}
+
+{% block content %}
+<!-- Overview Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ user_stats.total_users }}</h3>
+                        <p class="mb-0">Total Users</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="opacity-75">
+                        <i class="fas fa-arrow-up me-1"></i>
+                        {{ user_stats.new_users_30_days }} new in 30 days
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ quiz_stats.total_quizzes }}</h3>
+                        <p class="mb-0">Total Quizzes</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="opacity-75">
+                        <i class="fas fa-check me-1"></i>
+                        {{ quiz_stats.completed_quizzes }} completed
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ quiz_stats.average_score|floatformat:1 }}%</h3>
+                        <p class="mb-0">Average Score</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="opacity-75">
+                        <i class="fas fa-trophy me-1"></i>
+                        Across all quizzes
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ content_stats.total_questions }}</h3>
+                        <p class="mb-0">Questions</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="opacity-75">
+                        <i class="fas fa-check me-1"></i>
+                        {{ content_stats.active_questions }} active
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts and Analytics -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    User Registration Trends
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center py-5">
+                    <i class="fas fa-chart-line fs-1 text-muted mb-3"></i>
+                    <h6 class="text-muted">Chart Visualization</h6>
+                    <p class="text-muted">Advanced charts will be implemented with Chart.js</p>
+                    <div class="row text-center mt-4">
+                        <div class="col-4">
+                            <h4 class="text-primary">{{ user_stats.new_users_7_days }}</h4>
+                            <small class="text-muted">Last 7 Days</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-success">{{ user_stats.new_users_30_days }}</h4>
+                            <small class="text-muted">Last 30 Days</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-info">{{ user_stats.total_users }}</h4>
+                            <small class="text-muted">All Time</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-pie-chart me-2"></i>
+                    Content Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Subjects</span>
+                        <span class="badge bg-primary">{{ content_stats.total_subjects }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Class Levels</span>
+                        <span class="badge bg-success">{{ content_stats.total_levels }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: {% widthratio content_stats.total_levels content_stats.total_subjects 100 %}%"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Topics</span>
+                        <span class="badge bg-info">{{ content_stats.total_topics }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-info" style="width: {% widthratio content_stats.total_topics content_stats.total_questions 100 %}%"></div>
+                    </div>
+                </div>
+
+                <div class="mb-0">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Questions</span>
+                        <span class="badge bg-warning">{{ content_stats.total_questions }}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Reports -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-trophy me-2"></i>
+                    Top Performing Topics
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if top_topics %}
+                    <div class="list-group list-group-flush">
+                        {% for topic in top_topics %}
+                            <div class="list-group-item border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ topic.title }}</h6>
+                                        <small class="text-muted">{{ topic.class_level.subject.name }} - {{ topic.class_level.name }}</small>
+                                    </div>
+                                    <span class="badge bg-primary">{{ topic.quiz_count }} quizzes</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fs-1 text-muted mb-3"></i>
+                        <p class="text-muted">No quiz data available yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Recent Admin Activity
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_activities %}
+                    <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                        {% for activity in recent_activities %}
+                            <div class="list-group-item border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="me-3">
+                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                                <i class="fas fa-user text-white fa-sm"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 small">{{ activity.admin_user.full_name }}</h6>
+                                            <p class="mb-1 small text-muted">{{ activity.description }}</p>
+                                            <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-secondary small">{{ activity.action }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-history fs-1 text-muted mb-3"></i>
+                        <p class="text-muted">No recent activity</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Options -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-download me-2"></i>
+                    Export Reports
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="{% url 'admin_panel:download_template' %}?type=users" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-file-pdf me-2"></i>
+                            User Report (CSV)
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'admin_panel:download_template' %}?type=questions" class="btn btn-outline-success w-100">
+                            <i class="fas fa-file-excel me-2"></i>
+                            Quiz Analytics (CSV)
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'admin_panel:download_template' %}?type=topics" class="btn btn-outline-info w-100">
+                            <i class="fas fa-file-csv me-2"></i>
+                            Progress Report (CSV)
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-warning w-100" onclick="generateCustomReport()">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Custom Report
+                        </button>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <small class="text-muted">Export data in CSV format for analysis</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Future implementation for charts
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Reports page loaded. Chart.js integration available.');
+});
+
+function generateCustomReport() {
+    // Simple custom report functionality
+    const reportType = prompt('Enter report type (users, questions, topics, quizzes):');
+    if (reportType && ['users', 'questions', 'topics', 'quizzes'].includes(reportType)) {
+        window.location.href = `{% url 'admin_panel:download_template' %}?type=${reportType}`;
+    } else if (reportType) {
+        alert('Invalid report type. Please choose: users, questions, topics, or quizzes');
+    }
+}
+</script>
+{% endblock %}

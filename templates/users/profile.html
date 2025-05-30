@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Mentora{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold mb-2">My Profile</h1>
+            <p class="text-base-content/70">Manage your account settings and preferences</p>
+        </div>
+        <div class="mt-4 sm:mt-0">
+            <button class="btn btn-primary" onclick="toggleEditMode()">
+                <i class="fas fa-edit mr-2"></i>
+                <span id="editButtonText">Edit Profile</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Profile Card -->
+        <div class="lg:col-span-1">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body text-center">
+                    <!-- Profile Picture -->
+                    <div class="avatar mb-4">
+                        <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" />
+                            {% else %}
+                                <div class="bg-primary text-primary-content w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold">
+                                    {{ user.first_name|first }}{{ user.last_name|first }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h2 class="card-title justify-center">{{ user.full_name }}</h2>
+                    <p class="text-base-content/70">{{ user.email }}</p>
+
+                    <!-- Current Class Level -->
+                    {% if user.current_class_level %}
+                        <div class="badge badge-primary gap-2 mt-2">
+                            <i class="fas fa-graduation-cap"></i>
+                            {{ user.get_current_class_level_display }}
+                        </div>
+                    {% else %}
+                        <div class="badge badge-neutral gap-2 mt-2">
+                            <i class="fas fa-user-graduate"></i>
+                            No Grade Selected
+                        </div>
+                    {% endif %}
+
+                    <!-- Email Verification Status -->
+                    {% if user.is_email_verified %}
+                        <div class="badge badge-success gap-2 mt-2">
+                            <i class="fas fa-check-circle"></i>
+                            Email Verified
+                        </div>
+                    {% else %}
+                        <div class="badge badge-warning gap-2 mt-2">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Email Not Verified
+                        </div>
+                    {% endif %}
+
+                    <!-- Member Since -->
+                    <div class="text-sm text-base-content/70 mt-4">
+                        Member since {{ user.date_joined|date:"F Y" }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card bg-base-100 shadow-xl mt-6">
+                <div class="card-body">
+                    <h3 class="card-title text-lg">Learning Stats</h3>
+                    <div class="stats stats-vertical shadow">
+                        <div class="stat">
+                            <div class="stat-title">Levels Completed</div>
+                            <div class="stat-value text-primary">5</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Study Time</div>
+                            <div class="stat-value text-secondary">24h</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Achievements</div>
+                            <div class="stat-value text-accent">12</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="lg:col-span-2">
+            <div class="space-y-6">
+                <!-- Personal Information -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title">Personal Information</h3>
+                        <form id="profileForm" method="post" action="{% url 'users:update_profile' %}">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="label">
+                                        <span class="label-text font-semibold">First Name</span>
+                                    </label>
+                                    <input type="text" name="first_name" value="{{ user.first_name }}"
+                                           class="input input-bordered w-full profile-input" readonly>
+                                </div>
+                                <div>
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Last Name</span>
+                                    </label>
+                                    <input type="text" name="last_name" value="{{ user.last_name }}"
+                                           class="input input-bordered w-full profile-input" readonly>
+                                </div>
+                                <div>
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Email</span>
+                                    </label>
+                                    <input type="email" name="email" value="{{ user.email }}"
+                                           class="input input-bordered w-full profile-input" readonly>
+                                </div>
+                                <div>
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Phone Number</span>
+                                    </label>
+                                    <input type="text" name="phone_number" value="{{ user.phone_number|default:'' }}"
+                                           placeholder="Enter phone number"
+                                           class="input input-bordered w-full profile-input" readonly>
+                                </div>
+                                <div>
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Current Grade Level</span>
+                                    </label>
+                                    <select name="current_class_level" class="select select-bordered w-full profile-input" disabled>
+                                        <option value="">Select Grade Level</option>
+                                        {% for value, label in user.CLASS_LEVEL_CHOICES %}
+                                            <option value="{{ value }}" {% if user.current_class_level == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Date of Birth</span>
+                                    </label>
+                                    <input type="date" name="date_of_birth" value="{{ user.date_of_birth|date:'Y-m-d'|default:'' }}"
+                                           class="input input-bordered w-full profile-input" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Save/Cancel buttons (hidden by default) -->
+                            <div id="editActions" class="flex gap-4 mt-6 hidden">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Save Changes
+                                </button>
+                                <button type="button" class="btn btn-outline" onclick="cancelEdit()">
+                                    <i class="fas fa-times mr-2"></i>
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Learning Preferences -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title">Learning Preferences</h3>
+                        <div class="space-y-4 mt-4">
+                            <div>
+                                <label class="label">
+                                    <span class="label-text font-semibold">Preferred Language</span>
+                                </label>
+                                <select class="select select-bordered w-full" disabled>
+                                    <option>English</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="label">
+                                    <span class="label-text font-semibold">Learning Goals</span>
+                                </label>
+                                <textarea class="textarea textarea-bordered w-full h-24" readonly>{{ user.learning_goals|default:'No goals set yet' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title">Account Settings</h3>
+                        <div class="space-y-4 mt-4">
+                            {% if not user.is_email_verified %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div>
+                                    <h4 class="font-bold">Email Verification Required</h4>
+                                    <div class="text-xs">Please verify your email to access all features.</div>
+                                </div>
+                                <div>
+                                    <a href="{% url 'users:resend_verification' %}" class="btn btn-sm btn-warning">
+                                        Resend Verification
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button class="btn btn-outline flex-1">
+                                    <i class="fas fa-key mr-2"></i>
+                                    Change Password
+                                </button>
+                                <button class="btn btn-outline btn-error flex-1">
+                                    <i class="fas fa-trash mr-2"></i>
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let isEditMode = false;
+
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    const inputs = document.querySelectorAll('.profile-input');
+    const editActions = document.getElementById('editActions');
+    const editButtonText = document.getElementById('editButtonText');
+
+    if (isEditMode) {
+        // Enable edit mode
+        inputs.forEach(input => {
+            if (input.tagName === 'SELECT') {
+                input.disabled = false;
+            } else {
+                input.readOnly = false;
+            }
+            input.classList.add('input-primary');
+        });
+        editActions.classList.remove('hidden');
+        editButtonText.textContent = 'Cancel Edit';
+    } else {
+        // Disable edit mode
+        inputs.forEach(input => {
+            if (input.tagName === 'SELECT') {
+                input.disabled = true;
+            } else {
+                input.readOnly = true;
+            }
+            input.classList.remove('input-primary');
+        });
+        editActions.classList.add('hidden');
+        editButtonText.textContent = 'Edit Profile';
+    }
+}
+
+function cancelEdit() {
+    // Reset form to original values
+    document.getElementById('profileForm').reset();
+    toggleEditMode();
+}
+
+// Load real stats on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadUserStats();
+});
+
+function loadUserStats() {
+    // This would fetch real stats from the backend
+    // For now, we'll use placeholder values
+    fetch('/api/user/stats/')
+        .then(response => response.json())
+        .then(data => {
+            // Update stats if API is available
+            if (data.levels_completed !== undefined) {
+                document.querySelector('.stat-value.text-primary').textContent = data.levels_completed;
+            }
+            if (data.study_time !== undefined) {
+                document.querySelector('.stat-value.text-secondary').textContent = data.study_time;
+            }
+            if (data.achievements !== undefined) {
+                document.querySelector('.stat-value.text-accent').textContent = data.achievements;
+            }
+        })
+        .catch(error => {
+            console.log('Stats API not available, using default values');
+        });
+}
+</script>
+{% endblock %}

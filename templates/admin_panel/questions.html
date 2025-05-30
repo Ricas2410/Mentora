@@ -1,0 +1,465 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Manage Questions{% endblock %}
+{% block page_title %}Manage Questions{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">
+        <i class="fas fa-question-circle me-2"></i>
+        Questions Management
+    </h4>
+    <div class="btn-group">
+        <a href="{% url 'admin_panel:create_question' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>
+            Add Question
+        </a>
+        <a href="{% url 'admin_panel:csv_import' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-file-csv me-2"></i>
+            Import CSV
+        </a>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>
+            Filter Questions
+        </h6>
+    </div>
+    <div class="card-body">
+        <form method="get" id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label class="form-label">Subject</label>
+                    <select class="form-select" name="subject" onchange="updateFilters()">
+                        <option value="">All Subjects</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject.id }}" {% if current_filters.subject == subject.id|stringformat:"s" %}selected{% endif %}>
+                                {{ subject.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Class Level</label>
+                    <select class="form-select" name="level" onchange="updateFilters()">
+                        <option value="">All Levels</option>
+                        {% for level in levels %}
+                            <option value="{{ level.id }}" {% if current_filters.level == level.id|stringformat:"s" %}selected{% endif %}>
+                                {{ level.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Topic</label>
+                    <select class="form-select" name="topic" onchange="updateFilters()">
+                        <option value="">All Topics</option>
+                        {% for topic in topics %}
+                            <option value="{{ topic.id }}" {% if current_filters.topic == topic.id|stringformat:"s" %}selected{% endif %}>
+                                {{ topic.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Question Type</label>
+                    <select class="form-select" name="type" onchange="updateFilters()">
+                        <option value="">All Types</option>
+                        <option value="multiple_choice" {% if current_filters.type == "multiple_choice" %}selected{% endif %}>Multiple Choice</option>
+                        <option value="fill_blank" {% if current_filters.type == "fill_blank" %}selected{% endif %}>Fill in the Blank</option>
+                        <option value="true_false" {% if current_filters.type == "true_false" %}selected{% endif %}>True/False</option>
+                        <option value="short_answer" {% if current_filters.type == "short_answer" %}selected{% endif %}>Short Answer</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Search Questions</label>
+                    <input type="text" class="form-control" name="search" value="{{ current_filters.search }}" placeholder="Search question text...">
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-1">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <a href="{% url 'admin_panel:questions' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Questions Table -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">All Questions</h5>
+        <div class="d-flex gap-2">
+            <a href="{% url 'admin_panel:download_template' %}?type=questions" class="btn btn-sm btn-outline-success">
+                <i class="fas fa-download me-1"></i>
+                Export Template
+            </a>
+            <button class="btn btn-sm btn-outline-danger" onclick="bulkDelete()">
+                <i class="fas fa-trash me-1"></i>
+                Bulk Delete
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if questions %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th width="30">
+                                <input type="checkbox" class="form-check-input" id="selectAll">
+                            </th>
+                            <th>Topic</th>
+                            <th>Question</th>
+                            <th>Type</th>
+                            <th>Difficulty</th>
+                            <th>Points</th>
+                            <th>Choices</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question in questions %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="form-check-input question-checkbox" value="{{ question.id }}">
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center justify-content-center me-2"
+                                             style="width: 20px; height: 20px; background-color: {{ question.topic.class_level.subject.color }}; border-radius: 3px; color: white;">
+                                            <i class="fas {{ question.topic.class_level.subject.icon }} fa-xs"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted d-block">{{ question.topic.class_level.subject.name }}</small>
+                                            <strong class="small">{{ question.topic.title }}</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="question-preview">
+                                        <p class="mb-1">{{ question.question_text|truncatechars:60 }}</p>
+                                        {% if question.image %}
+                                            <small class="text-info">
+                                                <i class="fas fa-image me-1"></i>
+                                                Has Image
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if question.question_type == 'multiple_choice' %}
+                                        <span class="badge bg-primary">Multiple Choice</span>
+                                    {% elif question.question_type == 'fill_blank' %}
+                                        <span class="badge bg-info">Fill Blank</span>
+                                    {% elif question.question_type == 'true_false' %}
+                                        <span class="badge bg-warning">True/False</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Short Answer</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if question.difficulty == 'easy' %}
+                                        <span class="badge bg-success">Easy</span>
+                                    {% elif question.difficulty == 'medium' %}
+                                        <span class="badge bg-warning">Medium</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Hard</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark">{{ question.points }}</span>
+                                </td>
+                                <td>
+                                    {% if question.question_type == 'multiple_choice' %}
+                                        <span class="badge bg-info">{{ question.choices_count }}</span>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if question.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ question.created_at|date:"M d, Y" }}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-info"
+                                                title="Preview"
+                                                onclick="previewQuestion('{{ question.id }}')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a href="{% url 'admin_panel:edit_question' question.id %}"
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Delete"
+                                                onclick="confirmDelete('{{ question.question_text|truncatechars:30 }}', '{% url 'admin_panel:delete_question' question.id %}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if questions.has_other_pages %}
+                <nav aria-label="Questions pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if questions.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ questions.previous_page_number }}">Previous</a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in questions.paginator.page_range %}
+                            {% if questions.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > questions.number|add:'-3' and num < questions.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if questions.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ questions.next_page_number }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-question-circle fs-1 text-muted mb-3"></i>
+                <h5 class="text-muted">No questions found</h5>
+                <p class="text-muted">Questions will appear here once you create topics and add content.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'admin_panel:topics' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-list me-2"></i>
+                        Manage Topics
+                    </a>
+                    <button class="btn btn-outline-success disabled">
+                        <i class="fas fa-plus me-2"></i>
+                        Add Question (Coming Soon)
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-primary">{{ stats.total_questions }}</h4>
+                <p class="mb-0">Total Questions</p>
+                <small class="text-muted">Filtered results</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-success">{{ stats.active_questions }}</h4>
+                <p class="mb-0">Active Questions</p>
+                <small class="text-muted">Ready for quizzes</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-info">{{ stats.multiple_choice }}</h4>
+                <p class="mb-0">Multiple Choice</p>
+                <small class="text-muted">MCQ questions</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-warning">{{ stats.fill_blank }}</h4>
+                <p class="mb-0">Fill in the Blank</p>
+                <small class="text-muted">Fill-in questions</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the question "<span id="deleteItemName"></span>"?</p>
+                <p class="text-danger"><strong>Warning:</strong> This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all functionality
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const questionCheckboxes = document.querySelectorAll('.question-checkbox');
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            questionCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+});
+
+function updateFilters() {
+    // Auto-submit form when filters change
+    document.getElementById('filterForm').submit();
+}
+
+function confirmDelete(itemName, deleteUrl) {
+    document.getElementById('deleteItemName').textContent = itemName;
+    document.getElementById('deleteForm').action = deleteUrl;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+function previewQuestion(questionId) {
+    // Enhanced preview with modal
+    fetch(`/admin/api/questions/${questionId}/`)
+        .then(response => response.json())
+        .then(data => {
+            // Create and show preview modal
+            const modalHtml = `
+                <div class="modal fade" id="previewModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Question Preview</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <strong>Topic:</strong> ${data.topic}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Question:</strong><br>
+                                    ${data.question_text}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Type:</strong> ${data.question_type}
+                                </div>
+                                ${data.choices ? `
+                                    <div class="mb-3">
+                                        <strong>Answer Choices:</strong>
+                                        <ul>
+                                            ${data.choices.map(choice => `<li>${choice.text} ${choice.is_correct ? '(Correct)' : ''}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                                ${data.explanation ? `
+                                    <div class="mb-3">
+                                        <strong>Explanation:</strong><br>
+                                        ${data.explanation}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Remove existing modal if any
+            const existingModal = document.getElementById('previewModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Add new modal
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            new bootstrap.Modal(document.getElementById('previewModal')).show();
+        })
+        .catch(error => {
+            console.error('Error loading question preview:', error);
+            alert('Error loading question preview');
+        });
+}
+
+function bulkDelete() {
+    const selectedQuestions = document.querySelectorAll('.question-checkbox:checked');
+    if (selectedQuestions.length === 0) {
+        alert('Please select questions to delete.');
+        return;
+    }
+
+    if (confirm(`Are you sure you want to delete ${selectedQuestions.length} selected questions? This action cannot be undone.`)) {
+        const questionIds = Array.from(selectedQuestions).map(cb => cb.value);
+
+        // Send bulk delete request
+        fetch('/admin/api/questions/bulk-delete/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({question_ids: questionIds})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error deleting questions: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting questions');
+        });
+    }
+}
+</script>
+{% endblock %}

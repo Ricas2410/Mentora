@@ -1,0 +1,407 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz: Describing with Adjectives - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .question-card {
+        transition: all 0.3s ease;
+    }
+    .question-card.answered {
+        border-color: #10B981;
+        background-color: #F0FDF4;
+    }
+    .choice-option {
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .choice-option:hover {
+        background-color: #F3F4F6;
+        transform: translateX(4px);
+    }
+    .choice-option.selected {
+        background-color: #DBEAFE;
+        border-color: #3B82F6;
+    }
+    .choice-option.correct {
+        background-color: #D1FAE5;
+        border-color: #10B981;
+    }
+    .choice-option.incorrect {
+        background-color: #FEE2E2;
+        border-color: #EF4444;
+    }
+    .timer {
+        position: sticky;
+        top: 20px;
+        z-index: 10;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="quiz-container">
+        <div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl mb-8">
+            <div class="card-body">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between">
+                    <div class="flex-1">
+                        <h1 class="text-3xl font-bold mb-2">Quiz: Describing with Adjectives</h1>
+                        <p class="text-primary-content/80 mb-4">
+                            Test your understanding of adjectives with this interactive quiz.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <div class="badge badge-primary badge-outline">5 Questions</div>
+                            <div class="badge badge-primary badge-outline">5 Minutes</div>
+                            <div class="badge badge-primary badge-outline">Pass: 60%</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 lg:mt-0">
+                        <!-- Timer -->
+                        <div class="timer card bg-white/10 backdrop-blur shadow">
+                            <div class="card-body py-4 text-center">
+                                <div class="text-2xl font-bold" id="timer">05:00</div>
+                                <div class="text-sm text-primary-content/80">Time Remaining</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="card bg-base-100 shadow-lg mb-6">
+            <div class="card-body py-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold">Progress</span>
+                    <span class="text-sm" id="progress-text">0 of 5 questions answered</span>
+                </div>
+                <progress class="progress progress-primary w-full" value="0" max="100" id="progress-bar"></progress>
+            </div>
+        </div>
+
+        <!-- Quiz Form -->
+        <form id="quiz-form" class="space-y-6">
+            <!-- Question 1 -->
+            <div class="question-card card bg-base-100 shadow-lg" data-question="1">
+                <div class="card-body">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-xl font-bold">Question 1 of 5</h3>
+                        <div class="badge badge-primary">Multiple Choice</div>
+                    </div>
+                    <p class="text-lg mb-6">
+                        Which word in this sentence is an adjective?<br>
+                        <span class="font-mono bg-base-200 p-2 rounded">"The <u>beautiful</u> flowers smell nice."</span>
+                    </p>
+                    <div class="space-y-3">
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q1" value="a" class="radio radio-primary mr-4">
+                            <span>flowers</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q1" value="b" class="radio radio-primary mr-4">
+                            <span>beautiful</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q1" value="c" class="radio radio-primary mr-4">
+                            <span>smell</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q1" value="d" class="radio radio-primary mr-4">
+                            <span>nice</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-card card bg-base-100 shadow-lg" data-question="2">
+                <div class="card-body">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-xl font-bold">Question 2 of 5</h3>
+                        <div class="badge badge-secondary">Fill in the Blank</div>
+                    </div>
+                    <p class="text-lg mb-6">
+                        Complete the sentence with an appropriate adjective:<br>
+                        <span class="font-mono bg-base-200 p-2 rounded">"The _______ dog barked loudly."</span>
+                    </p>
+                    <div class="space-y-3">
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q2" value="a" class="radio radio-primary mr-4">
+                            <span>big</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q2" value="b" class="radio radio-primary mr-4">
+                            <span>run</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q2" value="c" class="radio radio-primary mr-4">
+                            <span>quickly</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q2" value="d" class="radio radio-primary mr-4">
+                            <span>house</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-card card bg-base-100 shadow-lg" data-question="3">
+                <div class="card-body">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-xl font-bold">Question 3 of 5</h3>
+                        <div class="badge badge-accent">Multiple Choice</div>
+                    </div>
+                    <p class="text-lg mb-6">
+                        How many adjectives are in this sentence?<br>
+                        <span class="font-mono bg-base-200 p-2 rounded">"The small, red car is very fast."</span>
+                    </p>
+                    <div class="space-y-3">
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q3" value="a" class="radio radio-primary mr-4">
+                            <span>1</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q3" value="b" class="radio radio-primary mr-4">
+                            <span>2</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q3" value="c" class="radio radio-primary mr-4">
+                            <span>3</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q3" value="d" class="radio radio-primary mr-4">
+                            <span>4</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-card card bg-base-100 shadow-lg" data-question="4">
+                <div class="card-body">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-xl font-bold">Question 4 of 5</h3>
+                        <div class="badge badge-warning">True/False</div>
+                    </div>
+                    <p class="text-lg mb-6">
+                        True or False: Adjectives always come after the noun they describe.
+                    </p>
+                    <div class="space-y-3">
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q4" value="a" class="radio radio-primary mr-4">
+                            <span>True</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q4" value="b" class="radio radio-primary mr-4">
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-card card bg-base-100 shadow-lg" data-question="5">
+                <div class="card-body">
+                    <div class="flex items-start justify-between mb-4">
+                        <h3 class="text-xl font-bold">Question 5 of 5</h3>
+                        <div class="badge badge-error">Multiple Choice</div>
+                    </div>
+                    <p class="text-lg mb-6">
+                        Which sentence uses adjectives correctly?
+                    </p>
+                    <div class="space-y-3">
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q5" value="a" class="radio radio-primary mr-4">
+                            <span>The car red is fast.</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q5" value="b" class="radio radio-primary mr-4">
+                            <span>The red car is fast.</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q5" value="c" class="radio radio-primary mr-4">
+                            <span>Red the car is fast.</span>
+                        </label>
+                        <label class="choice-option flex items-center p-4 border-2 border-base-300 rounded-lg">
+                            <input type="radio" name="q5" value="d" class="radio radio-primary mr-4">
+                            <span>The car is red fast.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div>
+                            <h3 class="font-bold text-lg">Ready to Submit?</h3>
+                            <p class="text-base-content/70">Make sure you've answered all questions before submitting.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" class="btn btn-outline" onclick="reviewAnswers()">
+                                <i class="fas fa-eye mr-2"></i>
+                                Review Answers
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="submit-btn" disabled>
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Submit Quiz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Quiz functionality
+let timeLeft = 300; // 5 minutes in seconds
+let answeredQuestions = 0;
+const totalQuestions = 5;
+const correctAnswers = {
+    q1: 'b', // beautiful
+    q2: 'a', // big
+    q3: 'c', // 3 (small, red, fast)
+    q4: 'b', // False
+    q5: 'b'  // The red car is fast
+};
+
+// Timer functionality
+function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (timeLeft <= 0) {
+        submitQuiz();
+        return;
+    }
+    
+    timeLeft--;
+    setTimeout(updateTimer, 1000);
+}
+
+// Progress tracking
+function updateProgress() {
+    const progress = (answeredQuestions / totalQuestions) * 100;
+    document.getElementById('progress-bar').value = progress;
+    document.getElementById('progress-text').textContent = 
+        `${answeredQuestions} of ${totalQuestions} questions answered`;
+    
+    // Enable submit button if all questions answered
+    document.getElementById('submit-btn').disabled = answeredQuestions < totalQuestions;
+}
+
+// Handle answer selection
+document.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const questionCard = this.closest('.question-card');
+        const questionNum = questionCard.dataset.question;
+        
+        // Mark question as answered
+        if (!questionCard.classList.contains('answered')) {
+            questionCard.classList.add('answered');
+            answeredQuestions++;
+            updateProgress();
+        }
+        
+        // Update choice styling
+        const choices = questionCard.querySelectorAll('.choice-option');
+        choices.forEach(choice => {
+            choice.classList.remove('selected');
+        });
+        this.closest('.choice-option').classList.add('selected');
+    });
+});
+
+// Review answers function
+function reviewAnswers() {
+    const unanswered = [];
+    for (let i = 1; i <= totalQuestions; i++) {
+        const answered = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!answered) {
+            unanswered.push(i);
+        }
+    }
+    
+    if (unanswered.length > 0) {
+        alert(`Please answer question(s): ${unanswered.join(', ')}`);
+        // Scroll to first unanswered question
+        const firstUnanswered = document.querySelector(`[data-question="${unanswered[0]}"]`);
+        firstUnanswered.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        alert('All questions answered! You can submit the quiz now.');
+    }
+}
+
+// Submit quiz function
+function submitQuiz() {
+    // Calculate score
+    let score = 0;
+    const userAnswers = {};
+    
+    for (let i = 1; i <= totalQuestions; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected) {
+            userAnswers[`q${i}`] = selected.value;
+            if (selected.value === correctAnswers[`q${i}`]) {
+                score++;
+            }
+        }
+    }
+    
+    const percentage = Math.round((score / totalQuestions) * 100);
+    
+    // Store results and redirect
+    sessionStorage.setItem('quizResults', JSON.stringify({
+        score: score,
+        total: totalQuestions,
+        percentage: percentage,
+        userAnswers: userAnswers,
+        correctAnswers: correctAnswers,
+        timeSpent: 300 - timeLeft
+    }));
+    
+    // Redirect to results page
+    window.location.href = '/content/quiz/result/';
+}
+
+// Form submission
+document.getElementById('quiz-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (answeredQuestions < totalQuestions) {
+        reviewAnswers();
+        return;
+    }
+    
+    if (confirm('Are you sure you want to submit your quiz? You cannot change your answers after submission.')) {
+        submitQuiz();
+    }
+});
+
+// Start timer when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    updateTimer();
+    updateProgress();
+});
+
+// Prevent page refresh/close without warning
+window.addEventListener('beforeunload', function(e) {
+    if (answeredQuestions > 0 && answeredQuestions < totalQuestions) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+MENTORA - Quality Education for Everyone
+
+Hello {{ user.first_name }}!
+
+Welcome to Mentora! We're excited to have you join our learning community.
+
+To complete your account setup and start your educational journey, please verify your email address by clicking the link below:
+
+{{ verification_url }}
+
+This verification link will expire in 24 hours. If you didn't create an account with Mentora, please ignore this email.
+
+Once verified, you'll be able to:
+• Access quality educational content aligned with the the World Educational System curriculum
+• Track your learning progress across subjects  
+• Take interactive quizzes and assessments
+• Earn achievements and certificates
+
+---
+
+MENTORA LEARNING PLATFORM
+Empowering learners across the World with quality education
+
+This email was sent to {{ user.email }}. If you have any questions, please contact our support team.
+
+Best regards,
+The Mentora Team

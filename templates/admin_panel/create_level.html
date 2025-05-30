@@ -1,0 +1,192 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Create Class Level{% endblock %}
+{% block page_title %}Create New Class Level{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    Create New Class Level
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">
+                                Subject <span class="text-danger">*</span>
+                            </label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                <div class="text-danger small">{{ form.subject.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.level_number.id_for_label }}" class="form-label">
+                                GES Level Number <span class="text-danger">*</span>
+                            </label>
+                            {{ form.level_number }}
+                            <div class="form-text">
+                                {{ form.level_number.help_text }}
+                            </div>
+                            {% if form.level_number.errors %}
+                                <div class="text-danger small">{{ form.level_number.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                GES Level Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            <div class="form-text">
+                                {{ form.name.help_text }}
+                            </div>
+                            {% if form.name.errors %}
+                                <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.order.id_for_label }}" class="form-label">
+                                Display Order
+                            </label>
+                            {{ form.order }}
+                            {% if form.order.errors %}
+                                <div class="text-danger small">{{ form.order.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            Description <span class="text-danger">*</span>
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Only active levels will be visible to students
+                            </div>
+                            {% if form.is_active.errors %}
+                                <div class="text-danger small">{{ form.is_active.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="mb-4">
+                        <h6>Preview</h6>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="d-flex align-items-center">
+                                <div id="preview-subject-icon"
+                                     class="d-flex align-items-center justify-content-center me-3"
+                                     style="width: 40px; height: 40px; background-color: #3B82F6; border-radius: 6px; color: white;">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div>
+                                    <h6 id="preview-name" class="mb-1">Level Name</h6>
+                                    <p id="preview-description" class="mb-1 text-muted">Level description will appear here</p>
+                                    <small class="text-muted">
+                                        <span id="preview-subject">Subject</span> •
+                                        Level <span id="preview-number">1</span> •
+                                        GES Curriculum
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_panel:levels' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Levels
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            Create Level
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const subjectSelect = document.getElementById('{{ form.subject.id_for_label }}');
+    const nameSelect = document.getElementById('{{ form.name.id_for_label }}');
+    const descriptionInput = document.getElementById('{{ form.description.id_for_label }}');
+    const levelNumberInput = document.getElementById('{{ form.level_number.id_for_label }}');
+
+    const previewName = document.getElementById('preview-name');
+    const previewDescription = document.getElementById('preview-description');
+    const previewSubject = document.getElementById('preview-subject');
+    const previewNumber = document.getElementById('preview-number');
+    const previewIcon = document.getElementById('preview-subject-icon');
+
+    function updatePreview() {
+        // Update name
+        const selectedName = nameSelect.options[nameSelect.selectedIndex];
+        previewName.textContent = selectedName.text || 'Level Name';
+
+        // Auto-populate level number based on name
+        const levelName = selectedName.text;
+        if (levelName.includes('Primary')) {
+            const num = levelName.split(' ')[1];
+            levelNumberInput.value = num;
+            previewNumber.textContent = num;
+        } else if (levelName.includes('JHS')) {
+            const num = parseInt(levelName.split(' ')[1]) + 6;
+            levelNumberInput.value = num;
+            previewNumber.textContent = num;
+        } else if (levelName.includes('SHS')) {
+            const num = parseInt(levelName.split(' ')[1]) + 9;
+            levelNumberInput.value = num;
+            previewNumber.textContent = num;
+        }
+
+        // Update description
+        previewDescription.textContent = descriptionInput.value || 'Level description will appear here';
+
+        // Update subject
+        const selectedOption = subjectSelect.options[subjectSelect.selectedIndex];
+        previewSubject.textContent = selectedOption.text || 'Subject';
+    }
+
+    // Add event listeners
+    subjectSelect.addEventListener('change', updatePreview);
+    nameSelect.addEventListener('change', updatePreview);
+    descriptionInput.addEventListener('input', updatePreview);
+    levelNumberInput.addEventListener('input', updatePreview);
+
+    // Initial preview update
+    updatePreview();
+});
+</script>
+{% endblock %}

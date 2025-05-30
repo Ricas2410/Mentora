@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Verification - Mentora{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="text-6xl text-success mb-4">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1 class="text-3xl font-bold mb-2">Email Verified!</h1>
+            <p class="text-base-content/70">Your email has been successfully verified</p>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body text-center">
+                <h2 class="card-title justify-center mb-4">Welcome to Mentora!</h2>
+                <p class="mb-6">Your account is now fully activated. You can start your learning journey.</p>
+                
+                <div class="card-actions justify-center">
+                    <a href="{% url 'core:dashboard' %}" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt mr-2"></i>
+                        Go to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,252 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Create User{% endblock %}
+{% block page_title %}Create New User{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    Create New User
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Personal Information -->
+                    <h6 class="border-bottom pb-2 mb-3">Personal Information</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                First Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                Last Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                Email Address <span class="text-danger">*</span>
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                                Phone Number
+                            </label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.errors %}
+                                <div class="text-danger small">{{ form.phone_number.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">
+                                Date of Birth
+                            </label>
+                            {{ form.date_of_birth }}
+                            {% if form.date_of_birth.errors %}
+                                <div class="text-danger small">{{ form.date_of_birth.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.current_class_level.id_for_label }}" class="form-label">
+                                Current Class Level
+                            </label>
+                            {{ form.current_class_level }}
+                            {% if form.current_class_level.errors %}
+                                <div class="text-danger small">{{ form.current_class_level.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.learning_goals.id_for_label }}" class="form-label">
+                            Learning Goals
+                        </label>
+                        {{ form.learning_goals }}
+                        {% if form.learning_goals.errors %}
+                            <div class="text-danger small">{{ form.learning_goals.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Account Settings -->
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Account Settings</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Active Account
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Inactive users cannot log in
+                            </div>
+                            {% if form.is_active.errors %}
+                                <div class="text-danger small">{{ form.is_active.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                {{ form.is_staff }}
+                                <label class="form-check-label" for="{{ form.is_staff.id_for_label }}">
+                                    Staff Access
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Can access admin panel
+                            </div>
+                            {% if form.is_staff.errors %}
+                                <div class="text-danger small">{{ form.is_staff.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                {{ form.is_email_verified }}
+                                <label class="form-check-label" for="{{ form.is_email_verified.id_for_label }}">
+                                    Email Verified
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Email verification status
+                            </div>
+                            {% if form.is_email_verified.errors %}
+                                <div class="text-danger small">{{ form.is_email_verified.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Password Information -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Password:</strong> A temporary password will be generated and sent to the user's email address.
+                    </div>
+                    
+                    <!-- Preview Section -->
+                    <div class="mb-4">
+                        <h6>Preview</h6>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <div id="preview-avatar" class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <span class="text-white fw-bold">--</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h6 id="preview-name" class="mb-1">User Name</h6>
+                                    <p id="preview-email" class="mb-1 text-muted">user@email.com</p>
+                                    <small class="text-muted">
+                                        <span id="preview-level">No level selected</span> • 
+                                        <span id="preview-status">Active</span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_panel:users' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Users
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            Create User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const firstNameInput = document.getElementById('{{ form.first_name.id_for_label }}');
+    const lastNameInput = document.getElementById('{{ form.last_name.id_for_label }}');
+    const emailInput = document.getElementById('{{ form.email.id_for_label }}');
+    const levelSelect = document.getElementById('{{ form.current_class_level.id_for_label }}');
+    const isActiveCheckbox = document.getElementById('{{ form.is_active.id_for_label }}');
+    
+    const previewName = document.getElementById('preview-name');
+    const previewEmail = document.getElementById('preview-email');
+    const previewLevel = document.getElementById('preview-level');
+    const previewStatus = document.getElementById('preview-status');
+    const previewAvatar = document.getElementById('preview-avatar');
+    
+    function updatePreview() {
+        // Update name
+        const firstName = firstNameInput.value || 'User';
+        const lastName = lastNameInput.value || 'Name';
+        previewName.textContent = `${firstName} ${lastName}`;
+        
+        // Update avatar initials
+        const firstInitial = firstName.charAt(0).toUpperCase();
+        const lastInitial = lastName.charAt(0).toUpperCase();
+        previewAvatar.querySelector('span').textContent = `${firstInitial}${lastInitial}`;
+        
+        // Update email
+        previewEmail.textContent = emailInput.value || 'user@email.com';
+        
+        // Update level
+        const selectedLevel = levelSelect.options[levelSelect.selectedIndex];
+        previewLevel.textContent = selectedLevel.text || 'No level selected';
+        
+        // Update status
+        previewStatus.textContent = isActiveCheckbox.checked ? 'Active' : 'Inactive';
+    }
+    
+    // Add event listeners
+    firstNameInput.addEventListener('input', updatePreview);
+    lastNameInput.addEventListener('input', updatePreview);
+    emailInput.addEventListener('input', updatePreview);
+    levelSelect.addEventListener('change', updatePreview);
+    isActiveCheckbox.addEventListener('change', updatePreview);
+    
+    // Staff access warning
+    const staffCheckbox = document.getElementById('{{ form.is_staff.id_for_label }}');
+    if (staffCheckbox) {
+        staffCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                if (!confirm('Are you sure you want to grant staff access to this user? They will be able to access the admin panel.')) {
+                    this.checked = false;
+                }
+            }
+        });
+    }
+    
+    // Initial preview update
+    updatePreview();
+});
+</script>
+{% endblock %}

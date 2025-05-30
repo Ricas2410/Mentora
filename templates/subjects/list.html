@@ -1,0 +1,517 @@
+{% extends 'base.html' %}
+
+{% block title %}Subjects - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .subject-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .subject-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: #3b82f6;
+    }
+
+    .level-card {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .level-card:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .level-card.selected {
+        border-color: #3b82f6;
+        background: #eff6ff;
+    }
+
+    .step-indicator {
+        background: #3b82f6;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        margin-right: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Minimal Professional Header -->
+<div class="bg-white border-b border-gray-200 py-12">
+    <div class="container mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 leading-tight text-gray-900">
+                Start Learning
+            </h1>
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Choose your grade level, then select a subject to view topics for that specific grade.
+            </p>
+
+            {% if show_login_prompt %}
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 max-w-md mx-auto">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-info-circle text-gray-600 text-lg mr-2"></i>
+                        <span class="font-medium text-gray-900">Ready to start learning?</span>
+                    </div>
+                    <p class="text-gray-600 mb-6 text-sm">
+                        Create a free account to access lessons and track your progress!
+                    </p>
+                    <div class="flex gap-3 justify-center">
+                        <a href="{% url 'users:register' %}" class="bg-gray-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800 transition-all duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Sign Up Free
+                        </a>
+                        <a href="{% url 'users:login' %}" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-all duration-300 text-sm">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Sign In
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="bg-gray-50 py-16">
+    <div class="container mx-auto px-6">
+        <!-- Step 1: Class Level Selection -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-8 mb-8" id="classLevelStep">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold text-gray-900">
+                    <span class="step-indicator">Step 1</span>
+                    Select Your Grade Level
+                </h2>
+                {% if user.is_authenticated and user.current_class_level %}
+                    <button class="text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="selectUserLevel()">
+                        Use My Level: Grade {{ user.current_class_level }}
+                    </button>
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Elementary Levels -->
+                <div class="level-card" data-level-range="primary" onclick="selectLevelRange('primary')">
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-child text-gray-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Elementary School</h3>
+                        <p class="text-gray-700 font-medium mb-2">Grades 1-6</p>
+                        <p class="text-sm text-gray-600">Ages 6-12 • Foundation Learning</p>
+                    </div>
+                </div>
+
+                <!-- Middle School Levels -->
+                <div class="level-card" data-level-range="jhs" onclick="selectLevelRange('jhs')">
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-graduate text-gray-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Middle School</h3>
+                        <p class="text-gray-700 font-medium mb-2">Grades 7-9</p>
+                        <p class="text-sm text-gray-600">Ages 13-15 • Intermediate Learning</p>
+                    </div>
+                </div>
+
+                <!-- High School Levels -->
+                <div class="level-card" data-level-range="shs" onclick="selectLevelRange('shs')">
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-graduation-cap text-gray-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">High School</h3>
+                        <p class="text-gray-700 font-medium mb-2">Grades 10-12</p>
+                        <p class="text-sm text-gray-600">Ages 16-18 • Advanced Learning</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Specific Level Selection (Hidden initially) -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-8 mb-8 hidden" id="specificLevelStep">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold text-gray-900">
+                    <span class="step-indicator">Step 2</span>
+                    Choose Specific Grade
+                </h2>
+                <button class="text-sm text-gray-600 hover:text-gray-800" onclick="goBackToLevelRange()">
+                    <i class="fas fa-arrow-left mr-1"></i>
+                    Back to Grade Range
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="specificLevelGrid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Step 3: Subject Selection (Hidden initially) -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-8 mb-8 hidden" id="subjectSelectionStep">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold text-gray-900">
+                    <span class="step-indicator">Step 3</span>
+                    Select Subject to Learn
+                </h2>
+                <button class="text-sm text-gray-600 hover:text-gray-800" onclick="goBackToSpecificLevel()">
+                    <i class="fas fa-arrow-left mr-1"></i>
+                    Back to Grade Selection
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="subjectGrid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Initial instruction message -->
+        <div class="text-center py-16" id="instructionMessage">
+            <div class="w-20 h-20 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-route text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to Learn?</h3>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+                Follow the steps above to select your grade level, then choose a subject to start your learning journey.
+                Our curriculum is aligned with international educational standards.
+            </p>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- Login Prompt Modal -->
+{% if not user.is_authenticated %}
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Ready to start learning?</h3>
+            <p class="text-gray-600 mb-6" id="subjectName">Sign in to access this subject and track your progress!</p>
+
+            <div class="flex gap-3 justify-center">
+                <a href="{% url 'users:register' %}" class="btn bg-blue-600 text-white hover:bg-blue-700">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Free Account
+                </a>
+                <a href="{% url 'users:login' %}" class="btn btn-outline border-gray-300 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In
+                </a>
+            </div>
+
+            <button onclick="closeLoginPrompt()" class="mt-4 text-gray-500 hover:text-gray-700 text-sm">
+                Maybe later
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+// Learning flow state management
+let currentState = {
+    step: 1,
+    selectedLevelRange: null,
+    selectedSpecificLevel: null,
+    selectedSubject: null
+};
+
+// Level mappings
+const levelMappings = {
+    primary: {
+        name: 'Elementary School',
+        levels: [
+            {num: 1, name: 'Grade 1'},
+            {num: 2, name: 'Grade 2'},
+            {num: 3, name: 'Grade 3'},
+            {num: 4, name: 'Grade 4'},
+            {num: 5, name: 'Grade 5'},
+            {num: 6, name: 'Grade 6'}
+        ]
+    },
+    jhs: {
+        name: 'Middle School',
+        levels: [
+            {num: 7, name: 'Grade 7'},
+            {num: 8, name: 'Grade 8'},
+            {num: 9, name: 'Grade 9'}
+        ]
+    },
+    shs: {
+        name: 'High School',
+        levels: [
+            {num: 10, name: 'Grade 10'},
+            {num: 11, name: 'Grade 11'},
+            {num: 12, name: 'Grade 12'}
+        ]
+    }
+};
+
+// Available subjects
+const subjects = [
+    {id: 1, name: 'English Language', icon: 'fas fa-book-open', color: '#3B82F6', description: 'Develop reading, writing, speaking and listening skills'},
+    {id: 2, name: 'Mathematics', icon: 'fas fa-calculator', color: '#10B981', description: 'Build strong mathematical foundations and problem-solving skills'},
+    {id: 3, name: 'Science', icon: 'fas fa-flask', color: '#8B5CF6', description: 'Explore the natural world through scientific inquiry'},
+    {id: 4, name: 'Social Studies', icon: 'fas fa-globe-africa', color: '#F59E0B', description: 'Understand society, culture, and civic responsibilities'},
+    {id: 5, name: 'Ghanaian Language', icon: 'fas fa-language', color: '#EF4444', description: 'Learn and appreciate local Ghanaian languages'},
+    {id: 6, name: 'Religious and Moral Education', icon: 'fas fa-heart', color: '#EC4899', description: 'Develop moral values and religious understanding'}
+];
+
+// Step 1: Select level range (Primary, JHS, SHS)
+function selectLevelRange(levelRange) {
+    currentState.selectedLevelRange = levelRange;
+    currentState.step = 2;
+
+    // Hide step 1, show step 2
+    document.getElementById('classLevelStep').classList.add('hidden');
+    document.getElementById('specificLevelStep').classList.remove('hidden');
+    document.getElementById('instructionMessage').classList.add('hidden');
+
+    // Populate specific levels
+    populateSpecificLevels(levelRange);
+}
+
+// Populate specific level options
+function populateSpecificLevels(levelRange) {
+    const grid = document.getElementById('specificLevelGrid');
+    const levels = levelMappings[levelRange].levels;
+
+    grid.innerHTML = levels.map(level => `
+        <div class="specific-level-card" onclick="selectSpecificLevel(${level.num}, '${level.name}')">
+            <div class="text-center p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer level-card">
+                <div class="text-lg font-semibold text-gray-900">${level.name}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Step 2: Select specific level
+function selectSpecificLevel(levelNum, levelName) {
+    currentState.selectedSpecificLevel = {num: levelNum, name: levelName};
+    currentState.step = 3;
+
+    // Hide step 2, show step 3
+    document.getElementById('specificLevelStep').classList.add('hidden');
+    document.getElementById('subjectSelectionStep').classList.remove('hidden');
+
+    // Populate subjects
+    populateSubjects();
+}
+
+// Populate subject options
+function populateSubjects() {
+    const grid = document.getElementById('subjectGrid');
+    const levelNumber = currentState.selectedSpecificLevel.num;
+
+    // Show loading state
+    grid.innerHTML = `
+        <div class="col-span-full text-center py-8">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                <i class="fas fa-spinner fa-spin text-blue-600"></i>
+            </div>
+            <p class="text-gray-600">Loading subjects...</p>
+        </div>
+    `;
+
+    // Fetch subjects for the selected level
+    fetch(`/subjects/api/subjects-by-level/${levelNumber}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.subjects && data.subjects.length > 0) {
+                grid.innerHTML = data.subjects.map(subject => `
+                    <div class="subject-card" onclick="selectSubject('${subject.id}', '${subject.name}')">
+                        <div class="p-6 bg-white border border-gray-200 rounded-xl hover:border-gray-400 hover:shadow-lg transition-all cursor-pointer group">
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="${subject.icon} text-2xl text-gray-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-900 mb-1">${subject.name}</h3>
+                                    <p class="text-sm text-gray-600">${subject.description}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                                    ${currentState.selectedSpecificLevel.name}
+                                </span>
+                                <div class="flex items-center text-gray-700">
+                                    <span class="text-sm font-medium mr-2">Start Learning</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-info-circle text-gray-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">No Subjects Available</h3>
+                        <p class="text-gray-500">No subjects available for ${currentState.selectedSpecificLevel.name} yet.</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading subjects:', error);
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-16">
+                    <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Error Loading Subjects</h3>
+                    <p class="text-gray-500">Please try refreshing the page.</p>
+                </div>
+            `;
+        });
+}
+
+// Step 3: Select subject (redirect to topic list for the selected class and subject)
+function selectSubject(subjectId, subjectName) {
+    currentState.selectedSubject = {id: subjectId, name: subjectName};
+
+    // Find the level ID for the selected class and subject
+    // We need to make an API call to get the level ID
+    const levelNumber = currentState.selectedSpecificLevel.num;
+
+    // Show loading state
+    const grid = document.getElementById('subjectGrid');
+    grid.innerHTML = `
+        <div class="col-span-full text-center py-8">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                <i class="fas fa-spinner fa-spin text-blue-600"></i>
+            </div>
+            <p class="text-gray-600">Loading topics...</p>
+        </div>
+    `;
+
+    // Get the level ID and redirect to topic list
+    fetch(`/subjects/api/quiz-topics/${levelNumber}/${subjectId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.level && data.level.id) {
+                // Redirect to the topic list for this specific class level and subject
+                window.location.href = `/subjects/${subjectId}/levels/${data.level.id}/`;
+            } else {
+                // Show error if no level found
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-info-circle text-yellow-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">No Content Available</h3>
+                        <p class="text-gray-600 mb-4">
+                            No content available for <strong>${currentState.selectedSpecificLevel.name} ${subjectName}</strong> yet.
+                        </p>
+                        <button onclick="goBackToSubjects()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Choose Different Subject
+                        </button>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading level info:', error);
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-16">
+                    <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Error Loading Content</h3>
+                    <p class="text-gray-500 mb-6">Please try refreshing the page.</p>
+                    <button onclick="goBackToSubjects()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Choose Different Subject
+                    </button>
+                </div>
+            `;
+        });
+}
+
+// Navigation functions
+function goBackToLevelRange() {
+    currentState.step = 1;
+    document.getElementById('specificLevelStep').classList.add('hidden');
+    document.getElementById('classLevelStep').classList.remove('hidden');
+    document.getElementById('instructionMessage').classList.remove('hidden');
+}
+
+function goBackToSpecificLevel() {
+    currentState.step = 2;
+    document.getElementById('subjectSelectionStep').classList.add('hidden');
+    document.getElementById('specificLevelStep').classList.remove('hidden');
+}
+
+function goBackToSubjects() {
+    currentState.step = 3;
+    populateSubjects();
+}
+
+// Quick select user's current level
+function selectUserLevel() {
+    {% if user.is_authenticated and user.current_class_level %}
+        const userLevel = {{ user.current_class_level }};
+        const userLevelName = "{{ user.get_current_class_level_display }}";
+
+        // Determine level range
+        let levelRange;
+        if (userLevel >= 1 && userLevel <= 6) levelRange = 'primary';
+        else if (userLevel >= 7 && userLevel <= 9) levelRange = 'jhs';
+        else if (userLevel >= 10 && userLevel <= 12) levelRange = 'shs';
+
+        // Set state and go directly to subject selection
+        currentState.selectedLevelRange = levelRange;
+        currentState.selectedSpecificLevel = {num: userLevel, name: userLevelName};
+        currentState.step = 3;
+
+        // Hide step 1, show step 3
+        document.getElementById('classLevelStep').classList.add('hidden');
+        document.getElementById('subjectSelectionStep').classList.remove('hidden');
+        document.getElementById('instructionMessage').classList.add('hidden');
+
+        // Populate subjects
+        populateSubjects();
+    {% endif %}
+}
+
+// Login modal functions
+function showLoginPrompt(subjectName) {
+    document.getElementById('subjectName').textContent = `Sign in to access ${subjectName} and track your progress!`;
+    document.getElementById('loginModal').classList.remove('hidden');
+}
+
+function closeLoginPrompt() {
+    document.getElementById('loginModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+{% if not user.is_authenticated %}
+document.getElementById('loginModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLoginPrompt();
+    }
+});
+{% endif %}
+</script>
+{% endblock %}

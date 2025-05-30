@@ -1,0 +1,538 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ level.name }} Topics - {{ subject.name }} - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .topic-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .topic-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .topic-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .topic-card:hover::before {
+        opacity: 1;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .gradient-border {
+        position: relative;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 2px;
+    }
+
+    .gradient-border::before {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        background: white;
+        border-radius: 14px;
+        z-index: -1;
+    }
+
+    /* Responsive grid adjustments */
+    @media (max-width: 768px) {
+        .topic-card {
+            border-radius: 12px;
+        }
+
+        /* Stack cards on mobile */
+        .grid.lg\\:grid-cols-3 {
+            grid-template-columns: 1fr;
+        }
+
+        /* Mobile-friendly combined header */
+        .combined-header .flex-col {
+            gap: 1rem;
+        }
+
+        .combined-header .final-exam-section {
+            text-align: center;
+        }
+
+        .combined-header .final-exam-section .flex {
+            justify-content: center;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+        /* 2 columns on tablet */
+        .grid.lg\\:grid-cols-3 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Animation for status badges */
+    .status-badge {
+        animation: fadeInScale 0.5s ease-out;
+    }
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Progress bar animation */
+    .progress-bar {
+        animation: progressFill 1s ease-out;
+    }
+
+    @keyframes progressFill {
+        from {
+            width: 0%;
+        }
+    }
+
+    /* Button hover effects */
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Final exam section animations */
+    .final-exam-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .final-exam-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: rotate(45deg);
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        }
+        100% {
+            transform: translateX(100%) translateY(100%) rotate(45deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6 md:py-8">
+    <!-- Breadcrumb -->
+    <div class="breadcrumbs text-sm mb-6">
+        <ul>
+            <li><a href="{% url 'core:home' %}">Home</a></li>
+            <li><a href="{% url 'subjects:list' %}">Subjects</a></li>
+            <li><a href="{% url 'subjects:levels' subject.id %}">{{ subject.name }}</a></li>
+            <li>{{ level.name }}</li>
+        </ul>
+    </div>
+
+    <!-- Combined Level Header with Final Exam -->
+    <div class="combined-header bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl shadow-xl mb-8 p-6 md:p-8">
+        <!-- Main Level Info -->
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8">
+            <div class="flex-1">
+                <div class="flex items-center mb-3">
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center mr-4">
+                        <i class="{{ subject.icon|default:'fas fa-book' }} text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">{{ level.name }}</h1>
+                        <p class="text-white text-opacity-90">{{ subject.name }}</p>
+                    </div>
+                </div>
+                {% if level.description %}
+                <p class="text-white text-opacity-90 mb-4 leading-relaxed">
+                    {{ level.description }}
+                </p>
+                {% endif %}
+                <div class="flex flex-wrap gap-2">
+                    <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium">
+                        {{ topics.count }} Topic{{ topics.count|pluralize }}
+                    </div>
+                    <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium">
+                        Grade {{ level.level_number }}
+                    </div>
+                    {% if total_duration %}
+                    <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium">
+                        ~{{ total_duration }} min total
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="mt-6 lg:mt-0">
+                <div class="bg-white bg-opacity-10 backdrop-blur rounded-xl p-4 text-center">
+                    <div class="text-sm text-white text-opacity-80 mb-1">Your Progress</div>
+                    <div class="text-2xl font-bold mb-1" id="progressPercentage">{{ user_progress_percentage|floatformat:1 }}%</div>
+                    <div class="text-xs text-white text-opacity-80" id="progressText">
+                        {{ completed_topics|default:0 }} of {{ topics.count }} topics
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Final Exam Section -->
+        <div class="final-exam-section border-t border-white border-opacity-20 pt-6">
+            <div class="flex flex-col lg:flex-row items-center justify-between">
+                <div class="flex-1 text-center lg:text-left mb-6 lg:mb-0">
+                    <div class="flex items-center justify-center lg:justify-start mb-4">
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-graduation-cap text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold">Final Exam</h2>
+                            <p class="text-white text-opacity-90 text-sm">Comprehensive Assessment</p>
+                        </div>
+                    </div>
+                    <p class="text-white text-opacity-90 leading-relaxed mb-4 text-sm">
+                        Test your complete understanding with a comprehensive exam covering all topics.
+                        This exam includes 30-40 questions from across all topics in this level.
+                    </p>
+                    <div class="flex flex-wrap gap-2 justify-center lg:justify-start">
+                        <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-xs">
+                            30-40 Questions
+                        </div>
+                        <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-xs">
+                            All Topics
+                        </div>
+                        <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-xs">
+                            60% to Pass
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'content:exam' level.id %}"
+                       class="bg-white text-purple-600 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 inline-flex items-center">
+                        <i class="fas fa-play mr-2"></i>
+                        Take Final Exam
+                    </a>
+                    {% else %}
+                    <button onclick="showLoginPrompt()"
+                            class="bg-white bg-opacity-20 border-2 border-white text-white px-6 py-3 rounded-xl font-bold hover:bg-white hover:text-purple-600 transition-all duration-300 inline-flex items-center">
+                        <i class="fas fa-lock mr-2"></i>
+                        Login to Take Exam
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Topics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {% for topic in topics %}
+        {% with topic_progress=topic.topic_progress %}
+        <div class="topic-card bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 overflow-hidden">
+            <!-- Clean Topic Header -->
+            <div class="relative">
+                <div class="bg-gray-50 border-b border-gray-100 p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="text-sm font-medium text-gray-600 mb-1">Topic {{ forloop.counter }}</div>
+                            <h3 class="text-xl font-bold leading-tight text-gray-900">{{ topic.title }}</h3>
+                        </div>
+                        <!-- Clean Status Badge -->
+                        {% if topic_progress.is_completed %}
+                        <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-check mr-1"></i>
+                            Done
+                        </div>
+                        {% elif topic_progress.is_started %}
+                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-play mr-1"></i>
+                            Started
+                        </div>
+                        {% else %}
+                        <div class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-circle mr-1"></i>
+                            New
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Clean Progress Bar -->
+                    {% if topic_progress.is_started %}
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                             style="width: {{ topic_progress.completion_percentage|default:0 }}%"></div>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-2">
+                        {{ topic_progress.completion_percentage|default:0|floatformat:0 }}% Complete
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Topic Content -->
+            <div class="p-6">
+                {% if topic.description %}
+                <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                    {{ topic.description }}
+                </p>
+                {% endif %}
+
+                <!-- Topic Stats -->
+                <div class="flex items-center justify-between text-sm text-gray-500 mb-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-clock mr-1"></i>
+                        {{ topic.estimated_duration|default:15 }} min
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-layer-group mr-1"></i>
+                        {{ topic.difficulty_level|capfirst }}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3">
+                    <!-- Primary Action Buttons - Always show both Take Quiz and Start Learning -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Start Learning Button -->
+                        {% if topic.has_study_notes %}
+                        <a href="{% url 'subjects:topic_detail' subject.id level.id topic.id %}"
+                           class="bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center">
+                            <i class="fas fa-book-open mr-2"></i>
+                            <span class="text-sm">Start Learning</span>
+                        </a>
+                        {% else %}
+                        <button disabled
+                                class="bg-gray-300 text-gray-500 py-3 px-4 rounded-lg font-medium cursor-not-allowed flex items-center justify-center">
+                            <i class="fas fa-book-open mr-2"></i>
+                            <span class="text-sm">No Content</span>
+                        </button>
+                        {% endif %}
+
+                        <!-- Take Quiz Button -->
+                        {% if topic.has_questions %}
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'content:quiz' topic.id %}"
+                               class="bg-gray-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center">
+                                <i class="fas fa-brain mr-2"></i>
+                                <span class="text-sm">Take Quiz</span>
+                            </a>
+                            {% else %}
+                            <button onclick="showLoginPrompt()"
+                                    class="bg-gray-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center">
+                                <i class="fas fa-lock mr-2"></i>
+                                <span class="text-sm">Take Quiz</span>
+                            </button>
+                            {% endif %}
+                        {% else %}
+                        <button disabled
+                                class="bg-gray-300 text-gray-500 py-3 px-4 rounded-lg font-medium cursor-not-allowed flex items-center justify-center">
+                            <i class="fas fa-brain mr-2"></i>
+                            <span class="text-sm">No Quiz</span>
+                        </button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Secondary Actions for Completed Topics -->
+                    {% if topic_progress.is_completed and topic.has_questions %}
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
+                        <a href="{% url 'content:quiz' topic.id %}"
+                           class="bg-green-100 text-green-700 py-2 px-3 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors flex items-center justify-center">
+                            <i class="fas fa-redo mr-1"></i>
+                            Retake Quiz
+                        </a>
+                        <a href="{% url 'content:test' topic.id %}"
+                           class="bg-green-100 text-green-700 py-2 px-3 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors flex items-center justify-center">
+                            <i class="fas fa-certificate mr-1"></i>
+                            Retake Test
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Achievement Badge -->
+                {% if topic_progress.is_completed %}
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <div class="flex items-center text-sm text-green-600">
+                        <i class="fas fa-trophy mr-2"></i>
+                        <span class="font-medium">Best Score: {{ topic_progress.best_test_score|default:0|floatformat:0 }}%</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endwith %}
+        {% empty %}
+        <div class="col-span-full text-center py-16">
+            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-book-open text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">No Topics Available</h3>
+            <p class="text-gray-600 mb-6">Topics for this level will be available soon.</p>
+            {% if user.is_staff %}
+            <a href="/admin/subjects/topic/add/" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>
+                Add Topics
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Level Completion Requirements -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+            <i class="fas fa-graduation-cap text-blue-600 mr-3"></i>
+            Level Completion Requirements
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-book-open text-green-600 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-2">Study All Topics</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Read through all {{ topics.count }} topic materials and understand the concepts
+                </p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-question-circle text-yellow-600 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-2">Pass All Quizzes</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Score at least {{ level.pass_percentage|default:60 }}% on each topic quiz to demonstrate understanding
+                </p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-certificate text-red-600 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-2">Pass Final Test</h4>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    Score {{ level.pass_percentage|default:60 }}% or higher on the comprehensive level test
+                </p>
+            </div>
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="text-center md:text-left mb-4 md:mb-0">
+                    <h4 class="font-semibold text-gray-800 mb-1">Your Progress</h4>
+                    <p class="text-sm text-gray-600">
+                        Complete all requirements to unlock the next level
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-center">
+                        <div class="text-lg font-bold text-blue-600">{{ completed_topics|default:0 }}/{{ topics.count }}</div>
+                        <div class="text-xs text-gray-500">Topics</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-lg font-bold text-green-600">{{ user_progress_percentage|floatformat:1 }}%</div>
+                        <div class="text-xs text-gray-500">Complete</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Login Prompt for Visitors -->
+    {% if show_login_prompt %}
+    <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 text-center">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-user-graduate text-blue-600 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Ready to Start Learning?</h3>
+        <p class="text-gray-600 mb-6">Create an account to track your progress and unlock achievements!</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="{% url 'users:register' %}" class="btn bg-blue-600 text-white hover:bg-blue-700">
+                <i class="fas fa-user-plus mr-2"></i>
+                Sign Up Free
+            </a>
+            <a href="{% url 'users:login' %}" class="btn border border-blue-600 text-blue-600 hover:bg-blue-50">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Login
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function showLoginPrompt() {
+    // Create a simple modal for login prompt
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-brain text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Ready to Take the Quiz?</h3>
+            <p class="text-gray-600 mb-6">Sign in to take quizzes, track your progress, and unlock achievements!</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{% url 'users:login' %}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Login
+                </a>
+                <a href="{% url 'users:register' %}" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Sign Up
+                </a>
+                <button onclick="this.closest('.fixed').remove()" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Close on background click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+</script>
+{% endblock %}

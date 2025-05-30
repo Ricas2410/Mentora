@@ -1,0 +1,201 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Create Topic{% endblock %}
+{% block page_title %}Create New Topic{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    Create New Topic
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.class_level.id_for_label }}" class="form-label">
+                                Class Level <span class="text-danger">*</span>
+                            </label>
+                            {{ form.class_level }}
+                            {% if form.class_level.errors %}
+                                <div class="text-danger small">{{ form.class_level.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.order.id_for_label }}" class="form-label">
+                                Order
+                            </label>
+                            {{ form.order }}
+                            <div class="form-text">
+                                Display order within the level
+                            </div>
+                            {% if form.order.errors %}
+                                <div class="text-danger small">{{ form.order.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            Topic Title <span class="text-danger">*</span>
+                        </label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            Description <span class="text-danger">*</span>
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.estimated_duration.id_for_label }}" class="form-label">
+                                Estimated Duration (minutes)
+                            </label>
+                            {{ form.estimated_duration }}
+                            {% if form.estimated_duration.errors %}
+                                <div class="text-danger small">{{ form.estimated_duration.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.difficulty_level.id_for_label }}" class="form-label">
+                                Difficulty Level
+                            </label>
+                            {{ form.difficulty_level }}
+                            {% if form.difficulty_level.errors %}
+                                <div class="text-danger small">{{ form.difficulty_level.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check mt-4">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Only active topics will be visible to students
+                            </div>
+                            {% if form.is_active.errors %}
+                                <div class="text-danger small">{{ form.is_active.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Section -->
+                    <div class="mb-4">
+                        <h6>Preview</h6>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="d-flex align-items-start">
+                                <div id="preview-level-icon" 
+                                     class="d-flex align-items-center justify-content-center me-3" 
+                                     style="width: 40px; height: 40px; background-color: #3B82F6; border-radius: 6px; color: white;">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 id="preview-title" class="mb-1">Topic Title</h6>
+                                            <p id="preview-description" class="mb-2 text-muted">Topic description will appear here</p>
+                                            <small class="text-muted">
+                                                <span id="preview-level">Class Level</span> • 
+                                                <span id="preview-difficulty">Difficulty</span> • 
+                                                <span id="preview-duration">30</span> min
+                                            </small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span id="preview-order" class="badge bg-secondary">1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_panel:topics' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Topics
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            Create Topic
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const levelSelect = document.getElementById('{{ form.class_level.id_for_label }}');
+    const titleInput = document.getElementById('{{ form.title.id_for_label }}');
+    const descriptionInput = document.getElementById('{{ form.description.id_for_label }}');
+    const durationInput = document.getElementById('{{ form.estimated_duration.id_for_label }}');
+    const difficultySelect = document.getElementById('{{ form.difficulty_level.id_for_label }}');
+    const orderInput = document.getElementById('{{ form.order.id_for_label }}');
+    
+    const previewTitle = document.getElementById('preview-title');
+    const previewDescription = document.getElementById('preview-description');
+    const previewLevel = document.getElementById('preview-level');
+    const previewDifficulty = document.getElementById('preview-difficulty');
+    const previewDuration = document.getElementById('preview-duration');
+    const previewOrder = document.getElementById('preview-order');
+    const previewIcon = document.getElementById('preview-level-icon');
+    
+    function updatePreview() {
+        // Update title
+        previewTitle.textContent = titleInput.value || 'Topic Title';
+        
+        // Update description
+        previewDescription.textContent = descriptionInput.value || 'Topic description will appear here';
+        
+        // Update level
+        const selectedLevel = levelSelect.options[levelSelect.selectedIndex];
+        previewLevel.textContent = selectedLevel.text || 'Class Level';
+        
+        // Update difficulty
+        const selectedDifficulty = difficultySelect.options[difficultySelect.selectedIndex];
+        previewDifficulty.textContent = selectedDifficulty.text || 'Difficulty';
+        
+        // Update duration
+        previewDuration.textContent = durationInput.value || '30';
+        
+        // Update order
+        previewOrder.textContent = orderInput.value || '1';
+    }
+    
+    // Add event listeners
+    levelSelect.addEventListener('change', updatePreview);
+    titleInput.addEventListener('input', updatePreview);
+    descriptionInput.addEventListener('input', updatePreview);
+    durationInput.addEventListener('input', updatePreview);
+    difficultySelect.addEventListener('change', updatePreview);
+    orderInput.addEventListener('input', updatePreview);
+    
+    // Initial preview update
+    updatePreview();
+});
+</script>
+{% endblock %}

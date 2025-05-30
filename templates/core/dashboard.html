@@ -1,0 +1,724 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Modern Clean Dashboard Styles */
+    .dashboard-container {
+        background: #f8fafc;
+        min-height: 100vh;
+        padding: 1rem 0;
+    }
+
+    .dashboard-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-section {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        color: #1f2937;
+        padding: 2rem;
+        position: relative;
+    }
+
+
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .hero-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .hero-text {
+        flex: 1;
+        min-width: 250px;
+        text-align: left;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .stat-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        min-width: 70px;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 0.25rem;
+        line-height: 1;
+        color: #1f2937;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        line-height: 1;
+    }
+
+    .continue-learning-btn {
+        background: #3b82f6;
+        border: 1px solid #3b82f6;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        min-width: 160px;
+    }
+
+    .continue-learning-btn:hover {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .subjects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .subject-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border-left: 4px solid #e2e8f0;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .subject-card.completed {
+        border-left-color: #10b981;
+        background: linear-gradient(to right, #f0fdf4, #ffffff);
+    }
+
+    .subject-card.in-progress {
+        border-left-color: #3b82f6;
+        background: linear-gradient(to right, #eff6ff, #ffffff);
+    }
+
+    .subject-card.not-started {
+        border-left-color: #6b7280;
+    }
+
+    .subject-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .subject-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .subject-info {
+        flex: 1;
+    }
+
+    .subject-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+    }
+
+    .subject-progress-text {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .progress-fill.completed {
+        background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    .subject-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .action-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .action-btn.primary {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+    }
+
+    .action-btn.primary:hover {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .action-btn.secondary {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+    }
+
+    .action-btn.secondary:hover {
+        background: #e5e7eb;
+        color: #374151;
+        text-decoration: none;
+    }
+
+    .action-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .recent-activity {
+        padding: 1.5rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        background: #f9fafb;
+        transition: all 0.3s ease;
+    }
+
+    .activity-item:hover {
+        background: #f3f4f6;
+    }
+
+    .activity-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-subtitle {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 640px) {
+        .dashboard-container {
+            padding: 0.5rem 0;
+        }
+
+        .hero-section {
+            padding: 1rem;
+        }
+
+        .hero-main {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hero-text {
+            text-align: center;
+            min-width: auto;
+        }
+
+        .hero-text h1 {
+            font-size: 1.75rem !important;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-text p {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-stats {
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .stat-card {
+            padding: 0.5rem 0.75rem;
+            min-width: 65px;
+            flex: 1;
+            max-width: 80px;
+        }
+
+        .stat-number {
+            font-size: 1.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+        }
+
+        .continue-learning-btn {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.8rem;
+            min-width: 140px;
+            margin-top: 0.5rem;
+        }
+
+        .subjects-grid {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .subject-card {
+            padding: 1rem;
+        }
+
+        .subject-actions {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            justify-content: center;
+        }
+    }
+
+    /* Level Selection Styles */
+    .professional-bg {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #581c87 100%);
+        min-height: 100vh;
+    }
+
+    .level-selection-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e5e7eb;
+    }
+
+    .level-option {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.25rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+        text-align: center;
+    }
+
+    .level-option:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .level-option.selected {
+        border-color: #2563eb;
+        background: #dbeafe;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .level-option.selected::after {
+        content: '✓';
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #2563eb;
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .level-number {
+        font-size: 1.875rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+    }
+
+    .level-name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+    }
+
+    .selected .level-number {
+        color: #2563eb;
+    }
+
+    .selected .level-name {
+        color: #1d4ed8;
+    }
+
+    .welcome-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.875rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+
+    .submit-button:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-button:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .info-note {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .info-note p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #0369a1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if needs_level_selection %}
+<!-- Level Selection (keep existing) -->
+<div class="professional-bg">
+    <div class="container mx-auto px-2 sm:px-4 py-8 sm:py-12">
+        <div class="max-w-4xl mx-auto">
+            <!-- Welcome Header -->
+            <div class="welcome-header">
+                <h1 class="welcome-title">
+                    Welcome to Mentora, {{ user.first_name }}!
+                </h1>
+                <p class="welcome-subtitle">
+                    To provide you with the most appropriate learning materials and track your progress effectively, please select your current class level.
+                </p>
+            </div>
+
+            <!-- Level Selection Form -->
+            <div class="level-selection-card p-6 sm:p-8">
+                <form method="post" id="levelForm">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+                        {% for level in class_levels %}
+                        <div class="level-option" data-level="{{ level.0 }}" onclick="selectLevel({{ level.0 }})">
+                            <div class="level-number">{{ level.0 }}</div>
+                            <div class="level-name">{{ level.1 }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <input type="hidden" name="class_level" id="selectedLevel" value="">
+                    <button type="submit" class="submit-button" id="submitBtn" disabled>
+                        Continue to Dashboard
+                    </button>
+
+                    <div class="info-note">
+                        <p>
+                            <i class="fas fa-info-circle mr-2"></i>
+                            You can change your class level later in your profile settings.
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectLevel(level) {
+    // Remove selected class from all options
+    document.querySelectorAll('.level-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+
+    // Add selected class to clicked option
+    event.target.closest('.level-option').classList.add('selected');
+
+    // Set hidden input value
+    document.getElementById('selectedLevel').value = level;
+
+    // Enable submit button
+    document.getElementById('submitBtn').disabled = false;
+}
+</script>
+
+{% else %}
+<!-- Modern Dashboard -->
+<div class="dashboard-container">
+    <div class="container mx-auto px-4 max-w-7xl">
+
+        <!-- Clean Hero Section -->
+        <div class="dashboard-card">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <div class="hero-main">
+                        <div class="hero-text">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-user text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+                                        Welcome back, {{ user.first_name }}!
+                                    </h1>
+                                    <p class="text-gray-600">{{ user_class_level_name }} • Ready to continue learning?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="hero-stats">
+                            <div class="stat-card">
+                                <div class="stat-number">{{ total_subjects }}</div>
+                                <div class="stat-label">Subjects</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">{{ completed_subjects }}</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">{{ total_topics }}</div>
+                                <div class="stat-label">Topics</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">{{ completed_topics }}</div>
+                                <div class="stat-label">Finished</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Continue Learning Button -->
+                    {% if next_learning_path %}
+                    <div class="mt-6">
+                        <a href="{{ next_learning_path.url }}" class="continue-learning-btn">
+                            <i class="fas fa-play mr-2"></i>
+                            {{ next_learning_path.title }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects Grid -->
+        <div class="dashboard-card">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-graduation-cap mr-3 text-blue-600"></i>
+                    Your {{ user_class_level_name }} Subjects
+                </h2>
+            </div>
+
+            <div class="subjects-grid">
+                {% for subject_data in current_grade_subjects %}
+                <div class="subject-card {% if subject_data.is_completed %}completed{% elif subject_data.completed_topics > 0 %}in-progress{% else %}not-started{% endif %}">
+                    <div class="subject-header">
+                        <div class="subject-icon" style="background: {{ subject_data.subject.color }}20; color: {{ subject_data.subject.color }};">
+                            {{ subject_data.subject.icon }}
+                        </div>
+                        <div class="subject-info">
+                            <h3 class="subject-name">{{ subject_data.subject.name }}</h3>
+                            <p class="subject-progress-text">
+                                {{ subject_data.completed_topics }}/{{ subject_data.topics_count }} topics completed
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-bar">
+                        <div class="progress-fill {% if subject_data.is_completed %}completed{% endif %}"
+                             style="width: {{ subject_data.completion_percentage }}%"></div>
+                    </div>
+
+                    <!-- Subject Actions -->
+                    <div class="subject-actions">
+                        {% if subject_data.next_topic %}
+                            <a href="{{ subject_data.next_topic_url }}" class="action-btn primary">
+                                <i class="fas fa-play mr-2"></i>
+                                {% if subject_data.completed_topics == 0 %}Start Learning{% else %}Continue{% endif %}
+                            </a>
+                        {% else %}
+                            <span class="action-btn primary" style="opacity: 0.5;">
+                                <i class="fas fa-check mr-2"></i>
+                                Completed
+                            </span>
+                        {% endif %}
+
+                        <a href="{% url 'subjects:level_detail' subject_data.subject.id subject_data.class_level.id %}" class="action-btn secondary">
+                            <i class="fas fa-list mr-2"></i>
+                            View Topics
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center py-8">
+                    <i class="fas fa-book text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600">No subjects available for your current grade.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        {% if recent_activity %}
+        <div class="dashboard-card">
+            <div class="recent-activity">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-clock mr-3 text-green-600"></i>
+                    Recent Activity
+                </h2>
+
+                {% for activity in recent_activity %}
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: {{ activity.topic.class_level.subject.color }}20; color: {{ activity.topic.class_level.subject.color }};">
+                        {{ activity.topic.class_level.subject.icon }}
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">{{ activity.topic.title }}</div>
+                        <div class="activity-subtitle">
+                            {{ activity.topic.class_level.subject.name }} •
+                            {% if activity.is_completed %}
+                                <span class="text-green-600">Completed</span>
+                            {% else %}
+                                <span class="text-blue-600">In Progress</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endif %}
+{% endblock %}

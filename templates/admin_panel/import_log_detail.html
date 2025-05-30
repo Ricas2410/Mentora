@@ -1,0 +1,320 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Log Details{% endblock %}
+{% block page_title %}Import Log Details{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="mb-3">
+    <a href="{% url 'admin_panel:import_logs' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>
+        Back to Logs
+    </a>
+</div>
+
+<!-- Import Summary -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Import Summary
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Import Type:</strong></td>
+                                <td><span class="badge bg-info">{{ log.get_import_type_display }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>File Name:</strong></td>
+                                <td>{{ log.file_name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status:</strong></td>
+                                <td>
+                                    {% if log.status == 'completed' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>
+                                            Completed
+                                        </span>
+                                    {% elif log.status == 'partial' %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            Partial
+                                        </span>
+                                    {% elif log.status == 'failed' %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>
+                                            Failed
+                                        </span>
+                                    {% elif log.status == 'processing' %}
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-spinner fa-spin me-1"></i>
+                                            Processing
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ log.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Started:</strong></td>
+                                <td>{{ log.started_at|date:"F d, Y H:i:s" }}</td>
+                            </tr>
+                            {% if log.completed_at %}
+                            <tr>
+                                <td><strong>Completed:</strong></td>
+                                <td>{{ log.completed_at|date:"F d, Y H:i:s" }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td><strong>Imported By:</strong></td>
+                                <td>
+                                    {% if log.imported_by %}
+                                        {{ log.imported_by.full_name }}
+                                    {% else %}
+                                        <em class="text-muted">Unknown</em>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Total Rows:</strong></td>
+                                <td><span class="badge bg-primary">{{ log.total_rows }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Successful:</strong></td>
+                                <td><span class="badge bg-success">{{ log.successful_rows }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Failed:</strong></td>
+                                <td><span class="badge bg-danger">{{ log.failed_rows }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Success Rate:</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress me-2" style="width: 100px; height: 20px;">
+                                            <div class="progress-bar
+                                                {% if log.status == 'completed' %}bg-success
+                                                {% elif log.status == 'partial' %}bg-warning
+                                                {% elif log.status == 'failed' %}bg-danger
+                                                {% else %}bg-primary{% endif %}"
+                                                style="width: {{ log.success_rate }}%"></div>
+                                        </div>
+                                        <strong>{{ log.success_rate|floatformat:1 }}%</strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tools me-2"></i>
+                    Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    {% if log.status == 'failed' or log.status == 'partial' %}
+                    <a href="{% url 'admin_panel:csv_import' %}" class="btn btn-primary">
+                        <i class="fas fa-redo me-2"></i>
+                        Retry Import
+                    </a>
+                    {% endif %}
+
+                    <button type="button" class="btn btn-outline-danger"
+                            onclick="deleteLog('{{ log.id }}', '{{ log.file_name }}')">
+                        <i class="fas fa-trash me-2"></i>
+                        Delete Log
+                    </button>
+
+                    {% if errors %}
+                    <button type="button" class="btn btn-outline-info" onclick="downloadErrors()">
+                        <i class="fas fa-download me-2"></i>
+                        Download Errors
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Details -->
+{% if errors %}
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                Error Details ({{ errors|length }} errors)
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" onclick="toggleAllErrors()">
+                <i class="fas fa-expand-alt me-1"></i>
+                <span id="toggleText">Expand All</span>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Import Issues Found:</strong> The following errors occurred during the import process.
+            Review each error to understand what went wrong and fix your CSV file accordingly.
+        </div>
+
+        <div class="accordion" id="errorAccordion">
+            {% for error in errors %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}"
+                            aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                        <div class="d-flex align-items-center w-100">
+                            <span class="badge bg-danger me-2">Error {{ forloop.counter }}</span>
+                            <span class="text-truncate">{{ error|truncatechars:80 }}</span>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                     aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#errorAccordion">
+                    <div class="accordion-body">
+                        <div class="bg-light p-3 rounded">
+                            <code class="text-danger">{{ error }}</code>
+                        </div>
+
+                        <!-- Error Analysis -->
+                        {% if "Missing required fields" in error %}
+                        <div class="mt-3 alert alert-info">
+                            <strong>Solution:</strong> Make sure all required fields are present in your CSV file.
+                            Download the template to see the correct format.
+                        </div>
+                        {% elif "not found" in error %}
+                        <div class="mt-3 alert alert-info">
+                            <strong>Solution:</strong> Create the referenced subject, class level, or topic first,
+                            or check the spelling in your CSV file.
+                        </div>
+                        {% elif "Invalid question type" in error %}
+                        <div class="mt-3 alert alert-info">
+                            <strong>Solution:</strong> Use only these question types: multiple_choice, fill_blank, true_false, short_answer
+                        </div>
+                        {% elif "choice" in error %}
+                        <div class="mt-3 alert alert-info">
+                            <strong>Solution:</strong> For multiple choice questions, provide choices A, B, C, D and specify the correct answer.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+        <h5 class="text-success">No Errors Found</h5>
+        <p class="text-muted">This import completed successfully without any errors.</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Import Log</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the import log for <strong id="deleteFileName"></strong>?</p>
+                <p class="text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" id="deleteForm" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Log</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function deleteLog(logId, fileName) {
+    document.getElementById('deleteFileName').textContent = fileName;
+    document.getElementById('deleteForm').action = `/my-admin/logs/${logId}/delete/`;
+
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+function toggleAllErrors() {
+    const accordionItems = document.querySelectorAll('#errorAccordion .accordion-collapse');
+    const toggleText = document.getElementById('toggleText');
+    const isExpanded = toggleText.textContent === 'Collapse All';
+
+    accordionItems.forEach(item => {
+        if (isExpanded) {
+            bootstrap.Collapse.getInstance(item)?.hide();
+        } else {
+            new bootstrap.Collapse(item, { show: true });
+        }
+    });
+
+    toggleText.textContent = isExpanded ? 'Expand All' : 'Collapse All';
+}
+
+function downloadErrors() {
+    const errors = [
+        {% for error in errors %}
+        "{{ error|escapejs }}",
+        {% endfor %}
+    ];
+
+    const content = "Import Errors for {{ log.file_name }}\n" +
+                   "Generated on: {{ log.started_at|date:'F d, Y H:i:s' }}\n" +
+                   "Total Errors: {{ errors|length }}\n\n" +
+                   errors.map((error, index) => `Error ${index + 1}: ${error}`).join('\n\n');
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'import_errors_{{ log.id }}.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// Auto-refresh for processing logs
+document.addEventListener('DOMContentLoaded', function() {
+    {% if log.status == 'processing' %}
+    setTimeout(function() {
+        window.location.reload();
+    }, 5000); // Refresh every 5 seconds for processing logs
+    {% endif %}
+});
+</script>
+{% endblock %}

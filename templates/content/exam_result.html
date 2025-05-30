@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% block title %}Exam Results - {{ subject.name }} - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .results-container {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        padding: 2rem 1rem;
+    }
+
+    .results-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        border: 1px solid #e5e7eb;
+    }
+
+    .score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .score-excellent {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    .score-good {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+        color: white;
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    }
+
+    .score-fair {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        color: white;
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+    }
+
+    .score-poor {
+        background: linear-gradient(135deg, #EF4444, #DC2626);
+        color: white;
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    }
+
+    .performance-badge {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.875rem;
+    }
+
+    .badge-excellent {
+        background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+        color: #065F46;
+        border: 2px solid #10B981;
+    }
+
+    .badge-good {
+        background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+        color: #1E3A8A;
+        border: 2px solid #3B82F6;
+    }
+
+    .badge-fair {
+        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        color: #92400E;
+        border: 2px solid #F59E0B;
+    }
+
+    .badge-poor {
+        background: linear-gradient(135deg, #FEE2E2, #FECACA);
+        color: #991B1B;
+        border: 2px solid #EF4444;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.875rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #374151;
+        border-color: #D1D5DB;
+    }
+
+    .btn-secondary:hover {
+        border-color: #9CA3AF;
+        background: #F9FAFB;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .stat-card {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #1F2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6B7280;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .slide-up {
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from { 
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .results-container {
+            padding: 1rem 0.5rem;
+        }
+        
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            font-size: 1.5rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center text-gray-800 mb-8 fade-in">
+            <h1 class="text-3xl font-bold mb-2">Final Exam Complete!</h1>
+            <p class="text-gray-600 text-lg">{{ subject.name }} - {{ level.name }}</p>
+        </div>
+
+        <!-- Main Results Card -->
+        <div class="results-card p-6 text-center mb-6 slide-up">
+            <!-- Score Circle -->
+            <div class="score-circle {% if exam.percentage >= 90 %}score-excellent{% elif exam.percentage >= 70 %}score-good{% elif exam.percentage >= 60 %}score-fair{% else %}score-poor{% endif %} mb-6">
+                <span>{{ exam.percentage|floatformat:0 }}%</span>
+            </div>
+
+            <!-- Performance Badge -->
+            <div class="mb-6">
+                <span class="performance-badge {% if exam.percentage >= 90 %}badge-excellent{% elif exam.percentage >= 70 %}badge-good{% elif exam.percentage >= 60 %}badge-fair{% else %}badge-poor{% endif %}">
+                    {% if exam.percentage >= 90 %}
+                        Excellent!
+                    {% elif exam.percentage >= 70 %}
+                        Good Job!
+                    {% elif exam.percentage >= 60 %}
+                        Well Done!
+                    {% else %}
+                        Keep Trying!
+                    {% endif %}
+                </span>
+            </div>
+
+            <!-- Pass/Fail Status -->
+            <div class="mb-6">
+                {% if exam.passed %}
+                    <div class="text-green-600 text-xl font-bold mb-2">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        PASSED
+                    </div>
+                    <p class="text-gray-600">
+                        Congratulations! You have successfully completed the {{ level.name }} final exam.
+                    </p>
+                {% else %}
+                    <div class="text-red-600 text-xl font-bold mb-2">
+                        <i class="fas fa-times-circle mr-2"></i>
+                        NOT PASSED
+                    </div>
+                    <p class="text-gray-600">
+                        You need {{ exam.pass_percentage }}% to pass. Don't worry, you can retake the exam after reviewing the material.
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Detailed Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{ exam.score }}</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ exam.total_points }}</div>
+                    <div class="stat-label">Total Questions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ exam.pass_percentage }}%</div>
+                    <div class="stat-label">Required to Pass</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ exam.attempt_number }}</div>
+                    <div class="stat-label">Attempt Number</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="results-card p-6 slide-up">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">What's Next?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% if exam.passed %}
+                    <a href="{% url 'core:dashboard' %}" class="action-btn btn-success">
+                        <i class="fas fa-trophy mr-2"></i>
+                        View Dashboard
+                    </a>
+                    <a href="{% url 'subjects:simple_learn' %}" class="action-btn btn-primary">
+                        <i class="fas fa-graduation-cap mr-2"></i>
+                        Continue Learning
+                    </a>
+                {% else %}
+                    <a href="{% url 'subjects:topics' subject.id level.id %}" class="action-btn btn-primary">
+                        <i class="fas fa-book-open mr-2"></i>
+                        Review Material
+                    </a>
+                    <a href="{% url 'content:exam' level.id %}" class="action-btn btn-secondary">
+                        <i class="fas fa-redo mr-2"></i>
+                        Retake Exam
+                    </a>
+                {% endif %}
+                
+                <a href="{% url 'subjects:topics' subject.id level.id %}" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Topics
+                </a>
+            </div>
+        </div>
+
+        <!-- Encouragement Message -->
+        <div class="results-card p-6 text-center slide-up">
+            {% if exam.passed %}
+                <div class="text-green-600 mb-4">
+                    <i class="fas fa-star text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Outstanding Achievement!</h3>
+                <p class="text-gray-600">
+                    You have demonstrated mastery of {{ level.name }} concepts. Keep up the excellent work as you continue your learning journey!
+                </p>
+            {% else %}
+                <div class="text-blue-600 mb-4">
+                    <i class="fas fa-lightbulb text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Keep Learning!</h3>
+                <p class="text-gray-600">
+                    Every attempt is a step forward. Review the topics you found challenging and try again. You've got this!
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Add some interactive animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate score circle
+    const scoreCircle = document.querySelector('.score-circle');
+    if (scoreCircle) {
+        setTimeout(() => {
+            scoreCircle.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                scoreCircle.style.transform = 'scale(1)';
+            }, 200);
+        }, 500);
+    }
+    
+    // Animate stats
+    const statValues = document.querySelectorAll('.stat-value');
+    statValues.forEach((stat, index) => {
+        const finalValue = parseInt(stat.textContent);
+        let currentValue = 0;
+        const increment = finalValue / 30;
+        
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= finalValue) {
+                stat.textContent = finalValue + (stat.textContent.includes('%') ? '%' : '');
+                clearInterval(timer);
+            } else {
+                stat.textContent = Math.floor(currentValue) + (stat.textContent.includes('%') ? '%' : '');
+            }
+        }, 50);
+    });
+});
+</script>
+{% endblock %}

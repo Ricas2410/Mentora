@@ -1,0 +1,299 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Manage Topics{% endblock %}
+{% block page_title %}Manage Topics{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">
+        <i class="fas fa-list me-2"></i>
+        Topics Management
+    </h4>
+    <a href="{% url 'admin_panel:create_topic' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>
+        Add New Topic
+    </a>
+</div>
+
+<!-- Filter Section -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label">Filter by Subject</label>
+                <select class="form-select" id="subjectFilter">
+                    <option value="">All Subjects</option>
+                    <!-- Will be populated dynamically -->
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Filter by Level</label>
+                <select class="form-select" id="levelFilter">
+                    <option value="">All Levels</option>
+                    <!-- Will be populated dynamically -->
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Search Topics</label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search by title...">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Topics Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">All Topics</h5>
+    </div>
+    <div class="card-body">
+        {% if topics %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Level</th>
+                            <th>Topic Title</th>
+                            <th>Description</th>
+                            <th>Order</th>
+                            <th>Duration</th>
+                            <th>Difficulty</th>
+                            <th>Questions</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for topic in topics %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center justify-content-center me-2"
+                                             style="width: 25px; height: 25px; background-color: {{ topic.class_level.subject.color }}; border-radius: 4px; color: white;">
+                                            <i class="fas {{ topic.class_level.subject.icon }} fa-xs"></i>
+                                        </div>
+                                        <span class="small">{{ topic.class_level.subject.name }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">{{ topic.class_level.name }}</span>
+                                </td>
+                                <td>
+                                    <strong>{{ topic.title }}</strong>
+                                </td>
+                                <td>
+                                    <span class="text-muted small">{{ topic.description|truncatechars:40 }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ topic.order }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted small">{{ topic.estimated_duration }} min</span>
+                                </td>
+                                <td>
+                                    {% if topic.difficulty_level == 'beginner' %}
+                                        <span class="badge bg-success">Beginner</span>
+                                    {% elif topic.difficulty_level == 'intermediate' %}
+                                        <span class="badge bg-warning">Intermediate</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Advanced</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ topic.questions_count }}</span>
+                                </td>
+                                <td>
+                                    {% if topic.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'admin_panel:edit_topic' topic.id %}"
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'admin_panel:questions' %}?topic={{ topic.id }}"
+                                           class="btn btn-sm btn-outline-info"
+                                           title="View Questions">
+                                            <i class="fas fa-question-circle"></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Delete"
+                                                onclick="confirmDelete('{{ topic.title }}', '{% url 'admin_panel:delete_topic' topic.id %}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if topics.has_other_pages %}
+                <nav aria-label="Topics pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if topics.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ topics.previous_page_number }}">Previous</a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in topics.paginator.page_range %}
+                            {% if topics.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > topics.number|add:'-3' and num < topics.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if topics.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ topics.next_page_number }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-list fs-1 text-muted mb-3"></i>
+                <h5 class="text-muted">No topics found</h5>
+                <p class="text-muted">Topics will appear here once you create class levels and add content.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'admin_panel:subjects' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-book me-2"></i>
+                        Manage Subjects
+                    </a>
+                    <a href="{% url 'admin_panel:levels' %}" class="btn btn-outline-success">
+                        <i class="fas fa-layer-group me-2"></i>
+                        Manage Levels
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-primary">{{ topics|length }}</h4>
+                <p class="mb-0">Total Topics</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-success">
+                    {% for topic in topics %}
+                        {% if topic.is_active %}{{ forloop.counter0|add:1 }}{% endif %}
+                    {% empty %}0{% endfor %}
+                </h4>
+                <p class="mb-0">Active Topics</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-info">
+                    {% for topic in topics %}{{ topic.questions_count|add:0 }}{% empty %}0{% endfor %}
+                </h4>
+                <p class="mb-0">Total Questions</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-warning">
+                    {% for topic in topics %}{{ topic.estimated_duration|add:0 }}{% empty %}0{% endfor %}
+                </h4>
+                <p class="mb-0">Total Duration (min)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the topic "<span id="deleteItemName"></span>"?</p>
+                <p class="text-danger"><strong>Warning:</strong> This will also delete all associated questions.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Simple client-side filtering (for demo purposes)
+    const searchInput = document.getElementById('searchInput');
+    const subjectFilter = document.getElementById('subjectFilter');
+    const levelFilter = document.getElementById('levelFilter');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedSubject = subjectFilter.value;
+        const selectedLevel = levelFilter.value;
+
+        tableRows.forEach(row => {
+            const title = row.cells[2].textContent.toLowerCase();
+            const subject = row.cells[0].textContent.toLowerCase();
+            const level = row.cells[1].textContent.toLowerCase();
+
+            const matchesSearch = title.includes(searchTerm);
+            const matchesSubject = !selectedSubject || subject.includes(selectedSubject.toLowerCase());
+            const matchesLevel = !selectedLevel || level.includes(selectedLevel.toLowerCase());
+
+            if (matchesSearch && matchesSubject && matchesLevel) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    subjectFilter.addEventListener('change', filterTable);
+    levelFilter.addEventListener('change', filterTable);
+});
+
+function confirmDelete(itemName, deleteUrl) {
+    document.getElementById('deleteItemName').textContent = itemName;
+    document.getElementById('deleteForm').action = deleteUrl;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}

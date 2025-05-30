@@ -1,0 +1,226 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Edit Subject{% endblock %}
+{% block page_title %}Edit Subject: {{ object.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    Edit Subject: {{ object.name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                Subject Name <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.icon.id_for_label }}" class="form-label">
+                                Icon Class
+                            </label>
+                            {{ form.icon }}
+                            <div class="form-text">
+                                Use FontAwesome icon classes (e.g., fa-book, fa-calculator, fa-globe)
+                            </div>
+                            {% if form.icon.errors %}
+                                <div class="text-danger small">{{ form.icon.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                Description <span class="text-danger">*</span>
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.color.id_for_label }}" class="form-label">
+                                Color
+                            </label>
+                            {{ form.color }}
+                            <div class="form-text">
+                                Choose a theme color for this subject
+                            </div>
+                            {% if form.color.errors %}
+                                <div class="text-danger small">{{ form.color.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Only active subjects will be visible to students
+                            </div>
+                            {% if form.is_active.errors %}
+                                <div class="text-danger small">{{ form.is_active.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Current Stats -->
+                    <div class="mb-4">
+                        <h6>Current Statistics</h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-primary mb-1">{{ object.classlevels.count }}</h4>
+                                    <small class="text-muted">Class Levels</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-info mb-1">{{ object.classlevels.all|length }}</h4>
+                                    <small class="text-muted">Topics</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-success mb-1">0</h4>
+                                    <small class="text-muted">Questions</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-warning mb-1">0</h4>
+                                    <small class="text-muted">Students</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="mb-4">
+                        <h6>Preview</h6>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="d-flex align-items-center">
+                                <div id="preview-icon"
+                                     class="d-flex align-items-center justify-content-center me-3"
+                                     style="width: 50px; height: 50px; background-color: {{ object.color }}; border-radius: 8px; color: white;">
+                                    <i class="fas {{ object.icon }}"></i>
+                                </div>
+                                <div>
+                                    <h6 id="preview-name" class="mb-1">{{ object.name }}</h6>
+                                    <p id="preview-description" class="mb-0 text-muted">{{ object.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_panel:subjects' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Subjects
+                        </a>
+                        <div>
+                            <button type="button"
+                                    class="btn btn-danger me-2"
+                                    onclick="confirmDelete('{{ object.name }}', '{% url 'admin_panel:delete_subject' object.id %}')">
+                                <i class="fas fa-trash me-2"></i>
+                                Delete
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                Update Subject
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the subject "<span id="deleteItemName"></span>"?</p>
+                <p class="text-danger"><strong>Warning:</strong> This will also delete all associated levels, topics, and questions.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.getElementById('{{ form.name.id_for_label }}');
+    const descriptionInput = document.getElementById('{{ form.description.id_for_label }}');
+    const iconInput = document.getElementById('{{ form.icon.id_for_label }}');
+    const colorInput = document.getElementById('{{ form.color.id_for_label }}');
+
+    const previewName = document.getElementById('preview-name');
+    const previewDescription = document.getElementById('preview-description');
+    const previewIcon = document.getElementById('preview-icon');
+    const previewIconElement = previewIcon.querySelector('i');
+
+    function updatePreview() {
+        // Update name
+        previewName.textContent = nameInput.value || 'Subject Name';
+
+        // Update description
+        previewDescription.textContent = descriptionInput.value || 'Subject description will appear here';
+
+        // Update icon
+        const iconClass = iconInput.value || 'fa-book';
+        previewIconElement.className = `fas ${iconClass}`;
+
+        // Update color
+        const color = colorInput.value || '#3B82F6';
+        previewIcon.style.backgroundColor = color;
+    }
+
+    // Add event listeners
+    nameInput.addEventListener('input', updatePreview);
+    descriptionInput.addEventListener('input', updatePreview);
+    iconInput.addEventListener('input', updatePreview);
+    colorInput.addEventListener('input', updatePreview);
+});
+
+function confirmDelete(itemName, deleteUrl) {
+    document.getElementById('deleteItemName').textContent = itemName;
+    document.getElementById('deleteForm').action = deleteUrl;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}

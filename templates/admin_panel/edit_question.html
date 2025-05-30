@@ -1,0 +1,258 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Edit Question{% endblock %}
+{% block page_title %}Edit Question{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    Edit Question
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Question Details -->
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.topic.id_for_label }}" class="form-label">
+                                Topic <span class="text-danger">*</span>
+                            </label>
+                            {{ form.topic }}
+                            {% if form.topic.errors %}
+                                <div class="text-danger small">{{ form.topic.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.question_type.id_for_label }}" class="form-label">
+                                Question Type <span class="text-danger">*</span>
+                            </label>
+                            {{ form.question_type }}
+                            {% if form.question_type.errors %}
+                                <div class="text-danger small">{{ form.question_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.question_text.id_for_label }}" class="form-label">
+                            Question Text <span class="text-danger">*</span>
+                        </label>
+                        {{ form.question_text }}
+                        {% if form.question_text.errors %}
+                            <div class="text-danger small">{{ form.question_text.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.difficulty.id_for_label }}" class="form-label">
+                                Difficulty
+                            </label>
+                            {{ form.difficulty }}
+                            {% if form.difficulty.errors %}
+                                <div class="text-danger small">{{ form.difficulty.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.points.id_for_label }}" class="form-label">
+                                Points
+                            </label>
+                            {{ form.points }}
+                            {% if form.points.errors %}
+                                <div class="text-danger small">{{ form.points.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">
+                                Question Image (Optional)
+                            </label>
+                            {{ form.image }}
+                            {% if object.image %}
+                                <div class="mt-2">
+                                    <small class="text-muted">Current: {{ object.image.name }}</small>
+                                </div>
+                            {% endif %}
+                            {% if form.image.errors %}
+                                <div class="text-danger small">{{ form.image.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.explanation.id_for_label }}" class="form-label">
+                            Explanation
+                        </label>
+                        {{ form.explanation }}
+                        <div class="form-text">
+                            Explain why the correct answer is right
+                        </div>
+                        {% if form.explanation.errors %}
+                            <div class="text-danger small">{{ form.explanation.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Answer Choices (for multiple choice) -->
+                    <div id="answer-choices-section" style="display: none;">
+                        <h6 class="border-bottom pb-2 mb-3">Answer Choices</h6>
+                        {{ formset.management_form }}
+                        <div id="answer-choices-container">
+                            {% for form in formset %}
+                                <div class="answer-choice-form mb-3">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <label class="form-label">Choice {{ forloop.counter }}</label>
+                                            {{ form.choice_text }}
+                                            {% if form.choice_text.errors %}
+                                                <div class="text-danger small">{{ form.choice_text.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <div class="form-check">
+                                                {{ form.is_correct }}
+                                                <label class="form-check-label">Correct</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{ form.id }}
+                                    {% if form.DELETE %}
+                                        <div class="form-check mt-2">
+                                            {{ form.DELETE }}
+                                            <label class="form-check-label text-danger">Delete this choice</label>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Only active questions will be used in quizzes
+                            </div>
+                            {% if form.is_active.errors %}
+                                <div class="text-danger small">{{ form.is_active.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Current Statistics -->
+                    {% if object %}
+                    <div class="mb-4">
+                        <h6>Question Statistics</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-primary mb-1">0</h4>
+                                    <small class="text-muted">Times Used</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-success mb-1">0%</h4>
+                                    <small class="text-muted">Correct Rate</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-info mb-1">{{ object.created_at|date:"M d, Y" }}</h4>
+                                    <small class="text-muted">Created</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_panel:questions' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Questions
+                        </a>
+                        <div>
+                            {% if object %}
+                                <button type="button" 
+                                        class="btn btn-danger me-2"
+                                        onclick="confirmDelete('{{ object.question_text|truncatechars:30 }}', '{% url 'admin_panel:delete_question' object.id %}')">
+                                    <i class="fas fa-trash me-2"></i>
+                                    Delete
+                                </button>
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                {% if object %}Update{% else %}Create{% endif %} Question
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the question "<span id="deleteItemName"></span>"?</p>
+                <p class="text-danger"><strong>Warning:</strong> This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const questionTypeSelect = document.getElementById('{{ form.question_type.id_for_label }}');
+    const answerChoicesSection = document.getElementById('answer-choices-section');
+    
+    function toggleAnswerChoices() {
+        if (questionTypeSelect.value === 'multiple_choice') {
+            answerChoicesSection.style.display = 'block';
+        } else {
+            answerChoicesSection.style.display = 'none';
+        }
+    }
+    
+    // Event listeners
+    questionTypeSelect.addEventListener('change', toggleAnswerChoices);
+    
+    // Initial setup
+    toggleAnswerChoices();
+});
+
+function confirmDelete(itemName, deleteUrl) {
+    document.getElementById('deleteItemName').textContent = itemName;
+    document.getElementById('deleteForm').action = deleteUrl;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}

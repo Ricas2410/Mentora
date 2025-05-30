@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+
+{% block title %}Practice Quizzes - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Mobile-first design with proper contrast */
+    .quiz-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        min-height: 200px;
+    }
+
+    .quiz-card:hover {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.15), 0 8px 8px -5px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Text clamp for descriptions */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Cute animations */
+    @keyframes bounce-in {
+        0% { transform: scale(0.8); opacity: 0; }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .quiz-card {
+        animation: bounce-in 0.5s ease-out;
+    }
+
+    .quiz-card:nth-child(1) { animation-delay: 0.1s; }
+    .quiz-card:nth-child(2) { animation-delay: 0.2s; }
+    .quiz-card:nth-child(3) { animation-delay: 0.3s; }
+    .quiz-card:nth-child(4) { animation-delay: 0.4s; }
+    .quiz-card:nth-child(5) { animation-delay: 0.5s; }
+    .quiz-card:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Ensure excellent text contrast for accessibility */
+    .text-white {
+        color: #ffffff !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        font-weight: 700;
+    }
+
+    .text-gray-700 {
+        color: #374151 !important;
+        font-weight: 600;
+    }
+
+    .text-gray-600 {
+        color: #4b5563 !important;
+        font-weight: 500;
+    }
+
+    .gradient-border {
+        position: relative;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 2px;
+    }
+
+    .gradient-border::before {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        background: white;
+        border-radius: 14px;
+        z-index: -1;
+    }
+
+    /* Responsive grid adjustments */
+    @media (max-width: 768px) {
+        .topic-card {
+            border-radius: 12px;
+        }
+
+        /* Stack cards on mobile */
+        .grid.lg\\:grid-cols-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+        /* 2 columns on tablet */
+        .grid.lg\\:grid-cols-3 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Animation for status badges */
+    .status-badge {
+        animation: fadeInScale 0.5s ease-out;
+    }
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Grade selection cards */
+    .grade-card {
+        transition: all 0.3s ease;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .grade-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Tooltip styles */
+    [data-tooltip] {
+        position: relative;
+    }
+
+    [data-tooltip]:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        z-index: 10;
+        margin-bottom: 5px;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    [data-tooltip]:hover::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #1f2937;
+        z-index: 10;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Clean Header Section -->
+    <div class="bg-white border-b border-gray-200 py-6 sm:py-8">
+        <div class="container mx-auto px-3 sm:px-4">
+            <div class="text-center">
+                <h1 class="text-2xl sm:text-3xl font-bold mb-2 text-gray-900">
+                    <i class="fas fa-brain mr-2 text-blue-600"></i>
+                    Practice Quizzes
+                </h1>
+                <p class="text-sm sm:text-base text-gray-600 mb-4">
+                    Test your knowledge and track your progress
+                </p>
+
+                {% if user.is_authenticated %}
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-3 sm:p-4 inline-block">
+                    <div class="flex items-center space-x-4 sm:space-x-6 text-sm sm:text-base">
+                        <div class="text-center">
+                            <div class="text-xl sm:text-2xl font-bold text-gray-900">Grade {{ user.current_class_level|default:1 }}</div>
+                            <div class="text-xs text-gray-600">Your Level</div>
+                        </div>
+                        <div class="w-px h-8 bg-gray-300"></div>
+                        <div class="text-center">
+                            <div class="text-xl sm:text-2xl font-bold text-gray-900">{{ current_grade_subjects|length }}</div>
+                            <div class="text-xs text-gray-600">Subjects</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div class="max-w-6xl mx-auto">
+
+            {% if not user.is_authenticated %}
+            <!-- Login Prompt for Visitors -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 sm:p-8 mb-8 text-center">
+                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-info-circle text-yellow-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Sign in to Take Quizzes</h3>
+                <p class="text-gray-600 mb-4">Create a free account to take quizzes and track your progress.</p>
+                <a href="{% url 'users:login' %}" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors inline-flex items-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In to Continue
+                </a>
+            </div>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            {% if current_grade_subjects %}
+            <!-- Subject Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {% for subject_data in current_grade_subjects %}
+                <div class="quiz-card bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 overflow-hidden {% if subject_data.is_completed %}opacity-75{% endif %}">
+                    <!-- Clean Subject Header -->
+                    <div class="relative">
+                        <div class="p-6 bg-gray-50 border-b border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4 flex-1 min-w-0">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="{{ subject_data.subject.icon|default:'fas fa-book' }} text-xl text-blue-600"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-gray-900 font-bold text-lg sm:text-xl truncate">{{ subject_data.subject.name }}</h3>
+                                        <p class="text-gray-600 text-sm">{{ subject_data.class_level.name }}</p>
+                                    </div>
+                                </div>
+                                <!-- Completion Badge -->
+                                {% if subject_data.is_completed %}
+                                <div class="flex-shrink-0">
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                                        <i class="fas fa-check mr-1"></i>Complete
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subject Content -->
+                    <div class="p-6">
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Progress</span>
+                                <span class="text-sm text-gray-600">{{ subject_data.completion_percentage }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {{ subject_data.completion_percentage }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="flex items-center justify-between mb-4 text-sm text-gray-600">
+                            <div class="text-center">
+                                <div class="font-semibold text-gray-900">{{ subject_data.completed_topics }}</div>
+                                <div>Completed</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-semibold text-gray-900">{{ subject_data.topics_with_questions }}</div>
+                                <div>Total Topics</div>
+                            </div>
+                        </div>
+
+                        {% if subject_data.subject.description %}
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ subject_data.subject.description }}</p>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3">
+                            <a href="{% url 'subjects:quiz_topics' user_class_level subject_data.subject.id %}"
+                               class="w-full {% if subject_data.is_completed %}bg-gray-600 hover:bg-gray-700{% else %}bg-blue-600 hover:bg-blue-700{% endif %} text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center group">
+                                <i class="fas fa-{% if subject_data.is_completed %}check{% else %}play{% endif %} mr-2 group-hover:scale-110 transition-transform"></i>
+                                {% if subject_data.is_completed %}Review Quizzes{% else %}Start Quizzes{% endif %}
+                            </a>
+
+                            <!-- Final Exam Button -->
+                            {% if subject_data.is_completed %}
+                                <a href="{% url 'content:exam' subject_data.class_level.id %}"
+                                   class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center group">
+                                    <i class="fas fa-graduation-cap mr-2 group-hover:scale-110 transition-transform"></i>
+                                    Take Final Exam
+                                </a>
+                            {% else %}
+                                <div class="relative">
+                                    <button disabled
+                                            class="w-full bg-gray-300 text-gray-500 py-3 px-4 rounded-lg font-semibold cursor-not-allowed flex items-center justify-center"
+                                            data-tooltip="Complete all quizzes before taking the final exam">
+                                        <i class="fas fa-lock mr-2"></i>
+                                        Final Exam Locked
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-brain text-purple-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">No Quizzes Available Yet</h3>
+                <p class="text-gray-600 mb-6">
+                    Quiz topics for {{ user_class_level_name|default:"your grade" }} will be available soon!
+                </p>
+                <a href="{% url 'subjects:simple_learn' %}" class="bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors inline-flex items-center">
+                    <i class="fas fa-book mr-2"></i>
+                    Start Learning Instead
+                </a>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            <!-- Quick Actions -->
+            <div class="mt-8 bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">
+                    <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                    Quick Actions
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <a href="{% url 'subjects:simple_learn' %}"
+                       class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-3 rounded-lg text-center hover:from-blue-600 hover:to-cyan-600 transition-all">
+                        <i class="fas fa-book-open text-lg mb-1"></i>
+                        <div class="font-semibold text-sm">Study Materials</div>
+                        <div class="text-xs opacity-90">Learn first</div>
+                    </a>
+                    <a href="{% url 'core:dashboard' %}"
+                       class="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-3 rounded-lg text-center hover:from-green-600 hover:to-emerald-600 transition-all">
+                        <i class="fas fa-chart-line text-lg mb-1"></i>
+                        <div class="font-semibold text-sm">View Progress</div>
+                        <div class="text-xs opacity-90">Check stats</div>
+                    </a>
+                    <a href="{% url 'core:help' %}"
+                       class="bg-gradient-to-r from-orange-500 to-red-500 text-white p-3 rounded-lg text-center hover:from-orange-600 hover:to-red-600 transition-all">
+                        <i class="fas fa-question-circle text-lg mb-1"></i>
+                        <div class="font-semibold text-sm">Get Help</div>
+                        <div class="text-xs opacity-90">Need help?</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Login Prompt Modal -->
+{% if not user.is_authenticated %}
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Ready to test your knowledge?</h3>
+            <p class="text-gray-600 mb-6" id="quizTopicName">Sign in to take this quiz and track your progress!</p>
+
+            <div class="flex gap-3 justify-center">
+                <a href="{% url 'users:register' %}" class="btn bg-blue-600 text-white hover:bg-blue-700">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Free Account
+                </a>
+                <a href="{% url 'users:login' %}" class="btn btn-outline border-gray-300 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In
+                </a>
+            </div>
+
+            <button onclick="closeLoginPrompt()" class="mt-4 text-gray-500 hover:text-gray-700 text-sm">
+                Maybe later
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+// Simple grade selection functionality
+function showGradeSelection() {
+    document.getElementById('gradeSelectionDisplay').classList.remove('hidden');
+}
+
+function hideGradeSelection() {
+    document.getElementById('gradeSelectionDisplay').classList.add('hidden');
+}
+
+function selectGrade(grade) {
+    // Navigate to subjects list with grade filter
+    window.location.href = `/subjects/?grade=${grade}`;
+}
+
+// Guest user grade range selection
+function selectGradeRange(gradeRange) {
+    const gradeRanges = {
+        'elementary': [1, 2, 3, 4, 5, 6],
+        'middle': [7, 8, 9],
+        'high': [10, 11, 12]
+    };
+
+    // For now, just select the first grade in the range
+    const grades = gradeRanges[gradeRange];
+    if (grades && grades.length > 0) {
+        selectGrade(grades[0]);
+    }
+}
+
+// Login modal functions
+function showLoginPrompt(topicName) {
+    {% if not user.is_authenticated %}
+    document.getElementById('loginModal').classList.remove('hidden');
+    {% endif %}
+}
+
+function closeLoginPrompt() {
+    {% if not user.is_authenticated %}
+    document.getElementById('loginModal').classList.add('hidden');
+    {% endif %}
+}
+</script>
+
+<script>
+// Default color palette for quiz topics
+const defaultColors = [
+    '#8B5CF6', '#10B981', '#3B82F6', '#F59E0B', '#EF4444',
+    '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6366F1',
+    '#14B8A6', '#A855F7', '#F59E0B', '#8B5CF6', '#10B981'
+];
+
+// Apply default colors to quiz cards that need them
+document.addEventListener('DOMContentLoaded', function() {
+    const quizCards = document.querySelectorAll('.quiz-card');
+
+    quizCards.forEach((card, index) => {
+        const header = card.querySelector('[style*="background: linear-gradient"]');
+        const icon = card.querySelector('i');
+
+        // If the header has default purple color, assign a unique color
+        if (header && header.style.background.includes('#8B5CF6')) {
+            const colorIndex = index % defaultColors.length;
+            const newColor = defaultColors[colorIndex];
+            header.style.background = `linear-gradient(135deg, ${newColor}, ${newColor}dd)`;
+
+            // Update icon color too
+            if (icon) {
+                icon.style.color = newColor;
+            }
+        }
+    });
+});
+</script>
+
+{% endblock %}

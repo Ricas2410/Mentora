@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Study Sessions - Mentora{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-4">Study Sessions</h1>
+        <p class="text-xl text-base-content/70">Track your learning sessions and study time</p>
+    </div>
+
+    <!-- Study Sessions Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Total Sessions -->
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Total Sessions</h3>
+                    <p class="text-3xl font-bold">{{ total_sessions|default:0 }}</p>
+                </div>
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-clock text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Study Time -->
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Study Time</h3>
+                    <p class="text-3xl font-bold">{{ total_study_time|default:0 }}h</p>
+                </div>
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-stopwatch text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Average Session -->
+        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Avg Session</h3>
+                    <p class="text-3xl font-bold">{{ avg_session_time|default:0 }}m</p>
+                </div>
+                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-bar text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Sessions -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-6">Recent Study Sessions</h2>
+        
+        {% if study_sessions %}
+            <div class="space-y-4">
+                {% for session in study_sessions %}
+                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">{{ session.topic.title }}</h3>
+                            <p class="text-sm text-gray-600">{{ session.topic.class_level.name }} - {{ session.topic.class_level.subject.name }}</p>
+                            <div class="flex items-center mt-2 space-x-4">
+                                <span class="text-xs text-gray-500">
+                                    <i class="fas fa-calendar mr-1"></i>
+                                    {{ session.started_at|date:"M d, Y" }}
+                                </span>
+                                <span class="text-xs text-gray-500">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    {{ session.duration }} minutes
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center space-x-2">
+                                {% if session.notes_viewed %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <i class="fas fa-book mr-1"></i>
+                                        Notes
+                                    </span>
+                                {% endif %}
+                                {% if session.quiz_taken %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-question-circle mr-1"></i>
+                                        Quiz
+                                    </span>
+                                {% endif %}
+                                {% if session.test_taken %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        <i class="fas fa-clipboard-check mr-1"></i>
+                                        Test
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination if needed -->
+            {% if study_sessions.has_other_pages %}
+                <div class="mt-6 flex justify-center">
+                    <nav class="flex space-x-2">
+                        {% if study_sessions.has_previous %}
+                            <a href="?page={{ study_sessions.previous_page_number }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Previous</a>
+                        {% endif %}
+                        
+                        <span class="px-3 py-2 bg-blue-500 text-white rounded-lg">
+                            Page {{ study_sessions.number }} of {{ study_sessions.paginator.num_pages }}
+                        </span>
+                        
+                        {% if study_sessions.has_next %}
+                            <a href="?page={{ study_sessions.next_page_number }}" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Next</a>
+                        {% endif %}
+                    </nav>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-12">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-clock text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">No Study Sessions Yet</h3>
+                <p class="text-gray-600 mb-4">Start studying to see your session history here!</p>
+                <a href="{% url 'subjects:list' %}" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    <i class="fas fa-book mr-2"></i>
+                    Start Learning
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

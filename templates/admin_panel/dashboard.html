@@ -1,0 +1,251 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<!-- Essential Stats Only -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1">{{ stats.total_users }}</h3>
+                    <p class="mb-0">Active Learners</p>
+                </div>
+                <div class="fs-1 opacity-75">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="opacity-75">
+                    <i class="fas fa-arrow-up me-1"></i>
+                    {{ stats.new_users_this_month }} joined this month
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card success">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1">{{ stats.total_questions }}</h3>
+                    <p class="mb-0">Questions Available</p>
+                </div>
+                <div class="fs-1 opacity-75">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="opacity-75">
+                    <i class="fas fa-check me-1"></i>
+                    Ready for learning
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card warning">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1">{{ stats.total_quizzes }}</h3>
+                    <p class="mb-0">Quizzes Completed</p>
+                </div>
+                <div class="fs-1 opacity-75">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="opacity-75">
+                    <i class="fas fa-calendar me-1"></i>
+                    {{ stats.quizzes_today }} today
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card danger">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1">{{ stats.avg_score }}%</h3>
+                    <p class="mb-0">Average Score</p>
+                </div>
+                <div class="fs-1 opacity-75">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="opacity-75">
+                    <i class="fas fa-trophy me-1"></i>
+                    {{ stats.pass_rate }}% pass rate
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Essential Actions Only -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tools me-2"></i>
+                    Content Management
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'admin_panel:questions' %}" class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-question-circle fs-2 mb-3"></i>
+                            <span class="fw-bold">Manage Questions</span>
+                            <small class="text-white-50 mt-1">Add, edit, organize</small>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'admin_panel:csv_import' %}" class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-upload fs-2 mb-3"></i>
+                            <span class="fw-bold">Import Content</span>
+                            <small class="text-white-50 mt-1">Bulk upload questions</small>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'admin_panel:users' %}" class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-users fs-2 mb-3"></i>
+                            <span class="fw-bold">Manage Users</span>
+                            <small class="text-white-50 mt-1">View learner progress</small>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <a href="{% url 'admin_panel:settings' %}" class="btn btn-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                            <i class="fas fa-cog fs-2 mb-3"></i>
+                            <span class="fw-bold">Settings</span>
+                            <small class="text-white-50 mt-1">Platform configuration</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Learning Progress Overview -->
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Learning Progress by Grade
+                </h5>
+                <a href="{% url 'admin_panel:reports' %}" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+            <div class="card-body">
+                {% if grade_progress %}
+                    <div class="row">
+                        {% for grade in grade_progress %}
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">Grade {{ grade.level_number }}</h6>
+                                    <span class="badge bg-primary">{{ grade.active_users }} learners</span>
+                                </div>
+                                <div class="progress mb-2" style="height: 10px;">
+                                    <div class="progress-bar bg-success" style="width: {{ grade.avg_progress }}%"></div>
+                                </div>
+                                <small class="text-muted">{{ grade.avg_progress|floatformat:1 }}% average progress</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fs-1 text-muted mb-3"></i>
+                        <p class="text-muted">No learning data available yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+        <!-- Content Summary -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-book me-2"></i>
+                    Content Summary
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Total Questions</span>
+                        <span class="badge bg-primary fs-6">{{ content_stats.questions }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Active Topics</span>
+                        <span class="badge bg-success fs-6">{{ content_stats.topics }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Grade Levels</span>
+                        <span class="badge bg-info fs-6">{{ content_stats.levels }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-0">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Subjects</span>
+                        <span class="badge bg-warning fs-6">{{ content_stats.subjects }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Status -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-heartbeat me-2"></i>
+                    Platform Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>System</span>
+                    <span class="badge bg-success">
+                        <i class="fas fa-check me-1"></i>
+                        Online
+                    </span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Maintenance</span>
+                    <span class="badge bg-{% if settings.maintenance_mode %}danger{% else %}success{% endif %}">
+                        <i class="fas fa-{% if settings.maintenance_mode %}exclamation-triangle{% else %}check{% endif %} me-1"></i>
+                        {% if settings.maintenance_mode %}Active{% else %}Normal{% endif %}
+                    </span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>User Registration</span>
+                    <span class="badge bg-{% if settings.allow_user_registration %}success{% else %}warning{% endif %}">
+                        <i class="fas fa-{% if settings.allow_user_registration %}check{% else %}times{% endif %} me-1"></i>
+                        {% if settings.allow_user_registration %}Open{% else %}Closed{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

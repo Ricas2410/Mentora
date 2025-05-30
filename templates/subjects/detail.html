@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ subject.name }} - Mentora{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <!-- Breadcrumb -->
+                <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+                    <a href="{% url 'subjects:list' %}" class="hover:text-blue-600">All Subjects</a>
+                    <i class="fas fa-chevron-right text-xs"></i>
+                    <span class="text-gray-800 font-medium">{{ subject.name }}</span>
+                </nav>
+
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{{ subject.name }}</h1>
+                        <p class="text-xl text-gray-600">Browse all class levels for this subject</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="w-20 h-20 rounded-full flex items-center justify-center" style="background: {{ subject.color }}22;">
+                            {% if subject.icon %}
+                                <i class="{{ subject.icon }} text-3xl" style="color: {{ subject.color }};"></i>
+                            {% else %}
+                                <i class="fas fa-book text-3xl" style="color: {{ subject.color }};"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if subject.description %}
+                    <p class="text-gray-600 mt-4 leading-relaxed">{{ subject.description }}</p>
+                {% endif %}
+
+                <!-- Subject Stats -->
+                <div class="grid grid-cols-3 gap-4 mt-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">{{ levels.count }}</div>
+                        <div class="text-sm text-gray-600">Class Level{{ levels.count|pluralize }}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">{{ total_topics }}</div>
+                        <div class="text-sm text-gray-600">Topic{{ total_topics|pluralize }}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-800">GES</div>
+                        <div class="text-sm text-gray-600">Aligned</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+
+            <!-- Class Levels -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Available Class Levels</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for level in levels %}
+                        <div class="bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 group">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                                        {{ level.name }}
+                                    </h3>
+                                    <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                        Level {{ level.level_number }}
+                                    </span>
+                                </div>
+
+                                {% if level.description %}
+                                    <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                                        {{ level.description|truncatewords:15 }}
+                                    </p>
+                                {% endif %}
+
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-book mr-1"></i>
+                                        <span>{{ level.topics.count }} Topic{{ level.topics.count|pluralize }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-signal mr-1"></i>
+                                        <span>GES Aligned</span>
+                                    </div>
+                                </div>
+
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'subjects:level_detail' subject.id level.id %}"
+                                       class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center group-hover:scale-105 transition-transform">
+                                        <i class="fas fa-play mr-2"></i>
+                                        Start Learning
+                                    </a>
+                                {% else %}
+                                    <button onclick="showLoginPrompt('{{ level.name }} {{ subject.name }}')"
+                                            class="w-full border border-gray-300 text-gray-600 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center justify-center">
+                                        <i class="fas fa-lock mr-2"></i>
+                                        Sign in to learn
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-span-full text-center py-16">
+                            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-book text-gray-400 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-600 mb-2">No Levels Available</h3>
+                            <p class="text-gray-500">Class levels for this subject will be added soon!</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Back to Subjects -->
+            <div class="text-center">
+                <a href="{% url 'subjects:list' %}"
+                   class="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to All Subjects
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Prompt Modal -->
+{% if not user.is_authenticated %}
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Ready to learn?</h3>
+            <p class="text-gray-600 mb-6" id="levelName">Sign in to access this level and track your progress!</p>
+
+            <div class="flex gap-3 justify-center">
+                <a href="{% url 'users:register' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Free Account
+                </a>
+                <a href="{% url 'users:login' %}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In
+                </a>
+            </div>
+
+            <button onclick="closeLoginPrompt()" class="mt-4 text-gray-500 hover:text-gray-700 text-sm">
+                Maybe later
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showLoginPrompt(levelName) {
+    document.getElementById('levelName').textContent = `Sign in to access "${levelName}" and track your progress!`;
+    document.getElementById('loginModal').classList.remove('hidden');
+}
+
+function closeLoginPrompt() {
+    document.getElementById('loginModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('loginModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLoginPrompt();
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

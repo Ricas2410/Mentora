@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}Final Exam - {{ level.name }} - Mentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .exam-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .exam-header {
+        background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border-color: #3b82f6;
+    }
+
+    .start-exam-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        position: relative;
+    }
+
+    .start-exam-btn {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        transform: scale(1);
+        transition: all 0.3s ease;
+    }
+
+    .start-exam-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .exam-stats {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6 md:py-8">
+    <!-- Breadcrumb -->
+    <div class="breadcrumbs text-sm mb-6">
+        <ul>
+            <li><a href="{% url 'core:home' %}">Home</a></li>
+            <li><a href="{% url 'subjects:list' %}">Subjects</a></li>
+            <li><a href="{% url 'subjects:levels' subject.id %}">{{ subject.name }}</a></li>
+            <li><a href="{% url 'subjects:topics' subject.id level.id %}">{{ level.name }}</a></li>
+            <li>Final Exam</li>
+        </ul>
+    </div>
+
+    <!-- Clean Professional Header -->
+    <div class="exam-header text-white p-8 md:p-12 mb-8">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-graduation-cap text-4xl"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Final Examination</h1>
+            <p class="text-xl text-white text-opacity-90 mb-2">{{ subject.name }} - {{ level.name }}</p>
+            <p class="text-white text-opacity-80">Comprehensive Assessment</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div class="exam-stats rounded-xl p-4">
+                <div class="text-2xl font-bold mb-1" id="question-count">{{ total_questions|default:"30-40" }}</div>
+                <div class="text-sm opacity-90">Questions</div>
+            </div>
+            <div class="exam-stats rounded-xl p-4">
+                <div class="text-2xl font-bold mb-1">{{ exam_time_limit|default:"60" }} min</div>
+                <div class="text-sm opacity-90">Time Limit</div>
+            </div>
+            <div class="exam-stats rounded-xl p-4">
+                <div class="text-2xl font-bold mb-1">{{ pass_percentage|default:"60" }}%</div>
+                <div class="text-sm opacity-90">Pass Score</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prominent Start Exam Section -->
+    <div class="text-center">
+        <div class="start-exam-section p-8 md:p-12 mb-8">
+            <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                <i class="fas fa-graduation-cap text-blue-600 text-4xl"></i>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Ready to Begin Your Final Exam?</h2>
+            <p class="text-gray-600 mb-8 max-w-2xl mx-auto text-lg">
+                This comprehensive exam will test your knowledge across all topics in {{ level.name }}.
+                Make sure you have a stable internet connection and enough time to complete the exam.
+            </p>
+
+            {% if insufficient_questions %}
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 max-w-md mx-auto">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                    <p class="text-yellow-800 text-sm">
+                        Limited questions available ({{ total_questions }} questions). Exam will use all available questions.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                {% if user.is_authenticated %}
+                <button onclick="startExam()" class="start-exam-btn text-white px-12 py-5 rounded-xl font-bold text-xl shadow-lg">
+                    <i class="fas fa-play mr-3"></i>
+                    Start Final Exam
+                </button>
+                {% else %}
+                <a href="{% url 'users:login' %}" class="start-exam-btn text-white px-12 py-5 rounded-xl font-bold text-xl shadow-lg inline-flex items-center">
+                    <i class="fas fa-lock mr-3"></i>
+                    Login to Take Exam
+                </a>
+                {% endif %}
+                <a href="{% url 'subjects:topics' subject.id level.id %}" class="bg-white border-2 border-gray-300 text-gray-700 px-8 py-5 rounded-xl font-bold text-lg hover:bg-gray-50 hover:border-gray-400 transition-all">
+                    <i class="fas fa-arrow-left mr-3"></i>
+                    Back to Topics
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Features -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="feature-card bg-white p-6 shadow-lg">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                <i class="fas fa-layer-group text-blue-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">All Topics Covered</h3>
+            <p class="text-gray-600 text-sm">Questions from every topic in this level to test comprehensive understanding.</p>
+        </div>
+
+        <div class="feature-card bg-white p-6 shadow-lg">
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                <i class="fas fa-random text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Randomized Questions</h3>
+            <p class="text-gray-600 text-sm">Questions are shuffled to ensure fair assessment and prevent memorization.</p>
+        </div>
+
+        <div class="feature-card bg-white p-6 shadow-lg">
+            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                <i class="fas fa-certificate text-purple-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Official Certificate</h3>
+            <p class="text-gray-600 text-sm">Pass this exam to earn your official completion certificate for this level.</p>
+        </div>
+    </div>
+
+    <!-- Exam Instructions -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <i class="fas fa-info-circle text-blue-600 mr-3"></i>
+            Exam Instructions
+        </h2>
+
+        <div class="space-y-4">
+            <div class="flex items-start">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                    <span class="text-blue-600 font-bold text-sm">1</span>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-1">Time Management</h4>
+                    <p class="text-gray-600 text-sm">You have 60 minutes to complete the exam. Plan your time wisely.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                    <span class="text-blue-600 font-bold text-sm">2</span>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-1">Question Types</h4>
+                    <p class="text-gray-600 text-sm">The exam includes multiple choice, fill-in-the-blank, and short answer questions.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                    <span class="text-blue-600 font-bold text-sm">3</span>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-1">Passing Score</h4>
+                    <p class="text-gray-600 text-sm">You need to score at least 60% to pass this exam and complete the level.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start">
+                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-4 mt-1">
+                    <span class="text-blue-600 font-bold text-sm">4</span>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-1">Retake Policy</h4>
+                    <p class="text-gray-600 text-sm">If you don't pass, you can retake the exam after reviewing the topics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function startExam() {
+    // Show confirmation dialog
+    const confirmed = confirm('Are you ready to start the final exam? Once started, the timer will begin and you cannot pause the exam.');
+
+    if (confirmed) {
+        // Show loading state
+        const button = document.querySelector('.start-exam-btn');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Starting Exam...';
+        button.disabled = true;
+
+        // Redirect to exam taking interface
+        window.location.href = '{% url "content:take_exam" level.id %}';
+    }
+}
+</script>
+{% endblock %}
