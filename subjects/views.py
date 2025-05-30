@@ -179,8 +179,66 @@ class ClassLevelListView(TemplateView):
         subject_id = kwargs.get('subject_id')
         subject = get_object_or_404(Subject, id=subject_id, is_active=True)
 
+        levels = subject.classlevels.filter(is_active=True).order_by('level_number')
+
+        # Add progress data for authenticated users
+        levels_with_progress = []
+        if self.request.user.is_authenticated:
+            from progress.models import UserProgress, TopicProgress
+
+            for level in levels:
+                # Get all topics for this level
+                topics = level.topics.filter(is_active=True)
+                total_topics = topics.count()
+
+                if total_topics > 0:
+                    # Count completed topics
+                    completed_topics = TopicProgress.objects.filter(
+                        user=self.request.user,
+                        topic__in=topics,
+                        is_completed=True
+                    ).count()
+
+                    # Calculate progress percentage
+                    progress_percentage = int((completed_topics / total_topics) * 100) if total_topics > 0 else 0
+
+                    # Check if level is completed (all topics completed)
+                    is_completed = completed_topics == total_topics and total_topics > 0
+
+                    # Check if level is unlocked (user's current level or below)
+                    user_level = self.request.user.current_class_level or 1
+                    is_unlocked = level.level_number <= user_level
+
+                else:
+                    completed_topics = 0
+                    progress_percentage = 0
+                    is_completed = False
+                    is_unlocked = True
+
+                levels_with_progress.append({
+                    'level': level,
+                    'total_topics': total_topics,
+                    'completed_topics': completed_topics,
+                    'progress_percentage': progress_percentage,
+                    'is_completed': is_completed,
+                    'is_unlocked': is_unlocked,
+                })
+        else:
+            # For non-authenticated users, just add basic level info
+            for level in levels:
+                topics = level.topics.filter(is_active=True)
+                levels_with_progress.append({
+                    'level': level,
+                    'total_topics': topics.count(),
+                    'completed_topics': 0,
+                    'progress_percentage': 0,
+                    'is_completed': False,
+                    'is_unlocked': True,
+                })
+
         context['subject'] = subject
-        context['levels'] = subject.classlevels.filter(is_active=True).order_by('level_number')
+        context['levels'] = levels
+        context['levels_with_progress'] = levels_with_progress
         context['show_login_prompt'] = not self.request.user.is_authenticated
         return context
 
@@ -196,9 +254,44 @@ class ClassLevelDetailView(TemplateView):
         subject = get_object_or_404(Subject, id=subject_id, is_active=True)
         level = get_object_or_404(ClassLevel, id=level_id, subject=subject, is_active=True)
 
+        topics = level.topics.filter(is_active=True).order_by('order')
+
+        # Add progress data for authenticated users
+        topics_with_progress = []
+        if self.request.user.is_authenticated:
+            from progress.models import TopicProgress
+
+            for topic in topics:
+                # Get topic progress
+                try:
+                    topic_progress = TopicProgress.objects.get(
+                        user=self.request.user,
+                        topic=topic
+                    )
+                    progress_percentage = int(topic_progress.progress_percentage) if topic_progress.progress_percentage else 0
+                    is_completed = topic_progress.is_completed
+                except TopicProgress.DoesNotExist:
+                    progress_percentage = 0
+                    is_completed = False
+
+                topics_with_progress.append({
+                    'topic': topic,
+                    'progress_percentage': progress_percentage,
+                    'is_completed': is_completed,
+                })
+        else:
+            # For non-authenticated users, just add basic topic info
+            for topic in topics:
+                topics_with_progress.append({
+                    'topic': topic,
+                    'progress_percentage': 0,
+                    'is_completed': False,
+                })
+
         context['subject'] = subject
         context['level'] = level
-        context['topics'] = level.topics.filter(is_active=True).order_by('order')
+        context['topics'] = topics
+        context['topics_with_progress'] = topics_with_progress
         context['show_login_prompt'] = not self.request.user.is_authenticated
         return context
 

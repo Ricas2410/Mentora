@@ -3,6 +3,11 @@
 
 {% block title %}{{ topic.title }} - {{ level.name }} {{ subject.name }} - Mentora{% endblock %}
 
+{% block extra_head %}
+{% csrf_token %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
 {% block content %}
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
     <!-- Modern Header with Gradient Background -->
@@ -18,10 +23,10 @@
             <div class="absolute bottom-10 right-20 w-16 h-16 bg-white/10 rounded-full blur-lg"></div>
         </div>
 
-        <div class="relative container mx-auto px-4 py-8 sm:py-12">
+        <div class="relative container mx-auto px-4 py-4 sm:py-6">
             <div class="max-w-6xl mx-auto">
-                <!-- Modern Breadcrumb -->
-                <nav class="flex items-center space-x-2 text-sm text-white/80 mb-8">
+                <!-- Compact Breadcrumb -->
+                <nav class="flex items-center space-x-2 text-sm text-white/80 mb-4">
                     <a href="{% url 'subjects:list' %}" class="hover:text-white transition-colors duration-200 flex items-center">
                         <i class="fas fa-home mr-1"></i>
                         Learn
@@ -34,50 +39,50 @@
                     <span class="text-white font-medium">{{ topic.title }}</span>
                 </nav>
 
-                <!-- Hero Content -->
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+                <!-- Compact Hero Content -->
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <div class="flex-1">
                         <!-- Subject Badge -->
-                        <div class="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-4">
+                        <div class="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-3">
                             <i class="fas fa-graduation-cap mr-2"></i>
                             {{ level.name }} • {{ subject.name }}
                         </div>
 
-                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
                             {{ topic.title }}
                         </h1>
 
                         {% if topic.description %}
-                            <p class="text-lg sm:text-xl text-white/90 leading-relaxed mb-6 max-w-3xl">
+                            <p class="text-base sm:text-lg text-white/90 leading-relaxed mb-4 max-w-3xl">
                                 {{ topic.description }}
                             </p>
                         {% endif %}
 
-                        <!-- Topic Metadata -->
-                        <div class="flex flex-wrap items-center gap-6 text-white/80">
+                        <!-- Compact Topic Metadata -->
+                        <div class="flex flex-wrap items-center gap-3 text-white/80">
                             {% if topic.estimated_duration %}
-                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
-                                <i class="fas fa-clock mr-2 text-blue-200"></i>
-                                <span class="text-sm font-medium">{{ topic.estimated_duration }} min</span>
+                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1">
+                                <i class="fas fa-clock mr-1 text-blue-200 text-sm"></i>
+                                <span class="text-xs font-medium">{{ topic.estimated_duration }} min</span>
                             </div>
                             {% endif %}
                             {% if topic.difficulty_level %}
-                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
-                                <i class="fas fa-signal mr-2 text-green-200"></i>
-                                <span class="text-sm font-medium capitalize">{{ topic.difficulty_level }}</span>
+                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1">
+                                <i class="fas fa-signal mr-1 text-green-200 text-sm"></i>
+                                <span class="text-xs font-medium capitalize">{{ topic.difficulty_level }}</span>
                             </div>
                             {% endif %}
-                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2">
-                                <i class="fas fa-list-ol mr-2 text-purple-200"></i>
-                                <span class="text-sm font-medium">Topic {{ topic.order }}</span>
+                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1">
+                                <i class="fas fa-list-ol mr-1 text-purple-200 text-sm"></i>
+                                <span class="text-xs font-medium">Topic {{ topic.order }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hero Icon -->
-                    <div class="flex-shrink-0">
-                        <div class="w-24 h-24 sm:w-32 sm:h-32 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl">
-                            <i class="fas fa-book-open text-white text-3xl sm:text-4xl"></i>
+                    <!-- Smaller Hero Icon -->
+                    <div class="flex-shrink-0 lg:block hidden">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl">
+                            <i class="fas fa-book-open text-white text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -86,7 +91,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="lg:container lg:mx-auto lg:px-8">
+    <div class="lg:container lg:mx-auto lg:px-4">
         <div class="max-w-6xl mx-auto">
 
             <!-- Study Notes Section - Always Visible -->
@@ -99,6 +104,9 @@
                 </div>
 
                 <div class="px-4 py-6 sm:px-6 lg:p-8">
+                    <!-- CSRF Token for AJAX requests -->
+                    {% csrf_token %}
+
                     <!-- Study Notes Content -->
                     {% for note_data in notes_with_progress %}
                         <div class="mb-8 last:mb-0" data-note-id="{{ note_data.note.id }}">
@@ -231,20 +239,40 @@ function markNoteAsRead(noteId) {
     btnIcon.className = 'fas fa-spinner fa-spin mr-2';
     button.disabled = true;
 
+    // Get CSRF token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                     document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                     getCookie('csrftoken');
+
+    if (!csrfToken) {
+        console.error('CSRF token not found');
+        // Reset button state
+        btnText.textContent = 'Mark as Read';
+        btnIcon.className = 'fas fa-check mr-2';
+        button.disabled = false;
+        showNotification('Security token missing. Please refresh the page.', 'error');
+        return;
+    }
+
     fetch(`/subjects/api/mark-note-read/${noteId}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            'X-CSRFToken': csrfToken
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             // Update button to show completed state
             btnText.textContent = 'Read ✓';
             btnIcon.className = 'fas fa-check-circle mr-2';
-            button.className = 'mark-read-btn bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-not-allowed flex items-center';
+            button.className = 'mark-read-btn bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-not-allowed flex items-center w-full sm:w-auto justify-center';
             button.disabled = true;
 
             // Show success message
@@ -262,6 +290,22 @@ function markNoteAsRead(noteId) {
 
         showNotification('Failed to mark note as read. Please try again.', 'error');
     });
+}
+
+// Helper function to get cookie value
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 // Simple notification function

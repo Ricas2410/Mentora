@@ -1,226 +1,382 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ subject.name }} - Class Levels - Mentora{% endblock %}
+{% block title %}{{ subject.name }} - Grade Levels - Mentora{% endblock %}
 
 {% block extra_css %}
 <style>
-    .level-card {
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
+    /* Modern glassmorphism and animation styles */
+    .backdrop-blur-sm {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
+
+    /* Mobile-first design with proper contrast */
+    .level-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        min-height: 200px;
+    }
+
     .level-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border-color: #3B82F6;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-    .level-badge {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .subject-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
+
+    /* Progress ring styles */
     .progress-ring {
         transform: rotate(-90deg);
     }
+
     .progress-ring-circle {
         transition: stroke-dasharray 0.35s;
-        transform: rotate(-90deg);
-        transform-origin: 50% 50%;
+    }
+
+    /* Smooth gradient animations */
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .bg-gradient-to-r {
+        background-size: 200% 200%;
+        animation: gradientShift 6s ease infinite;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+        .level-card {
+            margin-bottom: 1rem;
+            min-height: 180px;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .level-card:first-child {
+            border-top: none;
+        }
+
+        /* Full width on mobile */
+        .grid {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+        }
+
+        /* Remove hover effects on mobile */
+        .level-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto">
-    <!-- Subject Header -->
-    <div class="subject-header rounded-2xl p-8 mb-8 text-white">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
-            <div class="flex items-center mb-4 md:mb-0">
-                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-xl flex items-center justify-center mr-4">
-                    <i class="{{ subject.icon|default:'fas fa-book' }} text-2xl text-white"></i>
-                </div>
-                <div>
-                    <h1 class="text-3xl font-bold mb-2">{{ subject.name }}</h1>
-                    <p class="text-white text-opacity-90">{{ subject.description|default:"Explore all grade levels for this subject" }}</p>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <!-- Modern Compact Header -->
+    <div class="relative bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-indigo-800/90"></div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+            <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+            <div class="absolute top-20 -left-8 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+            <div class="absolute bottom-10 right-20 w-16 h-16 bg-white/10 rounded-full blur-lg"></div>
+        </div>
+
+        <div class="relative container mx-auto px-4 py-4 sm:py-6">
+            <div class="max-w-6xl mx-auto">
+                <!-- Compact Breadcrumb -->
+                <nav class="flex items-center space-x-2 text-sm text-white/80 mb-4">
+                    <a href="{% url 'subjects:simple_learn' %}" class="hover:text-white transition-colors duration-200 flex items-center">
+                        <i class="fas fa-home mr-1"></i>
+                        Learn
+                    </a>
+                    <i class="fas fa-chevron-right text-xs text-white/60"></i>
+                    <span class="text-white font-medium">{{ subject.name }}</span>
+                </nav>
+
+                <!-- Compact Hero Content -->
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                    <div class="flex-1">
+                        <!-- Subject Badge -->
+                        <div class="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-3">
+                            <i class="{{ subject.icon|default:'fas fa-book' }} mr-2"></i>
+                            Subject
+                        </div>
+
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
+                            {{ subject.name }}
+                        </h1>
+
+                        <p class="text-base sm:text-lg text-white/90 leading-relaxed mb-4 max-w-3xl">
+                            {{ subject.description|default:"Choose your grade level to start learning" }}
+                        </p>
+
+                        <!-- Compact Stats -->
+                        <div class="flex flex-wrap items-center gap-3 text-white/80">
+                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1">
+                                <i class="fas fa-layer-group mr-1 text-blue-200 text-sm"></i>
+                                <span class="text-xs font-medium">{{ levels.count }} Grade{{ levels.count|pluralize }}</span>
+                            </div>
+                            {% if user.is_authenticated %}
+                            <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1">
+                                <i class="fas fa-user mr-1 text-green-200 text-sm"></i>
+                                <span class="text-xs font-medium">Your Level: Grade {{ user.current_class_level|default:"1" }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Smaller Hero Icon -->
+                    <div class="flex-shrink-0 lg:block hidden">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl">
+                            <i class="{{ subject.icon|default:'fas fa-book' }} text-white text-2xl"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Navigation -->
-            <div class="flex items-center space-x-4">
-                <a href="{% url 'subjects:list' %}" class="btn btn-ghost text-white hover:bg-white hover:bg-opacity-20">
-                    <i class="fas fa-arrow-left mr-2"></i>
-                    Back to Subjects
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:container lg:mx-auto lg:px-4 py-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Grade Levels Grid - Mobile-first full width -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 lg:px-0">
+                {% for level_data in levels_with_progress %}
+                    {% with level=level_data.level %}
+                    <div class="level-card bg-white lg:rounded-xl lg:shadow-md hover:shadow-lg transition-all duration-300 lg:border lg:border-gray-200 overflow-hidden cursor-pointer"
+                         onclick="window.location.href='{% url 'subjects:level_detail' subject.id level.id %}'">
+
+                        <!-- Modern Level Header -->
+                        <div class="lg:bg-gradient-to-r lg:from-blue-50 lg:to-indigo-50 lg:border-b lg:border-blue-100 p-4 sm:p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-layer-group text-lg text-blue-600"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-gray-900 font-bold text-lg sm:text-xl leading-tight">{{ level.name }}</h3>
+                                        <p class="text-gray-600 text-sm">Grade {{ level.level_number }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Progress Ring -->
+                                {% if user.is_authenticated %}
+                                <div class="flex-shrink-0 ml-2">
+                                    <div class="relative w-12 h-12">
+                                        <svg class="w-12 h-12 progress-ring" viewBox="0 0 36 36">
+                                            <!-- Background circle -->
+                                            <path class="progress-ring-circle"
+                                                  stroke="#e5e7eb"
+                                                  stroke-width="3"
+                                                  fill="transparent"
+                                                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                            <!-- Progress circle -->
+                                            <path class="progress-ring-circle"
+                                                  stroke="{% if level_data.is_completed %}#10b981{% else %}#3b82f6{% endif %}"
+                                                  stroke-width="3"
+                                                  fill="transparent"
+                                                  stroke-dasharray="{{ level_data.progress_percentage }}, 100"
+                                                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                        </svg>
+                                        <!-- Progress percentage text -->
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <span class="text-xs font-bold text-gray-700">{{ level_data.progress_percentage }}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="flex-shrink-0 ml-2">
+                                    <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-lock text-gray-400 text-sm"></i>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            {% if level.description %}
+                                <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                                    {{ level.description|truncatewords:20 }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Level Content -->
+                        <div class="p-4 sm:p-5">
+                            <!-- Level Stats -->
+                            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-book mr-2 text-blue-500"></i>
+                                    <span>{{ level_data.total_topics }} Topic{{ level_data.total_topics|pluralize }}</span>
+                                </div>
+                                {% if user.is_authenticated %}
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-2 {% if level_data.is_completed %}text-green-500{% else %}text-gray-400{% endif %}"></i>
+                                    <span>{{ level_data.completed_topics }}/{{ level_data.total_topics }} Done</span>
+                                </div>
+                                {% else %}
+                                <div class="flex items-center">
+                                    <i class="fas fa-user mr-2 text-purple-500"></i>
+                                    <span>Sign in to track</span>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Status Badge -->
+                            {% if user.is_authenticated %}
+                            <div class="mb-4">
+                                {% if level_data.is_completed %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        Completed
+                                    </span>
+                                {% elif level_data.progress_percentage > 0 %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <i class="fas fa-play-circle mr-1"></i>
+                                        In Progress
+                                    </span>
+                                {% elif level_data.is_unlocked %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <i class="fas fa-unlock mr-1"></i>
+                                        Available
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <i class="fas fa-lock mr-1"></i>
+                                        Locked
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Action Buttons -->
+                            <div class="space-y-3">
+                                {% if user.is_authenticated %}
+                                    {% if level_data.is_unlocked %}
+                                        <!-- Primary Action: Start Learning -->
+                                        <a href="{% url 'subjects:level_detail' subject.id level.id %}"
+                                           class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center text-sm shadow-lg hover:shadow-xl"
+                                           onclick="event.stopPropagation();">
+                                            <i class="fas fa-book-open mr-2"></i>
+                                            {% if level_data.progress_percentage > 0 %}Continue Learning{% else %}Start Learning{% endif %}
+                                        </a>
+                                    {% else %}
+                                        <button disabled
+                                                class="w-full bg-gray-200 text-gray-500 py-3 px-4 rounded-xl font-semibold text-sm cursor-not-allowed">
+                                            <i class="fas fa-lock mr-2"></i>
+                                            Complete Previous Levels
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    <button onclick="showLoginPrompt('{{ level.name }}')"
+                                            class="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center text-sm shadow-lg hover:shadow-xl">
+                                        <i class="fas fa-lock mr-2"></i>
+                                        Sign in to Learn
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                {% empty %}
+                    <!-- Empty State -->
+                    <div class="col-span-full text-center py-16">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-layer-group text-gray-400 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">No Grade Levels Available</h3>
+                        <p class="text-gray-600 mb-6">Grade levels for {{ subject.name }} will be available soon.</p>
+                        {% if user.is_staff %}
+                        <a href="/admin/subjects/classlevel/add/" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            Add Grade Levels
+                        </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Modern Navigation -->
+            <div class="mt-8 px-4 lg:px-0">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/60 backdrop-blur-sm lg:rounded-2xl p-6 lg:border lg:border-white/20">
+                    <a href="{% url 'subjects:simple_learn' %}"
+                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-medium hover:from-gray-700 hover:to-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                        <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform duration-200"></i>
+                        Back to Subjects
+                    </a>
+
+                    <!-- Progress Indicator -->
+                    <div class="flex items-center space-x-2 text-sm text-gray-600">
+                        <i class="fas fa-graduation-cap text-blue-500"></i>
+                        <span>{{ subject.name }} Learning Path</span>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="flex items-center space-x-3">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'subjects:quiz_list' %}"
+                           class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 text-sm">
+                            <i class="fas fa-brain mr-2"></i>
+                            Quiz Mode
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Prompt Modal -->
+{% if not user.is_authenticated %}
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Ready to learn?</h3>
+            <p class="text-gray-600 mb-6" id="levelName">Sign in to access this grade level and track your progress!</p>
+
+            <div class="flex gap-3 justify-center">
+                <a href="{% url 'users:register' %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Free Account
                 </a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'subjects:quiz_list' %}" class="btn bg-white text-blue-600 hover:bg-gray-100">
-                    <i class="fas fa-play mr-2"></i>
-                    Take Quiz
+                <a href="{% url 'users:login' %}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In
                 </a>
-                {% endif %}
             </div>
+
+            <button onclick="closeLoginPrompt()" class="mt-4 text-gray-500 hover:text-gray-700 text-sm">
+                Maybe later
+            </button>
         </div>
     </div>
-
-    <!-- Class Levels Grid -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Available Grade Levels</h2>
-            <div class="text-sm text-gray-600">
-                <i class="fas fa-layer-group mr-1"></i>
-                {{ levels.count }} grade{{ levels.count|pluralize }} available
-            </div>
-        </div>
-
-        {% if levels %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {% for level in levels %}
-            <div class="level-card bg-white rounded-xl shadow-lg p-6 cursor-pointer" 
-                 onclick="window.location.href='{% url 'subjects:level_detail' subject.id level.id %}'">
-                
-                <!-- Level Badge -->
-                <div class="flex items-center justify-between mb-4">
-                    <div class="level-badge text-white px-3 py-1 rounded-full text-sm font-semibold">
-                        Grade {{ level.level_number }}
-                    </div>
-                    {% if user.is_authenticated %}
-                    <div class="w-8 h-8">
-                        <!-- Progress Ring (placeholder for now) -->
-                        <svg class="w-8 h-8 progress-ring" viewBox="0 0 36 36">
-                            <path class="progress-ring-circle" 
-                                  stroke="#e5e7eb" 
-                                  stroke-width="3" 
-                                  fill="transparent" 
-                                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            <path class="progress-ring-circle" 
-                                  stroke="#10b981" 
-                                  stroke-width="3" 
-                                  fill="transparent" 
-                                  stroke-dasharray="0, 100" 
-                                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                        </svg>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- Level Info -->
-                <div class="mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ level.name }}</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">{{ level.description|truncatewords:15 }}</p>
-                </div>
-
-                <!-- Topics Count -->
-                <div class="flex items-center justify-between text-sm">
-                    <div class="flex items-center text-gray-600">
-                        <i class="fas fa-list-ul mr-2"></i>
-                        {{ level.topics.count }} topic{{ level.topics.count|pluralize }}
-                    </div>
-                    {% if user.is_authenticated %}
-                    <div class="text-blue-600 font-medium">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    {% else %}
-                    <div class="text-gray-400 text-xs">
-                        Login to track progress
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- Quick Actions (for authenticated users) -->
-                {% if user.is_authenticated %}
-                <div class="mt-4 pt-4 border-t border-gray-100">
-                    <div class="flex space-x-2">
-                        <button class="flex-1 bg-blue-50 text-blue-600 py-2 px-3 rounded-lg text-xs font-medium hover:bg-blue-100 transition-colors"
-                                onclick="event.stopPropagation(); startQuickQuiz('{{ level.id }}')">
-                            <i class="fas fa-play mr-1"></i>
-                            Quick Quiz
-                        </button>
-                        <button class="flex-1 bg-green-50 text-green-600 py-2 px-3 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors"
-                                onclick="event.stopPropagation(); viewTopics('{{ level.id }}')">
-                            <i class="fas fa-book-open mr-1"></i>
-                            Study
-                        </button>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <!-- Empty State -->
-        <div class="text-center py-16">
-            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-layer-group text-gray-400 text-3xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">No Grade Levels Available</h3>
-            <p class="text-gray-600 mb-6">Grade levels for {{ subject.name }} will be available soon.</p>
-            {% if user.is_staff %}
-            <a href="/admin/subjects/classlevel/add/" class="btn btn-primary">
-                <i class="fas fa-plus mr-2"></i>
-                Add Grade Levels
-            </a>
-            {% endif %}
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- Login Prompt for Visitors -->
-    {% if show_login_prompt %}
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 text-center">
-        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i class="fas fa-user-graduate text-blue-600 text-2xl"></i>
-        </div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">Ready to Start Learning?</h3>
-        <p class="text-gray-600 mb-6">Create an account to track your progress, take quizzes, and unlock achievements!</p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="{% url 'accounts:signup' %}" class="btn btn-primary">
-                <i class="fas fa-user-plus mr-2"></i>
-                Sign Up Free
-            </a>
-            <a href="{% url 'accounts:login' %}" class="btn btn-outline">
-                <i class="fas fa-sign-in-alt mr-2"></i>
-                Login
-            </a>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <script>
-// Quick actions for authenticated users
-function startQuickQuiz(levelId) {
-    // Redirect to quiz for this level
-    window.location.href = `/content/quiz/level/${levelId}/`;
+function showLoginPrompt(levelName) {
+    document.getElementById('levelName').textContent = `Sign in to access "${levelName}" and track your progress!`;
+    document.getElementById('loginModal').classList.remove('hidden');
 }
 
-function viewTopics(levelId) {
-    // Redirect to topics for this level
-    window.location.href = `/subjects/{{ subject.id }}/levels/${levelId}/topics/`;
+function closeLoginPrompt() {
+    document.getElementById('loginModal').classList.add('hidden');
 }
 
-// Add loading states and animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate level cards on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    // Observe all level cards
-    document.querySelectorAll('.level-card').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
-    });
+// Close modal when clicking outside
+document.getElementById('loginModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLoginPrompt();
+    }
 });
 </script>
+{% endif %}
+
 {% endblock %}
