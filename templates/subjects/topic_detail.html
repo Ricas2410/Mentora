@@ -86,32 +86,28 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="container mx-auto px-4 py-12">
+    <div class="lg:container lg:mx-auto lg:px-8">
         <div class="max-w-6xl mx-auto">
 
-            <!-- Study Notes Section (Collapsible) -->
-            <div id="studyNotesSection" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 mb-12 hidden overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-2xl font-bold text-white flex items-center">
-                            <i class="fas fa-book-open mr-3"></i>
-                            Study Materials
-                        </h2>
-                        <button onclick="toggleStudyNotes()" class="text-white/80 hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
+            <!-- Study Notes Section - Always Visible -->
+            <div id="studyNotesSection" class="lg:bg-white/80 lg:backdrop-blur-sm lg:rounded-2xl lg:shadow-xl lg:border lg:border-white/20 mb-12 overflow-hidden">
+                <div class="hidden lg:block bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+                    <h2 class="text-2xl font-bold text-white flex items-center">
+                        <i class="fas fa-book-open mr-3"></i>
+                        Study Materials
+                    </h2>
                 </div>
 
-                <div class="p-8">
+                <div class="px-4 py-6 sm:px-6 lg:p-8">
                     <!-- Study Notes Content -->
                     {% for note_data in notes_with_progress %}
                         <div class="mb-8 last:mb-0" data-note-id="{{ note_data.note.id }}">
-                            <div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border border-blue-200/50 rounded-xl p-8 shadow-lg">
-                                <div class="flex items-center justify-between mb-6">
-                                    <h3 class="text-2xl font-bold text-gray-800 flex items-center">
-                                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
-                                            <i class="fas fa-file-alt text-white"></i>
+                            <!-- Mobile-friendly large study card -->
+                            <div class="lg:bg-gradient-to-br lg:from-blue-50 lg:via-indigo-50 lg:to-purple-50 lg:border lg:border-blue-200/50 lg:rounded-xl lg:shadow-lg p-4 sm:p-6 lg:p-8">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+                                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                            <i class="fas fa-file-alt text-white text-sm sm:text-base"></i>
                                         </div>
                                         {{ note_data.note.title }}
                                     </h3>
@@ -119,14 +115,14 @@
                                     {% if user.is_authenticated %}
                                     <!-- Mark as Read Button -->
                                     {% if note_data.is_read %}
-                                        <button class="mark-read-btn bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-not-allowed flex items-center"
+                                        <button class="mark-read-btn bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-not-allowed flex items-center w-full sm:w-auto justify-center"
                                                 id="mark-read-{{ note_data.note.id }}" disabled>
                                             <i class="fas fa-check-circle mr-2"></i>
                                             <span class="btn-text">Read ✓</span>
                                         </button>
                                     {% else %}
                                         <button onclick="markNoteAsRead('{{ note_data.note.id }}')"
-                                                class="mark-read-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center"
+                                                class="mark-read-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center w-full sm:w-auto justify-center"
                                                 id="mark-read-{{ note_data.note.id }}">
                                             <i class="fas fa-check mr-2"></i>
                                             <span class="btn-text">Mark as Read</span>
@@ -152,117 +148,53 @@
                             </p>
                         </div>
                     {% endfor %}
+
+                    <!-- Start Quiz Section - Always at bottom -->
+                    {% if topic.get_questions_count > 0 %}
+                        <div class="mt-12 pt-8 border-t border-gray-200">
+                            <div class="text-center">
+                                <div class="mb-6">
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Ready to Test Your Knowledge?</h3>
+                                    <p class="text-gray-600 text-lg">Take the quiz to check your understanding of this topic</p>
+                                </div>
+
+                                <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-gray-500 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-question-circle mr-2 text-blue-500"></i>
+                                        <span>Interactive Questions</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-clock mr-2 text-green-500"></i>
+                                        <span>Instant Results</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-chart-line mr-2 text-purple-500"></i>
+                                        <span>Track Progress</span>
+                                    </div>
+                                </div>
+
+                                <a href="{% url 'content:quiz' topic.id %}"
+                                   class="inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl text-lg group">
+                                    <i class="fas fa-play mr-3 group-hover:scale-110 transition-transform duration-200"></i>
+                                    Start Quiz
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="mt-12 pt-8 border-t border-gray-200">
+                            <div class="text-center">
+                                <div class="bg-gray-50 rounded-xl p-8">
+                                    <i class="fas fa-info-circle text-gray-400 text-3xl mb-4"></i>
+                                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Quiz Coming Soon</h3>
+                                    <p class="text-gray-500">Quiz content is being prepared for this topic</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
-            <!-- Modern Action Cards -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                <!-- Take Quiz Card -->
-                <div class="group relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                    <!-- Gradient Background -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-blue-600/5 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                    <!-- Content -->
-                    <div class="relative p-8 lg:p-10">
-                        <!-- Icon -->
-                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <i class="fas fa-brain text-white text-2xl lg:text-3xl"></i>
-                        </div>
-
-                        <!-- Content -->
-                        <div class="text-center">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Practice Quiz</h3>
-                            <p class="text-gray-600 mb-8 leading-relaxed">Test your understanding with interactive questions and get instant feedback</p>
-
-                            {% if topic.get_questions_count > 0 %}
-                                <!-- Quiz Available -->
-                                <div class="space-y-4">
-                                    <div class="flex items-center justify-center space-x-4 text-sm text-gray-500 mb-4">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-question-circle mr-2 text-blue-500"></i>
-                                            <span>Interactive Questions</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-clock mr-2 text-green-500"></i>
-                                            <span>Instant Results</span>
-                                        </div>
-                                    </div>
-                                    <a href="{% url 'content:quiz' topic.id %}"
-                                       class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-8 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 inline-flex items-center justify-center shadow-lg hover:shadow-xl group">
-                                        <i class="fas fa-play mr-3 group-hover:scale-110 transition-transform duration-200"></i>
-                                        Start Quiz
-                                    </a>
-                                </div>
-                            {% else %}
-                                <!-- No Quiz Available -->
-                                <div class="space-y-4">
-                                    <div class="bg-gray-50 rounded-xl p-4 mb-4">
-                                        <i class="fas fa-info-circle text-gray-400 text-lg mb-2"></i>
-                                        <p class="text-gray-500 text-sm">Quiz content is being prepared</p>
-                                    </div>
-                                    <button class="w-full bg-gray-200 text-gray-500 py-4 px-8 rounded-2xl font-semibold cursor-not-allowed" disabled>
-                                        <i class="fas fa-clock mr-3"></i>
-                                        Coming Soon
-                                    </button>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Study Materials Card -->
-                <div class="group relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                    <!-- Gradient Background -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-600/5 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                    <!-- Content -->
-                    <div class="relative p-8 lg:p-10">
-                        <!-- Icon -->
-                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <i class="fas fa-book-open text-white text-2xl lg:text-3xl"></i>
-                        </div>
-
-                        <!-- Content -->
-                        <div class="text-center">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Study Materials</h3>
-                            <p class="text-gray-600 mb-8 leading-relaxed">Access comprehensive study notes, examples, and learning resources</p>
-
-                            {% if topic.get_study_notes %}
-                                <!-- Study Notes Available -->
-                                <div class="space-y-4">
-                                    <div class="flex items-center justify-center space-x-4 text-sm text-gray-500 mb-4">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-file-alt mr-2 text-indigo-500"></i>
-                                            <span>Detailed Notes</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
-                                            <span>Examples</span>
-                                        </div>
-                                    </div>
-                                    <button onclick="toggleStudyNotes()"
-                                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-8 rounded-2xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                                        <i class="fas fa-book-open mr-3 group-hover:scale-110 transition-transform duration-200"></i>
-                                        <span id="notesButtonText">View Study Notes</span>
-                                    </button>
-                                </div>
-                            {% else %}
-                                <!-- No Study Notes Available -->
-                                <div class="space-y-4">
-                                    <div class="bg-gray-50 rounded-xl p-4 mb-4">
-                                        <i class="fas fa-info-circle text-gray-400 text-lg mb-2"></i>
-                                        <p class="text-gray-500 text-sm">Study materials are being prepared</p>
-                                    </div>
-                                    <button class="w-full bg-gray-200 text-gray-500 py-4 px-8 rounded-2xl font-semibold cursor-not-allowed" disabled>
-                                        <i class="fas fa-clock mr-3"></i>
-                                        Coming Soon
-                                    </button>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- Modern Navigation -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
@@ -287,48 +219,6 @@
     </div>
 </div>
 <script>
-// Modern toggle function with enhanced animations
-function toggleStudyNotes() {
-    const section = document.getElementById('studyNotesSection');
-    const buttonText = document.getElementById('notesButtonText');
-
-    if (section.classList.contains('hidden')) {
-        // Show study notes with modern animation
-        section.classList.remove('hidden');
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(-20px)';
-
-        // Trigger animation
-        requestAnimationFrame(() => {
-            section.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            section.style.opacity = '1';
-            section.style.transform = 'translateY(0)';
-        });
-
-        buttonText.textContent = 'Hide Study Notes';
-
-        // Smooth scroll to study notes section
-        setTimeout(() => {
-            section.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest'
-            });
-        }, 100);
-    } else {
-        // Hide study notes with modern animation
-        section.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(-20px)';
-
-        setTimeout(() => {
-            section.classList.add('hidden');
-            section.style.transform = 'translateY(0)';
-        }, 400);
-
-        buttonText.textContent = 'View Study Notes';
-    }
-}
 
 // Mark note as read function
 function markNoteAsRead(noteId) {

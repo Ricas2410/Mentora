@@ -72,25 +72,28 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="container mx-auto px-0 sm:px-4 lg:px-8">
+    <div class="lg:container lg:mx-auto lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-8">
             <!-- Study Content - Full width on mobile -->
             <div class="lg:col-span-3">
-                <div class="bg-white shadow-none sm:shadow-xl sm:rounded-xl">
-                    <div class="p-4 sm:p-6 lg:p-8 study-content">
+                <!-- Remove the card wrapper on mobile, keep it on desktop -->
+                <div class="lg:bg-white lg:shadow-xl lg:rounded-xl">
+                    <div class="px-4 py-6 sm:px-6 lg:p-8 study-content">
                     <!-- Learning Objectives -->
-                    <div class="alert alert-info mb-6">
-                        <i class="fas fa-bullseye"></i>
-                        <div>
-                            <h3 class="font-bold">Learning Objectives</h3>
-                            <div class="text-sm">
-                                By the end of this topic, you will be able to:
-                                <ul class="list-disc list-inside mt-2 space-y-1">
-                                    <li>Identify adjectives in sentences</li>
-                                    <li>Use adjectives to describe nouns</li>
-                                    <li>Place adjectives correctly in sentences</li>
-                                    <li>Choose appropriate adjectives for different situations</li>
-                                </ul>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-bullseye text-blue-600 mr-3 mt-1"></i>
+                            <div>
+                                <h3 class="font-bold text-blue-900 mb-2">Learning Objectives</h3>
+                                <div class="text-sm text-blue-800">
+                                    By the end of this topic, you will be able to:
+                                    <ul class="list-disc list-inside mt-2 space-y-1">
+                                        <li>Identify adjectives in sentences</li>
+                                        <li>Use adjectives to describe nouns</li>
+                                        <li>Place adjectives correctly in sentences</li>
+                                        <li>Choose appropriate adjectives for different situations</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -123,54 +126,54 @@
 
                     <h3>1. Size Adjectives</h3>
                     <p>These adjectives tell us how big or small something is.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
-                        <div class="badge badge-outline">big</div>
-                        <div class="badge badge-outline">small</div>
-                        <div class="badge badge-outline">large</div>
-                        <div class="badge badge-outline">tiny</div>
-                        <div class="badge badge-outline">huge</div>
-                        <div class="badge badge-outline">little</div>
-                        <div class="badge badge-outline">enormous</div>
-                        <div class="badge badge-outline">mini</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 my-4">
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">big</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">small</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">large</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">tiny</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">huge</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">little</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">enormous</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">mini</div>
                     </div>
 
                     <h3>2. Color Adjectives</h3>
                     <p>These adjectives tell us what color something is.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
-                        <div class="badge badge-outline">red</div>
-                        <div class="badge badge-outline">blue</div>
-                        <div class="badge badge-outline">green</div>
-                        <div class="badge badge-outline">yellow</div>
-                        <div class="badge badge-outline">black</div>
-                        <div class="badge badge-outline">white</div>
-                        <div class="badge badge-outline">purple</div>
-                        <div class="badge badge-outline">orange</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 my-4">
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">red</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">blue</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">green</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">yellow</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">black</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">white</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">purple</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">orange</div>
                     </div>
 
                     <h3>3. Shape Adjectives</h3>
                     <p>These adjectives describe the shape of things.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
-                        <div class="badge badge-outline">round</div>
-                        <div class="badge badge-outline">square</div>
-                        <div class="badge badge-outline">long</div>
-                        <div class="badge badge-outline">short</div>
-                        <div class="badge badge-outline">flat</div>
-                        <div class="badge badge-outline">curved</div>
-                        <div class="badge badge-outline">straight</div>
-                        <div class="badge badge-outline">thick</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 my-4">
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">round</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">square</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">long</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">short</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">flat</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">curved</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">straight</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">thick</div>
                     </div>
 
                     <h3>4. Feeling Adjectives</h3>
                     <p>These adjectives describe how something feels or how we feel.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-4">
-                        <div class="badge badge-outline">happy</div>
-                        <div class="badge badge-outline">sad</div>
-                        <div class="badge badge-outline">angry</div>
-                        <div class="badge badge-outline">excited</div>
-                        <div class="badge badge-outline">tired</div>
-                        <div class="badge badge-outline">scared</div>
-                        <div class="badge badge-outline">proud</div>
-                        <div class="badge badge-outline">worried</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 my-4">
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">happy</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">sad</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">angry</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">excited</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">tired</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">scared</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">proud</div>
+                        <div class="bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-center text-sm">worried</div>
                     </div>
 
                     <h2>Where Do Adjectives Go?</h2>
@@ -194,63 +197,66 @@
                     <p>Try to identify the adjectives in these sentences:</p>
 
                     <div class="space-y-4 my-6">
-                        <div class="card bg-base-200 shadow">
-                            <div class="card-body py-4">
-                                <p class="font-mono">1. The brave soldier saved the village.</p>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                            <div class="p-4">
+                                <p class="font-mono text-lg mb-3">1. The brave soldier saved the village.</p>
                                 <details class="mt-2">
-                                    <summary class="cursor-pointer text-primary">Show Answer</summary>
-                                    <p class="mt-2 text-success">Answer: <span class="highlight">brave</span> (describes the soldier)</p>
+                                    <summary class="cursor-pointer text-blue-600 font-medium">Show Answer</summary>
+                                    <p class="mt-2 text-green-600">Answer: <span class="highlight">brave</span> (describes the soldier)</p>
                                 </details>
                             </div>
                         </div>
 
-                        <div class="card bg-base-200 shadow">
-                            <div class="card-body py-4">
-                                <p class="font-mono">2. My grandmother baked delicious cookies.</p>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                            <div class="p-4">
+                                <p class="font-mono text-lg mb-3">2. My grandmother baked delicious cookies.</p>
                                 <details class="mt-2">
-                                    <summary class="cursor-pointer text-primary">Show Answer</summary>
-                                    <p class="mt-2 text-success">Answer: <span class="highlight">delicious</span> (describes the cookies)</p>
+                                    <summary class="cursor-pointer text-blue-600 font-medium">Show Answer</summary>
+                                    <p class="mt-2 text-green-600">Answer: <span class="highlight">delicious</span> (describes the cookies)</p>
                                 </details>
                             </div>
                         </div>
 
-                        <div class="card bg-base-200 shadow">
-                            <div class="card-body py-4">
-                                <p class="font-mono">3. The old tree has green leaves.</p>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                            <div class="p-4">
+                                <p class="font-mono text-lg mb-3">3. The old tree has green leaves.</p>
                                 <details class="mt-2">
-                                    <summary class="cursor-pointer text-primary">Show Answer</summary>
-                                    <p class="mt-2 text-success">Answer: <span class="highlight">old</span> (describes the tree) and <span class="highlight">green</span> (describes the leaves)</p>
+                                    <summary class="cursor-pointer text-blue-600 font-medium">Show Answer</summary>
+                                    <p class="mt-2 text-green-600">Answer: <span class="highlight">old</span> (describes the tree) and <span class="highlight">green</span> (describes the leaves)</p>
                                 </details>
                             </div>
                         </div>
                     </div>
 
                     <!-- Summary -->
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i>
-                        <div>
-                            <h3 class="font-bold">Key Points to Remember</h3>
-                            <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
-                                <li>Adjectives describe nouns</li>
-                                <li>They usually come before the noun</li>
-                                <li>Adjectives can describe size, color, shape, feelings, and more</li>
-                                <li>Using adjectives makes your writing more interesting</li>
-                            </ul>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-600 mr-3 mt-1"></i>
+                            <div>
+                                <h3 class="font-bold text-green-900 mb-2">Key Points to Remember</h3>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-green-800">
+                                    <li>Adjectives describe nouns</li>
+                                    <li>They usually come before the noun</li>
+                                    <li>Adjectives can describe size, color, shape, feelings, and more</li>
+                                    <li>Using adjectives makes your writing more interesting</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sidebar -->
-        <div class="lg:col-span-1">
+            <!-- Sidebar - Hidden on mobile, visible on desktop -->
+            <div class="hidden lg:block lg:col-span-1">
             <!-- Progress -->
-            <div class="card bg-base-100 shadow-xl mb-6">
-                <div class="card-body">
-                    <h3 class="card-title text-lg">Your Progress</h3>
-                    <div class="radial-progress text-primary mb-4" style="--value:60;" role="progressbar">60%</div>
-                    <p class="text-sm text-base-content/70 mb-4">Keep reading to complete this topic</p>
-                    <button class="btn btn-primary btn-sm w-full" onclick="markAsRead()">
+            <div class="bg-white shadow-xl rounded-xl mb-6">
+                <div class="p-6">
+                    <h3 class="text-lg font-bold mb-4">Your Progress</h3>
+                    <div class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-full">
+                        <span class="text-2xl font-bold text-blue-600">60%</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4 text-center">Keep reading to complete this topic</p>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-700 transition-colors" onclick="markAsRead()">
                         <i class="fas fa-check mr-2"></i>
                         Mark as Read
                     </button>
@@ -258,19 +264,19 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="card bg-base-100 shadow-xl mb-6">
-                <div class="card-body">
-                    <h3 class="card-title text-lg">Quick Actions</h3>
-                    <div class="space-y-2">
-                        <a href="#" class="btn btn-outline btn-sm w-full">
+            <div class="bg-white shadow-xl rounded-xl mb-6">
+                <div class="p-6">
+                    <h3 class="text-lg font-bold mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="block w-full text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
                             <i class="fas fa-question-circle mr-2"></i>
                             Take Quiz
                         </a>
-                        <a href="#" class="btn btn-outline btn-sm w-full">
+                        <a href="#" class="block w-full text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
                             <i class="fas fa-file-alt mr-2"></i>
                             Take Test
                         </a>
-                        <a href="#" class="btn btn-outline btn-sm w-full">
+                        <a href="#" class="block w-full text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
                             <i class="fas fa-arrow-left mr-2"></i>
                             Back to Topics
                         </a>
@@ -279,27 +285,27 @@
             </div>
 
             <!-- Study Tips -->
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <h3 class="card-title text-lg">
-                        <i class="fas fa-lightbulb text-warning mr-2"></i>
+            <div class="bg-white shadow-xl rounded-xl">
+                <div class="p-6">
+                    <h3 class="text-lg font-bold mb-4">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
                         Study Tips
                     </h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex items-start">
-                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
                             <span>Read each example out loud</span>
                         </div>
                         <div class="flex items-start">
-                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
                             <span>Try to think of your own examples</span>
                         </div>
                         <div class="flex items-start">
-                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
                             <span>Practice identifying adjectives in books</span>
                         </div>
                         <div class="flex items-start">
-                            <i class="fas fa-check-circle text-success mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
                             <span>Take notes of new adjectives you learn</span>
                         </div>
                     </div>
@@ -307,6 +313,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Mobile Action Bar - Only visible on mobile -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50">
+        <div class="flex space-x-3">
+            <button class="flex-1 bg-blue-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors" onclick="markAsRead()">
+                <i class="fas fa-check mr-2"></i>
+                Mark as Read
+            </button>
+            <a href="#" class="flex-1 border border-gray-300 text-gray-700 px-4 py-3 rounded-lg text-center font-medium hover:bg-gray-50 transition-colors">
+                <i class="fas fa-question-circle mr-2"></i>
+                Take Quiz
+            </a>
+        </div>
+    </div>
+
+    <!-- Add bottom padding to prevent content from being hidden behind mobile action bar -->
+    <div class="lg:hidden h-20"></div>
 </div>
 
 <script>
