@@ -1,10 +1,14 @@
 
 import os
 from pathlib import Path
-from decouple import config
+from decouple import config, Config, RepositoryEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env.local if it exists, otherwise from .env
+env_file = BASE_DIR / '.env.local' if (BASE_DIR / '.env.local').exists() else BASE_DIR / '.env'
+config = Config(RepositoryEnv(env_file))
 
 
 # Quick-start development settings - unsuitable for production
@@ -142,14 +146,14 @@ AUTH_USER_MODEL = 'users.User'
 # Sites framework
 SITE_ID = 1
 
-# Email Configuration - Force SMTP for real emails
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'skillnetservices@gmail.com'
-EMAIL_HOST_PASSWORD = 'tdms ckdk tmgo fado'
-DEFAULT_FROM_EMAIL = 'Mentora <skillnetservices@gmail.com>'
+# Email Configuration - Use environment variables for security
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Mentora <noreply@mentora.com>')
 
 # Django REST Framework
 REST_FRAMEWORK = {
