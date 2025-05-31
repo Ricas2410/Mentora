@@ -11,7 +11,7 @@ class Command(BaseCommand):
             hero = HeroSection.objects.create(
                 title="An Easy Way to Learn and Grow",
                 subtitle="No matter your background",
-                description="Quality education for everyone. Start your learning journey today with our comprehensive, mobile-friendly platform designed specifically for Ghanaian learners.",
+                description="Quality education for everyone. Start your learning journey today with our comprehensive, mobile-friendly platform designed for learners worldwide.",
                 cta_text="Get Started Free",
                 is_active=True
             )
