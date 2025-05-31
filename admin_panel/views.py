@@ -1081,28 +1081,35 @@ class ManageStudyNotesView(AdminRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get all levels for initial dropdown
-        context['levels'] = ClassLevel.objects.filter(is_active=True).order_by('level_number')
+        # Get all subjects for initial dropdown
+        context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
 
         # Get selected filters from GET parameters
-        level_id = self.request.GET.get('level_id')
         subject_id = self.request.GET.get('subject_id')
+        level_id = self.request.GET.get('level_id')
         topic_id = self.request.GET.get('topic_id')
 
-        context['selected_level_id'] = level_id
         context['selected_subject_id'] = subject_id
+        context['selected_level_id'] = level_id
         context['selected_topic_id'] = topic_id
 
-        # Get subjects if level is selected
-        if level_id:
-            context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
-
-        # Get topics if subject is selected
+        # Get levels if subject is selected
         if subject_id:
-            context['topics'] = Topic.objects.filter(
+            context['levels'] = ClassLevel.objects.filter(
                 subject_id=subject_id,
                 is_active=True
-            ).order_by('title')
+            ).order_by('level_number')
+
+        # Get topics if subject and level are selected
+        if subject_id and level_id:
+            try:
+                level = ClassLevel.objects.get(id=level_id, subject_id=subject_id, is_active=True)
+                context['topics'] = Topic.objects.filter(
+                    class_level=level,
+                    is_active=True
+                ).order_by('title')
+            except ClassLevel.DoesNotExist:
+                context['topics'] = Topic.objects.none()
 
         # Get study notes if topic is selected
         if topic_id:
@@ -1117,51 +1124,58 @@ class CreateStudyNoteView(AdminRequiredMixin, View):
     """View for creating study notes"""
 
     def get(self, request):
-        level_id = request.GET.get('level_id')
         subject_id = request.GET.get('subject_id')
+        level_id = request.GET.get('level_id')
         topic_id = request.GET.get('topic_id')
 
         context = {
-            'levels': ClassLevel.objects.filter(is_active=True).order_by('level_number'),
-            'selected_level_id': level_id,
+            'subjects': Subject.objects.filter(is_active=True).order_by('name'),
             'selected_subject_id': subject_id,
+            'selected_level_id': level_id,
             'selected_topic_id': topic_id,
         }
 
-        if level_id:
-            context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
-
         if subject_id:
-            context['topics'] = Topic.objects.filter(
+            context['levels'] = ClassLevel.objects.filter(
                 subject_id=subject_id,
                 is_active=True
-            ).order_by('title')
+            ).order_by('level_number')
+
+        if subject_id and level_id:
+            try:
+                level = ClassLevel.objects.get(id=level_id, subject_id=subject_id, is_active=True)
+                context['topics'] = Topic.objects.filter(
+                    class_level=level,
+                    is_active=True
+                ).order_by('title')
+            except ClassLevel.DoesNotExist:
+                context['topics'] = Topic.objects.none()
 
         return render(request, 'admin_panel/create_study_note.html', context)
 
     def post(self, request):
-        level_id = request.POST.get('level_id')
         subject_id = request.POST.get('subject_id')
+        level_id = request.POST.get('level_id')
         topic_id = request.POST.get('topic_id')
         topic_title = request.POST.get('topic_title', '').strip()
         note_title = request.POST.get('note_title', '').strip()
         content = request.POST.get('content', '').strip()
 
-        if not all([level_id, subject_id, note_title, content]):
+        if not all([subject_id, level_id, note_title, content]):
             messages.error(request, 'Please fill in all required fields.')
-            return redirect(f"{request.path}?level_id={level_id}&subject_id={subject_id}&topic_id={topic_id}")
+            return redirect(f"{request.path}?subject_id={subject_id}&level_id={level_id}&topic_id={topic_id}")
 
         try:
-            level = ClassLevel.objects.get(id=level_id, is_active=True)
-            subject = Subject.objects.get(id=subject_id, is_active=True)
+            # Get the class level that matches both level_id and subject_id
+            level = ClassLevel.objects.get(id=level_id, subject_id=subject_id, is_active=True)
 
             # Create topic if it doesn't exist
             if topic_id:
-                topic = Topic.objects.get(id=topic_id, is_active=True)
+                topic = Topic.objects.get(id=topic_id, class_level=level, is_active=True)
             elif topic_title:
                 topic, created = Topic.objects.get_or_create(
                     title=topic_title,
-                    subject=subject,
+                    class_level=level,
                     defaults={
                         'description': f'Study materials for {topic_title}',
                         'is_active': True
@@ -1171,10 +1185,10 @@ class CreateStudyNoteView(AdminRequiredMixin, View):
                     messages.success(request, f'Created new topic: {topic_title}')
             else:
                 messages.error(request, 'Please select an existing topic or provide a title for a new topic.')
-                return redirect(f"{request.path}?level_id={level_id}&subject_id={subject_id}")
+                return redirect(f"{request.path}?subject_id={subject_id}&level_id={level_id}")
 
             # Create study note
-            study_note = StudyNote.objects.create(
+            StudyNote.objects.create(
                 topic=topic,
                 title=note_title,
                 content=content,
@@ -1182,9 +1196,9 @@ class CreateStudyNoteView(AdminRequiredMixin, View):
             )
 
             messages.success(request, f'Study note "{note_title}" created successfully!')
-            return redirect(f'admin_panel:manage_study_notes?level_id={level_id}&subject_id={subject_id}&topic_id={topic.id}')
+            return redirect(f'admin_panel:manage_study_notes?subject_id={subject_id}&level_id={level_id}&topic_id={topic.id}')
 
-        except (ClassLevel.DoesNotExist, Subject.DoesNotExist, Topic.DoesNotExist):
+        except (ClassLevel.DoesNotExist, Topic.DoesNotExist):
             messages.error(request, 'Invalid selection. Please try again.')
             return redirect('admin_panel:manage_study_notes')
 

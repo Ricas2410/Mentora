@@ -20,31 +20,31 @@
                     <!-- Hierarchical Selection -->
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
-                            <label for="level_id" class="form-label">Grade Level *</label>
-                            <select class="form-select" id="level_id" name="level_id" required onchange="loadSubjects()">
-                                <option value="">Choose Grade...</option>
-                                {% for level in levels %}
-                                    <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level_id %}selected{% endif %}>
-                                        Grade {{ level.level_number }}
+                            <label for="subject_id" class="form-label">Subject *</label>
+                            <select class="form-select" id="subject_id" name="subject_id" required onchange="loadLevels()">
+                                <option value="">Choose Subject...</option>
+                                {% for subject in subjects %}
+                                    <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject_id %}selected{% endif %}>
+                                        {{ subject.name }}
                                     </option>
                                 {% endfor %}
                             </select>
                         </div>
-                        
+
                         <div class="col-md-4">
-                            <label for="subject_id" class="form-label">Subject *</label>
-                            <select class="form-select" id="subject_id" name="subject_id" required onchange="loadTopics()">
-                                <option value="">Choose Subject...</option>
-                                {% if subjects %}
-                                    {% for subject in subjects %}
-                                        <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject_id %}selected{% endif %}>
-                                            {{ subject.name }}
+                            <label for="level_id" class="form-label">Grade Level *</label>
+                            <select class="form-select" id="level_id" name="level_id" required onchange="loadTopics()">
+                                <option value="">Choose Grade...</option>
+                                {% if levels %}
+                                    {% for level in levels %}
+                                        <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level_id %}selected{% endif %}>
+                                            Grade {{ level.level_number }}
                                         </option>
                                     {% endfor %}
                                 {% endif %}
                             </select>
                         </div>
-                        
+
                         <div class="col-md-4">
                             <label for="topic_id" class="form-label">Topic</label>
                             <select class="form-select" id="topic_id" name="topic_id" onchange="toggleTopicCreation()">
@@ -144,32 +144,32 @@
 
 {% block extra_js %}
 <script>
-function loadSubjects() {
-    const levelId = document.getElementById('level_id').value;
-    const subjectSelect = document.getElementById('subject_id');
+function loadLevels() {
+    const subjectId = document.getElementById('subject_id').value;
+    const levelSelect = document.getElementById('level_id');
     const topicSelect = document.getElementById('topic_id');
-    
-    // Clear subjects and topics
-    subjectSelect.innerHTML = '<option value="">Choose Subject...</option>';
+
+    // Clear levels and topics
+    levelSelect.innerHTML = '<option value="">Choose Grade...</option>';
     topicSelect.innerHTML = '<option value="">Choose Existing Topic...</option>';
-    
-    if (levelId) {
-        // Reload page with level_id to get subjects
-        window.location.href = `?level_id=${levelId}`;
+
+    if (subjectId) {
+        // Reload page with subject_id to get levels
+        window.location.href = `?subject_id=${subjectId}`;
     }
 }
 
 function loadTopics() {
-    const levelId = document.getElementById('level_id').value;
     const subjectId = document.getElementById('subject_id').value;
+    const levelId = document.getElementById('level_id').value;
     const topicSelect = document.getElementById('topic_id');
-    
+
     // Clear topics
     topicSelect.innerHTML = '<option value="">Choose Existing Topic...</option>';
-    
-    if (levelId && subjectId) {
-        // Reload page with level_id and subject_id to get topics
-        window.location.href = `?level_id=${levelId}&subject_id=${subjectId}`;
+
+    if (subjectId && levelId) {
+        // Reload page with subject_id and level_id to get topics
+        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}`;
     }
 }
 
