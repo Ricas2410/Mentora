@@ -4,6 +4,9 @@ from . import views
 app_name = 'admin_panel'
 
 urlpatterns = [
+    # Authentication
+    path('login/', views.AdminLoginView.as_view(), name='login'),
+
     # Dashboard
     path('', views.AdminDashboardView.as_view(), name='dashboard'),
 
@@ -28,6 +31,10 @@ urlpatterns = [
     path('questions/create/', views.CreateQuestionView.as_view(), name='create_question'),
     path('questions/<uuid:question_id>/edit/', views.EditQuestionView.as_view(), name='edit_question'),
     path('questions/<uuid:question_id>/delete/', views.DeleteQuestionView.as_view(), name='delete_question'),
+
+    # Study Notes Management
+    path('study-notes/', views.ManageStudyNotesView.as_view(), name='manage_study_notes'),
+    path('study-notes/create/', views.CreateStudyNoteView.as_view(), name='create_study_note'),
 
     # CSV Import/Export
     path('import/', views.CSVImportView.as_view(), name='csv_import'),

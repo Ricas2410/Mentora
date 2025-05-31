@@ -3,6 +3,7 @@ import io
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, View, ListView, DetailView
 from django.http import JsonResponse, HttpResponse
@@ -24,15 +25,78 @@ from .forms import (
 )
 
 
+class AdminLoginView(View):
+    """Custom admin login view"""
+    template_name = 'admin_panel/login.html'
+
+    def get(self, request):
+        # If user is already logged in and is admin, redirect to dashboard
+        if request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser):
+            return redirect('admin_panel:dashboard')
+
+        # If user is logged in but not admin, show access denied
+        if request.user.is_authenticated:
+            return render(request, 'admin_panel/access_denied.html')
+
+        return render(request, self.template_name)
+
+    def post(self, request):
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        remember_me = request.POST.get('remember_me')
+
+        if not username or not password:
+            messages.error(request, 'Please enter both username/email and password.')
+            return render(request, self.template_name)
+
+        # Try to authenticate with username or email
+        user = authenticate(request, username=username, password=password)
+
+        if not user:
+            # Try with email if username failed
+            try:
+                user_obj = User.objects.get(email=username)
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                pass
+
+        if user:
+            if user.is_active:
+                # Check if user is admin
+                if user.is_staff or user.is_superuser:
+                    login(request, user)
+
+                    # Set session expiry
+                    if not remember_me:
+                        request.session.set_expiry(0)  # Browser close
+                    else:
+                        request.session.set_expiry(1209600)  # 2 weeks
+
+                    messages.success(request, f'Welcome to admin panel, {user.first_name}!')
+                    return redirect('admin_panel:dashboard')
+                else:
+                    messages.error(request, 'You do not have admin privileges to access this panel.')
+                    return render(request, 'admin_panel/access_denied.html')
+            else:
+                messages.error(request, 'Your account is inactive. Please contact support.')
+        else:
+            messages.error(request, 'Invalid username/email or password.')
+
+        return render(request, self.template_name)
+
+
 class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     """Mixin to ensure only admin users can access admin views"""
+    login_url = '/my-admin/login/'
 
     def test_func(self):
         return self.request.user.is_staff or self.request.user.is_superuser
 
     def handle_no_permission(self):
-        messages.error(self.request, "You don't have permission to access the admin panel.")
-        return redirect('core:home')
+        if not self.request.user.is_authenticated:
+            return redirect('admin_panel:login')
+        else:
+            return render(self.request, 'admin_panel/access_denied.html')
 
 
 class AdminDashboardView(AdminRequiredMixin, TemplateView):
@@ -1008,6 +1072,121 @@ class QuestionsAPIView(AdminRequiredMixin, View):
             'topic__title', 'topic__class_level__name'
         )
         return JsonResponse({'questions': list(questions_data)})
+
+
+class ManageStudyNotesView(AdminRequiredMixin, TemplateView):
+    """View for managing study notes with hierarchical selection"""
+    template_name = 'admin_panel/manage_study_notes.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get all levels for initial dropdown
+        context['levels'] = ClassLevel.objects.filter(is_active=True).order_by('level_number')
+
+        # Get selected filters from GET parameters
+        level_id = self.request.GET.get('level_id')
+        subject_id = self.request.GET.get('subject_id')
+        topic_id = self.request.GET.get('topic_id')
+
+        context['selected_level_id'] = level_id
+        context['selected_subject_id'] = subject_id
+        context['selected_topic_id'] = topic_id
+
+        # Get subjects if level is selected
+        if level_id:
+            context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
+
+        # Get topics if subject is selected
+        if subject_id:
+            context['topics'] = Topic.objects.filter(
+                subject_id=subject_id,
+                is_active=True
+            ).order_by('title')
+
+        # Get study notes if topic is selected
+        if topic_id:
+            context['study_notes'] = StudyNote.objects.filter(
+                topic_id=topic_id
+            ).order_by('-created_at')
+
+        return context
+
+
+class CreateStudyNoteView(AdminRequiredMixin, View):
+    """View for creating study notes"""
+
+    def get(self, request):
+        level_id = request.GET.get('level_id')
+        subject_id = request.GET.get('subject_id')
+        topic_id = request.GET.get('topic_id')
+
+        context = {
+            'levels': ClassLevel.objects.filter(is_active=True).order_by('level_number'),
+            'selected_level_id': level_id,
+            'selected_subject_id': subject_id,
+            'selected_topic_id': topic_id,
+        }
+
+        if level_id:
+            context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
+
+        if subject_id:
+            context['topics'] = Topic.objects.filter(
+                subject_id=subject_id,
+                is_active=True
+            ).order_by('title')
+
+        return render(request, 'admin_panel/create_study_note.html', context)
+
+    def post(self, request):
+        level_id = request.POST.get('level_id')
+        subject_id = request.POST.get('subject_id')
+        topic_id = request.POST.get('topic_id')
+        topic_title = request.POST.get('topic_title', '').strip()
+        note_title = request.POST.get('note_title', '').strip()
+        content = request.POST.get('content', '').strip()
+
+        if not all([level_id, subject_id, note_title, content]):
+            messages.error(request, 'Please fill in all required fields.')
+            return redirect(f"{request.path}?level_id={level_id}&subject_id={subject_id}&topic_id={topic_id}")
+
+        try:
+            level = ClassLevel.objects.get(id=level_id, is_active=True)
+            subject = Subject.objects.get(id=subject_id, is_active=True)
+
+            # Create topic if it doesn't exist
+            if topic_id:
+                topic = Topic.objects.get(id=topic_id, is_active=True)
+            elif topic_title:
+                topic, created = Topic.objects.get_or_create(
+                    title=topic_title,
+                    subject=subject,
+                    defaults={
+                        'description': f'Study materials for {topic_title}',
+                        'is_active': True
+                    }
+                )
+                if created:
+                    messages.success(request, f'Created new topic: {topic_title}')
+            else:
+                messages.error(request, 'Please select an existing topic or provide a title for a new topic.')
+                return redirect(f"{request.path}?level_id={level_id}&subject_id={subject_id}")
+
+            # Create study note
+            study_note = StudyNote.objects.create(
+                topic=topic,
+                title=note_title,
+                content=content,
+                created_by=request.user
+            )
+
+            messages.success(request, f'Study note "{note_title}" created successfully!')
+            return redirect(f'admin_panel:manage_study_notes?level_id={level_id}&subject_id={subject_id}&topic_id={topic.id}')
+
+        except (ClassLevel.DoesNotExist, Subject.DoesNotExist, Topic.DoesNotExist):
+            messages.error(request, 'Invalid selection. Please try again.')
+            return redirect('admin_panel:manage_study_notes')
 
 
 class ImportLogsView(AdminRequiredMixin, ListView):
