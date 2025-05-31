@@ -9,6 +9,9 @@ urlpatterns = [
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('profile/update/', views.UpdateProfileView.as_view(), name='update_profile'),
+
+    # API endpoints
+    path('api/stats/', views.UserStatsAPIView.as_view(), name='api_user_stats'),
     path('verify-email/<str:token>/', views.VerifyEmailView.as_view(), name='verify_email'),
     path('resend-verification/', views.ResendVerificationView.as_view(), name='resend_verification'),
 

@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.db import transaction
+from django.http import JsonResponse
 from .models import User, EmailVerification, PasswordReset
 
 
@@ -274,7 +275,9 @@ class UpdateProfileView(LoginRequiredMixin, View):
             return redirect('users:profile')
 
         except Exception as e:
-            messages.error(request, 'An error occurred while updating your profile. Please try again.')
+            # Log the actual error for debugging
+            print(f"Profile update error: {e}")
+            messages.error(request, f'An error occurred while updating your profile: {str(e)}')
             return redirect('users:profile')
 
 
@@ -531,3 +534,101 @@ class PasswordResetConfirmView(View):
 
 class PasswordResetCompleteView(TemplateView):
     template_name = 'users/password_reset_complete.html'
+
+
+class UserStatsAPIView(LoginRequiredMixin, View):
+    """API endpoint for user statistics"""
+
+    def get(self, request):
+        try:
+            user = request.user
+
+            # Import models here to avoid circular imports
+            from progress.models import UserProgress, TopicProgress
+            from content.models import Quiz
+
+            # Calculate user statistics
+            total_quizzes = Quiz.objects.filter(user=user).count()
+            completed_quizzes = Quiz.objects.filter(user=user, is_completed=True).count()
+            passed_quizzes = Quiz.objects.filter(user=user, is_completed=True, percentage__gte=70).count()
+
+            # Progress statistics
+            total_progress = UserProgress.objects.filter(user=user).count()
+            completed_progress = UserProgress.objects.filter(user=user, is_completed=True).count()
+
+            # Topic progress
+            total_topics = TopicProgress.objects.filter(user=user).count()
+            completed_topics = TopicProgress.objects.filter(user=user, is_completed=True).count()
+
+            # Calculate completion percentage
+            completion_percentage = 0
+            if total_topics > 0:
+                completion_percentage = round((completed_topics / total_topics) * 100, 1)
+
+            # Calculate average score
+            avg_score = 0
+            if completed_quizzes > 0:
+                total_score = sum(quiz.percentage for quiz in Quiz.objects.filter(user=user, is_completed=True))
+                avg_score = round(total_score / completed_quizzes, 1)
+
+            # Calculate study time (estimate based on completed activities)
+            study_time_hours = completed_quizzes * 0.5 + completed_topics * 0.3  # Rough estimate
+
+            # Format study time
+            if study_time_hours < 1:
+                study_time = f"{int(study_time_hours * 60)}m"
+            else:
+                study_time = f"{int(study_time_hours)}h"
+
+            # Calculate achievements (based on milestones)
+            achievements = 0
+            if completed_quizzes >= 1:
+                achievements += 1  # First quiz
+            if completed_quizzes >= 5:
+                achievements += 1  # Quiz master
+            if completed_quizzes >= 10:
+                achievements += 1  # Quiz expert
+            if avg_score >= 80:
+                achievements += 1  # High achiever
+            if avg_score >= 90:
+                achievements += 1  # Excellence
+            if completion_percentage >= 25:
+                achievements += 1  # Quarter complete
+            if completion_percentage >= 50:
+                achievements += 1  # Half complete
+            if completion_percentage >= 75:
+                achievements += 1  # Almost there
+            if completion_percentage >= 100:
+                achievements += 1  # Complete mastery
+
+            # Return statistics
+            stats = {
+                'levels_completed': completed_topics,
+                'study_time': study_time,
+                'achievements': achievements,
+                'total_quizzes': total_quizzes,
+                'completed_quizzes': completed_quizzes,
+                'passed_quizzes': passed_quizzes,
+                'avg_score': avg_score,
+                'completion_percentage': completion_percentage,
+                'total_topics': total_topics,
+                'completed_topics': completed_topics,
+            }
+
+            return JsonResponse(stats)
+
+        except Exception as e:
+            # Return default values if there's an error
+            return JsonResponse({
+                'levels_completed': 0,
+                'study_time': '0h',
+                'achievements': 0,
+                'total_quizzes': 0,
+                'completed_quizzes': 0,
+                'passed_quizzes': 0,
+                'avg_score': 0,
+                'completion_percentage': 0,
+                'total_topics': 0,
+                'completed_topics': 0,
+                'error': 'Could not load statistics'
+            })

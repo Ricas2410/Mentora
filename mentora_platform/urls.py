@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from subjects.views import UserCurrentProgressAPIView, UserGradeSubjectsAPIView
+from users.views import UserStatsAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +34,7 @@ urlpatterns = [
     # API endpoints
     path('api/user/current-progress/', UserCurrentProgressAPIView.as_view(), name='api_user_current_progress'),
     path('api/user/grade-<int:grade_number>/subjects/', UserGradeSubjectsAPIView.as_view(), name='api_user_grade_subjects'),
+    path('api/user/stats/', UserStatsAPIView.as_view(), name='api_user_stats'),
 ]
 
 # Serve media files during development
