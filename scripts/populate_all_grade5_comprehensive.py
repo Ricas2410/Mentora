@@ -57,10 +57,11 @@ def main():
     # List of scripts to run in order
     scripts = [
         'populate_grade5_english_comprehensive.py',
-        'populate_grade5_mathematics_comprehensive.py', 
+        'populate_grade5_mathematics_comprehensive.py',
         'populate_grade5_science_comprehensive.py',
         'populate_grade5_social_studies_comprehensive.py',
-        'populate_grade5_life_skills_comprehensive.py'
+        'populate_grade5_life_skills_comprehensive.py',
+        'add_more_grade5_comprehensive_content.py'
     ]
     
     successful_scripts = []
