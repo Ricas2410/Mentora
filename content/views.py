@@ -826,9 +826,12 @@ def submit_exam(request):
         topics = level.topics.filter(is_active=True)
         all_questions = Question.objects.filter(topic__in=topics, is_active=True)
 
+        # Get the actual total number of questions in the exam (not just answered ones)
+        total_exam_questions = all_questions.count()
+
         # Process answers
         correct_answers = 0
-        total_questions = len(answers)
+        total_questions = len(answers)  # Number of questions answered
         exam_answers_data = []
 
         for question_id, user_answer in answers.items():
@@ -864,12 +867,12 @@ def submit_exam(request):
             except Question.DoesNotExist:
                 continue
 
-        # Calculate percentage
-        percentage = (correct_answers / total_questions * 100) if total_questions > 0 else 0
+        # Calculate percentage based on total exam questions, not just answered ones
+        percentage = (correct_answers / total_exam_questions * 100) if total_exam_questions > 0 else 0
 
         # Update exam record
         exam.score = correct_answers
-        exam.total_points = total_questions
+        exam.total_points = total_exam_questions  # Use total exam questions, not just answered
         exam.percentage = percentage
         exam.passed = percentage >= exam.pass_percentage
         exam.is_completed = True
@@ -911,7 +914,7 @@ def submit_exam(request):
             'message': 'Exam submitted successfully',
             'exam_id': str(exam.id),
             'score': correct_answers,
-            'total': total_questions,
+            'total': total_exam_questions,  # Return total exam questions, not just answered
             'percentage': percentage,
             'passed': exam.passed,
             'pass_percentage': exam.pass_percentage

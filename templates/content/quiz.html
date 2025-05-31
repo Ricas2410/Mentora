@@ -558,6 +558,121 @@ function generateQuestionHTML(question) {
     `;
 }
 
+// Generate read-only HTML for already answered questions
+function generateReadOnlyQuestionHTML(question, questionIndex) {
+    // Find the result for this question
+    const result = quizResults.find(r => r.question.id === question.id);
+    if (!result) return generateQuestionHTML(question); // Fallback to regular if no result found
+
+    const isCorrect = result.isCorrect;
+    const selectedChoice = result.selectedChoice;
+    const correctChoice = result.correctChoice;
+
+    let html = `
+        <div class="question-container bg-blue-50 border border-blue-200 rounded-xl p-4 md:p-6 mb-4">
+            <div class="flex items-center mb-3">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 ${isCorrect ? 'bg-green-100' : 'bg-red-100'}">
+                    <i class="fas ${isCorrect ? 'fa-check text-green-600' : 'fa-times text-red-600'}"></i>
+                </div>
+                <span class="text-sm font-medium text-blue-800">Previously Answered - Review Mode</span>
+            </div>
+
+            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">${question.text}</h2>
+    `;
+
+    if (question.type === 'multiple_choice') {
+        html += '<div class="space-y-3">';
+        question.choices.forEach(choice => {
+            const isSelected = selectedChoice && choice.id === selectedChoice.id;
+            const isCorrectChoice = choice.isCorrect;
+            let cardClass = 'border-2 rounded-lg p-3 md:p-4 cursor-default ';
+
+            if (isCorrectChoice) {
+                cardClass += 'border-green-500 bg-green-50';
+            } else if (isSelected && !isCorrect) {
+                cardClass += 'border-red-500 bg-red-50';
+            } else {
+                cardClass += 'border-gray-200 bg-gray-50';
+            }
+
+            html += `
+                <div class="${cardClass}">
+                    <div class="flex items-center">
+                        <div class="w-5 h-5 border-2 rounded-full mr-3 flex items-center justify-center ${isCorrectChoice ? 'border-green-500' : isSelected ? 'border-red-500' : 'border-gray-400'}">
+                            ${(isCorrectChoice || isSelected) ? `<div class="w-3 h-3 rounded-full ${isCorrectChoice ? 'bg-green-500' : 'bg-red-500'}"></div>` : ''}
+                        </div>
+                        <span class="text-gray-800">${choice.text}</span>
+                        ${isSelected ? '<span class="ml-auto text-sm font-medium text-blue-600">Your Answer</span>' : ''}
+                        ${isCorrectChoice ? '<span class="ml-auto text-sm font-medium text-green-600">Correct Answer</span>' : ''}
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+    } else if (question.type === 'true_false') {
+        const choices = [
+            { id: 'true', text: 'True', isCorrect: question.correctAnswer.toLowerCase() === 'true' },
+            { id: 'false', text: 'False', isCorrect: question.correctAnswer.toLowerCase() === 'false' }
+        ];
+
+        html += '<div class="space-y-3">';
+        choices.forEach(choice => {
+            const isSelected = selectedChoice && choice.id === selectedChoice.id;
+            const isCorrectChoice = choice.isCorrect;
+            let cardClass = 'border-2 rounded-lg p-3 md:p-4 cursor-default ';
+
+            if (isCorrectChoice) {
+                cardClass += 'border-green-500 bg-green-50';
+            } else if (isSelected && !isCorrect) {
+                cardClass += 'border-red-500 bg-red-50';
+            } else {
+                cardClass += 'border-gray-200 bg-gray-50';
+            }
+
+            html += `
+                <div class="${cardClass}">
+                    <div class="flex items-center">
+                        <div class="w-5 h-5 border-2 rounded-full mr-3 flex items-center justify-center ${isCorrectChoice ? 'border-green-500' : isSelected ? 'border-red-500' : 'border-gray-400'}">
+                            ${(isCorrectChoice || isSelected) ? `<div class="w-3 h-3 rounded-full ${isCorrectChoice ? 'bg-green-500' : 'bg-red-500'}"></div>` : ''}
+                        </div>
+                        <span class="text-gray-800">${choice.text}</span>
+                        ${isSelected ? '<span class="ml-auto text-sm font-medium text-blue-600">Your Answer</span>' : ''}
+                        ${isCorrectChoice ? '<span class="ml-auto text-sm font-medium text-green-600">Correct Answer</span>' : ''}
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+    } else {
+        // Text input questions
+        html += `
+            <div class="space-y-3">
+                <div class="border-2 rounded-lg p-3 md:p-4 ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Your Answer:</label>
+                    <div class="text-gray-800 font-medium">${selectedChoice ? selectedChoice.text : 'No answer provided'}</div>
+                </div>
+                <div class="border-2 border-green-500 bg-green-50 rounded-lg p-3 md:p-4">
+                    <label class="block text-sm font-medium text-green-700 mb-2">Correct Answer:</label>
+                    <div class="text-green-800 font-medium">${correctChoice.text}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Add explanation if available
+    if (question.explanation) {
+        html += `
+            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 class="font-semibold text-blue-800 mb-2">Explanation:</h4>
+                <p class="text-blue-700">${question.explanation}</p>
+            </div>
+        `;
+    }
+
+    html += '</div>';
+    return html;
+}
+
 function showQuestion(index) {
     if (!questions || !questions[index]) {
         return;
@@ -566,9 +681,16 @@ function showQuestion(index) {
     const question = questions[index];
     const progress = ((index + 1) / totalQuestions) * 100;
 
-    // Reset question state
-    isAnswered = false;
-    questionStartTime = Date.now();
+    // Check if this question was already answered
+    const wasAnswered = quizResults.some(result => result.question.id === question.id);
+
+    // Reset question state only if not previously answered
+    if (!wasAnswered) {
+        isAnswered = false;
+        questionStartTime = Date.now();
+    } else {
+        isAnswered = true; // Mark as answered to prevent changes
+    }
 
     // Clear any existing timers
     if (questionTimer) clearInterval(questionTimer);
@@ -584,15 +706,20 @@ function showQuestion(index) {
     document.getElementById('questionCounter').textContent = `${index + 1} of ${totalQuestions}`;
 
     // Show question with appropriate interface based on type
-    document.getElementById('quizContent').innerHTML = generateQuestionHTML(question);
+    if (wasAnswered) {
+        // Show read-only version with previous answer and explanation
+        document.getElementById('quizContent').innerHTML = generateReadOnlyQuestionHTML(question, index);
+    } else {
+        // Show interactive version
+        document.getElementById('quizContent').innerHTML = generateQuestionHTML(question);
+        // Start question timer only for new questions
+        startQuestionTimer(question);
+    }
 
     // Update navigation buttons
     document.getElementById('prevBtn').disabled = index === 0;
     document.getElementById('nextBtn').style.display = index === totalQuestions - 1 ? 'none' : 'block';
     document.getElementById('submitBtn').style.display = index === totalQuestions - 1 ? 'block' : 'none';
-
-    // Start question timer
-    startQuestionTimer(question);
 }
 
 function selectOption(questionId, choiceId) {
@@ -1159,14 +1286,16 @@ function closeFeedbackModal() {
 
 // Navigation functions
 document.getElementById('prevBtn').addEventListener('click', () => {
-    if (currentQuestion > 0 && !isAnswered) {
+    if (currentQuestion > 0) {
+        // Allow navigation back but show read-only view if question was already answered
         currentQuestion--;
         showQuestion(currentQuestion);
     }
 });
 
 document.getElementById('nextBtn').addEventListener('click', () => {
-    if (currentQuestion < totalQuestions - 1 && !isAnswered) {
+    if (currentQuestion < totalQuestions - 1) {
+        // Allow navigation forward but show read-only view if question was already answered
         currentQuestion++;
         showQuestion(currentQuestion);
     }
