@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 import uuid
+import re
 
 
 class User(AbstractUser):
@@ -57,7 +58,7 @@ class User(AbstractUser):
     last_login_ip = models.GenericIPAddressField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     class Meta:
         db_table = 'users'
@@ -70,6 +71,37 @@ class User(AbstractUser):
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
+
+    @staticmethod
+    def generate_username_from_email(email):
+        """
+        Generate a unique username from email address
+        """
+        # Extract the part before @ from email
+        base_username = email.split('@')[0]
+
+        # Clean the username - remove special characters except underscore
+        base_username = re.sub(r'[^a-zA-Z0-9_]', '', base_username)
+
+        # Ensure it starts with a letter
+        if not base_username or not base_username[0].isalpha():
+            base_username = 'user_' + base_username
+
+        # Limit length to 30 characters (Django's default max_length for username)
+        base_username = base_username[:26]  # Leave room for numbers
+
+        # Check if username exists, if so, add numbers
+        username = base_username
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}_{counter}"
+            counter += 1
+            # Ensure we don't exceed 30 characters
+            if len(username) > 30:
+                base_username = base_username[:26-len(str(counter))]
+                username = f"{base_username}_{counter}"
+
+        return username
 
     def get_current_level(self):
         """Get user's current learning level"""

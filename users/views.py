@@ -23,7 +23,6 @@ class RegisterView(View):
             first_name = request.POST.get('first_name', '').strip()
             last_name = request.POST.get('last_name', '').strip()
             email = request.POST.get('email', '').strip().lower()
-            username = request.POST.get('username', '').strip()
             password1 = request.POST.get('password1', '')
             password2 = request.POST.get('password2', '')
             date_of_birth = request.POST.get('date_of_birth', '')
@@ -32,7 +31,7 @@ class RegisterView(View):
             # Validation
             errors = []
 
-            if not all([first_name, last_name, email, username, password1, password2]):
+            if not all([first_name, last_name, email, password1, password2]):
                 errors.append('All required fields must be filled.')
 
             if password1 != password2:
@@ -44,13 +43,13 @@ class RegisterView(View):
             if User.objects.filter(email=email).exists():
                 errors.append('An account with this email already exists.')
 
-            if User.objects.filter(username=username).exists():
-                errors.append('This username is already taken.')
-
             if errors:
                 for error in errors:
                     messages.error(request, error)
                 return render(request, self.template_name)
+
+            # Auto-generate username from email
+            username = User.generate_username_from_email(email)
 
             # Create user
             with transaction.atomic():
