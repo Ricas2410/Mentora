@@ -71,10 +71,15 @@ class RegisterView(View):
                 verification = EmailVerification.create_verification(user)
 
                 # Send verification email
-                self.send_verification_email(user, verification)
+                email_sent = self.send_verification_email(user, verification)
 
-                messages.success(request,
-                    'Account created successfully! Please check your email to verify your account.')
+                if email_sent:
+                    messages.success(request,
+                        'Account created successfully! Please check your email to verify your account.')
+                else:
+                    messages.warning(request,
+                        'Account created successfully! However, we couldn\'t send the verification email. Please contact support.')
+
                 return redirect('users:login')
 
         except Exception as e:
@@ -121,8 +126,15 @@ class RegisterView(View):
             email.attach_alternative(html_content, "text/html")
             email.send()
 
+            # Log success
+            print(f"✅ Verification email sent to: {user.email}")
+            print(f"🔗 Verification URL: {verification_url}")
+
+            return True
+
         except Exception as e:
-            print(f"Failed to send verification email: {e}")
+            print(f"❌ Failed to send verification email to {user.email}: {e}")
+            return False
 
 
 class LoginView(View):
@@ -338,9 +350,13 @@ class ResendVerificationView(View):
             verification = EmailVerification.create_verification(user)
 
             # Send verification email
-            self.send_verification_email(user, verification)
+            email_sent = self.send_verification_email(user, verification)
 
-            messages.success(request, 'Verification email sent! Please check your inbox.')
+            if email_sent:
+                messages.success(request, 'Verification email sent! Please check your inbox.')
+            else:
+                messages.error(request, 'Failed to send verification email. Please try again or contact support.')
+
             return redirect('users:login')
 
         except User.DoesNotExist:
@@ -390,8 +406,15 @@ class ResendVerificationView(View):
             email.attach_alternative(html_content, "text/html")
             email.send()
 
+            # Log success
+            print(f"✅ Verification email sent to: {user.email}")
+            print(f"🔗 Verification URL: {verification_url}")
+
+            return True
+
         except Exception as e:
-            print(f"Failed to send verification email: {e}")
+            print(f"❌ Failed to send verification email to {user.email}: {e}")
+            return False
 
 
 class PasswordResetView(View):
