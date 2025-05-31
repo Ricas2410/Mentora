@@ -79,6 +79,148 @@
         50% { opacity: 0.7; }
     }
 
+    /* Laptop optimizations - Compact layout for 12-15 inch screens */
+    @media (min-width: 641px) and (max-width: 1440px) and (min-height: 600px) and (max-height: 900px) {
+        .quiz-container {
+            padding: 0.5rem !important;
+        }
+
+        .quiz-card {
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        /* Compact header */
+        .quiz-card .p-6:first-child {
+            padding: 1rem !important;
+        }
+
+        /* Compact quiz content */
+        .quiz-card .p-6:not(:first-child) {
+            padding: 1rem !important;
+        }
+
+        /* Smaller question text */
+        .quiz-card h3 {
+            font-size: 1.125rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        /* Compact option cards */
+        .option-card .flex {
+            padding: 0.75rem !important;
+        }
+
+        /* Compact navigation */
+        .quiz-card .border-t {
+            padding: 1rem !important;
+        }
+
+        /* Smaller buttons */
+        .quiz-card button {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.875rem !important;
+        }
+
+        /* Compact progress bar area */
+        .bg-blue-50.rounded-lg {
+            padding: 0.5rem !important;
+        }
+
+        /* Reduce spacing between elements */
+        .space-y-3 > * + * {
+            margin-top: 0.5rem !important;
+        }
+
+        /* Compact timer display */
+        #questionTimeDisplay {
+            font-size: 1rem !important;
+        }
+
+        /* Smaller icons */
+        .quiz-card i {
+            font-size: 0.875rem !important;
+        }
+
+        /* Compact start screen */
+        #quizStartScreen {
+            padding: 1.5rem !important;
+        }
+
+        #quizStartScreen .w-16.h-16,
+        #quizStartScreen .w-24.h-24 {
+            width: 3rem !important;
+            height: 3rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        #quizStartScreen h2 {
+            font-size: 1.5rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        #quizStartScreen p {
+            font-size: 0.875rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        /* Compact quiz info grid */
+        #quizStartScreen .grid {
+            gap: 0.5rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        #quizStartScreen .grid > div {
+            padding: 0.5rem !important;
+        }
+
+        /* Compact instructions */
+        #quizStartScreen .bg-yellow-50 {
+            padding: 0.75rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        #quizStartScreen .bg-yellow-50 ul {
+            font-size: 0.75rem !important;
+        }
+
+        /* Compact comprehension passage */
+        .quiz-card .bg-blue-50 {
+            padding: 1rem !important;
+        }
+
+        .quiz-card .bg-blue-50 h3 {
+            font-size: 1rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        .quiz-card .bg-blue-50 .bg-white {
+            padding: 0.75rem !important;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .quiz-card .bg-blue-50 .prose {
+            font-size: 0.875rem !important;
+            line-height: 1.4 !important;
+        }
+
+        /* Compact feedback modal for laptops */
+        #feedbackModal .bg-white {
+            max-height: 80vh !important;
+        }
+
+        /* Compact question counter */
+        .quiz-card .text-xl.font-bold {
+            font-size: 1.125rem !important;
+        }
+
+        /* Compact progress bar */
+        .quiz-card .h-2 {
+            height: 0.375rem !important;
+        }
+    }
+
     /* Mobile optimizations - Full width and better spacing */
     @media (max-width: 640px) {
         .quiz-container {
