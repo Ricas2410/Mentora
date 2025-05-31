@@ -124,51 +124,113 @@ Adverbs describe verbs, adjectives, or other adverbs.
 - "The music was **extremely** loud." (how much)
 
 ---
+---
 
 ## Part 2: Verb Tenses - When Things Happen
 
 ### Present Tense - Happening Now
 
 **Simple Present:**
-- Facts: "The sun **rises** in the east."
-- Habits: "I **brush** my teeth every morning."
-- Current states: "She **lives** in Chicago."
+
+* Facts: "The sun **rises** in the east."
+
+  * *(Used for general truths or facts that are always true, regardless of time.)*
+
+* Habits: "I **brush** my teeth every morning."
+
+  * *(Used for actions we do regularly or on a routine basis.)*
+
+* Current states: "She **lives** in Chicago."
+
+  * *(Describes a permanent or long-term situation in the present.)*
 
 **Present Continuous (Progressive):**
-- Right now: "I **am writing** a text message."
-- Temporary situations: "He **is staying** with his grandparents this week."
+
+* Right now: "I **am writing** a text message."
+
+  * *(Used for actions that are happening at the exact moment of speaking.)*
+
+* Temporary situations: "He **is staying** with his grandparents this week."
+
+  * *(Describes temporary or short-term actions happening around now.)*
 
 **Present Perfect:**
-- Past action affecting now: "I **have finished** my homework." (so now I'm free)
-- Experience: "She **has visited** Paris." (in her lifetime)
+
+* Past action affecting now: "I **have finished** my homework." (so now I'm free)
+
+  * *(Shows that an action was completed in the past but has a result in the present.)*
+
+* Experience: "She **has visited** Paris." (in her lifetime)
+
+  * *(Describes an action that occurred at an unspecified time in the past, focusing on the experience rather than when it happened.)*
+
+---
 
 ### Past Tense - Already Happened
 
 **Simple Past:**
-- Completed actions: "Yesterday, I **walked** to school."
-- Regular verbs add -ed: walk → walked, play → played
-- Irregular verbs change: go → went, eat → ate, see → saw
+
+* Completed actions: "Yesterday, I **walked** to school."
+
+  * *(Used for actions that are finished and completed at a specific time in the past.)*
+
+* Regular verbs add -ed: walk → walked, play → played
+
+  * *(For regular verbs, simply add -ed to the base form to create the past tense.)*
+
+* Irregular verbs change: go → went, eat → ate, see → saw
+
+  * *(Irregular verbs don’t follow the regular -ed rule, so you need to memorize their forms.)*
 
 **Past Continuous:**
-- Ongoing past action: "I **was watching** TV when you called."
-- Two past actions: "While she **was cooking**, he **was setting** the table."
+
+* Ongoing past action: "I **was watching** TV when you called."
+
+  * *(Describes an action that was in progress at a specific moment in the past.)*
+
+* Two past actions: "While she **was cooking**, he **was setting** the table."
+
+  * *(Used for two actions happening at the same time in the past.)*
 
 **Past Perfect:**
-- Earlier past action: "I **had eaten** dinner before the movie started."
+
+* Earlier past action: "I **had eaten** dinner before the movie started."
+
+  * *(Describes an action that happened before another action in the past.)*
+
+---
 
 ### Future Tense - Will Happen
 
 **Simple Future:**
-- Will + verb: "I **will call** you tomorrow."
-- Going to + verb: "We **are going to** have pizza tonight."
+
+* Will + verb: "I **will call** you tomorrow."
+
+  * *(Used for predictions, promises, or decisions made at the moment of speaking.)*
+
+* Going to + verb: "We **are going to** have pizza tonight."
+
+  * *(Used for plans or things that are certain to happen in the near future.)*
 
 **Future Continuous:**
-- Ongoing future action: "This time tomorrow, I **will be flying** to New York."
+
+* Ongoing future action: "This time tomorrow, I **will be flying** to New York."
+
+  * *(Describes an action that will be in progress at a specific time in the future.)*
 
 **Real-life Tense Examples:**
-- **Present:** "I **am** hungry." / "I **eat** breakfast every day."
-- **Past:** "I **was** hungry." / "I **ate** breakfast an hour ago."
-- **Future:** "I **will be** hungry." / "I **will eat** breakfast tomorrow."
+
+* **Present:** "I **am** hungry." / "I **eat** breakfast every day."
+
+  * *(Describes something happening now or a regular habit.)*
+
+* **Past:** "I **was** hungry." / "I **ate** breakfast an hour ago."
+
+  * *(Describes a past state or a completed action.)*
+
+* **Future:** "I **will be** hungry." / "I **will eat** breakfast tomorrow."
+
+  * *(Describes a future state or planned action.)*
 
 ---
 
