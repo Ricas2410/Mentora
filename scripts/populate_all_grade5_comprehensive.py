@@ -56,6 +56,7 @@ def main():
     
     # List of scripts to run in order
     scripts = [
+        'fix_topic_order_conflicts.py',  # Fix any database conflicts first
         'populate_grade5_english_comprehensive.py',
         'populate_grade5_mathematics_comprehensive.py',
         'populate_grade5_science_comprehensive.py',

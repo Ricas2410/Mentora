@@ -75,15 +75,31 @@ def create_life_skills_content():
     ]
     
     for topic_data in topics_data:
-        topic, created = Topic.objects.get_or_create(
+        # Check if topic already exists
+        existing_topic = Topic.objects.filter(
             title=topic_data['title'],
-            class_level=grade5_life,
-            defaults={
-                'description': topic_data['description'],
-                'order': topic_data['order'],
-                'is_active': True
-            }
-        )
+            class_level=grade5_life
+        ).first()
+
+        if existing_topic:
+            topic = existing_topic
+            created = False
+            print(f"📝 Topic already exists: {topic.title}")
+        else:
+            # Find the next available order number
+            existing_orders = Topic.objects.filter(class_level=grade5_life).values_list('order', flat=True)
+            next_order = 1
+            while next_order in existing_orders:
+                next_order += 1
+
+            topic = Topic.objects.create(
+                title=topic_data['title'],
+                class_level=grade5_life,
+                description=topic_data['description'],
+                order=next_order,
+                is_active=True
+            )
+            created = True
         
         if created:
             print(f"✅ Created topic: {topic.title}")
@@ -360,7 +376,7 @@ Good hygiene helps you:
     
     if topic.title in study_notes_data:
         note_data = study_notes_data[topic.title]
-        study_note, created = StudyNote.objects.get_or_create(
+        study_note, note_created = StudyNote.objects.get_or_create(
             topic=topic,
             title=note_data['title'],
             defaults={
@@ -369,8 +385,8 @@ Good hygiene helps you:
                 'is_active': True
             }
         )
-        
-        if created:
+
+        if note_created:
             print(f"  📚 Created study note: {note_data['title']}")
 
 def create_quiz_questions(topic):
@@ -430,7 +446,7 @@ def create_quiz_questions(topic):
     
     if topic.title in questions_data:
         for i, q_data in enumerate(questions_data[topic.title]):
-            question, created = Question.objects.get_or_create(
+            question, question_created = Question.objects.get_or_create(
                 topic=topic,
                 question_text=q_data['question_text'],
                 defaults={
@@ -440,10 +456,10 @@ def create_quiz_questions(topic):
                     'is_active': True
                 }
             )
-            
-            if created:
+
+            if question_created:
                 print(f"  ❓ Created question: {q_data['question_text'][:50]}...")
-                
+
                 # Create answer choices
                 for choice_data in q_data['choices']:
                     AnswerChoice.objects.create(
