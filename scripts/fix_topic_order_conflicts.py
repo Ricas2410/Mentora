@@ -98,17 +98,17 @@ def reset_all_topic_orders():
                 print(f"    ✅ '{topic.title}' → order {index}")
 
 if __name__ == '__main__':
-    print("🛠️  TOPIC ORDER CONFLICT RESOLVER")
+    print("TOPIC ORDER CONFLICT RESOLVER")
     print("=" * 50)
-    
+
     # First, reset all orders to avoid conflicts
     reset_all_topic_orders()
-    
+
     # Then check for any remaining issues
     if check_for_duplicates():
-        print("\n🎉 All topic order conflicts have been resolved!")
-        print("✅ You can now run the content population scripts safely.")
+        print("\nAll topic order conflicts have been resolved!")
+        print("You can now run the content population scripts safely.")
     else:
-        print("\n⚠️  Some conflicts may still exist. Running fix again...")
+        print("\nSome conflicts may still exist. Running fix again...")
         fix_topic_orders()
         check_for_duplicates()
