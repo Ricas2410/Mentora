@@ -97,12 +97,15 @@ class RegisterView(View):
             try:
                 current_site = Site.objects.get_current()
                 domain = current_site.domain
+                # Use HTTPS for production domains, HTTP for localhost
+                protocol = 'https' if 'localhost' not in domain and '127.0.0.1' not in domain else 'http'
             except:
                 # Fallback to localhost for development
                 domain = 'localhost:8000'
+                protocol = 'http'
 
             # Build verification URL
-            verification_url = f"http://{domain}/auth/verify-email/{verification.token}/"
+            verification_url = f"{protocol}://{domain}/auth/verify-email/{verification.token}/"
 
             # Prepare context for email templates
             context = {
@@ -298,31 +301,59 @@ class VerifyEmailView(View):
 
     def get(self, request, token):
         try:
-            verification = get_object_or_404(EmailVerification, token=token, is_used=False)
+            # Debug: Print token info
+            print(f"🔍 Verification attempt for token: {token}")
 
+            # Check if verification exists
+            try:
+                verification = EmailVerification.objects.get(token=token)
+                print(f"✅ Found verification for user: {verification.user.email}")
+                print(f"📅 Created: {verification.created_at}")
+                print(f"⏰ Expires: {verification.expires_at}")
+                print(f"🔒 Is used: {verification.is_used}")
+            except EmailVerification.DoesNotExist:
+                print(f"❌ No verification found for token: {token}")
+                messages.error(request, 'Invalid verification link. Please request a new one.')
+                return redirect('users:resend_verification')
+
+            # Check if already used
+            if verification.is_used:
+                print(f"⚠️ Verification already used")
+                messages.error(request, 'This verification link has already been used.')
+                return redirect('users:login')
+
+            # Check if expired
             if verification.is_expired():
+                print(f"⏰ Verification expired")
                 messages.error(request, 'This verification link has expired. Please request a new one.')
                 return redirect('users:resend_verification')
 
             # Verify the email
             user = verification.user
+            print(f"👤 Verifying email for user: {user.email}")
+
             user.is_email_verified = True
             user.save()
 
             verification.is_used = True
             verification.save()
 
+            print(f"✅ Email verified successfully for: {user.email}")
             messages.success(request, 'Your email has been verified successfully!')
 
             # Auto-login the user
             if not request.user.is_authenticated:
                 login(request, user)
+                print(f"🔐 User auto-logged in")
                 return redirect('core:dashboard')
 
             return render(request, self.template_name)
 
         except Exception as e:
-            messages.error(request, 'Invalid or expired verification link.')
+            print(f"❌ Verification error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            messages.error(request, f'An error occurred during verification: {str(e)}')
             return redirect('users:resend_verification')
 
 
@@ -377,12 +408,15 @@ class ResendVerificationView(View):
             try:
                 current_site = Site.objects.get_current()
                 domain = current_site.domain
+                # Use HTTPS for production domains, HTTP for localhost
+                protocol = 'https' if 'localhost' not in domain and '127.0.0.1' not in domain else 'http'
             except:
                 # Fallback to localhost for development
                 domain = 'localhost:8000'
+                protocol = 'http'
 
             # Build verification URL
-            verification_url = f"http://{domain}/auth/verify-email/{verification.token}/"
+            verification_url = f"{protocol}://{domain}/auth/verify-email/{verification.token}/"
 
             # Prepare context for email templates
             context = {

@@ -256,6 +256,13 @@
             </div>
 
             <div class="nav-item">
+                <a href="{% url 'admin_panel:manage_study_notes' %}" class="nav-link {% if 'study_notes' in request.resolver_match.url_name or 'study-notes' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-book-open"></i>
+                    Study Notes
+                </a>
+            </div>
+
+            <div class="nav-item">
                 <a href="{% url 'admin_panel:csv_import' %}" class="nav-link {% if 'import' in request.resolver_match.url_name and 'logs' not in request.resolver_match.url_name %}active{% endif %}">
                     <i class="fas fa-file-csv"></i>
                     CSV Import
