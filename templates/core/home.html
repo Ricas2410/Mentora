@@ -9,18 +9,33 @@
     }
 
     .feature-card {
-        background: rgb(219, 217, 217);
-        border-radius: 1rem;
+        background: white;
+        border-radius: 1.5rem;
         padding: 2rem;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        border: 1px solid #c6d6f5;
+        border: 1px solid #e5e7eb;
         transition: all 0.3s ease;
         height: 100%;
+        position: relative;
+        overflow: hidden;
     }
 
     .feature-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        border-color: #3b82f6;
+    }
+
+    /* Mobile-specific feature card adjustments */
+    @media (max-width: 768px) {
+        .feature-card {
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
     }
 
     .feature-icon {
@@ -39,15 +54,17 @@
         background: linear-gradient(135deg, var(--success-green), #16A34A);
         border: none;
         border-radius: 0.75rem;
-        padding: 1rem 2rem;
+        padding: 0.875rem 1.5rem;
         font-weight: 600;
-        font-size: 1.125rem;
+        font-size: 1rem;
         color: white;
         transition: all 0.2s ease;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        min-width: 160px;
+        white-space: nowrap;
     }
 
     .btn-cta:hover {
@@ -61,15 +78,17 @@
         background: transparent;
         border: 2px solid white;
         border-radius: 0.75rem;
-        padding: 1rem 2rem;
+        padding: 0.875rem 1.5rem;
         font-weight: 600;
-        font-size: 1.125rem;
+        font-size: 1rem;
         color: white;
         transition: all 0.2s ease;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        min-width: 160px;
+        white-space: nowrap;
     }
 
     .btn-secondary:hover {
@@ -77,6 +96,17 @@
         color: var(--primary-blue);
         text-decoration: none;
         transform: translateY(-2px);
+    }
+
+    /* Mobile-specific button adjustments */
+    @media (max-width: 640px) {
+        .btn-cta, .btn-secondary {
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+        }
     }
 
     .stats-card {
@@ -138,26 +168,26 @@
                 {% if hero_section %}{{ hero_section.description }}{% else %}Quality education for everyone. Start your learning journey today with our comprehensive, mobile-friendly platform designed for learners worldwide.{% endif %}
             </p>
 
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mb-12">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'core:dashboard' %}" class="btn-cta">
+                    <a href="{% url 'core:dashboard' %}" class="btn-cta text-sm px-6 py-3">
                         <i class="fas fa-tachometer-alt mr-2"></i>
                         Continue Learning
                     </a>
                 {% else %}
-                    <a href="{% url 'users:register' %}" class="btn-cta">
+                    <a href="{% url 'users:register' %}" class="btn-cta text-sm px-6 py-3">
                         <i class="fas fa-rocket mr-2"></i>
                         {% if hero_section %}{{ hero_section.cta_text }}{% else %}Get Started Free{% endif %}
                     </a>
-                    <a href="{% url 'users:login' %}" class="btn-secondary">
+                    <a href="{% url 'users:login' %}" class="btn-secondary text-sm px-6 py-3">
                         <i class="fas fa-sign-in-alt mr-2"></i>
                         Sign In
                     </a>
                 {% endif %}
             </div>
 
-            <!-- Stats -->
-            <div class="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
+            <!-- Stats - Mobile Optimized -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
                 {% if site_statistics %}
                     {% for stat in site_statistics %}
                         <div class="stats-card">
@@ -168,21 +198,21 @@
                                     {{ stat.value }}
                                 {% endif %}
                             </div>
-                            <div class="text-xs md:text-sm opacity-80">{{ stat.label }}</div>
+                            <div class="text-sm md:text-base opacity-80">{{ stat.label }}</div>
                         </div>
                     {% endfor %}
                 {% else %}
                     <div class="stats-card">
-                        <div class="text-2xl md:text-3xl font-bold mb-1">100%</div>
-                        <div class="text-xs md:text-sm opacity-80">Free Forever</div>
+                        <div class="text-3xl md:text-4xl font-bold mb-2"><i class="fas fa-heart text-red-400"></i></div>
+                        <div class="text-sm md:text-base opacity-80 font-medium">Free Forever</div>
                     </div>
                     <div class="stats-card">
-                        <div class="text-2xl md:text-3xl font-bold mb-1"><i class="fas fa-mobile-alt"></i></div>
-                        <div class="text-xs md:text-sm opacity-80">Mobile Friendly</div>
+                        <div class="text-3xl md:text-4xl font-bold mb-2"><i class="fas fa-mobile-alt text-green-400"></i></div>
+                        <div class="text-sm md:text-base opacity-80 font-medium">Mobile Friendly</div>
                     </div>
                     <div class="stats-card">
-                        <div class="text-2xl md:text-3xl font-bold mb-1"><i class="fas fa-globe"></i></div>
-                        <div class="text-xs md:text-sm opacity-80">Made for Everyone</div>
+                        <div class="text-3xl md:text-4xl font-bold mb-2"><i class="fas fa-globe text-blue-400"></i></div>
+                        <div class="text-sm md:text-base opacity-80 font-medium">Global Access</div>
                     </div>
                 {% endif %}
             </div>
@@ -194,96 +224,101 @@
 <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Why Choose Mentora?</h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Designed specifically for underprivileged learners with limited internet access and mobile devices
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Why Choose Mentora?</h2>
+            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                Comprehensive education platform designed for learners worldwide with mobile-first accessibility
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- Mobile-First Feature Layout -->
+        <div class="space-y-8 md:space-y-0 md:grid md:grid-cols-3 md:gap-8 max-w-6xl mx-auto">
             <!-- Feature 1 -->
             <div class="feature-card">
-                <div class="feature-icon" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
-                    <i class="fas fa-graduation-cap"></i>
+                <div class="feature-icon mb-4" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3 text-center">Quality Education</h3>
-                <p class="text-gray-600 text-center mb-4">
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 text-center">Quality Education</h3>
+                <p class="text-gray-600 text-center mb-6 text-base md:text-lg leading-relaxed">
                     International curriculum covering English, Mathematics, Science, and more.
                     Professional content designed for students worldwide.
                 </p>
-                <ul class="text-sm text-gray-500 space-y-1">
-                    <li>✓ International K-12 standards aligned</li>
-                    <li>✓ Progressive difficulty levels</li>
-                    <li>✓ Interactive learning materials</li>
-                </ul>
+                <!-- Horizontal layout for mobile -->
+                <div class="flex flex-wrap gap-2 justify-center md:block md:space-y-2">
+                    <span class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">✓ K-12 Standards</span>
+                    <span class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">✓ Progressive Levels</span>
+                    <span class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">✓ Interactive Materials</span>
+                </div>
             </div>
 
             <!-- Feature 2 -->
             <div class="feature-card">
-                <div class="feature-icon" style="background: linear-gradient(135deg, #22C55E, #16A34A);">
-                    <i class="fas fa-mobile-alt"></i>
+                <div class="feature-icon mb-4" style="background: linear-gradient(135deg, #22C55E, #16A34A);">
+                    <i class="fas fa-mobile-alt text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3 text-center">Learn Anywhere</h3>
-                <p class="text-gray-600 text-center mb-4">
-                    Mobile-first design that works on any device. Learn offline,
-                    sync when connected. Perfect for areas with limited internet.
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 text-center">Learn Anywhere</h3>
+                <p class="text-gray-600 text-center mb-6 text-base md:text-lg leading-relaxed">
+                    Mobile-first design that works on any device. Optimized for smartphones
+                    with clean, accessible interfaces.
                 </p>
-                <ul class="text-sm text-gray-500 space-y-1">
-                    <li>✓ Works on any smartphone</li>
-                    <li>✓ Offline content download</li>
-                    <li>✓ Low data usage</li>
-                </ul>
+                <!-- Horizontal layout for mobile -->
+                <div class="flex flex-wrap gap-2 justify-center md:block md:space-y-2">
+                    <span class="inline-block bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium">✓ Any Smartphone</span>
+                    <span class="inline-block bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium">✓ Fast Loading</span>
+                    <span class="inline-block bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium">✓ Touch Optimized</span>
+                </div>
             </div>
 
             <!-- Feature 3 -->
             <div class="feature-card">
-                <div class="feature-icon" style="background: linear-gradient(135deg, #EF4444, #DC2626);">
-                    <i class="fas fa-heart"></i>
+                <div class="feature-icon mb-4" style="background: linear-gradient(135deg, #EF4444, #DC2626);">
+                    <i class="fas fa-heart text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3 text-center">Completely Free</h3>
-                <p class="text-gray-600 text-center mb-4">
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 text-center">Completely Free</h3>
+                <p class="text-gray-600 text-center mb-6 text-base md:text-lg leading-relaxed">
                     No hidden costs, no subscriptions, no premium features.
                     Quality education should be accessible to everyone.
                 </p>
-                <ul class="text-sm text-gray-500 space-y-1">
-                    <li>✓ No registration fees</li>
-                    <li>✓ No monthly charges</li>
-                    <li>✓ All features included</li>
-                </ul>
+                <!-- Horizontal layout for mobile -->
+                <div class="flex flex-wrap gap-2 justify-center md:block md:space-y-2">
+                    <span class="inline-block bg-red-50 text-red-700 px-3 py-1 rounded-full text-sm font-medium">✓ No Registration Fees</span>
+                    <span class="inline-block bg-red-50 text-red-700 px-3 py-1 rounded-full text-sm font-medium">✓ No Monthly Charges</span>
+                    <span class="inline-block bg-red-50 text-red-700 px-3 py-1 rounded-full text-sm font-medium">✓ All Features Included</span>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- How It Works Section -->
-<section class="py-20 bg-white">
+<section class="py-16 md:py-20 bg-white">
     <div class="container mx-auto px-4">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">How Mentora Works</h2>
-            <p class="text-xl text-gray-600">Simple steps to start your learning journey</p>
+        <div class="text-center mb-12 md:mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">How Mentora Works</h2>
+            <p class="text-lg md:text-xl text-gray-600">Simple steps to start your learning journey</p>
         </div>
 
         <div class="max-w-4xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Sign Up Free</h3>
-                    <p class="text-sm text-gray-600">Create your account in minutes</p>
+            <!-- Mobile: Vertical layout, Desktop: Horizontal -->
+            <div class="space-y-6 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6 lg:gap-8">
+                <div class="text-center bg-gray-50 p-6 rounded-xl">
+                    <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-lg">1</div>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-3">Sign Up Free</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">Create your account in minutes with just your email</p>
                 </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Choose Subjects</h3>
-                    <p class="text-sm text-gray-600">Pick what you want to learn</p>
+                <div class="text-center bg-gray-50 p-6 rounded-xl">
+                    <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-lg">2</div>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-3">Choose Your Grade</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">Select your grade level and subjects to study</p>
                 </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-purple-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Start Learning</h3>
-                    <p class="text-sm text-gray-600">Study at your own pace</p>
+                <div class="text-center bg-gray-50 p-6 rounded-xl">
+                    <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-lg">3</div>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-3">Start Learning</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">Study notes, take quizzes, and learn at your pace</p>
                 </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">4</div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Track Progress</h3>
-                    <p class="text-sm text-gray-600">See your improvement</p>
+                <div class="text-center bg-gray-50 p-6 rounded-xl">
+                    <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-lg">4</div>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-3">Track Progress</h3>
+                    <p class="text-base text-gray-600 leading-relaxed">Monitor your improvement and advance to next grade</p>
                 </div>
             </div>
         </div>
@@ -291,25 +326,25 @@
 </section>
 
 <!-- CTA Section -->
-<section class="py-20 hero-gradient">
+<section class="py-16 md:py-20 hero-gradient">
     <div class="container mx-auto px-4 text-center text-white">
-        <h2 class="text-4xl font-bold mb-4">Ready to Start Your Learning Journey?</h2>
-        <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Your Learning Journey?</h2>
+        <p class="text-lg md:text-xl mb-8 opacity-90 max-w-2xl mx-auto leading-relaxed">
             Join learners worldwide who are building their future through quality education.
         </p>
         {% if not user.is_authenticated %}
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{% url 'users:register' %}" class="btn-cta">
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="{% url 'users:register' %}" class="btn-cta text-sm px-8 py-4 font-semibold">
                     <i class="fas fa-rocket mr-2"></i>
                     Start Learning Today
                 </a>
-                <a href="{% url 'subjects:list' %}" class="btn-secondary">
+                <a href="{% url 'subjects:list' %}" class="btn-secondary text-sm px-8 py-4 font-semibold">
                     <i class="fas fa-book mr-2"></i>
                     Browse Subjects
                 </a>
             </div>
         {% else %}
-            <a href="{% url 'core:dashboard' %}" class="btn-cta">
+            <a href="{% url 'core:dashboard' %}" class="btn-cta text-sm px-8 py-4 font-semibold">
                 <i class="fas fa-tachometer-alt mr-2"></i>
                 Continue Learning
             </a>
