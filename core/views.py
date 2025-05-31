@@ -30,11 +30,7 @@ class HomeView(TemplateView):
 
         return context
 
-    def dispatch(self, request, *args, **kwargs):
-        # Redirect authenticated users to dashboard
-        if request.user.is_authenticated:
-            return redirect('core:dashboard')
-        return super().dispatch(request, *args, **kwargs)
+
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
