@@ -891,18 +891,19 @@ def submit_exam(request):
             from progress.models import UserProgress
             user_progress, created = UserProgress.objects.get_or_create(
                 user=request.user,
-                subject=level.subject,
                 class_level=level,
                 defaults={
                     'is_completed': True,
-                    'completion_date': timezone.now(),
-                    'final_score': percentage
+                    'completed_at': timezone.now(),
+                    'final_score': percentage,
+                    'passed': True
                 }
             )
             if not created and not user_progress.is_completed:
                 user_progress.is_completed = True
-                user_progress.completion_date = timezone.now()
+                user_progress.completed_at = timezone.now()
                 user_progress.final_score = max(user_progress.final_score, percentage)
+                user_progress.passed = True
                 user_progress.save()
 
         return JsonResponse({

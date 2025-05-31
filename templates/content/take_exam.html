@@ -173,7 +173,19 @@
         }
 
         .navigation-buttons {
-            flex-direction: column;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navigation-buttons .flex {
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        .nav-btn, .submit-exam-btn {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
         }
 
         .question-nav-grid {

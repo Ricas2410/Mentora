@@ -185,7 +185,7 @@ class HeroSection(models.Model):
     title = models.CharField(max_length=200, default="An Easy Way to Learn and Grow")
     subtitle = models.CharField(max_length=200, default="No matter your background")
     description = models.TextField(
-        default="Quality education for everyone. Start your learning journey today with our comprehensive, mobile-friendly platform designed specifically for Ghanaian learners."
+        default="Quality education for everyone. Start your learning journey today with our comprehensive, mobile-friendly platform designed for learners worldwide."
     )
     hero_image = models.ImageField(
         upload_to='hero_images/',
