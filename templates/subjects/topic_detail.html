@@ -157,6 +157,75 @@
                         </div>
                     {% endfor %}
 
+                    <!-- Single Note Pagination Controls -->
+                    {% if total_notes > 1 %}
+                    <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <!-- Previous Button -->
+                            {% if has_previous %}
+                                <a href="?note={{ previous_index }}"
+                                   class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                                    <i class="fas fa-chevron-left mr-2"></i>
+                                    Previous Note
+                                </a>
+                            {% else %}
+                                <div class="w-full sm:w-auto"></div>
+                            {% endif %}
+
+                            <!-- Progress Indicator -->
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-gray-800">{{ current_note_index }} of {{ total_notes }}</div>
+                                <div class="text-sm text-gray-600">Study Notes</div>
+                                <div class="w-32 bg-gray-200 rounded-full h-2 mt-2">
+                                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                         style="width: {% widthratio current_note_index total_notes 100 %}%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Next Button -->
+                            {% if has_next %}
+                                <a href="?note={{ next_index }}"
+                                   class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center">
+                                    Next Note
+                                    <i class="fas fa-chevron-right ml-2"></i>
+                                </a>
+                            {% else %}
+                                <div class="w-full sm:w-auto text-center">
+                                    <div class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        All Notes Read!
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Quick Navigation (if more than 3 notes) -->
+                        {% if total_notes > 3 %}
+                        <div class="mt-6 pt-6 border-t border-blue-200">
+                            <div class="text-center mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800">Quick Navigation</h4>
+                            </div>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                {% for i in total_notes|make_list %}
+                                    {% if forloop.counter <= total_notes %}
+                                        {% if forloop.counter == current_note_index %}
+                                            <span class="bg-blue-600 text-white px-3 py-2 rounded-lg font-medium text-sm">
+                                                Note {{ forloop.counter }}
+                                            </span>
+                                        {% else %}
+                                            <a href="?note={{ forloop.counter }}"
+                                               class="bg-white hover:bg-blue-100 text-blue-600 border border-blue-300 px-3 py-2 rounded-lg font-medium text-sm transition-all duration-200">
+                                                Note {{ forloop.counter }}
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
                     <!-- Start Quiz Section - Always at bottom -->
                     {% if topic.get_questions_count > 0 %}
                         <div class="mt-12 pt-8 border-t border-gray-200">

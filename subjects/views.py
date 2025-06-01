@@ -408,44 +408,67 @@ class TopicDetailView(TemplateView):
         topic_id = kwargs.get('topic_id')
         topic = get_object_or_404(Topic, id=topic_id, is_active=True)
 
-        # Get study notes with progress information
+        # Get study notes for this topic
         study_notes = topic.get_study_notes()
-        notes_with_progress = []
 
+        if not study_notes:
+            # No notes available
+            context['topic'] = topic
+            context['subject'] = topic.class_level.subject
+            context['level'] = topic.class_level
+            context['notes_with_progress'] = []
+            context['show_login_prompt'] = not self.request.user.is_authenticated
+            return context
+
+        # SINGLE NOTE PAGINATION - Get current note index
+        note_index = int(self.request.GET.get('note', 1)) - 1  # Convert to 0-based index
+
+        # Ensure note_index is within bounds
+        if note_index < 0:
+            note_index = 0
+        elif note_index >= len(study_notes):
+            note_index = len(study_notes) - 1
+
+        current_note = study_notes[note_index]
+
+        # Get progress information for current note only
         if self.request.user.is_authenticated:
             from progress.models import StudyNoteProgress
-
-            for note in study_notes:
-                try:
-                    note_progress = StudyNoteProgress.objects.get(
-                        user=self.request.user,
-                        study_note=note
-                    )
-                    is_read = note_progress.is_read
-                    read_at = note_progress.read_at
-                except StudyNoteProgress.DoesNotExist:
-                    is_read = False
-                    read_at = None
-
-                notes_with_progress.append({
-                    'note': note,
-                    'is_read': is_read,
-                    'read_at': read_at
-                })
+            try:
+                note_progress = StudyNoteProgress.objects.get(
+                    user=self.request.user,
+                    study_note=current_note
+                )
+                is_read = note_progress.is_read
+                read_at = note_progress.read_at
+            except StudyNoteProgress.DoesNotExist:
+                is_read = False
+                read_at = None
         else:
-            # For non-authenticated users, just add the notes without progress
-            for note in study_notes:
-                notes_with_progress.append({
-                    'note': note,
-                    'is_read': False,
-                    'read_at': None
-                })
+            is_read = False
+            read_at = None
+
+        # Create single note with progress (for compatibility with template)
+        notes_with_progress = [{
+            'note': current_note,
+            'is_read': is_read,
+            'read_at': read_at
+        }]
 
         context['topic'] = topic
         context['subject'] = topic.class_level.subject
         context['level'] = topic.class_level
         context['notes_with_progress'] = notes_with_progress
         context['show_login_prompt'] = not self.request.user.is_authenticated
+
+        # Add pagination context
+        context['current_note_index'] = note_index + 1  # Convert back to 1-based for display
+        context['total_notes'] = len(study_notes)
+        context['has_previous'] = note_index > 0
+        context['has_next'] = note_index < len(study_notes) - 1
+        context['previous_index'] = note_index if note_index <= 0 else note_index
+        context['next_index'] = note_index + 2 if note_index < len(study_notes) - 1 else note_index + 1
+
         return context
 
 
