@@ -139,13 +139,38 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                 if not subject:
                     raise ValueError(f"Subject '{row['subject_name']}' not found. Please create the subject first.")
 
-                # Find class level within the subject
+                # Find class level within the subject - try multiple approaches
+                class_level_name = row['class_level_name'].strip()
+                class_level = None
+
+                # First try exact match
                 class_level = ClassLevel.objects.filter(
                     subject=subject,
-                    name__iexact=row['class_level_name']
+                    name__iexact=class_level_name
                 ).first()
+
+                # If not found, try to extract grade number and match by level_number
                 if not class_level:
-                    raise ValueError(f"Class level '{row['class_level_name']}' not found in subject '{subject.name}'. Please create the class level first.")
+                    import re
+                    grade_match = re.search(r'grade\s*(\d+)', class_level_name, re.IGNORECASE)
+                    if grade_match:
+                        grade_number = int(grade_match.group(1))
+                        class_level = ClassLevel.objects.filter(
+                            subject=subject,
+                            level_number=grade_number
+                        ).first()
+
+                # If still not found, try partial name match
+                if not class_level:
+                    class_level = ClassLevel.objects.filter(
+                        subject=subject,
+                        name__icontains=class_level_name
+                    ).first()
+
+                if not class_level:
+                    # Show available class levels for this subject
+                    available_levels = list(ClassLevel.objects.filter(subject=subject).values_list('name', flat=True))
+                    raise ValueError(f"Class level '{class_level_name}' not found in subject '{subject.name}'. Available levels: {', '.join(available_levels)}")
 
                 # Find or create topic within the class level
                 topic = Topic.objects.filter(
@@ -242,13 +267,38 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                 if not subject:
                     raise ValueError(f"Subject '{row['subject_name']}' not found. Please create the subject first.")
 
-                # Find class level within the subject
+                # Find class level within the subject - try multiple approaches
+                class_level_name = row['class_level_name'].strip()
+                class_level = None
+
+                # First try exact match
                 class_level = ClassLevel.objects.filter(
                     subject=subject,
-                    name__iexact=row['class_level_name']
+                    name__iexact=class_level_name
                 ).first()
+
+                # If not found, try to extract grade number and match by level_number
                 if not class_level:
-                    raise ValueError(f"Class level '{row['class_level_name']}' not found in subject '{subject.name}'. Please create the class level first.")
+                    import re
+                    grade_match = re.search(r'grade\s*(\d+)', class_level_name, re.IGNORECASE)
+                    if grade_match:
+                        grade_number = int(grade_match.group(1))
+                        class_level = ClassLevel.objects.filter(
+                            subject=subject,
+                            level_number=grade_number
+                        ).first()
+
+                # If still not found, try partial name match
+                if not class_level:
+                    class_level = ClassLevel.objects.filter(
+                        subject=subject,
+                        name__icontains=class_level_name
+                    ).first()
+
+                if not class_level:
+                    # Show available class levels for this subject
+                    available_levels = list(ClassLevel.objects.filter(subject=subject).values_list('name', flat=True))
+                    raise ValueError(f"Class level '{class_level_name}' not found in subject '{subject.name}'. Available levels: {', '.join(available_levels)}")
 
                 # Find or create topic within the class level
                 topic = Topic.objects.filter(
