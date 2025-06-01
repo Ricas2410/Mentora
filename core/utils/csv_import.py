@@ -118,7 +118,7 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
             raise ValueError(f"Failed to parse CSV: {str(e)}")
 
     def get_preview_data(self):
-        """Get preview data for CSV import"""
+        """Get preview data for CSV import with graceful handling"""
         try:
             csv_data = self.parse_csv()
 
@@ -179,13 +179,23 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                         row_validation['issues'].append("True/False questions require 'correct_answer' to be true/false, t/f, or 1/0")
                         row_validation['status'] = 'error'
 
-                # Check if entities exist
+                # Check if entities exist (show as warnings since we auto-create them)
                 try:
                     subject_name = row.get('subject_name', '').strip()
+                    class_level_name = row.get('class_level_name', '').strip()
+
                     if subject_name:
-                        from subjects.models import Subject
-                        if not Subject.objects.filter(name__iexact=subject_name).exists():
-                            row_validation['warnings'].append(f"Subject '{subject_name}' does not exist")
+                        from subjects.models import Subject, ClassLevel
+                        subject = Subject.objects.filter(name__iexact=subject_name).first()
+                        if not subject:
+                            row_validation['warnings'].append(f"Subject '{subject_name}' will be auto-created")
+                        elif class_level_name:
+                            class_level = ClassLevel.objects.filter(
+                                subject=subject,
+                                name__iexact=class_level_name
+                            ).first()
+                            if not class_level:
+                                row_validation['warnings'].append(f"Class level '{class_level_name}' will be auto-created in {subject_name}")
                 except:
                     pass
 
@@ -225,18 +235,43 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                 if question_type not in ['multiple_choice', 'fill_blank', 'true_false', 'short_answer']:
                     raise ValueError(f"Invalid question type: {question_type}. Must be one of: multiple_choice, fill_blank, true_false, short_answer")
 
-                # Find subject
-                subject = Subject.objects.filter(name__iexact=row['subject_name']).first()
+                # Find or create subject (with proper name cleaning)
+                subject_name = row['subject_name'].strip()
+                subject = Subject.objects.filter(name__iexact=subject_name).first()
                 if not subject:
-                    raise ValueError(f"Subject '{row['subject_name']}' not found. Please create the subject first.")
+                    # Auto-create missing subject
+                    subject = Subject.objects.create(
+                        name=subject_name,
+                        description=f"Auto-created subject for {subject_name}",
+                        icon='📚',
+                        color='#3B82F6',
+                        order=Subject.objects.count() + 1,
+                        is_active=True
+                    )
+                    self.log.add_info(f"Auto-created subject: '{subject.name}'")
 
-                # Find class level within the subject
+                # Find or create class level within the subject (with proper name cleaning)
+                class_level_name = row['class_level_name'].strip()
                 class_level = ClassLevel.objects.filter(
                     subject=subject,
-                    name__iexact=row['class_level_name']
+                    name__iexact=class_level_name
                 ).first()
                 if not class_level:
-                    raise ValueError(f"Class level '{row['class_level_name']}' not found in subject '{subject.name}'. Please create the class level first.")
+                    # Auto-create missing class level
+                    # Extract level number from name (e.g., "Grade 1" -> 1, "Class 5" -> 5)
+                    import re
+                    level_match = re.search(r'\d+', class_level_name)
+                    level_number = int(level_match.group()) if level_match else ClassLevel.objects.filter(subject=subject).count() + 1
+
+                    class_level = ClassLevel.objects.create(
+                        subject=subject,
+                        name=class_level_name,
+                        level_number=level_number,
+                        description=f"Auto-created class level for {class_level_name}",
+                        pass_percentage=60,
+                        is_active=True
+                    )
+                    self.log.add_info(f"Auto-created class level: '{class_level.name}' in {subject.name}")
 
                 # Find or create topic within the class level
                 topic = Topic.objects.filter(
