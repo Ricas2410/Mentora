@@ -732,42 +732,66 @@ class CSVImportView(AdminRequiredMixin, TemplateView):
 
     def handle_preview(self, request):
         """Handle CSV preview request"""
-        form = CSVImportForm(request.POST, request.FILES)
-        if form.is_valid():
-            csv_file = form.cleaned_data['csv_file']
+        # For preview, we only need the CSV file, not the class levels
+        if 'csv_file' not in request.FILES:
+            return JsonResponse({
+                'success': False,
+                'error': 'No CSV file provided'
+            })
 
-            try:
-                # Read CSV content
-                file_content = csv_file.read().decode('utf-8')
+        csv_file = request.FILES['csv_file']
 
-                # Parse and validate CSV
-                from core.utils.csv_import import CSVImporter
-                importer = CSVImporter('questions', file_content, request.user)
+        # Basic file validation
+        if not csv_file.name.lower().endswith('.csv'):
+            return JsonResponse({
+                'success': False,
+                'error': 'Please upload a CSV file'
+            })
 
-                # Get preview data
-                preview_data = importer.get_preview_data()
+        if csv_file.size > 5 * 1024 * 1024:  # 5MB limit
+            return JsonResponse({
+                'success': False,
+                'error': 'File size cannot exceed 5MB'
+            })
 
-                return JsonResponse({
-                    'success': True,
-                    'preview_data': preview_data
-                })
+        try:
+            # Read CSV content
+            file_content = csv_file.read().decode('utf-8')
 
-            except Exception as e:
-                return JsonResponse({
-                    'success': False,
-                    'error': str(e)
-                })
+            # Parse and validate CSV
+            from core.utils.csv_import import CSVImporter
+            importer = CSVImporter('questions', file_content, request.user)
 
-        return JsonResponse({
-            'success': False,
-            'error': 'Invalid form data'
-        })
+            # Get preview data
+            preview_data = importer.get_preview_data()
+
+            return JsonResponse({
+                'success': True,
+                'preview_data': preview_data
+            })
+
+        except UnicodeDecodeError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid file encoding. Please ensure the file is saved as UTF-8.'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Preview failed: {str(e)}'
+            })
 
     def handle_import(self, request):
         """Handle actual CSV import"""
+        # For import, we need to validate the form properly
         form = CSVImportForm(request.POST, request.FILES)
+
+        # Make target_class_levels required for actual import
+        form.fields['target_class_levels'].required = True
+
         if form.is_valid():
             csv_file = form.cleaned_data['csv_file']
+            target_class_levels = form.cleaned_data['target_class_levels']
 
             try:
                 # Read CSV content
