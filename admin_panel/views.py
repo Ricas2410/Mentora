@@ -1081,27 +1081,34 @@ class ManageStudyNotesView(AdminRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get all subjects for initial dropdown
-        context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
-
+        # NEW FLOW: Grade Level → Subject → Topic
         # Get selected filters from GET parameters
-        subject_id = self.request.GET.get('subject_id')
         level_id = self.request.GET.get('level_id')
+        subject_id = self.request.GET.get('subject_id')
         topic_id = self.request.GET.get('topic_id')
 
-        context['selected_subject_id'] = subject_id
         context['selected_level_id'] = level_id
+        context['selected_subject_id'] = subject_id
         context['selected_topic_id'] = topic_id
 
-        # Get levels if subject is selected
-        if subject_id:
-            context['levels'] = ClassLevel.objects.filter(
-                subject_id=subject_id,
-                is_active=True
-            ).order_by('level_number')
+        # Get all grade levels for initial dropdown (1-12)
+        context['levels'] = ClassLevel.objects.filter(
+            is_active=True
+        ).values('level_number').distinct().order_by('level_number')
 
-        # Get topics if subject and level are selected
-        if subject_id and level_id:
+        # Get subjects if grade level is selected
+        if level_id:
+            try:
+                level_number = ClassLevel.objects.get(id=level_id).level_number
+                context['subjects'] = Subject.objects.filter(
+                    classlevels__level_number=level_number,
+                    is_active=True
+                ).distinct().order_by('name')
+            except ClassLevel.DoesNotExist:
+                context['subjects'] = Subject.objects.none()
+
+        # Get topics if grade level and subject are selected
+        if level_id and subject_id:
             try:
                 level = ClassLevel.objects.get(id=level_id, subject_id=subject_id, is_active=True)
                 context['topics'] = Topic.objects.filter(
@@ -1138,24 +1145,35 @@ class CreateStudyNoteView(AdminRequiredMixin, View):
     """View for creating study notes"""
 
     def get(self, request):
-        subject_id = request.GET.get('subject_id')
+        # NEW FLOW: Grade Level → Subject → Topic
         level_id = request.GET.get('level_id')
+        subject_id = request.GET.get('subject_id')
         topic_id = request.GET.get('topic_id')
 
         context = {
-            'subjects': Subject.objects.filter(is_active=True).order_by('name'),
-            'selected_subject_id': subject_id,
             'selected_level_id': level_id,
+            'selected_subject_id': subject_id,
             'selected_topic_id': topic_id,
         }
 
-        if subject_id:
-            context['levels'] = ClassLevel.objects.filter(
-                subject_id=subject_id,
-                is_active=True
-            ).order_by('level_number')
+        # Get all grade levels for initial dropdown
+        context['levels'] = ClassLevel.objects.filter(
+            is_active=True
+        ).values('level_number').distinct().order_by('level_number')
 
-        if subject_id and level_id:
+        # Get subjects if grade level is selected
+        if level_id:
+            try:
+                level_number = ClassLevel.objects.get(id=level_id).level_number
+                context['subjects'] = Subject.objects.filter(
+                    classlevels__level_number=level_number,
+                    is_active=True
+                ).distinct().order_by('name')
+            except ClassLevel.DoesNotExist:
+                context['subjects'] = Subject.objects.none()
+
+        # Get topics if grade level and subject are selected
+        if level_id and subject_id:
             try:
                 level = ClassLevel.objects.get(id=level_id, subject_id=subject_id, is_active=True)
                 context['topics'] = Topic.objects.filter(
@@ -1450,3 +1468,52 @@ class EditStudyNoteView(AdminRequiredMixin, View):
         except Exception as e:
             messages.error(request, f'Error updating study note: {str(e)}')
             return redirect('admin_panel:edit_study_note', note_id=note_id)
+
+
+class ReadStudyNotesView(AdminRequiredMixin, TemplateView):
+    """View for reading study notes with single-note pagination"""
+    template_name = 'admin_panel/read_study_notes.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        topic_id = self.kwargs.get('topic_id')
+        note_index = int(self.request.GET.get('note', 1)) - 1  # Convert to 0-based index
+
+        try:
+            topic = Topic.objects.select_related(
+                'class_level__subject'
+            ).get(id=topic_id, is_active=True)
+
+            # Get all study notes for this topic
+            study_notes = StudyNote.objects.filter(
+                topic=topic
+            ).order_by('created_at')  # Order by creation date for consistent reading order
+
+            if not study_notes.exists():
+                context['error'] = 'No study notes found for this topic.'
+                return context
+
+            # Ensure note_index is within bounds
+            if note_index < 0:
+                note_index = 0
+            elif note_index >= study_notes.count():
+                note_index = study_notes.count() - 1
+
+            current_note = study_notes[note_index]
+
+            context.update({
+                'topic': topic,
+                'current_note': current_note,
+                'current_index': note_index + 1,  # Convert back to 1-based for display
+                'total_notes': study_notes.count(),
+                'has_previous': note_index > 0,
+                'has_next': note_index < study_notes.count() - 1,
+                'previous_index': note_index if note_index <= 0 else note_index,
+                'next_index': note_index + 2 if note_index < study_notes.count() - 1 else note_index + 1,
+            })
+
+        except Topic.DoesNotExist:
+            context['error'] = 'Topic not found.'
+
+        return context

@@ -1,0 +1,233 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Read Study Notes - {{ topic.title }} - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            {% if error %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    {{ error }}
+                </div>
+                <div class="text-center">
+                    <a href="{% url 'admin_panel:manage_study_notes' %}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Study Notes Management
+                    </a>
+                </div>
+            {% else %}
+                <!-- Topic Header -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-1">
+                                <i class="fas fa-book-open me-2"></i>
+                                {{ topic.title }}
+                            </h4>
+                            <small class="text-muted">
+                                {{ topic.class_level.subject.name }} - Grade {{ topic.class_level.level_number }}
+                            </small>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <!-- Progress Indicator -->
+                            <div class="text-center">
+                                <div class="fw-bold">{{ current_index }} of {{ total_notes }}</div>
+                                <small class="text-muted">Study Notes</small>
+                            </div>
+                            <!-- Back Button -->
+                            <a href="{% url 'admin_panel:manage_study_notes' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Back to Management
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Note Content -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ current_note.title }}</h5>
+                        <div class="text-muted small">
+                            <i class="fas fa-user me-1"></i>
+                            {{ current_note.created_by.get_full_name|default:"System" }}
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-calendar me-1"></i>
+                            {{ current_note.created_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Note Content -->
+                        <div class="study-note-content">
+                            {{ current_note.content|safe }}
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Footer -->
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Previous Button -->
+                            {% if has_previous %}
+                                <a href="?note={{ previous_index }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-chevron-left me-2"></i>
+                                    Previous Note
+                                </a>
+                            {% else %}
+                                <div></div>
+                            {% endif %}
+
+                            <!-- Progress Bar -->
+                            <div class="flex-grow-1 mx-4">
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" 
+                                         role="progressbar" 
+                                         style="width: {{ current_index|floatformat:0 }}{{ total_notes|floatformat:0 }}%"
+                                         aria-valuenow="{{ current_index }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="{{ total_notes }}">
+                                    </div>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        Progress: {{ current_index }} / {{ total_notes }} notes
+                                        ({{ current_index|floatformat:0 }}{{ total_notes|floatformat:0 }}% complete)
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Next Button -->
+                            {% if has_next %}
+                                <a href="?note={{ next_index }}" class="btn btn-primary">
+                                    Next Note
+                                    <i class="fas fa-chevron-right ms-2"></i>
+                                </a>
+                            {% else %}
+                                <div class="text-center">
+                                    <div class="btn btn-success disabled">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Completed!
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-success">
+                                            <i class="fas fa-trophy me-1"></i>
+                                            You've read all study notes for this topic!
+                                        </small>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Navigation (if more than 3 notes) -->
+                {% if total_notes > 3 %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Quick Navigation
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for i in total_notes|make_list %}
+                                {% if forloop.counter <= total_notes %}
+                                <div class="col-md-3 col-sm-4 col-6 mb-2">
+                                    {% if forloop.counter == current_index %}
+                                        <span class="btn btn-primary btn-sm w-100 disabled">
+                                            <i class="fas fa-eye me-1"></i>
+                                            Note {{ forloop.counter }}
+                                        </span>
+                                    {% else %}
+                                        <a href="?note={{ forloop.counter }}" class="btn btn-outline-secondary btn-sm w-100">
+                                            Note {{ forloop.counter }}
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.study-note-content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #333;
+}
+
+.study-note-content h1,
+.study-note-content h2,
+.study-note-content h3,
+.study-note-content h4,
+.study-note-content h5,
+.study-note-content h6 {
+    color: #2c3e50;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.study-note-content p {
+    margin-bottom: 1rem;
+    text-align: justify;
+}
+
+.study-note-content ul,
+.study-note-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.study-note-content li {
+    margin-bottom: 0.5rem;
+}
+
+.study-note-content blockquote {
+    border-left: 4px solid #007bff;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+.study-note-content code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+}
+
+.study-note-content pre {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .study-note-content {
+        font-size: 1rem;
+    }
+    
+    .card-header h4 {
+        font-size: 1.2rem;
+    }
+    
+    .btn {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

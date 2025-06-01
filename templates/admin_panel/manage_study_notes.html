@@ -18,29 +18,29 @@
                 </a>
             </div>
             <div class="card-body">
-                <!-- Hierarchical Selection Form -->
+                <!-- Hierarchical Selection Form - NEW FLOW: Grade Level → Subject → Topic -->
                 <form method="get" class="mb-4" id="filterForm">
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <label for="subject_id" class="form-label">Select Subject</label>
-                            <select class="form-select" id="subject_id" name="subject_id" onchange="handleSubjectChange()">
-                                <option value="">Choose Subject...</option>
-                                {% for subject in subjects %}
-                                    <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject_id %}selected{% endif %}>
-                                        {{ subject.name }}
+                            <label for="level_id" class="form-label">Select Grade Level</label>
+                            <select class="form-select" id="level_id" name="level_id" onchange="handleLevelChange()">
+                                <option value="">Choose Grade...</option>
+                                {% for level in levels %}
+                                    <option value="{{ level.level_number }}" {% if level.level_number|stringformat:"s" == selected_level_id %}selected{% endif %}>
+                                        Grade {{ level.level_number }}
                                     </option>
                                 {% endfor %}
                             </select>
                         </div>
 
                         <div class="col-md-3">
-                            <label for="level_id" class="form-label">Select Grade Level</label>
-                            <select class="form-select" id="level_id" name="level_id" onchange="handleLevelChange()" {% if not selected_subject_id %}disabled{% endif %}>
-                                <option value="">Choose Grade...</option>
-                                {% if selected_subject_id %}
-                                    {% for level in levels %}
-                                        <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level_id %}selected{% endif %}>
-                                            Grade {{ level.level_number }}
+                            <label for="subject_id" class="form-label">Select Subject</label>
+                            <select class="form-select" id="subject_id" name="subject_id" onchange="handleSubjectChange()" {% if not selected_level_id %}disabled{% endif %}>
+                                <option value="">Choose Subject...</option>
+                                {% if selected_level_id %}
+                                    {% for subject in subjects %}
+                                        <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject_id %}selected{% endif %}>
+                                            {{ subject.name }}
                                         </option>
                                     {% endfor %}
                                 {% endif %}
@@ -49,9 +49,9 @@
 
                         <div class="col-md-3">
                             <label for="topic_id" class="form-label">Select Topic</label>
-                            <select class="form-select" id="topic_id" name="topic_id" onchange="handleTopicChange()" {% if not selected_level_id %}disabled{% endif %}>
+                            <select class="form-select" id="topic_id" name="topic_id" onchange="handleTopicChange()" {% if not selected_subject_id %}disabled{% endif %}>
                                 <option value="">Choose Topic...</option>
-                                {% if selected_level_id %}
+                                {% if selected_subject_id %}
                                     {% for topic in topics %}
                                         <option value="{{ topic.id }}" {% if topic.id|stringformat:"s" == selected_topic_id %}selected{% endif %}>
                                             {{ topic.title }}
@@ -62,12 +62,19 @@
                         </div>
 
                         {% if selected_topic_id %}
-                        <div class="col-md-3 d-flex align-items-end">
-                            <a href="{% url 'admin_panel:create_study_note' %}?subject_id={{ selected_subject_id }}&level_id={{ selected_level_id }}&topic_id={{ selected_topic_id }}"
-                               class="btn btn-success w-100">
+                        <div class="col-md-3 d-flex align-items-end gap-2">
+                            <a href="{% url 'admin_panel:create_study_note' %}?level_id={{ selected_level_id }}&subject_id={{ selected_subject_id }}&topic_id={{ selected_topic_id }}"
+                               class="btn btn-success flex-fill">
                                 <i class="fas fa-plus me-2"></i>
-                                Add Note to This Topic
+                                Add Note
                             </a>
+                            {% if study_notes %}
+                            <a href="{% url 'admin_panel:read_study_notes' selected_topic_id %}"
+                               class="btn btn-primary flex-fill">
+                                <i class="fas fa-book-reader me-2"></i>
+                                Read Notes
+                            </a>
+                            {% endif %}
                         </div>
                         {% endif %}
                     </div>
@@ -139,12 +146,12 @@
                                 <ul class="pagination pagination-sm mb-0">
                                     {% if study_notes.has_previous %}
                                         <li class="page-item">
-                                            <a class="page-link" href="?subject_id={{ selected_subject_id }}&level_id={{ selected_level_id }}&topic_id={{ selected_topic_id }}&page=1">
+                                            <a class="page-link" href="?level_id={{ selected_level_id }}&subject_id={{ selected_subject_id }}&topic_id={{ selected_topic_id }}&page=1">
                                                 <i class="fas fa-angle-double-left"></i>
                                             </a>
                                         </li>
                                         <li class="page-item">
-                                            <a class="page-link" href="?subject_id={{ selected_subject_id }}&level_id={{ selected_level_id }}&topic_id={{ selected_topic_id }}&page={{ study_notes.previous_page_number }}">
+                                            <a class="page-link" href="?level_id={{ selected_level_id }}&subject_id={{ selected_subject_id }}&topic_id={{ selected_topic_id }}&page={{ study_notes.previous_page_number }}">
                                                 <i class="fas fa-angle-left"></i>
                                             </a>
                                         </li>
@@ -157,19 +164,19 @@
                                             </li>
                                         {% elif num > study_notes.number|add:'-3' and num < study_notes.number|add:'3' %}
                                             <li class="page-item">
-                                                <a class="page-link" href="?subject_id={{ selected_subject_id }}&level_id={{ selected_level_id }}&topic_id={{ selected_topic_id }}&page={{ num }}">{{ num }}</a>
+                                                <a class="page-link" href="?level_id={{ selected_level_id }}&subject_id={{ selected_subject_id }}&topic_id={{ selected_topic_id }}&page={{ num }}">{{ num }}</a>
                                             </li>
                                         {% endif %}
                                     {% endfor %}
 
                                     {% if study_notes.has_next %}
                                         <li class="page-item">
-                                            <a class="page-link" href="?subject_id={{ selected_subject_id }}&level_id={{ selected_level_id }}&topic_id={{ selected_topic_id }}&page={{ study_notes.next_page_number }}">
+                                            <a class="page-link" href="?level_id={{ selected_level_id }}&subject_id={{ selected_subject_id }}&topic_id={{ selected_topic_id }}&page={{ study_notes.next_page_number }}">
                                                 <i class="fas fa-angle-right"></i>
                                             </a>
                                         </li>
                                         <li class="page-item">
-                                            <a class="page-link" href="?subject_id={{ selected_subject_id }}&level_id={{ selected_level_id }}&topic_id={{ selected_topic_id }}&page={{ study_notes.paginator.num_pages }}">
+                                            <a class="page-link" href="?level_id={{ selected_level_id }}&subject_id={{ selected_subject_id }}&topic_id={{ selected_topic_id }}&page={{ study_notes.paginator.num_pages }}">
                                                 <i class="fas fa-angle-double-right"></i>
                                             </a>
                                         </li>
@@ -183,7 +190,7 @@
                             <i class="fas fa-book-open text-muted" style="font-size: 3rem;"></i>
                             <h4 class="mt-3 text-muted">No Study Notes Found</h4>
                             <p class="text-muted">This topic doesn't have any study notes yet.</p>
-                            <a href="{% url 'admin_panel:create_study_note' %}?subject_id={{ selected_subject_id }}&level_id={{ selected_level_id }}&topic_id={{ selected_topic_id }}"
+                            <a href="{% url 'admin_panel:create_study_note' %}?level_id={{ selected_level_id }}&subject_id={{ selected_subject_id }}&topic_id={{ selected_topic_id }}"
                                class="btn btn-primary">
                                 <i class="fas fa-plus me-2"></i>
                                 Create First Study Note
@@ -223,26 +230,26 @@
 
 {% block extra_js %}
 <script>
-function handleSubjectChange() {
-    const subjectId = document.getElementById('subject_id').value;
+function handleLevelChange() {
+    const levelId = document.getElementById('level_id').value;
 
     // Clear and disable dependent dropdowns
-    const levelSelect = document.getElementById('level_id');
+    const subjectSelect = document.getElementById('subject_id');
     const topicSelect = document.getElementById('topic_id');
 
-    levelSelect.innerHTML = '<option value="">Choose Grade...</option>';
+    subjectSelect.innerHTML = '<option value="">Choose Subject...</option>';
     topicSelect.innerHTML = '<option value="">Choose Topic...</option>';
 
-    if (subjectId) {
-        // Enable level dropdown and redirect with only subject_id
-        levelSelect.disabled = false;
+    if (levelId) {
+        // Enable subject dropdown and redirect with only level_id
+        subjectSelect.disabled = false;
         topicSelect.disabled = true;
 
-        // Redirect with only subject_id parameter
-        window.location.href = `?subject_id=${subjectId}`;
+        // Redirect with only level_id parameter
+        window.location.href = `?level_id=${levelId}`;
     } else {
-        // Disable both dropdowns if no subject selected
-        levelSelect.disabled = true;
+        // Disable both dropdowns if no level selected
+        subjectSelect.disabled = true;
         topicSelect.disabled = true;
 
         // Redirect to clean page
@@ -250,42 +257,42 @@ function handleSubjectChange() {
     }
 }
 
-function handleLevelChange() {
-    const subjectId = document.getElementById('subject_id').value;
+function handleSubjectChange() {
     const levelId = document.getElementById('level_id').value;
+    const subjectId = document.getElementById('subject_id').value;
 
     // Clear topic dropdown
     const topicSelect = document.getElementById('topic_id');
     topicSelect.innerHTML = '<option value="">Choose Topic...</option>';
 
-    if (levelId && subjectId) {
-        // Enable topic dropdown and redirect with subject_id and level_id
+    if (subjectId && levelId) {
+        // Enable topic dropdown and redirect with level_id and subject_id
         topicSelect.disabled = false;
 
-        // Redirect with subject_id and level_id parameters
-        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}`;
+        // Redirect with level_id and subject_id parameters
+        window.location.href = `?level_id=${levelId}&subject_id=${subjectId}`;
     } else {
-        // Disable topic dropdown if no level selected
+        // Disable topic dropdown if no subject selected
         topicSelect.disabled = true;
 
-        // Redirect with only subject_id if level is cleared
-        if (subjectId) {
-            window.location.href = `?subject_id=${subjectId}`;
+        // Redirect with only level_id if subject is cleared
+        if (levelId) {
+            window.location.href = `?level_id=${levelId}`;
         }
     }
 }
 
 function handleTopicChange() {
-    const subjectId = document.getElementById('subject_id').value;
     const levelId = document.getElementById('level_id').value;
+    const subjectId = document.getElementById('subject_id').value;
     const topicId = document.getElementById('topic_id').value;
 
-    if (topicId && levelId && subjectId) {
+    if (topicId && subjectId && levelId) {
         // Redirect with all parameters
-        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}&topic_id=${topicId}`;
-    } else if (levelId && subjectId) {
-        // Redirect with subject_id and level_id if topic is cleared
-        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}`;
+        window.location.href = `?level_id=${levelId}&subject_id=${subjectId}&topic_id=${topicId}`;
+    } else if (subjectId && levelId) {
+        // Redirect with level_id and subject_id if topic is cleared
+        window.location.href = `?level_id=${levelId}&subject_id=${subjectId}`;
     }
 }
 
