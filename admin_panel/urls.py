@@ -35,6 +35,8 @@ urlpatterns = [
     # Study Notes Management
     path('study-notes/', views.ManageStudyNotesView.as_view(), name='manage_study_notes'),
     path('study-notes/create/', views.CreateStudyNoteView.as_view(), name='create_study_note'),
+    path('study-notes/<uuid:note_id>/view/', views.StudyNoteDetailView.as_view(), name='view_study_note'),
+    path('study-notes/<uuid:note_id>/edit/', views.EditStudyNoteView.as_view(), name='edit_study_note'),
 
     # CSV Import/Export
     path('import/', views.CSVImportView.as_view(), name='csv_import'),

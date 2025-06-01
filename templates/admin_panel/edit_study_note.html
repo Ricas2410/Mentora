@@ -1,0 +1,242 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Edit Study Note - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Edit Study Note
+                    </h4>
+                    <a href="{% url 'admin_panel:manage_study_notes' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Study Notes
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Hierarchical Selection -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label for="subject_id" class="form-label">Subject *</label>
+                                <select class="form-select" id="subject_id" name="subject_id" required onchange="handleSubjectChange()">
+                                    <option value="">Choose Subject...</option>
+                                    {% for subject in subjects %}
+                                        <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject_id %}selected{% endif %}>
+                                            {{ subject.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="level_id" class="form-label">Grade Level *</label>
+                                <select class="form-select" id="level_id" name="level_id" required onchange="handleLevelChange()" {% if not selected_subject_id %}disabled{% endif %}>
+                                    <option value="">Choose Grade...</option>
+                                    {% if selected_subject_id %}
+                                        {% for level in levels %}
+                                            <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level_id %}selected{% endif %}>
+                                                Grade {{ level.level_number }}
+                                            </option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="topic_id" class="form-label">Topic</label>
+                                <select class="form-select" id="topic_id" name="topic_id" onchange="toggleTopicCreation()" {% if not selected_level_id %}disabled{% endif %}>
+                                    <option value="">Choose Existing Topic...</option>
+                                    {% if selected_level_id %}
+                                        {% for topic in topics %}
+                                            <option value="{{ topic.id }}" {% if topic.id|stringformat:"s" == selected_topic_id %}selected{% endif %}>
+                                                {{ topic.title }}
+                                            </option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                                <small class="form-text text-muted">Or create a new topic below</small>
+                            </div>
+                        </div>
+
+                        <!-- New Topic Creation -->
+                        <div class="row g-3 mb-4" id="newTopicSection" style="display: none;">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Create New Topic:</strong> If the topic you need doesn't exist, enter a title below to create it.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="topic_title" class="form-label">New Topic Title</label>
+                                <input type="text" class="form-control" id="topic_title" name="topic_title" 
+                                       placeholder="Enter topic title...">
+                            </div>
+                        </div>
+
+                        <!-- Study Note Details -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label for="note_title" class="form-label">Study Note Title *</label>
+                                <input type="text" class="form-control" id="note_title" name="note_title" 
+                                       value="{{ note.title }}" placeholder="Enter a descriptive title for this study note..." required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label for="content" class="form-label">Study Note Content *</label>
+                                <textarea class="form-control summernote" id="content" name="content" rows="15" 
+                                          placeholder="Enter the study note content here..." required>{{ note.content }}</textarea>
+                                <small class="form-text text-muted">
+                                    Use the rich text editor to format your content with headings, lists, links, and more.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'admin_panel:manage_study_notes' %}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>
+                                        Cancel
+                                    </a>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-primary me-2" onclick="previewNote()">
+                                            <i class="fas fa-eye me-2"></i>
+                                            Preview
+                                        </button>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-save me-2"></i>
+                                            Update Study Note
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Study Note Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="previewContent">
+                <!-- Preview content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close Preview</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function handleSubjectChange() {
+    const subjectId = document.getElementById('subject_id').value;
+    const levelSelect = document.getElementById('level_id');
+    const topicSelect = document.getElementById('topic_id');
+    
+    // Clear and disable dependent dropdowns
+    levelSelect.innerHTML = '<option value="">Choose Grade...</option>';
+    topicSelect.innerHTML = '<option value="">Choose Existing Topic...</option>';
+    
+    if (subjectId) {
+        // Enable level dropdown and redirect with only subject_id
+        levelSelect.disabled = false;
+        topicSelect.disabled = true;
+        
+        // Redirect with only subject_id parameter
+        window.location.href = `?subject_id=${subjectId}`;
+    } else {
+        // Disable both dropdowns if no subject selected
+        levelSelect.disabled = true;
+        topicSelect.disabled = true;
+        
+        // Redirect to clean page
+        window.location.href = window.location.pathname;
+    }
+}
+
+function handleLevelChange() {
+    const subjectId = document.getElementById('subject_id').value;
+    const levelId = document.getElementById('level_id').value;
+    const topicSelect = document.getElementById('topic_id');
+    
+    // Clear topic dropdown
+    topicSelect.innerHTML = '<option value="">Choose Existing Topic...</option>';
+    
+    if (levelId && subjectId) {
+        // Enable topic dropdown and redirect with subject_id and level_id
+        topicSelect.disabled = false;
+        
+        // Redirect with subject_id and level_id parameters
+        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}`;
+    } else {
+        // Disable topic dropdown if no level selected
+        topicSelect.disabled = true;
+        
+        // Redirect with only subject_id if level is cleared
+        if (subjectId) {
+            window.location.href = `?subject_id=${subjectId}`;
+        }
+    }
+}
+
+function toggleTopicCreation() {
+    const topicSelect = document.getElementById('topic_id');
+    const newTopicSection = document.getElementById('newTopicSection');
+    const topicTitleInput = document.getElementById('topic_title');
+    
+    if (topicSelect.value === '') {
+        newTopicSection.style.display = 'block';
+        topicTitleInput.required = true;
+    } else {
+        newTopicSection.style.display = 'none';
+        topicTitleInput.required = false;
+        topicTitleInput.value = '';
+    }
+}
+
+function previewNote() {
+    const title = document.getElementById('note_title').value;
+    const content = document.getElementById('content').value;
+    
+    if (!title || !content) {
+        alert('Please enter both title and content to preview.');
+        return;
+    }
+    
+    const previewContent = document.getElementById('previewContent');
+    previewContent.innerHTML = `
+        <h3>${title}</h3>
+        <hr>
+        <div>${content}</div>
+    `;
+    
+    new bootstrap.Modal(document.getElementById('previewModal')).show();
+}
+
+// Initialize topic creation toggle on page load
+document.addEventListener('DOMContentLoaded', function() {
+    toggleTopicCreation();
+});
+</script>
+{% endblock %}

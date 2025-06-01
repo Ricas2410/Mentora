@@ -1306,3 +1306,147 @@ class DeleteImportLogView(AdminRequiredMixin, View):
             messages.error(request, f'Error deleting import log: {str(e)}')
 
         return redirect('admin_panel:import_logs')
+
+
+class StudyNoteDetailView(AdminRequiredMixin, View):
+    """AJAX view for getting study note details"""
+
+    def get(self, request, note_id):
+        try:
+            note = StudyNote.objects.select_related(
+                'topic__class_level__subject',
+                'created_by'
+            ).get(id=note_id)
+
+            data = {
+                'success': True,
+                'title': note.title,
+                'content': note.content,
+                'created_by': note.created_by.get_full_name() if note.created_by else 'System',
+                'created_at': note.created_at.strftime('%B %d, %Y at %I:%M %p'),
+                'updated_at': note.updated_at.strftime('%B %d, %Y at %I:%M %p'),
+                'topic': note.topic.title,
+                'subject': note.topic.class_level.subject.name,
+                'grade': f"Grade {note.topic.class_level.level_number}"
+            }
+            return JsonResponse(data)
+        except StudyNote.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Study note not found'
+            }, status=404)
+
+
+class EditStudyNoteView(AdminRequiredMixin, View):
+    """View for editing study notes"""
+
+    def get(self, request, note_id):
+        try:
+            note = StudyNote.objects.select_related(
+                'topic__class_level__subject'
+            ).get(id=note_id)
+
+            # Get all subjects for the form
+            subjects = Subject.objects.filter(is_active=True).order_by('name')
+
+            # Get levels for the selected subject
+            levels = ClassLevel.objects.filter(
+                subject=note.topic.class_level.subject,
+                is_active=True
+            ).order_by('level_number')
+
+            # Get topics for the selected level
+            topics = Topic.objects.filter(
+                class_level=note.topic.class_level,
+                is_active=True
+            ).order_by('title')
+
+            context = {
+                'note': note,
+                'subjects': subjects,
+                'levels': levels,
+                'topics': topics,
+                'selected_subject_id': str(note.topic.class_level.subject.id),
+                'selected_level_id': str(note.topic.class_level.id),
+                'selected_topic_id': str(note.topic.id),
+            }
+
+            return render(request, 'admin_panel/edit_study_note.html', context)
+
+        except StudyNote.DoesNotExist:
+            messages.error(request, 'Study note not found.')
+            return redirect('admin_panel:manage_study_notes')
+
+    def post(self, request, note_id):
+        try:
+            note = StudyNote.objects.get(id=note_id)
+
+            # Get form data
+            title = request.POST.get('note_title', '').strip()
+            content = request.POST.get('content', '').strip()
+            topic_id = request.POST.get('topic_id')
+
+            # Validation
+            if not title or not content:
+                messages.error(request, 'Title and content are required.')
+                return redirect('admin_panel:edit_study_note', note_id=note_id)
+
+            # Handle topic selection or creation
+            if topic_id:
+                try:
+                    topic = Topic.objects.get(id=topic_id)
+                except Topic.DoesNotExist:
+                    messages.error(request, 'Selected topic not found.')
+                    return redirect('admin_panel:edit_study_note', note_id=note_id)
+            else:
+                # Create new topic if specified
+                topic_title = request.POST.get('topic_title', '').strip()
+                subject_id = request.POST.get('subject_id')
+                level_id = request.POST.get('level_id')
+
+                if not topic_title or not subject_id or not level_id:
+                    messages.error(request, 'Please select an existing topic or provide details for a new topic.')
+                    return redirect('admin_panel:edit_study_note', note_id=note_id)
+
+                try:
+                    class_level = ClassLevel.objects.get(id=level_id, subject_id=subject_id)
+                    topic, created = Topic.objects.get_or_create(
+                        title=topic_title,
+                        class_level=class_level,
+                        defaults={
+                            'description': f'Auto-created topic for {topic_title}',
+                            'created_by': request.user
+                        }
+                    )
+                    if created:
+                        messages.success(request, f'New topic "{topic_title}" created successfully.')
+                except ClassLevel.DoesNotExist:
+                    messages.error(request, 'Invalid subject and grade level combination.')
+                    return redirect('admin_panel:edit_study_note', note_id=note_id)
+
+            # Update the study note
+            note.title = title
+            note.content = content
+            note.topic = topic
+            note.save()
+
+            # Log activity
+            AdminActivity.objects.create(
+                admin_user=request.user,
+                action='UPDATE_STUDY_NOTE',
+                description=f'Updated study note: {title}',
+                model_name='StudyNote',
+                object_id=str(note.id),
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT', '')
+            )
+
+            messages.success(request, f'Study note "{title}" updated successfully!')
+            return redirect('admin_panel:manage_study_notes')
+
+        except StudyNote.DoesNotExist:
+            messages.error(request, 'Study note not found.')
+            return redirect('admin_panel:manage_study_notes')
+        except Exception as e:
+            messages.error(request, f'Error updating study note: {str(e)}')
+            return redirect('admin_panel:edit_study_note', note_id=note_id)
