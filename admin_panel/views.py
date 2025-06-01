@@ -9,7 +9,7 @@ from django.views.generic import TemplateView, CreateView, UpdateView, DeleteVie
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Count, Avg, Q
 from django.utils import timezone
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse_lazy
 
 from subjects.models import Subject, ClassLevel, Topic
@@ -1113,9 +1113,23 @@ class ManageStudyNotesView(AdminRequiredMixin, TemplateView):
 
         # Get study notes if topic is selected
         if topic_id:
-            context['study_notes'] = StudyNote.objects.filter(
+            study_notes_list = StudyNote.objects.filter(
                 topic_id=topic_id
             ).order_by('-created_at')
+
+            # Pagination
+            paginator = Paginator(study_notes_list, 15)  # 15 notes per page
+            page = self.request.GET.get('page', 1)
+
+            try:
+                study_notes = paginator.page(page)
+            except PageNotAnInteger:
+                study_notes = paginator.page(1)
+            except EmptyPage:
+                study_notes = paginator.page(paginator.num_pages)
+
+            context['study_notes'] = study_notes
+            context['is_paginated'] = paginator.num_pages > 1
 
         return context
 

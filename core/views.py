@@ -1,7 +1,9 @@
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from subjects.models import Subject
+from django.http import HttpResponse
+from django.utils import timezone
+from subjects.models import Subject, ClassLevel, Topic
 from progress.models import UserProgress
 from .models import HeroSection, SiteStatistic
 
@@ -223,3 +225,66 @@ class HelpView(TemplateView):
     Help page view
     """
     template_name = 'core/help.html'
+
+
+def sitemap_view(request):
+    """
+    Generate XML sitemap for SEO
+    """
+    from django.template.loader import render_to_string
+
+    # Get all active subjects, class levels, and topics
+    subjects = Subject.objects.filter(is_active=True)
+    class_levels = ClassLevel.objects.filter(is_active=True)
+    topics = Topic.objects.filter(is_active=True)
+
+    # Get domain
+    domain = f"{request.scheme}://{request.get_host()}"
+
+    context = {
+        'domain': domain,
+        'current_date': timezone.now(),
+        'subjects': subjects,
+        'class_levels': class_levels,
+        'topics': topics,
+    }
+
+    xml_content = render_to_string('sitemap.xml', context, request=request)
+
+    return HttpResponse(xml_content, content_type='application/xml')
+
+
+def robots_txt_view(request):
+    """
+    Generate robots.txt for SEO
+    """
+    domain = f"{request.scheme}://{request.get_host()}"
+
+    robots_content = f"""User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: {domain}/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /my-admin/
+Disallow: /auth/logout/
+Disallow: /auth/password/
+
+# Allow important pages
+Allow: /
+Allow: /learn/
+Allow: /quiz/
+Allow: /subjects/
+Allow: /about/
+Allow: /contact/
+Allow: /help/
+Allow: /auth/register/
+Allow: /auth/login/
+
+# Crawl delay
+Crawl-delay: 1
+"""
+
+    return HttpResponse(robots_content, content_type='text/plain')

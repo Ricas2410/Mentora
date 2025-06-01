@@ -3,7 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Mentora - Educational Learning Platform{% endblock %}</title>
+
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Mentora - Free Online Learning Platform for Grades 1-12 | Educational Quizzes & Study Materials{% endblock %}</title>
+    <meta name="description" content="{% block description %}Mentora is a free online learning platform offering comprehensive educational content for Grades 1-12. Access interactive quizzes, study notes, and learning materials for English, Mathematics, Science, Social Studies, ICT, and Life Skills.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}free online learning, educational platform, grades 1-12, online quizzes, study materials, English learning, Mathematics, Science, Social Studies, ICT, Life Skills, free education, online school, learning platform, 
+    <meta name="author" content="Mentora Learning Platform">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="{% block og_title %}Mentora - Free Online Learning Platform for All Grades{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Access free educational content, interactive quizzes, and comprehensive study materials for Grades 1-12. Learn English, Math, Science, and more!{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/mentora-og-image.jpg' %}{% endblock %}">
+    <meta property="og:site_name" content="Mentora Learning Platform">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Mentora - Free Online Learning Platform{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Free educational platform with quizzes and study materials for all grades{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/mentora-twitter-card.jpg' %}{% endblock %}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% load static %}{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% load static %}{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% load static %}{% static 'images/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% load static %}{% static 'site.webmanifest' %}">
 
     <!-- Tailwind CSS + DaisyUI -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />

@@ -1,6 +1,95 @@
 {% extends 'base.html' %}
 
-{% block title %}Mentora - An Easy Way to Learn and Grow{% endblock %}
+{% block title %}Mentora - Free Online Learning Platform for Grades 1-12 | Educational Quizzes & Study Materials{% endblock %}
+{% block description %}Mentora offers free online education for Grades 1-12 with interactive quizzes, comprehensive study materials, and mobile-friendly learning. Access English, Mathematics, Science, Social Studies, ICT, and Life Skills courses.{% endblock %}
+{% block keywords %}free online learning, educational platform, grades 1-12, online quizzes, study materials, English learning, Mathematics, Science, Social Studies, ICT, Life Skills, free education, mobile learning, K-12 education{% endblock %}
+
+{% block og_title %}Mentora - Free Online Learning Platform for All Grades{% endblock %}
+{% block og_description %}Access free educational content, interactive quizzes, and comprehensive study materials for Grades 1-12. Learn English, Math, Science, and more on any device!{% endblock %}
+
+{% block extra_js %}
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "Mentora Learning Platform",
+  "description": "Free online learning platform offering comprehensive educational content for Grades 1-12 with interactive quizzes and study materials.",
+  "url": "{{ request.build_absolute_uri }}",
+  "logo": "{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/mentora-logo.png' %}",
+  "sameAs": [
+    "https://www.facebook.com/mentora",
+    "https://www.twitter.com/mentora",
+    "https://www.instagram.com/mentora"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Global"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'core:contact' %}"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free access to all educational content and features"
+  },
+  "educationalCredentialAwarded": "Grade completion certificates",
+  "hasCredential": {
+    "@type": "EducationalOccupationalCredential",
+    "name": "Grade Level Completion",
+    "description": "Completion certificates for each grade level"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Mentora Learning Platform",
+  "url": "{{ request.build_absolute_uri }}",
+  "description": "Free online learning platform for Grades 1-12",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ request.scheme }}://{{ request.get_host }}/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Comprehensive K-12 Education",
+  "description": "Complete educational curriculum covering Grades 1-12 with subjects including English, Mathematics, Science, Social Studies, ICT, and Life Skills",
+  "provider": {
+    "@type": "EducationalOrganization",
+    "name": "Mentora Learning Platform"
+  },
+  "educationalLevel": "K-12",
+  "teaches": [
+    "English Language Arts",
+    "Mathematics",
+    "Science",
+    "Social Studies",
+    "Information and Communication Technology",
+    "Life Skills"
+  ],
+  "courseMode": "online",
+  "isAccessibleForFree": true,
+  "inLanguage": "en",
+  "availableLanguage": "en"
+}
+</script>
+{% endblock %}
 
 {% block extra_css %}
 <style>
