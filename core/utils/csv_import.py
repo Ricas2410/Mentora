@@ -125,7 +125,7 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
             preview_data = {
                 'total_rows': len(csv_data),
                 'headers': list(csv_data[0].keys()) if csv_data else [],
-                'sample_rows': csv_data[:5],  # First 5 rows for preview
+                'sample_rows': csv_data,  # Show all rows for preview
                 'validation_results': [],
                 'warnings': [],
                 'errors': []
@@ -134,7 +134,7 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
             # Validate each row and collect issues
             required_fields = ['subject_name', 'class_level_name', 'topic_title', 'question_text', 'question_type']
 
-            for row_num, row in enumerate(csv_data[:10], 1):  # Check first 10 rows
+            for row_num, row in enumerate(csv_data[:20], 1):  # Check first 20 rows for validation
                 row_validation = {
                     'row_number': row_num,
                     'issues': [],

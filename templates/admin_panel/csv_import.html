@@ -55,11 +55,33 @@
                                     <span id="previewStats" class="badge bg-info ms-2"></span>
                                 </h6>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="max-height: 500px; overflow-y: auto;">
                                 <div id="previewContent">
                                     <!-- Preview content will be loaded here -->
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Level Selection (hidden initially) -->
+                    <div id="classLevelSelection" class="mb-3" style="display: none;">
+                        <label class="form-label">
+                            <strong>Target Class Levels</strong> <span class="text-danger">*</span>
+                        </label>
+                        <div class="form-text mb-2">
+                            Select which grade levels these questions should be imported for. Missing topics will be auto-created.
+                        </div>
+                        <div class="row">
+                            {% for value, label in form.target_class_levels.field.choices %}
+                                <div class="col-md-3 col-sm-4 col-6 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="target_class_levels" value="{{ value }}" id="class_{{ value }}">
+                                        <label class="form-check-label" for="class_{{ value }}">
+                                            {{ label }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -259,6 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const livePreview = document.getElementById('livePreview');
     const previewContent = document.getElementById('previewContent');
     const previewStats = document.getElementById('previewStats');
+    const classLevelSelection = document.getElementById('classLevelSelection');
 
     fileInput.addEventListener('change', function() {
         const file = this.files[0];
@@ -283,6 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             livePreview.style.display = 'none';
             submitBtn.style.display = 'none';
+            classLevelSelection.style.display = 'none';
         }
     });
 
@@ -308,10 +332,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 displayLivePreview(data.preview_data);
 
-                // Show import button if no critical errors
+                // Show import button and class level selection if no critical errors
                 if (data.preview_data.summary.rows_with_errors === 0) {
+                    classLevelSelection.style.display = 'block';
                     submitBtn.style.display = 'inline-block';
                 } else {
+                    classLevelSelection.style.display = 'none';
                     submitBtn.style.display = 'none';
                 }
             } else {
@@ -322,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
                 previewStats.textContent = 'Error';
+                classLevelSelection.style.display = 'none';
                 submitBtn.style.display = 'none';
             }
         })
@@ -334,6 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             previewStats.textContent = 'Error';
+            classLevelSelection.style.display = 'none';
             submitBtn.style.display = 'none';
         });
     }
@@ -345,6 +373,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = fileInput.files[0];
         if (!file) {
             alert('Please select a CSV file first.');
+            e.preventDefault();
+            return;
+        }
+
+        // Check if at least one class level is selected
+        const selectedClassLevels = document.querySelectorAll('input[name="target_class_levels"]:checked');
+        if (selectedClassLevels.length === 0) {
+            alert('Please select at least one class level for import.');
             e.preventDefault();
             return;
         }
@@ -387,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // The form will submit normally, and the page will reload with results
     });
 
-    // Function to display live preview with formatted questions
+    // Function to display live preview with simple document format
     function displayLivePreview(previewData) {
         // Update stats badge
         const totalQuestions = previewData.summary.total_rows;
@@ -413,62 +449,80 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="alert alert-${errorCount > 0 ? 'danger' : 'warning'} mb-3">
                     <h6><i class="fas fa-exclamation-triangle me-2"></i>Issues Found</h6>
                     <div class="small">
-                        ${previewData.validation_results.slice(0, 3).map(result => `
+                        ${previewData.validation_results.slice(0, 5).map(result => `
                             <div class="mb-1">
                                 <strong>Row ${result.row_number}:</strong>
                                 ${result.issues.concat(result.warnings).join(', ')}
                             </div>
                         `).join('')}
-                        ${previewData.validation_results.length > 3 ? `<div class="text-muted">... and ${previewData.validation_results.length - 3} more issues</div>` : ''}
+                        ${previewData.validation_results.length > 5 ? `<div class="text-muted">... and ${previewData.validation_results.length - 5} more issues</div>` : ''}
                     </div>
                 </div>
             `;
         }
 
-        // Show formatted questions preview
+        // Show all questions in simple document format
         if (previewData.sample_rows.length > 0) {
-            html += '<h6 class="mb-3">Question Preview (First 3 Questions)</h6>';
+            html += `<div style="font-family: 'Times New Roman', serif; line-height: 1.6; color: #333;">`;
 
-            previewData.sample_rows.slice(0, 3).forEach((row, index) => {
+            previewData.sample_rows.forEach((row, index) => {
                 const questionType = row.question_type || 'unknown';
                 const questionText = row.question_text || 'No question text';
                 const subject = row.subject_name || 'Unknown Subject';
+                const classLevel = row.class_level_name || 'Unknown Class';
                 const topic = row.topic_title || 'Unknown Topic';
                 const difficulty = row.difficulty || 'medium';
-
-                // Difficulty badge color
-                const difficultyClass = {
-                    'easy': 'bg-success',
-                    'medium': 'bg-warning',
-                    'hard': 'bg-danger'
-                }[difficulty] || 'bg-secondary';
+                const explanation = row.explanation || '';
 
                 html += `
-                    <div class="card mb-3 border-start border-4 border-primary">
-                        <div class="card-header bg-light py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="badge bg-primary me-2">${subject}</span>
-                                    <span class="badge bg-secondary me-2">${topic}</span>
-                                    <span class="badge ${difficultyClass}">${difficulty}</span>
-                                </div>
-                                <small class="text-muted">Question ${index + 1}</small>
+                    <div class="mb-4 pb-3" style="border-bottom: 1px solid #eee;">
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <strong>Subject:</strong> ${subject} |
+                                <strong>Class:</strong> ${classLevel} |
+                                <strong>Topic:</strong> ${topic} |
+                                <strong>Difficulty:</strong> ${difficulty}
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>${index + 1}. ${questionText}</strong>
+                        </div>
+
+                        ${formatQuestionSimple(row, questionType)}
+
+                        ${explanation ? `
+                            <div class="mt-2">
+                                <small class="text-info">
+                                    <strong>Explanation:</strong> ${explanation}
+                                </small>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="card-title">${questionText}</h6>
-                            ${formatQuestionByType(row, questionType)}
-                        </div>
+                        ` : ''}
                     </div>
                 `;
             });
+
+            html += `</div>`;
+
+            // Show total count if there are more questions
+            if (totalQuestions > previewData.sample_rows.length) {
+                html += `
+                    <div class="text-center mt-3 p-3 bg-light rounded">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Showing first ${previewData.sample_rows.length} questions.
+                            Total questions to import: <strong>${totalQuestions}</strong>
+                        </small>
+                    </div>
+                `;
+            }
         }
 
         previewContent.innerHTML = html;
     }
 
-    // Function to format questions based on type
-    function formatQuestionByType(row, questionType) {
+    // Function to format questions in simple text format
+    function formatQuestionSimple(row, questionType) {
         switch (questionType) {
             case 'multiple_choice':
                 const choices = [
@@ -480,52 +534,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const correctAnswer = (row.correct_answer || '').toUpperCase();
 
-                return `
-                    <div class="mt-3">
-                        ${choices.map(choice => `
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" disabled ${choice.letter === correctAnswer ? 'checked' : ''}>
-                                <label class="form-check-label ${choice.letter === correctAnswer ? 'text-success fw-bold' : ''}">
-                                    <strong>${choice.letter}.</strong> ${choice.text}
-                                    ${choice.letter === correctAnswer ? '<i class="fas fa-check text-success ms-2"></i>' : ''}
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+                let choicesHtml = choices.map(choice => {
+                    const isCorrect = choice.letter === correctAnswer;
+                    return `<div class="mb-1">${choice.letter}. ${choice.text} ${isCorrect ? '<span class="text-success fw-bold">(Correct Answer)</span>' : ''}</div>`;
+                }).join('');
+
+                return `<div class="ms-3">${choicesHtml}</div>`;
 
             case 'true_false':
                 const correctAnswer_tf = (row.correct_answer || '').toLowerCase();
                 const isTrue = ['true', 't', '1', 'yes'].includes(correctAnswer_tf);
 
                 return `
-                    <div class="mt-3">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" disabled ${isTrue ? 'checked' : ''}>
-                            <label class="form-check-label ${isTrue ? 'text-success fw-bold' : ''}">
-                                True ${isTrue ? '<i class="fas fa-check text-success ms-2"></i>' : ''}
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" disabled ${!isTrue ? 'checked' : ''}>
-                            <label class="form-check-label ${!isTrue ? 'text-success fw-bold' : ''}">
-                                False ${!isTrue ? '<i class="fas fa-check text-success ms-2"></i>' : ''}
-                            </label>
-                        </div>
+                    <div class="ms-3">
+                        <div class="mb-1">A. True ${isTrue ? '<span class="text-success fw-bold">(Correct Answer)</span>' : ''}</div>
+                        <div class="mb-1">B. False ${!isTrue ? '<span class="text-success fw-bold">(Correct Answer)</span>' : ''}</div>
                     </div>
                 `;
 
             case 'fill_blank':
             case 'short_answer':
                 return `
-                    <div class="mt-3">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" placeholder="Type your answer here..." disabled>
-                            <label>Type your answer here...</label>
+                    <div class="ms-3">
+                        <div class="mb-2">
+                            <em>Answer: ________________________</em>
                         </div>
-                        <div class="mt-2">
+                        <div>
                             <small class="text-success">
-                                <i class="fas fa-key me-1"></i>
                                 <strong>Correct Answer:</strong> ${row.correct_answer || 'Not specified'}
                             </small>
                         </div>
@@ -534,11 +569,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             default:
                 return `
-                    <div class="mt-3">
-                        <div class="alert alert-warning small">
-                            <i class="fas fa-question-circle me-2"></i>
-                            Unknown question type: ${questionType}
-                        </div>
+                    <div class="ms-3">
+                        <small class="text-warning">
+                            <em>Unknown question type: ${questionType}</em>
+                        </small>
                     </div>
                 `;
         }
