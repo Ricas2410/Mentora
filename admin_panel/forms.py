@@ -273,7 +273,7 @@ class TopicForm(forms.ModelForm):
         widgets = {
             'class_level': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Topic title'}),
-            'description': forms.Textarea(attrs={'class': 'form-control summernote', 'rows': 4, 'placeholder': 'Topic description'}),
+            'description': forms.Textarea(attrs={'class': 'form-control summernote-compact', 'rows': 4, 'placeholder': 'Topic description'}),
             'estimated_duration': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 300}),
             'difficulty_level': forms.Select(attrs={'class': 'form-control'}),
             'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
@@ -289,11 +289,11 @@ class QuestionForm(forms.ModelForm):
         fields = ['topic', 'question_text', 'question_type', 'difficulty', 'points', 'explanation', 'image', 'is_active']
         widgets = {
             'topic': forms.Select(attrs={'class': 'form-control'}),
-            'question_text': forms.Textarea(attrs={'class': 'form-control summernote', 'rows': 4, 'placeholder': 'Enter your question here...'}),
+            'question_text': forms.Textarea(attrs={'class': 'form-control summernote-compact', 'rows': 4, 'placeholder': 'Enter your question here...'}),
             'question_type': forms.Select(attrs={'class': 'form-control'}),
             'difficulty': forms.Select(attrs={'class': 'form-control'}),
             'points': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 10}),
-            'explanation': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Explain the correct answer...'}),
+            'explanation': forms.Textarea(attrs={'class': 'form-control summernote-compact', 'rows': 3, 'placeholder': 'Explain the correct answer...'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
