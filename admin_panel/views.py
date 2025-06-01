@@ -1129,7 +1129,7 @@ class ManageStudyNotesView(AdminRequiredMixin, TemplateView):
         if topic_id:
             study_notes_list = StudyNote.objects.filter(
                 topic_id=topic_id
-            ).order_by('-created_at')
+            ).order_by('order', 'created_at')
 
             # Pagination
             paginator = Paginator(study_notes_list, 15)  # 15 notes per page
@@ -1483,6 +1483,44 @@ class EditStudyNoteView(AdminRequiredMixin, View):
         except Exception as e:
             messages.error(request, f'Error updating study note: {str(e)}')
             return redirect('admin_panel:edit_study_note', note_id=note_id)
+
+
+class ReorderStudyNotesView(AdminRequiredMixin, View):
+    """AJAX view for reordering study notes"""
+
+    def post(self, request):
+        try:
+            import json
+            data = json.loads(request.body)
+            note_orders = data.get('note_orders', [])
+
+            if not note_orders:
+                return JsonResponse({'success': False, 'error': 'No note orders provided'})
+
+            # Update note orders in a transaction
+            from django.db import transaction
+            with transaction.atomic():
+                for item in note_orders:
+                    note_id = item.get('id')
+                    new_order = item.get('order')
+
+                    if note_id and new_order is not None:
+                        try:
+                            note = StudyNote.objects.get(id=note_id)
+                            note.order = new_order
+                            note.save(update_fields=['order'])
+                        except StudyNote.DoesNotExist:
+                            continue
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Study notes reordered successfully'
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
 
 
 class ReadStudyNotesView(AdminRequiredMixin, TemplateView):

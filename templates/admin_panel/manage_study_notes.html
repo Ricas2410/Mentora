@@ -3,6 +3,39 @@
 {% block title %}Manage Study Notes{% endblock %}
 {% block page_title %}Study Notes Management{% endblock %}
 
+{% block extra_css %}
+<style>
+.reorder-mode {
+    background-color: #f8f9fa !important;
+    border: 2px dashed #dee2e6 !important;
+}
+
+.reorder-mode:hover {
+    background-color: #e9ecef !important;
+    border-color: #6c757d !important;
+}
+
+.drag-handle {
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.drag-handle:hover {
+    opacity: 1;
+}
+
+.sortable-row.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+}
+
+.order-badge {
+    min-width: 30px;
+    display: inline-block;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row mb-4">
     <div class="col-12">
@@ -74,6 +107,12 @@
                                 <i class="fas fa-book-reader me-2"></i>
                                 Read Notes
                             </a>
+                            {% if study_notes|length > 1 %}
+                            <button type="button" class="btn btn-warning flex-fill" id="reorderBtn">
+                                <i class="fas fa-sort me-2"></i>
+                                Reorder
+                            </button>
+                            {% endif %}
                             {% endif %}
                         </div>
                         {% endif %}
@@ -84,9 +123,10 @@
                 {% if selected_topic_id %}
                     {% if study_notes %}
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="notesTable">
                                 <thead class="table-light">
                                     <tr>
+                                        <th width="50">Order</th>
                                         <th>Title</th>
                                         <th>Content Preview</th>
                                         <th>Created By</th>
@@ -94,9 +134,13 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="sortableNotes">
                                     {% for note in study_notes %}
-                                    <tr>
+                                    <tr data-note-id="{{ note.id }}" data-order="{{ note.order }}" class="sortable-row">
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary order-badge">{{ note.order|default:forloop.counter }}</span>
+                                            <i class="fas fa-grip-vertical text-muted ms-2 drag-handle" style="cursor: move; display: none;"></i>
+                                        </td>
                                         <td>
                                             <strong>{{ note.title }}</strong>
                                         </td>
@@ -345,6 +389,209 @@ function deleteNote(noteId) {
         // Implement delete functionality
         alert('Delete functionality to be implemented');
     }
+}
+
+// Note reordering functionality
+let isReorderMode = false;
+let sortable = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const reorderBtn = document.getElementById('reorderBtn');
+    const notesTable = document.getElementById('sortableNotes');
+
+    if (reorderBtn) {
+        reorderBtn.addEventListener('click', toggleReorderMode);
+    }
+});
+
+function toggleReorderMode() {
+    const reorderBtn = document.getElementById('reorderBtn');
+    const dragHandles = document.querySelectorAll('.drag-handle');
+    const sortableRows = document.querySelectorAll('.sortable-row');
+
+    isReorderMode = !isReorderMode;
+
+    if (isReorderMode) {
+        // Enter reorder mode
+        reorderBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Order';
+        reorderBtn.className = 'btn btn-success flex-fill';
+
+        // Show drag handles
+        dragHandles.forEach(handle => handle.style.display = 'inline');
+
+        // Add visual feedback
+        sortableRows.forEach(row => {
+            row.style.cursor = 'move';
+            row.classList.add('reorder-mode');
+        });
+
+        // Initialize sortable
+        initializeSortable();
+
+        // Show instructions
+        showReorderInstructions();
+
+    } else {
+        // Exit reorder mode and save
+        saveNoteOrder();
+    }
+}
+
+function initializeSortable() {
+    const tbody = document.getElementById('sortableNotes');
+
+    // Simple drag and drop implementation
+    let draggedElement = null;
+
+    tbody.addEventListener('dragstart', function(e) {
+        if (e.target.closest('.sortable-row')) {
+            draggedElement = e.target.closest('.sortable-row');
+            draggedElement.style.opacity = '0.5';
+        }
+    });
+
+    tbody.addEventListener('dragend', function(e) {
+        if (draggedElement) {
+            draggedElement.style.opacity = '';
+            draggedElement = null;
+        }
+    });
+
+    tbody.addEventListener('dragover', function(e) {
+        e.preventDefault();
+    });
+
+    tbody.addEventListener('drop', function(e) {
+        e.preventDefault();
+        const targetRow = e.target.closest('.sortable-row');
+
+        if (draggedElement && targetRow && draggedElement !== targetRow) {
+            const tbody = targetRow.parentNode;
+            const targetIndex = Array.from(tbody.children).indexOf(targetRow);
+            const draggedIndex = Array.from(tbody.children).indexOf(draggedElement);
+
+            if (draggedIndex < targetIndex) {
+                tbody.insertBefore(draggedElement, targetRow.nextSibling);
+            } else {
+                tbody.insertBefore(draggedElement, targetRow);
+            }
+
+            updateOrderBadges();
+        }
+    });
+
+    // Make rows draggable
+    const rows = tbody.querySelectorAll('.sortable-row');
+    rows.forEach(row => {
+        row.draggable = true;
+    });
+}
+
+function updateOrderBadges() {
+    const rows = document.querySelectorAll('#sortableNotes .sortable-row');
+    rows.forEach((row, index) => {
+        const badge = row.querySelector('.order-badge');
+        badge.textContent = index + 1;
+    });
+}
+
+function showReorderInstructions() {
+    const alertHtml = `
+        <div class="alert alert-info alert-dismissible fade show mt-3" role="alert" id="reorderAlert">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Reorder Mode Active:</strong> Drag and drop rows to reorder study notes. Click "Save Order" when finished.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+
+    const tableContainer = document.querySelector('.table-responsive');
+    tableContainer.insertAdjacentHTML('beforebegin', alertHtml);
+}
+
+function saveNoteOrder() {
+    const rows = document.querySelectorAll('#sortableNotes .sortable-row');
+    const noteOrders = [];
+
+    rows.forEach((row, index) => {
+        noteOrders.push({
+            id: row.dataset.noteId,
+            order: index + 1
+        });
+    });
+
+    // Send AJAX request to save order
+    fetch('{% url "admin_panel:reorder_study_notes" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            note_orders: noteOrders
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Exit reorder mode
+            exitReorderMode();
+
+            // Show success message
+            showSuccessMessage('Study notes reordered successfully!');
+
+            // Reload page to reflect new order
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            alert('Error saving order: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving note order. Please try again.');
+    });
+}
+
+function exitReorderMode() {
+    const reorderBtn = document.getElementById('reorderBtn');
+    const dragHandles = document.querySelectorAll('.drag-handle');
+    const sortableRows = document.querySelectorAll('.sortable-row');
+    const reorderAlert = document.getElementById('reorderAlert');
+
+    isReorderMode = false;
+
+    // Reset button
+    reorderBtn.innerHTML = '<i class="fas fa-sort me-2"></i>Reorder';
+    reorderBtn.className = 'btn btn-warning flex-fill';
+
+    // Hide drag handles
+    dragHandles.forEach(handle => handle.style.display = 'none');
+
+    // Remove visual feedback
+    sortableRows.forEach(row => {
+        row.style.cursor = '';
+        row.classList.remove('reorder-mode');
+        row.draggable = false;
+    });
+
+    // Remove alert
+    if (reorderAlert) {
+        reorderAlert.remove();
+    }
+}
+
+function showSuccessMessage(message) {
+    const alertHtml = `
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+
+    const container = document.querySelector('.card-body');
+    container.insertAdjacentHTML('afterbegin', alertHtml);
 }
 </script>
 {% endblock %}

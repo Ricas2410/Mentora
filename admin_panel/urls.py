@@ -38,6 +38,7 @@ urlpatterns = [
     path('study-notes/<uuid:note_id>/view/', views.StudyNoteDetailView.as_view(), name='view_study_note'),
     path('study-notes/<uuid:note_id>/edit/', views.EditStudyNoteView.as_view(), name='edit_study_note'),
     path('study-notes/read/<uuid:topic_id>/', views.ReadStudyNotesView.as_view(), name='read_study_notes'),
+    path('study-notes/reorder/', views.ReorderStudyNotesView.as_view(), name='reorder_study_notes'),
 
     # CSV Import/Export
     path('import/', views.CSVImportView.as_view(), name='csv_import'),
