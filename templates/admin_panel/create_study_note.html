@@ -21,7 +21,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label for="subject_id" class="form-label">Subject *</label>
-                            <select class="form-select" id="subject_id" name="subject_id" required onchange="loadLevels()">
+                            <select class="form-select" id="subject_id" name="subject_id" required onchange="handleSubjectChange()">
                                 <option value="">Choose Subject...</option>
                                 {% for subject in subjects %}
                                     <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject_id %}selected{% endif %}>
@@ -33,9 +33,9 @@
 
                         <div class="col-md-4">
                             <label for="level_id" class="form-label">Grade Level *</label>
-                            <select class="form-select" id="level_id" name="level_id" required onchange="loadTopics()">
+                            <select class="form-select" id="level_id" name="level_id" required onchange="handleLevelChange()" {% if not selected_subject_id %}disabled{% endif %}>
                                 <option value="">Choose Grade...</option>
-                                {% if levels %}
+                                {% if selected_subject_id %}
                                     {% for level in levels %}
                                         <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level_id %}selected{% endif %}>
                                             Grade {{ level.level_number }}
@@ -47,9 +47,9 @@
 
                         <div class="col-md-4">
                             <label for="topic_id" class="form-label">Topic</label>
-                            <select class="form-select" id="topic_id" name="topic_id" onchange="toggleTopicCreation()">
+                            <select class="form-select" id="topic_id" name="topic_id" onchange="toggleTopicCreation()" {% if not selected_level_id %}disabled{% endif %}>
                                 <option value="">Choose Existing Topic...</option>
-                                {% if topics %}
+                                {% if selected_level_id %}
                                     {% for topic in topics %}
                                         <option value="{{ topic.id }}" {% if topic.id|stringformat:"s" == selected_topic_id %}selected{% endif %}>
                                             {{ topic.title }}
@@ -144,32 +144,54 @@
 
 {% block extra_js %}
 <script>
-function loadLevels() {
+function handleSubjectChange() {
     const subjectId = document.getElementById('subject_id').value;
     const levelSelect = document.getElementById('level_id');
     const topicSelect = document.getElementById('topic_id');
 
-    // Clear levels and topics
+    // Clear and disable dependent dropdowns
     levelSelect.innerHTML = '<option value="">Choose Grade...</option>';
     topicSelect.innerHTML = '<option value="">Choose Existing Topic...</option>';
 
     if (subjectId) {
-        // Reload page with subject_id to get levels
+        // Enable level dropdown and redirect with only subject_id
+        levelSelect.disabled = false;
+        topicSelect.disabled = true;
+
+        // Redirect with only subject_id parameter
         window.location.href = `?subject_id=${subjectId}`;
+    } else {
+        // Disable both dropdowns if no subject selected
+        levelSelect.disabled = true;
+        topicSelect.disabled = true;
+
+        // Redirect to clean page
+        window.location.href = window.location.pathname;
     }
 }
 
-function loadTopics() {
+function handleLevelChange() {
     const subjectId = document.getElementById('subject_id').value;
     const levelId = document.getElementById('level_id').value;
     const topicSelect = document.getElementById('topic_id');
 
-    // Clear topics
+    // Clear topic dropdown
     topicSelect.innerHTML = '<option value="">Choose Existing Topic...</option>';
 
-    if (subjectId && levelId) {
-        // Reload page with subject_id and level_id to get topics
+    if (levelId && subjectId) {
+        // Enable topic dropdown and redirect with subject_id and level_id
+        topicSelect.disabled = false;
+
+        // Redirect with subject_id and level_id parameters
         window.location.href = `?subject_id=${subjectId}&level_id=${levelId}`;
+    } else {
+        // Disable topic dropdown if no level selected
+        topicSelect.disabled = true;
+
+        // Redirect with only subject_id if level is cleared
+        if (subjectId) {
+            window.location.href = `?subject_id=${subjectId}`;
+        }
     }
 }
 

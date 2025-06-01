@@ -19,11 +19,11 @@
             </div>
             <div class="card-body">
                 <!-- Hierarchical Selection Form -->
-                <form method="get" class="mb-4">
+                <form method="get" class="mb-4" id="filterForm">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label for="subject_id" class="form-label">Select Subject</label>
-                            <select class="form-select" id="subject_id" name="subject_id" onchange="this.form.submit()">
+                            <select class="form-select" id="subject_id" name="subject_id" onchange="handleSubjectChange()">
                                 <option value="">Choose Subject...</option>
                                 {% for subject in subjects %}
                                     <option value="{{ subject.id }}" {% if subject.id|stringformat:"s" == selected_subject_id %}selected{% endif %}>
@@ -33,36 +33,33 @@
                             </select>
                         </div>
 
-                        {% if selected_subject_id %}
                         <div class="col-md-3">
                             <label for="level_id" class="form-label">Select Grade Level</label>
-                            <select class="form-select" id="level_id" name="level_id" onchange="this.form.submit()">
+                            <select class="form-select" id="level_id" name="level_id" onchange="handleLevelChange()" {% if not selected_subject_id %}disabled{% endif %}>
                                 <option value="">Choose Grade...</option>
-                                {% for level in levels %}
-                                    <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level_id %}selected{% endif %}>
-                                        Grade {{ level.level_number }}
-                                    </option>
-                                {% endfor %}
+                                {% if selected_subject_id %}
+                                    {% for level in levels %}
+                                        <option value="{{ level.id }}" {% if level.id|stringformat:"s" == selected_level_id %}selected{% endif %}>
+                                            Grade {{ level.level_number }}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
-                            <input type="hidden" name="subject_id" value="{{ selected_subject_id }}">
                         </div>
-                        {% endif %}
 
-                        {% if selected_level_id %}
                         <div class="col-md-3">
                             <label for="topic_id" class="form-label">Select Topic</label>
-                            <select class="form-select" id="topic_id" name="topic_id" onchange="this.form.submit()">
+                            <select class="form-select" id="topic_id" name="topic_id" onchange="handleTopicChange()" {% if not selected_level_id %}disabled{% endif %}>
                                 <option value="">Choose Topic...</option>
-                                {% for topic in topics %}
-                                    <option value="{{ topic.id }}" {% if topic.id|stringformat:"s" == selected_topic_id %}selected{% endif %}>
-                                        {{ topic.title }}
-                                    </option>
-                                {% endfor %}
+                                {% if selected_level_id %}
+                                    {% for topic in topics %}
+                                        <option value="{{ topic.id }}" {% if topic.id|stringformat:"s" == selected_topic_id %}selected{% endif %}>
+                                            {{ topic.title }}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
-                            <input type="hidden" name="subject_id" value="{{ selected_subject_id }}">
-                            <input type="hidden" name="level_id" value="{{ selected_level_id }}">
                         </div>
-                        {% endif %}
 
                         {% if selected_topic_id %}
                         <div class="col-md-3 d-flex align-items-end">
@@ -226,6 +223,72 @@
 
 {% block extra_js %}
 <script>
+function handleSubjectChange() {
+    const subjectId = document.getElementById('subject_id').value;
+
+    // Clear and disable dependent dropdowns
+    const levelSelect = document.getElementById('level_id');
+    const topicSelect = document.getElementById('topic_id');
+
+    levelSelect.innerHTML = '<option value="">Choose Grade...</option>';
+    topicSelect.innerHTML = '<option value="">Choose Topic...</option>';
+
+    if (subjectId) {
+        // Enable level dropdown and redirect with only subject_id
+        levelSelect.disabled = false;
+        topicSelect.disabled = true;
+
+        // Redirect with only subject_id parameter
+        window.location.href = `?subject_id=${subjectId}`;
+    } else {
+        // Disable both dropdowns if no subject selected
+        levelSelect.disabled = true;
+        topicSelect.disabled = true;
+
+        // Redirect to clean page
+        window.location.href = window.location.pathname;
+    }
+}
+
+function handleLevelChange() {
+    const subjectId = document.getElementById('subject_id').value;
+    const levelId = document.getElementById('level_id').value;
+
+    // Clear topic dropdown
+    const topicSelect = document.getElementById('topic_id');
+    topicSelect.innerHTML = '<option value="">Choose Topic...</option>';
+
+    if (levelId && subjectId) {
+        // Enable topic dropdown and redirect with subject_id and level_id
+        topicSelect.disabled = false;
+
+        // Redirect with subject_id and level_id parameters
+        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}`;
+    } else {
+        // Disable topic dropdown if no level selected
+        topicSelect.disabled = true;
+
+        // Redirect with only subject_id if level is cleared
+        if (subjectId) {
+            window.location.href = `?subject_id=${subjectId}`;
+        }
+    }
+}
+
+function handleTopicChange() {
+    const subjectId = document.getElementById('subject_id').value;
+    const levelId = document.getElementById('level_id').value;
+    const topicId = document.getElementById('topic_id').value;
+
+    if (topicId && levelId && subjectId) {
+        // Redirect with all parameters
+        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}&topic_id=${topicId}`;
+    } else if (levelId && subjectId) {
+        // Redirect with subject_id and level_id if topic is cleared
+        window.location.href = `?subject_id=${subjectId}&level_id=${levelId}`;
+    }
+}
+
 function viewNote(noteId) {
     // You can implement AJAX call to fetch note details
     // For now, just show a placeholder
