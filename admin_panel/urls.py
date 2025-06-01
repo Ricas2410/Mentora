@@ -43,6 +43,8 @@ urlpatterns = [
     # CSV Import/Export
     path('import/', views.CSVImportView.as_view(), name='csv_import'),
     path('export/template/', views.DownloadTemplateView.as_view(), name='download_template'),
+    path('export/questions/', views.ExportQuestionsView.as_view(), name='export_questions'),
+    path('export/users/', views.ExportUsersView.as_view(), name='export_users'),
 
     # Import Logs
     path('logs/', views.ImportLogsView.as_view(), name='import_logs'),

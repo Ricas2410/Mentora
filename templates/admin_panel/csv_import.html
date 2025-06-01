@@ -56,10 +56,16 @@
                                 View Import Logs
                             </a>
                         </div>
-                        <button type="submit" id="submitBtn" class="btn btn-primary">
-                            <i class="fas fa-upload me-2"></i>
-                            <span id="submitText">Import Questions</span>
-                        </button>
+                        <div>
+                            <button type="button" id="previewBtn" class="btn btn-warning me-2">
+                                <i class="fas fa-eye me-2"></i>
+                                Preview Data
+                            </button>
+                            <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">
+                                <i class="fas fa-upload me-2"></i>
+                                <span id="submitText">Import Questions</span>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -181,14 +187,14 @@
                         <i class="fas fa-file-csv me-2"></i>
                         Questions Template
                     </a>
-                    <button class="btn btn-outline-secondary disabled">
+                    <a href="{% url 'admin_panel:export_questions' %}" class="btn btn-outline-success">
                         <i class="fas fa-database me-2"></i>
-                        Export All Questions (Coming Soon)
-                    </button>
-                    <button class="btn btn-outline-info disabled">
+                        Export All Questions
+                    </a>
+                    <a href="{% url 'admin_panel:export_users' %}" class="btn btn-outline-info">
                         <i class="fas fa-users me-2"></i>
-                        Export Users (Coming Soon)
-                    </button>
+                        Export Users
+                    </a>
                 </div>
             </div>
         </div>
@@ -220,6 +226,33 @@
         </div>
     </div>
 </div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">
+                    <i class="fas fa-eye me-2"></i>
+                    CSV Import Preview
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent">
+                    <!-- Preview content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="proceedImportBtn" class="btn btn-primary">
+                    <i class="fas fa-upload me-2"></i>
+                    Proceed with Import
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -229,11 +262,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('{{ form.csv_file.id_for_label }}');
     const importForm = document.getElementById('importForm');
     const submitBtn = document.getElementById('submitBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const proceedImportBtn = document.getElementById('proceedImportBtn');
     const submitText = document.getElementById('submitText');
     const uploadProgress = document.getElementById('uploadProgress');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
     const statusText = document.getElementById('statusText');
+    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+    const previewContent = document.getElementById('previewContent');
 
     fileInput.addEventListener('change', function() {
         const file = this.files[0];
@@ -250,9 +287,69 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Show file info
+            // Show file info and enable preview button
             statusText.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            previewBtn.disabled = false;
+        } else {
+            previewBtn.disabled = true;
+            submitBtn.style.display = 'none';
         }
+    });
+
+    // Handle preview button click
+    previewBtn.addEventListener('click', function() {
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('Please select a CSV file first.');
+            return;
+        }
+
+        // Show loading state
+        previewBtn.disabled = true;
+        previewBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading Preview...';
+
+        // Create FormData and send preview request
+        const formData = new FormData();
+        formData.append('csv_file', file);
+        formData.append('action', 'preview');
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayPreview(data.preview_data);
+                previewModal.show();
+            } else {
+                alert('Preview failed: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to generate preview. Please try again.');
+        })
+        .finally(() => {
+            // Reset preview button
+            previewBtn.disabled = false;
+            previewBtn.innerHTML = '<i class="fas fa-eye me-2"></i>Preview Data';
+        });
+    });
+
+    // Handle proceed with import button
+    proceedImportBtn.addEventListener('click', function() {
+        // Add action field to form and submit
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'import';
+        importForm.appendChild(actionInput);
+
+        previewModal.hide();
+        submitBtn.style.display = 'inline-block';
+        submitBtn.click();
     });
 
     // Handle form submission with progress
@@ -294,6 +391,114 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // The form will submit normally, and the page will reload with results
     });
+
+    // Function to display preview data
+    function displayPreview(previewData) {
+        let html = `
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">${previewData.summary.total_rows}</h5>
+                            <p class="card-text small">Total Rows</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-danger">${previewData.summary.rows_with_errors}</h5>
+                            <p class="card-text small">Rows with Errors</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">${previewData.summary.rows_with_warnings}</h5>
+                            <p class="card-text small">Rows with Warnings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">${Math.round(previewData.summary.estimated_success_rate)}%</h5>
+                            <p class="card-text small">Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Show validation issues if any
+        if (previewData.validation_results.length > 0) {
+            html += `
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Validation Issues Found</h6>
+                    <div class="accordion" id="validationAccordion">
+            `;
+
+            previewData.validation_results.forEach((result, index) => {
+                const badgeClass = result.status === 'error' ? 'bg-danger' : 'bg-warning';
+                html += `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading${index}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+                                Row ${result.row_number} <span class="badge ${badgeClass} ms-2">${result.status}</span>
+                            </button>
+                        </h2>
+                        <div id="collapse${index}" class="accordion-collapse collapse" data-bs-parent="#validationAccordion">
+                            <div class="accordion-body">
+                                ${result.issues.map(issue => `<div class="text-danger small">• ${issue}</div>`).join('')}
+                                ${result.warnings.map(warning => `<div class="text-warning small">• ${warning}</div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show sample data
+        if (previewData.sample_rows.length > 0) {
+            html += `
+                <h6>Sample Data (First 5 Rows)</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                ${previewData.headers.map(header => `<th class="small">${header}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${previewData.sample_rows.map(row => `
+                                <tr>
+                                    ${previewData.headers.map(header => `<td class="small">${row[header] || ''}</td>`).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        previewContent.innerHTML = html;
+
+        // Enable/disable proceed button based on errors
+        proceedImportBtn.disabled = previewData.summary.rows_with_errors > 0;
+        if (previewData.summary.rows_with_errors > 0) {
+            proceedImportBtn.innerHTML = '<i class="fas fa-times me-2"></i>Cannot Import (Errors Found)';
+            proceedImportBtn.className = 'btn btn-danger';
+        } else {
+            proceedImportBtn.innerHTML = '<i class="fas fa-upload me-2"></i>Proceed with Import';
+            proceedImportBtn.className = 'btn btn-primary';
+        }
+    }
 
     // Reset form state if there are errors
     {% if form.errors %}

@@ -117,6 +117,97 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
         except Exception as e:
             raise ValueError(f"Failed to parse CSV: {str(e)}")
 
+    def get_preview_data(self):
+        """Get preview data for CSV import"""
+        try:
+            csv_data = self.parse_csv()
+
+            preview_data = {
+                'total_rows': len(csv_data),
+                'headers': list(csv_data[0].keys()) if csv_data else [],
+                'sample_rows': csv_data[:5],  # First 5 rows for preview
+                'validation_results': [],
+                'warnings': [],
+                'errors': []
+            }
+
+            # Validate each row and collect issues
+            required_fields = ['subject_name', 'class_level_name', 'topic_title', 'question_text', 'question_type']
+
+            for row_num, row in enumerate(csv_data[:10], 1):  # Check first 10 rows
+                row_validation = {
+                    'row_number': row_num,
+                    'issues': [],
+                    'warnings': [],
+                    'status': 'valid'
+                }
+
+                # Check required fields
+                missing_fields = [field for field in required_fields if not row.get(field, '').strip()]
+                if missing_fields:
+                    row_validation['issues'].append(f"Missing required fields: {', '.join(missing_fields)}")
+                    row_validation['status'] = 'error'
+
+                # Validate question type
+                question_type = row.get('question_type', '').lower()
+                if question_type and question_type not in ['multiple_choice', 'fill_blank', 'true_false', 'short_answer']:
+                    row_validation['issues'].append(f"Invalid question type: {question_type}")
+                    row_validation['status'] = 'error'
+
+                # Check question type specific requirements
+                if question_type == 'multiple_choice':
+                    if not row.get('correct_answer'):
+                        row_validation['issues'].append("Multiple choice questions require 'correct_answer' field")
+                        row_validation['status'] = 'error'
+                    elif row.get('correct_answer', '').lower() not in ['a', 'b', 'c', 'd']:
+                        row_validation['issues'].append("Multiple choice 'correct_answer' must be a, b, c, or d")
+                        row_validation['status'] = 'error'
+
+                    # Check choices
+                    choices_provided = sum(1 for choice in ['choice_a', 'choice_b', 'choice_c', 'choice_d'] if row.get(choice, '').strip())
+                    if choices_provided < 2:
+                        row_validation['warnings'].append("Multiple choice questions should have at least 2 answer choices")
+
+                elif question_type in ['fill_blank', 'short_answer']:
+                    if not row.get('correct_answer'):
+                        row_validation['issues'].append(f"{question_type} questions require 'correct_answer' field")
+                        row_validation['status'] = 'error'
+
+                elif question_type == 'true_false':
+                    correct_answer = row.get('correct_answer', '').lower()
+                    if correct_answer not in ['true', 'false', 't', 'f', '1', '0']:
+                        row_validation['issues'].append("True/False questions require 'correct_answer' to be true/false, t/f, or 1/0")
+                        row_validation['status'] = 'error'
+
+                # Check if entities exist
+                try:
+                    subject_name = row.get('subject_name', '').strip()
+                    if subject_name:
+                        from subjects.models import Subject
+                        if not Subject.objects.filter(name__iexact=subject_name).exists():
+                            row_validation['warnings'].append(f"Subject '{subject_name}' does not exist")
+                except:
+                    pass
+
+                if row_validation['issues'] or row_validation['warnings']:
+                    preview_data['validation_results'].append(row_validation)
+
+            # Summary statistics
+            error_count = sum(1 for result in preview_data['validation_results'] if result['status'] == 'error')
+            warning_count = sum(1 for result in preview_data['validation_results'] if result['warnings'])
+
+            preview_data['summary'] = {
+                'total_rows': len(csv_data),
+                'rows_with_errors': error_count,
+                'rows_with_warnings': warning_count,
+                'estimated_success_rate': max(0, (len(csv_data) - error_count) / len(csv_data) * 100) if csv_data else 0
+            }
+
+            return preview_data
+
+        except Exception as e:
+            raise ValueError(f"Failed to generate preview: {str(e)}")
+
     def import_questions(self, csv_data):
         """Import questions from CSV with proper hierarchy validation"""
         required_fields = ['subject_name', 'class_level_name', 'topic_title', 'question_text', 'question_type']
@@ -139,38 +230,13 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                 if not subject:
                     raise ValueError(f"Subject '{row['subject_name']}' not found. Please create the subject first.")
 
-                # Find class level within the subject - try multiple approaches
-                class_level_name = row['class_level_name'].strip()
-                class_level = None
-
-                # First try exact match
+                # Find class level within the subject
                 class_level = ClassLevel.objects.filter(
                     subject=subject,
-                    name__iexact=class_level_name
+                    name__iexact=row['class_level_name']
                 ).first()
-
-                # If not found, try to extract grade number and match by level_number
                 if not class_level:
-                    import re
-                    grade_match = re.search(r'grade\s*(\d+)', class_level_name, re.IGNORECASE)
-                    if grade_match:
-                        grade_number = int(grade_match.group(1))
-                        class_level = ClassLevel.objects.filter(
-                            subject=subject,
-                            level_number=grade_number
-                        ).first()
-
-                # If still not found, try partial name match
-                if not class_level:
-                    class_level = ClassLevel.objects.filter(
-                        subject=subject,
-                        name__icontains=class_level_name
-                    ).first()
-
-                if not class_level:
-                    # Show available class levels for this subject
-                    available_levels = list(ClassLevel.objects.filter(subject=subject).values_list('name', flat=True))
-                    raise ValueError(f"Class level '{class_level_name}' not found in subject '{subject.name}'. Available levels: {', '.join(available_levels)}")
+                    raise ValueError(f"Class level '{row['class_level_name']}' not found in subject '{subject.name}'. Please create the class level first.")
 
                 # Find or create topic within the class level
                 topic = Topic.objects.filter(
@@ -267,38 +333,13 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                 if not subject:
                     raise ValueError(f"Subject '{row['subject_name']}' not found. Please create the subject first.")
 
-                # Find class level within the subject - try multiple approaches
-                class_level_name = row['class_level_name'].strip()
-                class_level = None
-
-                # First try exact match
+                # Find class level within the subject
                 class_level = ClassLevel.objects.filter(
                     subject=subject,
-                    name__iexact=class_level_name
+                    name__iexact=row['class_level_name']
                 ).first()
-
-                # If not found, try to extract grade number and match by level_number
                 if not class_level:
-                    import re
-                    grade_match = re.search(r'grade\s*(\d+)', class_level_name, re.IGNORECASE)
-                    if grade_match:
-                        grade_number = int(grade_match.group(1))
-                        class_level = ClassLevel.objects.filter(
-                            subject=subject,
-                            level_number=grade_number
-                        ).first()
-
-                # If still not found, try partial name match
-                if not class_level:
-                    class_level = ClassLevel.objects.filter(
-                        subject=subject,
-                        name__icontains=class_level_name
-                    ).first()
-
-                if not class_level:
-                    # Show available class levels for this subject
-                    available_levels = list(ClassLevel.objects.filter(subject=subject).values_list('name', flat=True))
-                    raise ValueError(f"Class level '{class_level_name}' not found in subject '{subject.name}'. Available levels: {', '.join(available_levels)}")
+                    raise ValueError(f"Class level '{row['class_level_name']}' not found in subject '{subject.name}'. Please create the class level first.")
 
                 # Find or create topic within the class level
                 topic = Topic.objects.filter(

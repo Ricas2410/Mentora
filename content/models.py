@@ -150,18 +150,23 @@ class Question(models.Model):
 
     def validate_text_answer(self, user_answer):
         """
-        Validate text-based answers with intelligent matching.
+        Enhanced validation for text-based answers with intelligent matching.
         Returns a tuple: (is_correct, match_type, matched_answer)
         """
         if not user_answer or not user_answer.strip():
             return False, 'empty', None
 
-        user_answer = user_answer.strip().lower()
+        # Clean and normalize user answer
+        user_answer = self._normalize_answer(user_answer)
 
-        # Get all acceptable answers
-        acceptable_answers = [answer.strip().lower() for answer in self.correct_answer.split(',')]
+        # Handle True/False questions specially
+        if self.question_type == 'true_false':
+            return self._validate_true_false_answer(user_answer)
 
-        # 1. Exact match
+        # Get all acceptable answers and normalize them
+        acceptable_answers = [self._normalize_answer(answer) for answer in self.correct_answer.split(',')]
+
+        # 1. Exact match (after normalization)
         for answer in acceptable_answers:
             if user_answer == answer:
                 return True, 'exact', answer
@@ -187,7 +192,86 @@ class Question(models.Model):
                 if len(common_words) >= min(len(user_words), len(answer_words)) * 0.7:
                     return True, 'word_match', answer
 
+        # 5. Numeric answer handling
+        if self._is_numeric_answer(user_answer, acceptable_answers):
+            return True, 'numeric', user_answer
+
         return False, 'incorrect', None
+
+    def _normalize_answer(self, answer):
+        """
+        Normalize answer text for better comparison.
+        Handles capitalization, extra spaces, and common variations.
+        """
+        if not answer:
+            return ""
+
+        # Convert to lowercase and strip whitespace
+        normalized = answer.strip().lower()
+
+        # Remove extra spaces between words
+        normalized = ' '.join(normalized.split())
+
+        # Remove common punctuation that doesn't affect meaning
+        import re
+        normalized = re.sub(r'[.,!?;:]$', '', normalized)
+
+        # Handle common variations
+        replacements = {
+            'colour': 'color',
+            'grey': 'gray',
+            'centre': 'center',
+            'metre': 'meter',
+            'litre': 'liter',
+            'realise': 'realize',
+            'organise': 'organize',
+        }
+
+        for old, new in replacements.items():
+            normalized = normalized.replace(old, new)
+
+        return normalized
+
+    def _validate_true_false_answer(self, user_answer):
+        """
+        Validate True/False answers with multiple acceptable formats.
+        """
+        # Normalize the correct answer
+        correct_answer = self._normalize_answer(self.correct_answer)
+
+        # Define true/false variations
+        true_variations = ['true', 't', 'yes', 'y', '1', 'correct', 'right']
+        false_variations = ['false', 'f', 'no', 'n', '0', 'incorrect', 'wrong']
+
+        user_is_true = user_answer in true_variations
+        user_is_false = user_answer in false_variations
+
+        correct_is_true = correct_answer in true_variations
+        correct_is_false = correct_answer in false_variations
+
+        if (user_is_true and correct_is_true) or (user_is_false and correct_is_false):
+            return True, 'exact', correct_answer
+
+        return False, 'incorrect', None
+
+    def _is_numeric_answer(self, user_answer, acceptable_answers):
+        """
+        Check if the answer is numeric and matches any acceptable numeric answer.
+        """
+        try:
+            user_num = float(user_answer.replace(',', ''))
+            for answer in acceptable_answers:
+                try:
+                    answer_num = float(answer.replace(',', ''))
+                    # Allow small floating point differences
+                    if abs(user_num - answer_num) < 0.001:
+                        return True
+                except ValueError:
+                    continue
+        except ValueError:
+            pass
+
+        return False
 
     def _is_similar(self, word1, word2, threshold=0.8):
         """

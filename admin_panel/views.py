@@ -721,6 +721,50 @@ class CSVImportView(AdminRequiredMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        action = request.POST.get('action', 'import')
+
+        if action == 'preview':
+            return self.handle_preview(request)
+        elif action == 'import':
+            return self.handle_import(request)
+
+        return self.get(request, *args, **kwargs)
+
+    def handle_preview(self, request):
+        """Handle CSV preview request"""
+        form = CSVImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['csv_file']
+
+            try:
+                # Read CSV content
+                file_content = csv_file.read().decode('utf-8')
+
+                # Parse and validate CSV
+                from core.utils.csv_import import CSVImporter
+                importer = CSVImporter('questions', file_content, request.user)
+
+                # Get preview data
+                preview_data = importer.get_preview_data()
+
+                return JsonResponse({
+                    'success': True,
+                    'preview_data': preview_data
+                })
+
+            except Exception as e:
+                return JsonResponse({
+                    'success': False,
+                    'error': str(e)
+                })
+
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid form data'
+        })
+
+    def handle_import(self, request):
+        """Handle actual CSV import"""
         form = CSVImportForm(request.POST, request.FILES)
         if form.is_valid():
             csv_file = form.cleaned_data['csv_file']
@@ -773,7 +817,7 @@ class CSVImportView(AdminRequiredMixin, TemplateView):
 
             return redirect('admin_panel:csv_import')
 
-        context = self.get_context_data(**kwargs)
+        context = self.get_context_data()
         context['form'] = form
         return self.render_to_response(context)
 
@@ -809,6 +853,131 @@ class DownloadTemplateView(AdminRequiredMixin, View):
             action='DOWNLOAD_TEMPLATE',
             description=f'Downloaded questions CSV template (samples: {include_samples})',
             model_name='CSVTemplate',
+            ip_address=request.META.get('REMOTE_ADDR'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')
+        )
+
+        return response
+
+
+class ExportQuestionsView(AdminRequiredMixin, View):
+    """Export all questions to CSV"""
+
+    def get(self, request, *args, **kwargs):
+        import csv
+        from io import StringIO
+
+        # Create CSV content
+        output = StringIO()
+        writer = csv.writer(output)
+
+        # Write header
+        header = [
+            'subject_name', 'class_level_name', 'topic_title', 'question_text', 'question_type',
+            'correct_answer', 'explanation', 'difficulty', 'points', 'time_limit',
+            'choice_a', 'choice_b', 'choice_c', 'choice_d'
+        ]
+        writer.writerow(header)
+
+        # Get all questions with related data
+        questions = Question.objects.select_related(
+            'topic__class_level__subject'
+        ).prefetch_related('answer_choices').filter(is_active=True)
+
+        for question in questions:
+            # Get choices for multiple choice questions
+            choices = ['', '', '', '']
+            if question.question_type == 'multiple_choice':
+                answer_choices = question.answer_choices.all().order_by('order')
+                for i, choice in enumerate(answer_choices[:4]):
+                    choices[i] = choice.choice_text
+
+            row = [
+                question.topic.class_level.subject.name,
+                question.topic.class_level.name,
+                question.topic.title,
+                question.question_text,
+                question.question_type,
+                question.correct_answer,
+                question.explanation,
+                question.difficulty,
+                question.points,
+                question.time_limit,
+                choices[0], choices[1], choices[2], choices[3]
+            ]
+            writer.writerow(row)
+
+        # Create response
+        response = HttpResponse(output.getvalue(), content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="questions_export.csv"'
+
+        # Log export activity
+        AdminActivity.objects.create(
+            admin_user=request.user,
+            action='EXPORT_QUESTIONS',
+            description=f'Exported {questions.count()} questions to CSV',
+            model_name='Question',
+            ip_address=request.META.get('REMOTE_ADDR'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')
+        )
+
+        return response
+
+
+class ExportUsersView(AdminRequiredMixin, View):
+    """Export all users to CSV"""
+
+    def get(self, request, *args, **kwargs):
+        import csv
+        from io import StringIO
+        from django.db import models
+
+        # Create CSV content
+        output = StringIO()
+        writer = csv.writer(output)
+
+        # Write header
+        header = [
+            'email', 'first_name', 'last_name', 'current_grade', 'date_joined',
+            'is_active', 'total_quizzes', 'average_score', 'subjects_completed'
+        ]
+        writer.writerow(header)
+
+        # Get all users with progress data
+        users = User.objects.filter(is_staff=False).prefetch_related('quizzes')
+
+        for user in users:
+            # Calculate user statistics
+            quizzes = user.quizzes.all()
+            total_quizzes = quizzes.count()
+            average_score = quizzes.aggregate(avg_score=models.Avg('percentage'))['avg_score'] or 0
+
+            # Get completed subjects count
+            completed_subjects = user.progress.filter(is_completed=True).values('topic__class_level__subject').distinct().count()
+
+            row = [
+                user.email,
+                user.first_name,
+                user.last_name,
+                user.current_grade.name if user.current_grade else '',
+                user.date_joined.strftime('%Y-%m-%d'),
+                user.is_active,
+                total_quizzes,
+                round(average_score, 1),
+                completed_subjects
+            ]
+            writer.writerow(row)
+
+        # Create response
+        response = HttpResponse(output.getvalue(), content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="users_export.csv"'
+
+        # Log export activity
+        AdminActivity.objects.create(
+            admin_user=request.user,
+            action='EXPORT_USERS',
+            description=f'Exported {users.count()} users to CSV',
+            model_name='User',
             ip_address=request.META.get('REMOTE_ADDR'),
             user_agent=request.META.get('HTTP_USER_AGENT', '')
         )
