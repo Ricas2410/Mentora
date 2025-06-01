@@ -378,15 +378,42 @@ class ManageTopicsView(AdminRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get all topics with related data
+        # Get filter parameters
+        subject_filter = self.request.GET.get('subject')
+        level_filter = self.request.GET.get('level')
+        search_query = self.request.GET.get('search')
+
+        # Start with all topics
         topics = Topic.objects.select_related('class_level__subject').annotate(
             questions_count=Count('questions')
-        ).order_by('class_level__subject__name', 'class_level__level_number', 'order')
+        )
+
+        # Apply filters
+        if subject_filter:
+            topics = topics.filter(class_level__subject_id=subject_filter)
+        if level_filter:
+            topics = topics.filter(class_level_id=level_filter)
+        if search_query:
+            topics = topics.filter(title__icontains=search_query)
+
+        # Order by class level, then subject, then order
+        topics = topics.order_by('class_level__level_number', 'class_level__subject__name', 'order')
 
         # Pagination
         paginator = Paginator(topics, 10)
         page_number = self.request.GET.get('page')
         context['topics'] = paginator.get_page(page_number)
+
+        # Get filter options
+        context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
+        context['levels'] = ClassLevel.objects.filter(is_active=True).select_related('subject').order_by('level_number', 'subject__name')
+
+        # Current filter values
+        context['current_filters'] = {
+            'subject': subject_filter,
+            'level': level_filter,
+            'search': search_query,
+        }
 
         return context
 
@@ -422,8 +449,14 @@ class ManageQuestionsView(AdminRequiredMixin, TemplateView):
         if search_query:
             questions = questions.filter(question_text__icontains=search_query)
 
-        # Order by creation date (newest first)
-        questions = questions.order_by('-created_at')
+        # Order by class level, then subject, then topic, then question type
+        questions = questions.order_by(
+            'topic__class_level__level_number',
+            'topic__class_level__subject__name',
+            'topic__title',
+            'question_type',
+            '-created_at'
+        )
 
         # Pagination
         paginator = Paginator(questions, 20)

@@ -17,27 +17,54 @@
 
 <!-- Filter Section -->
 <div class="card mb-4">
+    <div class="card-header">
+        <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>
+            Filter Topics
+        </h6>
+    </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-4">
-                <label class="form-label">Filter by Subject</label>
-                <select class="form-select" id="subjectFilter">
-                    <option value="">All Subjects</option>
-                    <!-- Will be populated dynamically -->
-                </select>
+        <form method="get" id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Subject</label>
+                    <select class="form-select" name="subject" onchange="updateFilters()">
+                        <option value="">All Subjects</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject.id }}" {% if current_filters.subject == subject.id|stringformat:"s" %}selected{% endif %}>
+                                {{ subject.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Class Level</label>
+                    <select class="form-select" name="level" onchange="updateFilters()">
+                        <option value="">All Levels</option>
+                        {% for level in levels %}
+                            <option value="{{ level.id }}" {% if current_filters.level == level.id|stringformat:"s" %}selected{% endif %}>
+                                {{ level.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Search Topics</label>
+                    <input type="text" class="form-control" name="search" value="{% if current_filters.search %}{{ current_filters.search }}{% endif %}" placeholder="Search by title...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-1">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <a href="{% url 'admin_panel:topics' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <label class="form-label">Filter by Level</label>
-                <select class="form-select" id="levelFilter">
-                    <option value="">All Levels</option>
-                    <!-- Will be populated dynamically -->
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Search Topics</label>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search by title...">
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -256,39 +283,10 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Simple client-side filtering (for demo purposes)
-    const searchInput = document.getElementById('searchInput');
-    const subjectFilter = document.getElementById('subjectFilter');
-    const levelFilter = document.getElementById('levelFilter');
-    const tableRows = document.querySelectorAll('tbody tr');
-
-    function filterTable() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const selectedSubject = subjectFilter.value;
-        const selectedLevel = levelFilter.value;
-
-        tableRows.forEach(row => {
-            const title = row.cells[2].textContent.toLowerCase();
-            const subject = row.cells[0].textContent.toLowerCase();
-            const level = row.cells[1].textContent.toLowerCase();
-
-            const matchesSearch = title.includes(searchTerm);
-            const matchesSubject = !selectedSubject || subject.includes(selectedSubject.toLowerCase());
-            const matchesLevel = !selectedLevel || level.includes(selectedLevel.toLowerCase());
-
-            if (matchesSearch && matchesSubject && matchesLevel) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
-
-    searchInput.addEventListener('input', filterTable);
-    subjectFilter.addEventListener('change', filterTable);
-    levelFilter.addEventListener('change', filterTable);
-});
+function updateFilters() {
+    // Auto-submit form when filters change
+    document.getElementById('filterForm').submit();
+}
 
 function confirmDelete(itemName, deleteUrl) {
     document.getElementById('deleteItemName').textContent = itemName;
