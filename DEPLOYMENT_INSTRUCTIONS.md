@@ -1,6 +1,6 @@
-# 🚀 Grade 5 ICT Content Deployment Instructions
+# 🚀 Complete ICT Deployment Instructions
 
-## 📋 **Quick Deployment Steps for PythonAnywhere**
+## 📋 **COMPLETE ICT DEPLOYMENT FOR ALL GRADES**
 
 ### **Step 1: Pull Latest Changes**
 ```bash
@@ -8,40 +8,66 @@ cd ~/Mentora
 git pull origin main
 ```
 
-### **Step 2: Run the Deployment Script**
+### **Step 2: Add ICT to All Grades (1-12)**
 ```bash
-python scripts/deploy_grade5_ict_content.py
+python manage.py add_ict_to_all_grades
 ```
 
-### **Step 3: Verify Deployment**
-The script will show you a final status report like this:
+### **Step 3: Deploy Grade 5 ICT Content (Multiple Commands)**
+```bash
+# Basic content (Computer Basics, Operating Systems)
+python manage.py deploy_ict_content
+
+# Additional content (Word Processing, Internet Safety)
+python manage.py deploy_remaining_ict
+
+# File Management and Web Browsing content
+python manage.py expand_grade5_ict
+
+# Final content (Email and Programming)
+python manage.py complete_grade5_ict
 ```
-=== FINAL GRADE 5 ICT STATUS ===
+
+### **Step 4: Verify Complete Deployment**
+After running all commands, you should see:
+```
+=== COMPLETE GRADE 5 ICT STATUS ===
 Computer Basics and Parts: 1 notes, 5 questions
 Operating Systems and Desktop: 1 notes, 5 questions
-File Management and Organization: 0 notes, 0 questions
+File Management and Organization: 1 notes, 5 questions
 Word Processing and Documents: 1 notes, 5 questions
 Internet Safety and Digital Citizenship: 1 notes, 5 questions
-Web Browsing and Online Research: 0 notes, 0 questions
-Email and Digital Communication: 0 notes, 0 questions
-Introduction to Programming Concepts: 0 notes, 0 questions
+Web Browsing and Online Research: 1 notes, 5 questions
+Email and Digital Communication: 1 notes, 5 questions
+Introduction to Programming Concepts: 1 notes, 5 questions
 
-TOTAL: 4 notes, 20 questions
+TOTAL: 8 notes, 40 questions
 ```
 
 ## 📦 **What Gets Deployed**
 
-### **📚 Study Notes (4 comprehensive notes):**
-1. **Computer Basics and Parts** - Understanding Computer Components and Hardware
-2. **Operating Systems and Desktop** - Working with Windows and Applications  
-3. **Word Processing and Documents** - Creating and Formatting Documents
-4. **Internet Safety and Digital Citizenship** - Staying Safe Online and Being a Good Digital Citizen
+### **🖥️ ICT for All Grades (1-12):**
+- **12 grade levels** with age-appropriate topics
+- **Progressive difficulty** from basic computer introduction to advanced programming
+- **60+ total topics** across all grades
+- **Professional curriculum structure** ready for expansion
 
-### **❓ Quiz Questions (20 questions total):**
+### **📚 Complete Grade 5 ICT Content (8 comprehensive notes):**
+1. **Computer Basics and Parts** - Understanding Computer Components and Hardware
+2. **Operating Systems and Desktop** - Working with Windows and Applications
+3. **File Management and Organization** - Advanced File Organization and Management
+4. **Word Processing and Documents** - Creating and Formatting Documents
+5. **Internet Safety and Digital Citizenship** - Staying Safe Online and Being a Good Digital Citizen
+6. **Web Browsing and Online Research** - Safe and Effective Web Browsing
+7. **Email and Digital Communication** - Email Basics and Digital Communication
+8. **Introduction to Programming Concepts** - Fun Introduction to Programming and Coding
+
+### **❓ Quiz Questions (40 questions total):**
 - **5 questions per topic** with real-life scenarios
 - **Multiple choice, fill-in-blank, and true/false** formats
 - **Detailed explanations** for each answer
 - **Age-appropriate content** for Grade 5 students
+- **Real-world applications** and practical examples
 
 ## 🔧 **Troubleshooting**
 
