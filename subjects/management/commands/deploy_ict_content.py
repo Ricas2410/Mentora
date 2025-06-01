@@ -212,6 +212,121 @@ This is the main box that contains most of the important parts:
 4. **Restart audio program** → Close and reopen music/video
 
 Remember: Computers are amazing tools that can help you learn, create, and connect with others. The more you understand how they work, the better you can use them to achieve your goals!'''
+            },
+
+            'Operating Systems and Desktop': {
+                'title': 'Working with Windows and Applications',
+                'content': '''# Working with Windows and Applications
+
+## Understanding Windows (The Boxes on Your Screen)
+
+### What is a Window?
+A window is like a frame that shows you what a program is doing. Just like looking through a window in your house to see outside, computer windows let you see inside programs.
+
+### Parts of a Window:
+1. **Title Bar** - Shows the name of the program (like "Calculator" or "Paint")
+2. **Menu Bar** - Contains lists of things you can do (File, Edit, View)
+3. **Toolbar** - Buttons for common actions (Save, Print, Copy)
+4. **Content Area** - Where your work appears
+5. **Scroll Bars** - Help you see more content by moving up/down or left/right
+
+### Window Controls (The Three Buttons):
+- **Minimize (-)** - Hides the window but keeps the program running
+- **Maximize (□)** - Makes the window fill the whole screen
+- **Close (X)** - Closes the program completely
+
+## Working with Multiple Windows
+
+### Real-Life Example:
+Imagine you're doing homework and have:
+- A math worksheet open
+- A calculator running
+- A web browser for research
+- A document for writing
+
+Each of these would be in its own window!
+
+### Managing Multiple Windows:
+1. **Switching Between Windows** - Click on the window you want to use
+2. **Moving Windows** - Drag the title bar to move a window
+3. **Resizing Windows** - Drag the corners to make windows bigger or smaller
+4. **Arranging Windows** - Put windows side by side to work with both
+
+### The Taskbar - Your Window Manager:
+- Shows all open programs as buttons
+- Click a button to switch to that program
+- Right-click for more options
+
+## Common Desktop Applications
+
+### 1. **File Explorer/Finder**
+- **Purpose**: Browse and manage your files
+- **Real-life comparison**: Like a filing cabinet for your computer
+- **Common tasks**: Finding documents, organizing photos, creating folders
+
+### 2. **Calculator**
+- **Purpose**: Do math calculations
+- **When to use**: Homework, shopping calculations, converting measurements
+- **Tip**: Use keyboard numbers for faster input
+
+### 3. **Paint/Drawing Programs**
+- **Purpose**: Create pictures and edit images
+- **Real-life comparison**: Like a digital art set with brushes and colors
+- **Fun projects**: Birthday cards, posters, comic strips
+
+### 4. **Text Editor (Notepad)**
+- **Purpose**: Write simple text without formatting
+- **When to use**: Quick notes, lists, simple writing
+- **Difference from Word**: No fancy formatting, just plain text
+
+### 5. **Web Browser**
+- **Purpose**: Access websites and the internet
+- **Examples**: Chrome, Firefox, Safari, Edge
+- **Safety tip**: Always ask an adult before visiting new websites
+
+## Keyboard Shortcuts for Faster Work
+
+### Essential Shortcuts:
+- **Ctrl + C** - Copy (like using a photocopier)
+- **Ctrl + V** - Paste (put the copied item somewhere else)
+- **Ctrl + Z** - Undo (take back the last thing you did)
+- **Ctrl + S** - Save your work
+- **Alt + Tab** - Switch between open programs quickly
+- **Windows Key** - Open the Start Menu
+
+### Why Use Shortcuts?
+- Faster than using the mouse
+- Makes you look like a computer expert!
+- Saves time when doing repetitive tasks
+
+## Desktop Organization Tips
+
+### Keep Your Desktop Clean:
+1. **Don't put too many icons** - Like keeping your desk tidy
+2. **Group similar programs** - Put games together, school programs together
+3. **Use folders** - Create folders for different subjects or activities
+4. **Regular cleanup** - Delete shortcuts you don't use
+
+### Creating Shortcuts:
+- Right-click on a program → "Create Shortcut"
+- Drag the shortcut to your desktop
+- Name it something you'll remember
+
+## Troubleshooting Common Problems
+
+### When a Program Won't Respond:
+1. **Wait a moment** - Sometimes programs need time to think
+2. **Try clicking once** - Don't click multiple times rapidly
+3. **Use Task Manager** - Ctrl + Alt + Delete to close stuck programs
+4. **Ask for help** - Get an adult if problems continue
+
+### When You Can't Find a Program:
+1. **Check the taskbar** - It might be minimized
+2. **Use the Start Menu search** - Type the program name
+3. **Look in All Programs** - Browse through the program list
+4. **Check the desktop** - Look for the program icon
+
+Remember: Practice makes perfect! The more you use these skills, the easier they become. Don't be afraid to explore and try new things - you can always undo or ask for help!'''
             }
         }
         
@@ -255,6 +370,61 @@ Remember: Computers are amazing tools that can help you learn, create, and conne
                     'choices': ['Hard Drive', 'Monitor', 'RAM', 'Keyboard'],
                     'correct': 2,
                     'explanation': 'RAM (Random Access Memory) temporarily stores information the computer is currently using, like short-term memory.'
+                },
+                {
+                    'question': 'Sarah wants to save her photos permanently. Which computer part stores files for a long time?',
+                    'type': 'multiple_choice',
+                    'choices': ['RAM', 'CPU', 'Hard Drive/SSD', 'Monitor'],
+                    'correct': 2,
+                    'explanation': 'The Hard Drive or SSD provides permanent storage for files like photos, documents, and programs.'
+                },
+                {
+                    'question': 'Fill in the blank: The _____ connects all the computer parts together like roads connecting different parts of a city.',
+                    'type': 'fill_blank',
+                    'correct': 'motherboard',
+                    'explanation': 'The motherboard connects all computer components together, acting like a highway system for data.'
+                },
+                {
+                    'question': 'True or False: You should keep food and drinks away from your computer to avoid damage.',
+                    'type': 'true_false',
+                    'correct': 'true',
+                    'explanation': 'True! Food crumbs can damage keyboards and liquids can destroy electronic components.'
+                }
+            ],
+
+            'Operating Systems and Desktop': [
+                {
+                    'question': 'What are the three main window control buttons in the top-right corner of most windows?',
+                    'type': 'multiple_choice',
+                    'choices': ['Save, Copy, Paste', 'Minimize, Maximize, Close', 'File, Edit, View', 'Start, Stop, Pause'],
+                    'correct': 1,
+                    'explanation': 'The three window control buttons are Minimize (-), Maximize (□), and Close (X).'
+                },
+                {
+                    'question': 'Which keyboard shortcut allows you to quickly switch between open programs?',
+                    'type': 'multiple_choice',
+                    'choices': ['Ctrl + C', 'Ctrl + V', 'Alt + Tab', 'Ctrl + Z'],
+                    'correct': 2,
+                    'explanation': 'Alt + Tab is the keyboard shortcut to quickly switch between open programs and windows.'
+                },
+                {
+                    'question': 'What is the main purpose of the taskbar?',
+                    'type': 'multiple_choice',
+                    'choices': ['To store files', 'To show open programs and switch between them', 'To connect to internet', 'To play music'],
+                    'correct': 1,
+                    'explanation': 'The taskbar shows all open programs as buttons and allows you to switch between them easily.'
+                },
+                {
+                    'question': 'Fill in the blank: The _____ bar shows the name of the program at the top of each window.',
+                    'type': 'fill_blank',
+                    'correct': 'title',
+                    'explanation': 'The title bar is at the top of each window and shows the name of the program or document.'
+                },
+                {
+                    'question': 'True or False: You can have multiple windows open at the same time on your computer.',
+                    'type': 'true_false',
+                    'correct': 'true',
+                    'explanation': 'Yes, you can have multiple windows open simultaneously and switch between them as needed.'
                 }
             ]
         }
