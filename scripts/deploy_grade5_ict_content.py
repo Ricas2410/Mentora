@@ -6,9 +6,17 @@ Run this script after creating the basic ICT topics
 import os
 import django
 
-# Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
-django.setup()
+# Setup Django - try different settings module names
+try:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+    django.setup()
+except ModuleNotFoundError:
+    try:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora.settings')
+        django.setup()
+    except ModuleNotFoundError:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
+        django.setup()
 
 from subjects.models import Subject, ClassLevel, Topic
 from content.models import StudyNote, Question, AnswerChoice
