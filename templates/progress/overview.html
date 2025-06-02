@@ -17,17 +17,23 @@
                 <i class="fas fa-graduation-cap text-3xl"></i>
             </div>
             <div class="stat-title">Subjects Enrolled</div>
-            <div class="stat-value text-primary">3</div>
-            <div class="stat-desc">English, Math, Science</div>
+            <div class="stat-value text-primary">{{ subjects_enrolled }}</div>
+            <div class="stat-desc">
+                {% if current_class_level %}
+                    Grade {{ current_class_level }}
+                {% else %}
+                    Multiple levels
+                {% endif %}
+            </div>
         </div>
         
         <div class="stat bg-base-100 shadow rounded-lg">
             <div class="stat-figure text-success">
                 <i class="fas fa-layer-group text-3xl"></i>
             </div>
-            <div class="stat-title">Levels Completed</div>
-            <div class="stat-value text-success">5</div>
-            <div class="stat-desc">↗︎ 2 this month</div>
+            <div class="stat-title">Topics Completed</div>
+            <div class="stat-value text-success">{{ completed_topics }}</div>
+            <div class="stat-desc">out of {{ total_topics }} total</div>
         </div>
         
         <div class="stat bg-base-100 shadow rounded-lg">
@@ -35,17 +41,17 @@
                 <i class="fas fa-clock text-3xl"></i>
             </div>
             <div class="stat-title">Study Time</div>
-            <div class="stat-value text-warning">24h</div>
-            <div class="stat-desc">This month</div>
+            <div class="stat-value text-warning">{{ total_study_time_hours }}h</div>
+            <div class="stat-desc">total hours studied</div>
         </div>
         
         <div class="stat bg-base-100 shadow rounded-lg">
             <div class="stat-figure text-secondary">
                 <i class="fas fa-trophy text-3xl"></i>
             </div>
-            <div class="stat-title">Achievements</div>
-            <div class="stat-value text-secondary">12</div>
-            <div class="stat-desc">↗︎ 3 new badges</div>
+            <div class="stat-title">Quiz Average</div>
+            <div class="stat-value text-secondary">{{ avg_quiz_score }}%</div>
+            <div class="stat-desc">{{ passed_quizzes }}/{{ total_quizzes }} passed</div>
         </div>
     </div>
 
@@ -242,23 +248,23 @@
                     <div>
                         <div class="flex justify-between text-sm mb-1">
                             <span>Quizzes Passed</span>
-                            <span>15/18</span>
+                            <span>{{ passed_quizzes }}/{{ total_quizzes }}</span>
                         </div>
-                        <progress class="progress progress-success w-full" value="83" max="100"></progress>
+                        <progress class="progress progress-success w-full" value="{{ quiz_pass_rate }}" max="100"></progress>
                     </div>
                     <div>
                         <div class="flex justify-between text-sm mb-1">
                             <span>Tests Passed</span>
-                            <span>8/10</span>
+                            <span>{{ passed_tests }}/{{ total_tests }}</span>
                         </div>
-                        <progress class="progress progress-primary w-full" value="80" max="100"></progress>
+                        <progress class="progress progress-primary w-full" value="{{ test_pass_rate }}" max="100"></progress>
                     </div>
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span>Average Score</span>
-                            <span>78%</span>
+                            <span>Quiz Average</span>
+                            <span>{{ avg_quiz_score }}%</span>
                         </div>
-                        <progress class="progress progress-warning w-full" value="78" max="100"></progress>
+                        <progress class="progress progress-warning w-full" value="{{ avg_quiz_score }}" max="100"></progress>
                     </div>
                 </div>
                 <div class="card-actions justify-end mt-4">

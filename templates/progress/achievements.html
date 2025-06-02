@@ -80,8 +80,8 @@
                 <i class="fas fa-trophy text-3xl"></i>
             </div>
             <div class="stat-title text-white/90">Total Earned</div>
-            <div class="stat-value">12</div>
-            <div class="stat-desc text-white/80">out of 25 achievements</div>
+            <div class="stat-value">{{ achievements_earned }}</div>
+            <div class="stat-desc text-white/80">earned so far</div>
         </div>
         
         <div class="stat bg-gradient-to-br from-success to-green-600 text-white shadow-xl rounded-lg">
@@ -89,25 +89,25 @@
                 <i class="fas fa-star text-3xl"></i>
             </div>
             <div class="stat-title text-white/90">Points Earned</div>
-            <div class="stat-value">240</div>
+            <div class="stat-value">{{ total_points }}</div>
             <div class="stat-desc text-white/80">achievement points</div>
         </div>
-        
+
         <div class="stat bg-gradient-to-br from-primary to-blue-600 text-white shadow-xl rounded-lg">
             <div class="stat-figure text-white/80">
                 <i class="fas fa-calendar text-3xl"></i>
             </div>
             <div class="stat-title text-white/90">This Month</div>
-            <div class="stat-value">3</div>
+            <div class="stat-value">{{ this_month_achievements }}</div>
             <div class="stat-desc text-white/80">new achievements</div>
         </div>
-        
+
         <div class="stat bg-gradient-to-br from-secondary to-purple-600 text-white shadow-xl rounded-lg">
             <div class="stat-figure text-white/80">
                 <i class="fas fa-medal text-3xl"></i>
             </div>
             <div class="stat-title text-white/90">Rarity</div>
-            <div class="stat-value">2</div>
+            <div class="stat-value">{{ rare_achievements }}</div>
             <div class="stat-desc text-white/80">rare badges earned</div>
         </div>
     </div>
@@ -123,212 +123,39 @@
 
     <!-- Achievements Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="achievements-grid">
-        
-        <!-- First Quiz Achievement - Earned -->
-        <div class="achievement-card achievement-earned p-6 rounded-lg" data-category="learning">
-            <div class="sparkle">✨</div>
-            <div class="achievement-icon">
-                <i class="fas fa-question-circle"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">First Quiz</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Complete your very first quiz</p>
-            <div class="text-center">
-                <div class="badge badge-warning">+10 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-success">
-                <i class="fas fa-check mr-1"></i>
-                Earned on March 15, 2024
-            </div>
-        </div>
 
-        <!-- Quiz Master Achievement - Earned -->
-        <div class="achievement-card achievement-earned p-6 rounded-lg" data-category="learning">
-            <div class="sparkle">✨</div>
+        {% for achievement in achievements %}
+        <!-- {{ achievement.title }} Achievement -->
+        <div class="achievement-card {% if achievement.earned %}achievement-earned{% else %}achievement-locked{% endif %} p-6 rounded-lg" data-category="{{ achievement.category }}">
+            {% if achievement.earned %}
+                <div class="sparkle">✨</div>
+            {% endif %}
             <div class="achievement-icon">
-                <i class="fas fa-star"></i>
+                <i class="{{ achievement.icon }}"></i>
             </div>
-            <h3 class="font-bold text-lg text-center mb-2">Quiz Master</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Score 80% or higher on a quiz</p>
+            <h3 class="font-bold text-lg text-center mb-2">{{ achievement.title }}</h3>
+            <p class="text-sm text-center text-base-content/70 mb-3">{{ achievement.description }}</p>
             <div class="text-center">
-                <div class="badge badge-warning">+20 points</div>
+                <div class="badge {% if achievement.earned %}badge-warning{% else %}badge-ghost{% endif %}">+{{ achievement.points }} points</div>
             </div>
-            <div class="text-xs text-center mt-2 text-success">
-                <i class="fas fa-check mr-1"></i>
-                Earned on March 17, 2024
+            <div class="text-xs text-center mt-2 {% if achievement.earned %}text-success{% else %}text-base-content/50{% endif %}">
+                {% if achievement.earned %}
+                    <i class="fas fa-check mr-1"></i>
+                    Earned on {{ achievement.earned_date|date:"M d, Y" }}
+                {% else %}
+                    <i class="fas fa-lock mr-1"></i>
+                    Not earned yet
+                {% endif %}
             </div>
         </div>
-
-        <!-- Level Complete Achievement - Earned -->
-        <div class="achievement-card achievement-earned p-6 rounded-lg" data-category="progress">
-            <div class="sparkle">✨</div>
-            <div class="achievement-icon">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Level Complete</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Complete your first class level</p>
-            <div class="text-center">
-                <div class="badge badge-warning">+30 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-success">
-                <i class="fas fa-check mr-1"></i>
-                Earned on March 20, 2024
-            </div>
+        {% empty %}
+        <!-- No achievements yet -->
+        <div class="col-span-full text-center py-12">
+            <i class="fas fa-trophy text-6xl text-base-content/30 mb-4"></i>
+            <h3 class="text-xl font-bold text-base-content/70 mb-2">No Achievements Yet</h3>
+            <p class="text-base-content/50">Start learning to unlock your first achievements!</p>
         </div>
-
-        <!-- Study Streak Achievement - Earned -->
-        <div class="achievement-card achievement-earned p-6 rounded-lg" data-category="progress">
-            <div class="sparkle">✨</div>
-            <div class="achievement-icon">
-                <i class="fas fa-fire"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Study Streak</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Study for 7 consecutive days</p>
-            <div class="text-center">
-                <div class="badge badge-warning">+25 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-success">
-                <i class="fas fa-check mr-1"></i>
-                Earned on March 22, 2024
-            </div>
-        </div>
-
-        <!-- Perfect Score Achievement - In Progress -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="learning">
-            <div class="achievement-icon">
-                <i class="fas fa-crown"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Perfect Score</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Score 100% on any quiz or test</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+50 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Not earned yet
-            </div>
-            <div class="achievement-progress" style="width: 85%;"></div>
-        </div>
-
-        <!-- Speed Learner Achievement - Locked -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="learning">
-            <div class="achievement-icon">
-                <i class="fas fa-bolt"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Speed Learner</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Complete a quiz in under 2 minutes</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+15 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Not earned yet
-            </div>
-            <div class="achievement-progress" style="width: 0%;"></div>
-        </div>
-
-        <!-- Subject Master Achievement - Locked -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="progress">
-            <div class="achievement-icon">
-                <i class="fas fa-medal"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Subject Master</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Complete all levels in a subject</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+100 points</div>
-                <div class="badge badge-error ml-1">Rare</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Not earned yet
-            </div>
-            <div class="achievement-progress" style="width: 40%;"></div>
-        </div>
-
-        <!-- Early Bird Achievement - Locked -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="special">
-            <div class="achievement-icon">
-                <i class="fas fa-sun"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Early Bird</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Study before 8 AM for 5 days</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+20 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Not earned yet
-            </div>
-            <div class="achievement-progress" style="width: 20%;"></div>
-        </div>
-
-        <!-- Night Owl Achievement - Locked -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="special">
-            <div class="achievement-icon">
-                <i class="fas fa-moon"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Night Owl</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Study after 10 PM for 5 days</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+20 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Not earned yet
-            </div>
-            <div class="achievement-progress" style="width: 0%;"></div>
-        </div>
-
-        <!-- Persistent Learner Achievement - Locked -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="progress">
-            <div class="achievement-icon">
-                <i class="fas fa-mountain"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Persistent Learner</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Retake a failed test and pass</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+35 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Not earned yet
-            </div>
-            <div class="achievement-progress" style="width: 0%;"></div>
-        </div>
-
-        <!-- Scholar Achievement - Locked -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="learning">
-            <div class="achievement-icon">
-                <i class="fas fa-book"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Scholar</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Read 50 study notes</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+40 points</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Progress: 23/50
-            </div>
-            <div class="achievement-progress" style="width: 46%;"></div>
-        </div>
-
-        <!-- Mentor Achievement - Locked -->
-        <div class="achievement-card achievement-locked p-6 rounded-lg" data-category="social">
-            <div class="achievement-icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">Mentor</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">Help 5 other learners</p>
-            <div class="text-center">
-                <div class="badge badge-ghost">+60 points</div>
-                <div class="badge badge-secondary ml-1">Epic</div>
-            </div>
-            <div class="text-xs text-center mt-2 text-base-content/50">
-                <i class="fas fa-lock mr-1"></i>
-                Coming soon
-            </div>
-            <div class="achievement-progress" style="width: 0%;"></div>
-        </div>
+        {% endfor %}
     </div>
 
     <!-- Achievement Tips -->
