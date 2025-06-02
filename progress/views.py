@@ -1,13 +1,12 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import Sum, Avg, Count, Q
+from django.db.models import Sum, Avg
 from django.utils import timezone
-from datetime import datetime, timedelta
+from datetime import timedelta
 from .models import UserProgress, TopicProgress, StudySession
-from subjects.models import Subject, ClassLevel, Topic
-from content.models import Quiz, Test, QuizAttempt, TestAttempt
+from subjects.models import Subject, Topic
+from content.models import Quiz, Test
 
 
 class ProgressOverviewView(LoginRequiredMixin, TemplateView):
@@ -66,16 +65,16 @@ class ProgressOverviewView(LoginRequiredMixin, TemplateView):
             })
 
         # Calculate quiz and test stats
-        quiz_attempts = QuizAttempt.objects.filter(user=user)
-        test_attempts = TestAttempt.objects.filter(user=user)
+        quiz_attempts = Quiz.objects.filter(user=user)
+        test_attempts = Test.objects.filter(user=user)
 
         total_quizzes = quiz_attempts.count()
-        passed_quizzes = quiz_attempts.filter(score__gte=60).count()
+        passed_quizzes = quiz_attempts.filter(percentage__gte=60).count()
         total_tests = test_attempts.count()
-        passed_tests = test_attempts.filter(score__gte=60).count()
+        passed_tests = test_attempts.filter(percentage__gte=60).count()
 
-        avg_quiz_score = quiz_attempts.aggregate(avg=Avg('score'))['avg'] or 0
-        avg_test_score = test_attempts.aggregate(avg=Avg('score'))['avg'] or 0
+        avg_quiz_score = quiz_attempts.aggregate(avg=Avg('percentage'))['avg'] or 0
+        avg_test_score = test_attempts.aggregate(avg=Avg('percentage'))['avg'] or 0
 
         # Study time stats
         total_study_time = StudySession.objects.filter(user=user).aggregate(
@@ -120,8 +119,8 @@ class AchievementsView(LoginRequiredMixin, TemplateView):
         user = self.request.user
 
         # Calculate achievement stats
-        quiz_attempts = QuizAttempt.objects.filter(user=user)
-        test_attempts = TestAttempt.objects.filter(user=user)
+        quiz_attempts = Quiz.objects.filter(user=user)
+        test_attempts = Test.objects.filter(user=user)
         topic_progress = TopicProgress.objects.filter(user=user)
         study_sessions = StudySession.objects.filter(user=user)
 
@@ -142,13 +141,13 @@ class AchievementsView(LoginRequiredMixin, TemplateView):
                 'description': 'Complete your very first quiz',
                 'points': 10,
                 'earned': True,
-                'earned_date': quiz_attempts.first().created_at,
+                'earned_date': quiz_attempts.first().started_at,
                 'category': 'learning',
                 'icon': 'fas fa-question-circle'
             })
 
         # Perfect Score Achievement
-        perfect_scores = quiz_attempts.filter(score=100).count() + test_attempts.filter(score=100).count()
+        perfect_scores = quiz_attempts.filter(percentage=100).count() + test_attempts.filter(percentage=100).count()
         if perfect_scores > 0:
             achievements_earned += 1
             total_points += 50
@@ -157,7 +156,7 @@ class AchievementsView(LoginRequiredMixin, TemplateView):
                 'description': 'Score 100% on any quiz or test',
                 'points': 50,
                 'earned': True,
-                'earned_date': quiz_attempts.filter(score=100).first().created_at if quiz_attempts.filter(score=100).exists() else test_attempts.filter(score=100).first().created_at,
+                'earned_date': quiz_attempts.filter(percentage=100).first().started_at if quiz_attempts.filter(percentage=100).exists() else test_attempts.filter(percentage=100).first().started_at,
                 'category': 'learning',
                 'icon': 'fas fa-crown'
             })
@@ -197,8 +196,8 @@ class AchievementsView(LoginRequiredMixin, TemplateView):
             })
 
         # Quiz Master Achievement (10 quizzes passed)
-        passed_quizzes = quiz_attempts.filter(score__gte=60).count()
-        if passed_quizzes >= 10:
+        passed_quizzes_count = quiz_attempts.filter(percentage__gte=60).count()
+        if passed_quizzes_count >= 10:
             achievements_earned += 1
             total_points += 40
             achievements.append({
@@ -206,7 +205,7 @@ class AchievementsView(LoginRequiredMixin, TemplateView):
                 'description': 'Pass 10 quizzes with 60% or higher',
                 'points': 40,
                 'earned': True,
-                'earned_date': quiz_attempts.filter(score__gte=60)[9].created_at if quiz_attempts.filter(score__gte=60).count() >= 10 else None,
+                'earned_date': quiz_attempts.filter(percentage__gte=60)[9].started_at if quiz_attempts.filter(percentage__gte=60).count() >= 10 else None,
                 'category': 'learning',
                 'icon': 'fas fa-brain'
             })
