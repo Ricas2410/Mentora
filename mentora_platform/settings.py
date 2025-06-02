@@ -142,6 +142,10 @@ AUTH_USER_MODEL = 'users.User'
 # Sites framework
 SITE_ID = 1
 
+# Site Domain Configuration
+SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
+SITE_PROTOCOL = config('SITE_PROTOCOL', default='http')  # http or https
+
 # Email Configuration - Use environment variables for security
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')

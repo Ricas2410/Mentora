@@ -91,18 +91,11 @@ class RegisterView(View):
         try:
             from django.template.loader import render_to_string
             from django.core.mail import EmailMultiAlternatives
-            from django.contrib.sites.models import Site
+            from django.conf import settings
 
-            # Get current site domain
-            try:
-                current_site = Site.objects.get_current()
-                domain = current_site.domain
-                # Use HTTPS for production domains, HTTP for localhost
-                protocol = 'https' if 'localhost' not in domain and '127.0.0.1' not in domain else 'http'
-            except:
-                # Fallback to localhost for development
-                domain = 'localhost:8000'
-                protocol = 'http'
+            # Get domain and protocol from settings
+            domain = settings.SITE_DOMAIN
+            protocol = settings.SITE_PROTOCOL
 
             # Build verification URL
             verification_url = f"{protocol}://{domain}/auth/verify-email/{verification.token}/"
@@ -402,18 +395,11 @@ class ResendVerificationView(View):
         try:
             from django.template.loader import render_to_string
             from django.core.mail import EmailMultiAlternatives
-            from django.contrib.sites.models import Site
+            from django.conf import settings
 
-            # Get current site domain
-            try:
-                current_site = Site.objects.get_current()
-                domain = current_site.domain
-                # Use HTTPS for production domains, HTTP for localhost
-                protocol = 'https' if 'localhost' not in domain and '127.0.0.1' not in domain else 'http'
-            except:
-                # Fallback to localhost for development
-                domain = 'localhost:8000'
-                protocol = 'http'
+            # Get domain and protocol from settings
+            domain = settings.SITE_DOMAIN
+            protocol = settings.SITE_PROTOCOL
 
             # Build verification URL
             verification_url = f"{protocol}://{domain}/auth/verify-email/{verification.token}/"

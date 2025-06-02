@@ -108,6 +108,10 @@ DEBUG=True
 SECRET_KEY=your-secret-key-here
 ALLOWED_HOSTS=localhost,127.0.0.1
 
+# Site Domain Configuration (IMPORTANT for email verification)
+SITE_DOMAIN=localhost:8000
+SITE_PROTOCOL=http
+
 # Database Configuration (for production)
 # DATABASE_URL=postgresql://username:password@localhost:5432/mentora_db
 
@@ -122,8 +126,38 @@ DEFAULT_FROM_EMAIL=Mentora <noreply@mentora.com>
 
 # Application Settings
 SITE_NAME=Mentora
-SITE_URL=http://localhost:8000
 ADMIN_EMAIL=admin@mentora.com
+```
+
+### 🚀 Production Deployment (PythonAnywhere)
+
+For production deployment, update your `.env` file with:
+
+```env
+# Production Settings
+DEBUG=False
+ALLOWED_HOSTS=yourusername.pythonanywhere.com
+
+# IMPORTANT: Update these for email verification to work
+SITE_DOMAIN=yourusername.pythonanywhere.com
+SITE_PROTOCOL=https
+
+# Email Configuration (use real SMTP)
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-16-character-app-password
+```
+
+### 🔧 Fix Email Verification URLs
+
+If email verification links show `localhost:8000` instead of your production domain:
+
+```bash
+# Run the fix script
+python scripts/fix_email_verification.py
+
+# Or use the management command
+python manage.py update_site_domain --domain yourusername.pythonanywhere.com --protocol https
 ```
 
 ## Usage
