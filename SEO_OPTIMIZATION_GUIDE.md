@@ -4,7 +4,7 @@
 
 ### 1. **Title Tag Optimization**
 - **Before**: 95 characters (too long)
-- **After**: 35 characters ("Mentora - Free K-12 Learning Platform")
+- **After**: 35 characters ("Mentora - Free Online Learning Platform for Grades 1-12 ")
 - **Impact**: Better search result display and click-through rates
 
 ### 2. **Meta Description Optimization**
