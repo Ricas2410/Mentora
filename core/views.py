@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
@@ -307,3 +307,17 @@ Crawl-delay: 1
 """
 
     return HttpResponse(robots_content, content_type='text/plain')
+
+
+def custom_404_view(request, exception):
+    """
+    Custom 404 error page with SEO-friendly content and navigation
+    """
+    return render(request, '404.html', status=404)
+
+
+def custom_500_view(request):
+    """
+    Custom 500 error page for server errors
+    """
+    return render(request, '500.html', status=500)

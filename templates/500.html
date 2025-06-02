@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - Mentora</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center px-4">
+    <div class="max-w-2xl mx-auto text-center">
+        <!-- 500 Illustration -->
+        <div class="mb-8">
+            <div class="text-8xl md:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600 mb-4">
+                500
+            </div>
+            <div class="text-6xl mb-6">
+                <i class="fas fa-exclamation-triangle text-orange-300"></i>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            Server Error
+        </h1>
+        <p class="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
+            Something went wrong on our end. Our team has been notified and is working to fix this issue.
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <a href="/" class="btn-primary">
+                <i class="fas fa-home mr-2"></i>
+                Go Home
+            </a>
+            <button onclick="window.location.reload()" class="btn-secondary">
+                <i class="fas fa-redo mr-2"></i>
+                Try Again
+            </button>
+        </div>
+
+        <!-- Help Section -->
+        <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">What can you do?</h2>
+            <div class="space-y-3 text-left">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span>Wait a few minutes and try again</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span>Check your internet connection</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                    <span>Contact our support team if the problem persists</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="mt-8 text-center">
+            <p class="text-gray-600 mb-4">
+                Need immediate help?
+            </p>
+            <a href="mailto:admin@mentora.com" class="text-blue-600 hover:text-blue-800 font-semibold">
+                <i class="fas fa-envelope mr-2"></i>
+                admin@mentora.com
+            </a>
+        </div>
+    </div>
+
+    <style>
+    .btn-primary {
+        background: linear-gradient(135deg, #EF4444, #DC2626);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        min-width: 140px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 2px solid #EF4444;
+        color: #EF4444;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        min-width: 140px;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background: #EF4444;
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    @media (max-width: 640px) {
+        .btn-primary, .btn-secondary {
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+    }
+    </style>
+</body>
+</html>

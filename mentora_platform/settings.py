@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For serving static files in production
+    'core.middleware.IPCanonicalizationMiddleware',  # SEO: Redirect IP to domain
     'core.middleware.WWWRedirectMiddleware',  # SEO: Handle WWW redirects
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -156,6 +157,10 @@ APPEND_SLASH = True
 USE_ETAGS = True
 USE_L10N = True
 USE_TZ = True
+
+# Custom Error Pages
+HANDLER404 = 'core.views.custom_404_view'
+HANDLER500 = 'core.views.custom_500_view'
 
 # Email Configuration - Use environment variables for security
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')

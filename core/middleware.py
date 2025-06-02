@@ -169,6 +169,37 @@ class WWWRedirectMiddleware(MiddlewareMixin):
         return None
 
 
+class IPCanonicalizationMiddleware(MiddlewareMixin):
+    """
+    Middleware to redirect IP addresses to domain name for SEO
+    """
+
+    def process_request(self, request):
+        """
+        Redirect IP address access to proper domain
+        """
+        host = request.get_host().lower()
+
+        # Skip for localhost and development
+        if 'localhost' in host or '127.0.0.1' in host:
+            return None
+
+        # Check if accessing via IP address
+        import re
+        ip_pattern = r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$'
+
+        if re.match(ip_pattern, host):
+            # Get proper domain from settings
+            proper_domain = getattr(settings, 'SITE_DOMAIN', 'mentora.pythonanywhere.com')
+            protocol = getattr(settings, 'SITE_PROTOCOL', 'https')
+
+            # Redirect to proper domain
+            new_url = f"{protocol}://{proper_domain}{request.get_full_path()}"
+            return HttpResponsePermanentRedirect(new_url)
+
+        return None
+
+
 class SecurityHeadersMiddleware(MiddlewareMixin):
     """
     Add security and performance headers
