@@ -26,32 +26,38 @@
 
     <!-- Dynamic Subject Pages -->
     {% for subject in subjects %}
+    {% if subject.slug %}
     <url>
-        <loc>{{ domain }}{% url 'subjects:detail' subject.slug %}</loc>
-        <lastmod>{{ subject.updated_at|date:"Y-m-d" }}</lastmod>
+        <loc>{{ domain }}/subjects/{{ subject.slug }}/</loc>
+        <lastmod>{% if subject.updated_at %}{{ subject.updated_at|date:"Y-m-d" }}{% else %}{{ current_date|date:"Y-m-d" }}{% endif %}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
+    {% endif %}
     {% endfor %}
 
     <!-- Dynamic Grade/Subject Pages -->
     {% for level in class_levels %}
+    {% if level.level_number and level.subject and level.subject.slug %}
     <url>
-        <loc>{{ domain }}{% url 'subjects:grade_subject' level.level_number level.subject.slug %}</loc>
-        <lastmod>{{ level.updated_at|date:"Y-m-d" }}</lastmod>
+        <loc>{{ domain }}/subjects/grade-{{ level.level_number }}/{{ level.subject.slug }}/</loc>
+        <lastmod>{% if level.updated_at %}{{ level.updated_at|date:"Y-m-d" }}{% else %}{{ current_date|date:"Y-m-d" }}{% endif %}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
+    {% endif %}
     {% endfor %}
 
     <!-- Dynamic Topic Pages -->
     {% for topic in topics %}
+    {% if topic.slug and topic.class_level and topic.class_level.subject and topic.class_level.subject.slug %}
     <url>
-        <loc>{{ domain }}{% url 'subjects:topic_detail' topic.class_level.level_number topic.class_level.subject.slug topic.slug %}</loc>
-        <lastmod>{{ topic.updated_at|date:"Y-m-d" }}</lastmod>
+        <loc>{{ domain }}/subjects/grade-{{ topic.class_level.level_number }}/{{ topic.class_level.subject.slug }}/{{ topic.slug }}/</loc>
+        <lastmod>{% if topic.updated_at %}{{ topic.updated_at|date:"Y-m-d" }}{% else %}{{ current_date|date:"Y-m-d" }}{% endif %}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
+    {% endif %}
     {% endfor %}
 
 </urlset>

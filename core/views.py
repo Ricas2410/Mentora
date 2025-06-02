@@ -231,46 +231,89 @@ def sitemap_view(request):
     """
     Generate XML sitemap for SEO with improved structure and priorities
     """
-    from django.template.loader import render_to_string
+    try:
+        from django.template.loader import render_to_string
+        from django.conf import settings
 
-    # Get all active content with optimized queries
-    subjects = Subject.objects.filter(is_active=True).select_related()
-    class_levels = ClassLevel.objects.filter(is_active=True).select_related('subject')
-    topics = Topic.objects.filter(is_active=True).select_related('class_level__subject')
+        # Get domain from request for better compatibility
+        domain = f"{request.scheme}://{request.get_host()}"
 
-    # Get domain from settings for consistency
-    from django.conf import settings
-    domain = f"{settings.SITE_PROTOCOL}://{settings.SITE_DOMAIN}"
+        # Get all active content with safe queries
+        try:
+            subjects = Subject.objects.filter(is_active=True)
+        except:
+            subjects = []
 
-    # Calculate priorities and change frequencies
-    high_priority_urls = [
-        {'url': '/', 'priority': '1.0', 'changefreq': 'daily'},
-        {'url': '/subjects/', 'priority': '0.9', 'changefreq': 'weekly'},
-        {'url': '/quiz/', 'priority': '0.9', 'changefreq': 'weekly'},
-        {'url': '/learn/', 'priority': '0.9', 'changefreq': 'weekly'},
-    ]
+        try:
+            class_levels = ClassLevel.objects.filter(is_active=True)
+        except:
+            class_levels = []
 
-    medium_priority_urls = [
-        {'url': '/about/', 'priority': '0.8', 'changefreq': 'monthly'},
-        {'url': '/contact/', 'priority': '0.7', 'changefreq': 'monthly'},
-        {'url': '/help/', 'priority': '0.6', 'changefreq': 'monthly'},
-        {'url': '/auth/register/', 'priority': '0.8', 'changefreq': 'monthly'},
-        {'url': '/auth/login/', 'priority': '0.7', 'changefreq': 'monthly'},
-    ]
+        try:
+            topics = Topic.objects.filter(is_active=True)
+        except:
+            topics = []
 
-    context = {
-        'domain': domain,
-        'current_date': timezone.now(),
-        'subjects': subjects,
-        'class_levels': class_levels,
-        'topics': topics,
-        'high_priority_urls': high_priority_urls,
-        'medium_priority_urls': medium_priority_urls,
-    }
+        # Calculate priorities and change frequencies
+        high_priority_urls = [
+            {'url': '/', 'priority': '1.0', 'changefreq': 'daily'},
+            {'url': '/subjects/', 'priority': '0.9', 'changefreq': 'weekly'},
+            {'url': '/subjects/quiz/', 'priority': '0.9', 'changefreq': 'weekly'},
+            {'url': '/subjects/learn/', 'priority': '0.9', 'changefreq': 'weekly'},
+        ]
 
-    xml_content = render_to_string('sitemap.xml', context, request=request)
+        medium_priority_urls = [
+            {'url': '/about/', 'priority': '0.8', 'changefreq': 'monthly'},
+            {'url': '/contact/', 'priority': '0.7', 'changefreq': 'monthly'},
+            {'url': '/help/', 'priority': '0.6', 'changefreq': 'monthly'},
+            {'url': '/auth/register/', 'priority': '0.8', 'changefreq': 'monthly'},
+            {'url': '/auth/login/', 'priority': '0.7', 'changefreq': 'monthly'},
+        ]
 
-    return HttpResponse(xml_content, content_type='application/xml')
+        context = {
+            'domain': domain,
+            'current_date': timezone.now(),
+            'subjects': subjects,
+            'class_levels': class_levels,
+            'topics': topics,
+            'high_priority_urls': high_priority_urls,
+            'medium_priority_urls': medium_priority_urls,
+        }
+
+        xml_content = render_to_string('sitemap.xml', context, request=request)
+        return HttpResponse(xml_content, content_type='application/xml')
+
+    except Exception as e:
+        # Fallback simple sitemap if there are any errors
+        domain = f"{request.scheme}://{request.get_host()}"
+        simple_sitemap = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{domain}/</loc>
+        <lastmod>{timezone.now().strftime('%Y-%m-%d')}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>{domain}/subjects/</loc>
+        <lastmod>{timezone.now().strftime('%Y-%m-%d')}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>{domain}/about/</loc>
+        <lastmod>{timezone.now().strftime('%Y-%m-%d')}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>{domain}/contact/</loc>
+        <lastmod>{timezone.now().strftime('%Y-%m-%d')}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+</urlset>'''
+        return HttpResponse(simple_sitemap, content_type='application/xml')
 
 
 def robots_txt_view(request):
