@@ -442,6 +442,10 @@ class Test(models.Model):
     time_limit = models.PositiveIntegerField(default=1800, help_text="Time limit in seconds")
     pass_percentage = models.PositiveIntegerField(default=60)
 
+    # Question shuffling and randomization
+    question_ids = models.JSONField(default=list, help_text="Shuffled question IDs for this exam attempt")
+    seed = models.IntegerField(default=0, help_text="Random seed for consistent shuffling")
+
     # Status
     is_completed = models.BooleanField(default=False)
     started_at = models.DateTimeField(default=timezone.now)

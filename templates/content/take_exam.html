@@ -278,6 +278,66 @@
     </div>
 </div>
 
+<!-- Submit Exam Confirmation Modal -->
+<div id="submitExamModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+        <div class="p-6">
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Submit Final Exam</h3>
+                <p class="text-gray-600 text-sm">Are you ready to submit your exam?</p>
+            </div>
+
+            <!-- Exam Summary -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div class="text-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-blue-800">Questions Answered:</span>
+                        <span id="modal-answered-count" class="text-blue-700">0 / 0</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-blue-800">Time Remaining:</span>
+                        <span id="modal-time-remaining" class="text-blue-700">00:00</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium text-blue-800">Required to Pass:</span>
+                        <span class="text-blue-700">{{ pass_percentage }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warning for unanswered questions -->
+            <div id="unanswered-warning" class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 hidden">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-amber-500 mt-1 mr-3"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-amber-800 mb-1">Unanswered Questions:</p>
+                        <p class="text-amber-700">
+                            You have <span id="unanswered-count">0</span> unanswered question(s).
+                            These will be marked as incorrect.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3">
+                <button onclick="closeSubmitModal()"
+                        class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Continue Exam
+                </button>
+                <button onclick="confirmSubmitExam()"
+                        class="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-xl font-medium hover:from-green-700 hover:to-blue-700 transition-all shadow-lg">
+                    <i class="fas fa-check mr-2"></i>Submit Exam
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // Exam data from Django
 const examData = {
@@ -509,61 +569,118 @@ function nextQuestion() {
 }
 
 function submitExam() {
+    // Show professional modal instead of basic confirm
     const answeredCount = Object.keys(userAnswers).filter(id => userAnswers[id] !== '').length;
     const unansweredCount = examData.totalQuestions - answeredCount;
 
-    let confirmMessage = 'Are you sure you want to submit your exam?';
+    // Update modal content
+    document.getElementById('modal-answered-count').textContent = `${answeredCount} / ${examData.totalQuestions}`;
+
+    // Update time remaining in modal
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    document.getElementById('modal-time-remaining').textContent =
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    // Show/hide unanswered warning
+    const warningDiv = document.getElementById('unanswered-warning');
     if (unansweredCount > 0) {
-        confirmMessage += `\n\nYou have ${unansweredCount} unanswered question${unansweredCount !== 1 ? 's' : ''}. These will be marked as incorrect.`;
+        document.getElementById('unanswered-count').textContent = unansweredCount;
+        warningDiv.classList.remove('hidden');
+    } else {
+        warningDiv.classList.add('hidden');
     }
 
-    if (confirm(confirmMessage)) {
-        examSubmitted = true;
-        clearInterval(timerInterval);
+    // Show modal
+    document.getElementById('submitExamModal').classList.remove('hidden');
+}
 
-        // Show loading state
-        const submitBtn = document.getElementById('submit-btn');
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
-        submitBtn.disabled = true;
+function closeSubmitModal() {
+    document.getElementById('submitExamModal').classList.add('hidden');
+}
 
-        // Submit to server
-        fetch('{% url "content:submit_exam" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({
-                exam_id: examData.examId,
-                answers: userAnswers,
-                time_taken: examData.timeLimit - timeRemaining
-            })
+function confirmSubmitExam() {
+    // Close modal
+    closeSubmitModal();
+
+    examSubmitted = true;
+    clearInterval(timerInterval);
+
+    // Show loading state
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+    submitBtn.disabled = true;
+
+    // Submit to server
+    fetch('{% url "content:submit_exam" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            exam_id: examData.examId,
+            answers: userAnswers,
+            time_taken: examData.timeLimit - timeRemaining
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Redirect to results page
-                window.location.href = `/content/exam/${data.exam_id}/result/`;
-            } else {
-                alert('Error submitting exam: ' + data.message);
-                submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Submit Exam';
-                submitBtn.disabled = false;
-                examSubmitted = false;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error submitting exam. Please try again.');
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirect to results page
+            window.location.href = `/content/exam/${data.exam_id}/result/`;
+        } else {
+            alert('Error submitting exam: ' + data.message);
             submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Submit Exam';
             submitBtn.disabled = false;
             examSubmitted = false;
-        });
-    }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting exam. Please try again.');
+        submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Submit Exam';
+        submitBtn.disabled = false;
+        examSubmitted = false;
+    });
 }
 
 function autoSubmitExam() {
-    alert('Time is up! Your exam will be submitted automatically.');
-    submitExam();
+    // Auto-submit when time is up - bypass modal
+    examSubmitted = true;
+    clearInterval(timerInterval);
+
+    // Show loading state
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Time Up - Submitting...';
+    submitBtn.disabled = true;
+
+    // Submit to server
+    fetch('{% url "content:submit_exam" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            exam_id: examData.examId,
+            answers: userAnswers,
+            time_taken: examData.timeLimit
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirect to results page
+            window.location.href = `/content/exam/${data.exam_id}/result/`;
+        } else {
+            alert('Error submitting exam: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting exam. Please try again.');
+    });
 }
 
 function getCookie(name) {
@@ -580,5 +697,14 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('submitExamModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeSubmitModal();
+        }
+    });
+});
 </script>
 {% endblock %}

@@ -215,21 +215,79 @@
     </div>
 </div>
 
+<!-- Start Exam Confirmation Modal -->
+<div id="startExamModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+        <div class="p-6">
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Start Final Exam</h3>
+                <p class="text-gray-600 text-sm">Are you ready to begin your final exam?</p>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-amber-500 mt-1 mr-3"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-amber-800 mb-1">Important:</p>
+                        <ul class="text-amber-700 space-y-1">
+                            <li>• Timer starts immediately</li>
+                            <li>• Cannot pause once started</li>
+                            <li>• {{ exam_time_limit|floatformat:0 }} minutes time limit</li>
+                            <li>• Need {{ pass_percentage }}% to pass</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3">
+                <button onclick="closeStartModal()"
+                        class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-times mr-2"></i>Cancel
+                </button>
+                <button onclick="confirmStartExam()"
+                        class="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg">
+                    <i class="fas fa-play mr-2"></i>Start Exam
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function startExam() {
-    // Show confirmation dialog
-    const confirmed = confirm('Are you ready to start the final exam? Once started, the timer will begin and you cannot pause the exam.');
-
-    if (confirmed) {
-        // Show loading state
-        const button = document.querySelector('.start-exam-btn');
-        const originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Starting Exam...';
-        button.disabled = true;
-
-        // Redirect to exam taking interface
-        window.location.href = '{% url "content:take_exam" level.id %}';
-    }
+    // Show professional modal instead of basic confirm
+    document.getElementById('startExamModal').classList.remove('hidden');
 }
+
+function closeStartModal() {
+    document.getElementById('startExamModal').classList.add('hidden');
+}
+
+function confirmStartExam() {
+    // Close modal
+    closeStartModal();
+
+    // Show loading state
+    const button = document.querySelector('.start-exam-btn');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Starting Exam...';
+    button.disabled = true;
+
+    // Redirect to exam taking interface
+    window.location.href = '{% url "content:take_exam" level.id %}';
+}
+
+// Close modal when clicking outside
+document.getElementById('startExamModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeStartModal();
+    }
+});
 </script>
 {% endblock %}

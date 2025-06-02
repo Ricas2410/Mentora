@@ -272,7 +272,7 @@ class TakeExamView(TemplateView):
         all_questions = Question.objects.filter(
             topic__in=topics,
             is_active=True
-        ).order_by('?')  # Random order
+        )
 
         # Determine number of questions to use
         total_available = all_questions.count()
@@ -281,11 +281,21 @@ class TakeExamView(TemplateView):
         else:
             questions_to_use = exam_questions_per_level
 
-        # Get the questions for this exam
-        exam_questions = list(all_questions[:questions_to_use])
+        # Create a unique seed for this exam attempt based on user, level, and timestamp
+        import time
+        seed = hash(f"{self.request.user.id}_{level_id}_{int(time.time())}") % (2**31)
+        random.seed(seed)
 
-        # Shuffle questions
+        # Get random questions and shuffle them
+        all_questions_list = list(all_questions)
+        random.shuffle(all_questions_list)
+        exam_questions = all_questions_list[:questions_to_use]
+
+        # Shuffle the selected questions again for good measure
         random.shuffle(exam_questions)
+
+        # Store question IDs in order for this exam
+        question_ids = [str(q.id) for q in exam_questions]
 
         # Create exam record
         exam = Test.objects.create(
@@ -294,7 +304,9 @@ class TakeExamView(TemplateView):
             test_type='level_exam',
             total_questions=questions_to_use,
             time_limit=exam_time_limit,
-            pass_percentage=pass_percentage
+            pass_percentage=pass_percentage,
+            question_ids=question_ids,
+            seed=seed
         )
 
         # Prepare questions data for frontend
@@ -343,9 +355,62 @@ class ExamResultView(TemplateView):
 
         exam = get_object_or_404(Test, id=exam_id, user=self.request.user)
 
+        # Get exam answers with questions for review, ordered by the original exam question order
+        exam_answers = TestAnswer.objects.filter(test=exam).select_related('question')
+
+        # Create a mapping of question_id to answer for easy lookup
+        answer_map = {str(answer.question.id): answer for answer in exam_answers}
+
+        # Prepare review data in the same order as the exam questions
+        review_data = []
+        question_order = exam.question_ids if exam.question_ids else []
+
+        # If no stored question order (older exams), use the answers in any order
+        if not question_order:
+            question_order = list(answer_map.keys())
+
+        for question_id in question_order:
+            if question_id in answer_map:
+                answer = answer_map[question_id]
+                question = answer.question
+
+                # Get correct answer based on question type
+                correct_answer = None
+                user_answer_display = answer.user_answer
+
+                if question.question_type == 'multiple_choice':
+                    # Get correct choice
+                    correct_choice = question.answer_choices.filter(is_correct=True).first()
+                    correct_answer = correct_choice.choice_text if correct_choice else "No correct answer found"
+
+                    # Get user's selected choice text
+                    try:
+                        selected_choice = question.answer_choices.get(id=answer.user_answer)
+                        user_answer_display = selected_choice.choice_text
+                    except:
+                        user_answer_display = "No answer selected"
+
+                    # Get all choices for display
+                    choices = list(question.answer_choices.all().order_by('order'))
+                else:
+                    correct_answer = question.correct_answer
+                    choices = None
+
+                review_data.append({
+                    'question': question,
+                    'user_answer': answer.user_answer,
+                    'user_answer_display': user_answer_display,
+                    'correct_answer': correct_answer,
+                    'is_correct': answer.is_correct,
+                    'points_earned': answer.points_earned,
+                    'choices': choices,
+                    'explanation': question.explanation or "No explanation available."
+                })
+
         context['exam'] = exam
         context['level'] = exam.class_level
         context['subject'] = exam.class_level.subject
+        context['review_data'] = review_data
         return context
 
 
@@ -821,13 +886,13 @@ def submit_exam(request):
         if exam.is_completed:
             return JsonResponse({'success': False, 'message': 'Exam already completed'}, status=400)
 
-        # Get all questions for this exam
+        # Get the actual total number of questions in the exam (stored when exam was created)
+        total_exam_questions = exam.total_questions
+
+        # Get all questions for validation (we still need this to validate answers)
         level = exam.class_level
         topics = level.topics.filter(is_active=True)
         all_questions = Question.objects.filter(topic__in=topics, is_active=True)
-
-        # Get the actual total number of questions in the exam (not just answered ones)
-        total_exam_questions = all_questions.count()
 
         # Process answers
         correct_answers = 0
