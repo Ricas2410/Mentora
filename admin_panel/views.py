@@ -496,7 +496,18 @@ class ManageQuestionsView(AdminRequiredMixin, TemplateView):
             # class_filter now contains level_number, not ID
             questions = questions.filter(topic__class_level__level_number=class_filter)
         if subject_filter:
-            questions = questions.filter(topic__class_level__subject_id=subject_filter)
+            # Filter by subject - need to check the correct relationship path
+            try:
+                # Try the direct relationship first
+                questions = questions.filter(topic__class_level__subject_id=subject_filter)
+            except:
+                # If that fails, try alternative relationship paths
+                try:
+                    questions = questions.filter(topic__class_level__subject=subject_filter)
+                except:
+                    # Last resort: filter through topics that belong to the subject
+                    valid_topics = Topic.objects.filter(class_level__subject_id=subject_filter).values_list('id', flat=True)
+                    questions = questions.filter(topic_id__in=valid_topics)
         if topic_filter:
             questions = questions.filter(topic_id=topic_filter)
         if type_filter:
@@ -552,16 +563,40 @@ class ManageQuestionsView(AdminRequiredMixin, TemplateView):
         # Apply hierarchical filters for topics
         if class_filter and subject_filter:
             # Both class and subject selected - filter by both
-            topics_query = topics_query.filter(
-                class_level__level_number=class_filter,
-                class_level__subject_id=subject_filter
-            )
+            try:
+                topics_query = topics_query.filter(
+                    class_level__level_number=class_filter,
+                    class_level__subject_id=subject_filter
+                )
+            except:
+                # Alternative approach if relationship is different
+                try:
+                    topics_query = topics_query.filter(
+                        class_level__level_number=class_filter,
+                        class_level__subject=subject_filter
+                    )
+                except:
+                    # Last resort: get valid class levels first
+                    valid_class_levels = ClassLevel.objects.filter(
+                        level_number=class_filter,
+                        subject_id=subject_filter
+                    ).values_list('id', flat=True)
+                    topics_query = topics_query.filter(class_level_id__in=valid_class_levels)
         elif class_filter:
             # Only class selected - show topics for that class level
             topics_query = topics_query.filter(class_level__level_number=class_filter)
         elif subject_filter:
             # Only subject selected - show topics for that subject across all classes
-            topics_query = topics_query.filter(class_level__subject_id=subject_filter)
+            try:
+                topics_query = topics_query.filter(class_level__subject_id=subject_filter)
+            except:
+                # Alternative approach
+                try:
+                    topics_query = topics_query.filter(class_level__subject=subject_filter)
+                except:
+                    # Last resort
+                    valid_class_levels = ClassLevel.objects.filter(subject_id=subject_filter).values_list('id', flat=True)
+                    topics_query = topics_query.filter(class_level_id__in=valid_class_levels)
 
         context['topics'] = topics_query.order_by('class_level__level_number', 'title')
 
