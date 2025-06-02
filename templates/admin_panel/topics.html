@@ -27,6 +27,17 @@
         <form method="get" id="filterForm">
             <div class="row g-3">
                 <div class="col-md-3">
+                    <label class="form-label">Class Level</label>
+                    <select class="form-select" name="class_level" onchange="updateFilters()">
+                        <option value="">All Levels</option>
+                        {% for level in class_levels %}
+                            <option value="{{ level.id }}" {% if current_filters.class_level == level.id|stringformat:"s" %}selected{% endif %}>
+                                {{ level.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
                     <label class="form-label">Subject</label>
                     <select class="form-select" name="subject" onchange="updateFilters()">
                         <option value="">All Subjects</option>
@@ -37,20 +48,9 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">Class Level</label>
-                    <select class="form-select" name="level" onchange="updateFilters()">
-                        <option value="">All Levels</option>
-                        {% for level in levels %}
-                            <option value="{{ level.id }}" {% if current_filters.level == level.id|stringformat:"s" %}selected{% endif %}>
-                                {{ level.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
                 <div class="col-md-4">
                     <label class="form-label">Search Topics</label>
-                    <input type="text" class="form-control" name="search" value="{% if current_filters.search %}{{ current_filters.search }}{% endif %}" placeholder="Search by title...">
+                    <input type="text" class="form-control" name="search" value="{{ current_filters.search|default_if_none:'' }}" placeholder="Search by title...">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">&nbsp;</label>

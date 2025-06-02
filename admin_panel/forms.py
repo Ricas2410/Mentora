@@ -284,15 +284,42 @@ class TopicForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     """Form for creating/editing questions"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make correct_answer required for non-multiple choice questions
+        self.fields['correct_answer'].required = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        question_type = cleaned_data.get('question_type')
+        correct_answer = cleaned_data.get('correct_answer')
+
+        # For multiple choice, correct_answer is optional (choices handle correctness)
+        if question_type == 'multiple_choice':
+            self.fields['correct_answer'].required = False
+        else:
+            # For other question types, correct_answer is required
+            if not correct_answer or not correct_answer.strip():
+                raise forms.ValidationError({
+                    'correct_answer': 'This field is required for this question type.'
+                })
+
+        return cleaned_data
+
     class Meta:
         model = Question
-        fields = ['topic', 'question_text', 'question_type', 'difficulty', 'points', 'explanation', 'image', 'is_active']
+        fields = ['topic', 'question_text', 'question_type', 'difficulty', 'points', 'correct_answer', 'explanation', 'image', 'is_active']
         widgets = {
             'topic': forms.Select(attrs={'class': 'form-control'}),
             'question_text': forms.Textarea(attrs={'class': 'form-control summernote', 'rows': 4, 'placeholder': 'Enter your question here...'}),
             'question_type': forms.Select(attrs={'class': 'form-control'}),
             'difficulty': forms.Select(attrs={'class': 'form-control'}),
             'points': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 10}),
+            'correct_answer': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Enter the correct answer(s). For multiple answers, separate with commas.'
+            }),
             'explanation': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Explain the correct answer...'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
@@ -330,7 +357,7 @@ class CSVImportForm(forms.Form):
     target_class_levels = forms.MultipleChoiceField(
         choices=GRADE_LEVEL_CHOICES,
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
-        required=False,  # Make optional for preview requests
+        required=True,
         help_text="Select which grade levels these questions should be imported for. Missing topics will be auto-created."
     )
 

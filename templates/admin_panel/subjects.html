@@ -8,125 +8,229 @@
     <h4 class="mb-0">
         <i class="fas fa-book me-2"></i>
         Subjects Management
+        {% if selected_class %}
+            <small class="text-muted">- {{ selected_class.name }}</small>
+        {% endif %}
     </h4>
-    <a href="{% url 'admin_panel:create_subject' %}" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>
-        Add New Subject
-    </a>
+    <div class="btn-group">
+        <a href="{% url 'admin_panel:create_subject' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>
+            Add New Subject
+        </a>
+        <a href="{% url 'admin_panel:levels' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-layer-group me-2"></i>
+            Manage Classes
+        </a>
+    </div>
 </div>
 
-<!-- Subjects Table -->
-<div class="card">
+<!-- Class Level Selection -->
+<div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0">All Subjects</h5>
+        <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>
+            Select Class Level
+        </h6>
     </div>
     <div class="card-body">
-        {% if subjects %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Icon</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Levels</th>
-                            <th>Topics</th>
-                            <th>Questions</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for subject in subjects %}
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center justify-content-center" 
-                                         style="width: 40px; height: 40px; background-color: {{ subject.color }}; border-radius: 8px; color: white;">
-                                        <i class="fas {{ subject.icon }}"></i>
+        <form method="get" id="classFilterForm">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Class Level</label>
+                    <select class="form-select" name="class_level" onchange="updateClassFilter()">
+                        <option value="">All Classes (Overview)</option>
+                        {% for class_level in class_levels %}
+                            <option value="{{ class_level.id }}" {% if current_filters.class_level == class_level.id|stringformat:"s" %}selected{% endif %}>
+                                {{ class_level.name }} - {{ class_level.subject.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>
+                            View Subjects
+                        </button>
+                        <a href="{% url 'admin_panel:subjects' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            Clear
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Subjects Display -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            {% if selected_class %}
+                Subjects for {{ selected_class.name }}
+            {% else %}
+                All Subjects (Overview)
+            {% endif %}
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if selected_class %}
+            <!-- Class-specific subject view -->
+            {% if subjects %}
+                <div class="row">
+                    {% for subject in subjects %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-start border-4" style="border-color: {{ subject.color }} !important;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="d-flex align-items-center justify-content-center me-3"
+                                             style="width: 50px; height: 50px; background-color: {{ subject.color }}; border-radius: 10px; color: white;">
+                                            <i class="fas {{ subject.icon }} fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="card-title mb-1">{{ subject.name }}</h5>
+                                            <small class="text-muted">{{ selected_class.name }}</small>
+                                        </div>
                                     </div>
-                                </td>
-                                <td>
-                                    <strong>{{ subject.name }}</strong>
-                                </td>
-                                <td>
-                                    <span class="text-muted">{{ subject.description|truncatechars:50 }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-primary">{{ subject.levels_count }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-info">{{ subject.topics_count }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-success">{{ subject.questions_count }}</span>
-                                </td>
-                                <td>
-                                    {% if subject.is_active %}
-                                        <span class="badge bg-success">Active</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">Inactive</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{% url 'admin_panel:edit_subject' subject.id %}" 
-                                           class="btn btn-sm btn-outline-primary" title="Edit">
+
+                                    <p class="card-text text-muted small">{{ subject.description|truncatechars:80 }}</p>
+
+                                    <div class="row text-center mb-3">
+                                        <div class="col-4">
+                                            <div class="border-end">
+                                                <h6 class="text-primary mb-0">{{ subject.topics_count }}</h6>
+                                                <small class="text-muted">Topics</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border-end">
+                                                <h6 class="text-success mb-0">{{ subject.questions_count }}</h6>
+                                                <small class="text-muted">Questions</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            {% if subject.is_active %}
+                                                <h6 class="text-success mb-0"><i class="fas fa-check-circle"></i></h6>
+                                                <small class="text-muted">Active</small>
+                                            {% else %}
+                                                <h6 class="text-secondary mb-0"><i class="fas fa-pause-circle"></i></h6>
+                                                <small class="text-muted">Inactive</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'admin_panel:topics' %}?level={{ selected_class.id }}&subject={{ subject.id }}"
+                                           class="btn btn-primary btn-sm flex-fill">
+                                            <i class="fas fa-list me-1"></i>
+                                            Topics
+                                        </a>
+                                        <a href="{% url 'admin_panel:edit_subject' subject.id %}"
+                                           class="btn btn-outline-primary btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-danger" 
-                                                title="Delete"
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm"
                                                 onclick="confirmDelete('{{ subject.name }}', '{% url 'admin_panel:delete_subject' subject.id %}')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            {% if subjects.has_other_pages %}
-                <nav aria-label="Subjects pagination">
-                    <ul class="pagination justify-content-center">
-                        {% if subjects.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ subjects.previous_page_number }}">Previous</a>
-                            </li>
-                        {% endif %}
-
-                        {% for num in subjects.paginator.page_range %}
-                            {% if subjects.number == num %}
-                                <li class="page-item active">
-                                    <span class="page-link">{{ num }}</span>
-                                </li>
-                            {% elif num > subjects.number|add:'-3' and num < subjects.number|add:'3' %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if subjects.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ subjects.next_page_number }}">Next</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-book fs-1 text-muted mb-3"></i>
+                    <h5 class="text-muted">No subjects found for {{ selected_class.name }}</h5>
+                    <p class="text-muted">This class level doesn't have any subjects yet.</p>
+                    <a href="{% url 'admin_panel:create_subject' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>
+                        Add Subject to {{ selected_class.name }}
+                    </a>
+                </div>
             {% endif %}
         {% else %}
-            <div class="text-center py-5">
-                <i class="fas fa-book fs-1 text-muted mb-3"></i>
-                <h5 class="text-muted">No subjects found</h5>
-                <p class="text-muted">Start by creating your first subject.</p>
-                <a href="{% url 'admin_panel:create_subject' %}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>
-                    Create First Subject
-                </a>
-            </div>
+            <!-- Overview table -->
+            {% if subjects %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Class Levels</th>
+                                <th>Topics</th>
+                                <th>Questions</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject in subjects %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center"
+                                             style="width: 40px; height: 40px; background-color: {{ subject.color }}; border-radius: 8px; color: white;">
+                                            <i class="fas {{ subject.icon }}"></i>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong>{{ subject.name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">{{ subject.description|truncatechars:50 }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ subject.levels_count }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ subject.topics_count }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">{{ subject.questions_count }}</span>
+                                    </td>
+                                    <td>
+                                        {% if subject.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'admin_panel:edit_subject' subject.id %}"
+                                               class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Delete"
+                                                    onclick="confirmDelete('{{ subject.name }}', '{% url 'admin_panel:delete_subject' subject.id %}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-book fs-1 text-muted mb-3"></i>
+                    <h5 class="text-muted">No subjects found</h5>
+                    <p class="text-muted">Start by creating your first subject.</p>
+                    <a href="{% url 'admin_panel:create_subject' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>
+                        Create First Subject
+                    </a>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 </div>
@@ -157,6 +261,11 @@
 
 {% block extra_js %}
 <script>
+function updateClassFilter() {
+    // Auto-submit form when class level changes
+    document.getElementById('classFilterForm').submit();
+}
+
 function confirmDelete(itemName, deleteUrl) {
     document.getElementById('deleteItemName').textContent = itemName;
     document.getElementById('deleteForm').action = deleteUrl;

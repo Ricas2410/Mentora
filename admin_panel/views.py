@@ -7,7 +7,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, View, ListView, DetailView
 from django.http import JsonResponse, HttpResponse
-from django.db.models import Count, Avg, Q
+from django.db.models import Count, Avg, Q, Min
+from django.db import models
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse_lazy
@@ -228,23 +229,51 @@ class AdminDashboardView(AdminRequiredMixin, TemplateView):
 
 
 class ManageSubjectsView(AdminRequiredMixin, TemplateView):
-    """View for managing subjects"""
+    """View for managing subjects by class level"""
     template_name = 'admin_panel/subjects.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get all subjects with related data
-        subjects = Subject.objects.annotate(
-            levels_count=Count('classlevels'),
-            topics_count=Count('classlevels__topics'),
-            questions_count=Count('classlevels__topics__questions')
-        ).order_by('name')
+        # Get selected class level
+        selected_class_id = self.request.GET.get('class_level')
 
-        # Pagination
-        paginator = Paginator(subjects, 10)
-        page_number = self.request.GET.get('page')
-        context['subjects'] = paginator.get_page(page_number)
+        # Get all class levels for the dropdown
+        context['class_levels'] = ClassLevel.objects.select_related('subject').order_by('level_number', 'name')
+
+        # If a class is selected, get subjects for that class
+        if selected_class_id:
+            try:
+                selected_class = ClassLevel.objects.get(id=selected_class_id)
+                context['selected_class'] = selected_class
+
+                # Get subjects that have this class level
+                subjects = Subject.objects.filter(
+                    classlevels__id=selected_class_id
+                ).annotate(
+                    topics_count=Count('classlevels__topics', filter=Q(classlevels__id=selected_class_id)),
+                    questions_count=Count('classlevels__topics__questions', filter=Q(classlevels__id=selected_class_id))
+                ).order_by('order', 'name')
+
+                context['subjects'] = subjects
+                context['show_subjects'] = True
+
+            except ClassLevel.DoesNotExist:
+                context['error'] = 'Selected class level not found'
+        else:
+            # Show all subjects grouped by class level
+            subjects = Subject.objects.annotate(
+                levels_count=Count('classlevels'),
+                topics_count=Count('classlevels__topics'),
+                questions_count=Count('classlevels__topics__questions')
+            ).order_by('order', 'name')
+
+            context['subjects'] = subjects
+            context['show_subjects'] = False
+
+        context['current_filters'] = {
+            'class_level': selected_class_id,
+        }
 
         return context
 
@@ -378,9 +407,9 @@ class ManageTopicsView(AdminRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get filter parameters
+        # Get hierarchical filter parameters
+        class_filter = self.request.GET.get('class_level')
         subject_filter = self.request.GET.get('subject')
-        level_filter = self.request.GET.get('level')
         search_query = self.request.GET.get('search')
 
         # Start with all topics
@@ -388,11 +417,12 @@ class ManageTopicsView(AdminRequiredMixin, TemplateView):
             questions_count=Count('questions')
         )
 
-        # Apply filters
+        # Apply hierarchical filters
+        if class_filter:
+            # class_filter contains level_number, not ID
+            topics = topics.filter(class_level__level_number=class_filter)
         if subject_filter:
             topics = topics.filter(class_level__subject_id=subject_filter)
-        if level_filter:
-            topics = topics.filter(class_level_id=level_filter)
         if search_query:
             topics = topics.filter(title__icontains=search_query)
 
@@ -404,14 +434,38 @@ class ManageTopicsView(AdminRequiredMixin, TemplateView):
         page_number = self.request.GET.get('page')
         context['topics'] = paginator.get_page(page_number)
 
-        # Get filter options
-        context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
-        context['levels'] = ClassLevel.objects.filter(is_active=True).select_related('subject').order_by('level_number', 'subject__name')
+        # Get hierarchical filter options - distinct grade levels only
+        # Group by level_number to avoid duplicates across subjects
+        class_levels_raw = ClassLevel.objects.filter(is_active=True).values(
+            'level_number'
+        ).annotate(
+            name=models.Min('name'),  # Take the first name for this level
+            id=models.Min('id')       # Take the first ID for this level
+        ).order_by('level_number')
+
+        # Convert to a list of objects that the template can use
+        context['class_levels'] = [
+            {
+                'id': level['level_number'],  # Use level_number as ID for filtering
+                'name': f"Grade {level['level_number']}",  # Standardize the name
+                'level_number': level['level_number']
+            }
+            for level in class_levels_raw
+        ]
+
+        # Get subjects based on selected class level
+        if class_filter:
+            context['subjects'] = Subject.objects.filter(
+                classlevels__level_number=class_filter,
+                is_active=True
+            ).distinct().order_by('name')
+        else:
+            context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
 
         # Current filter values
         context['current_filters'] = {
+            'class_level': class_filter,
             'subject': subject_filter,
-            'level': level_filter,
             'search': search_query,
         }
 
@@ -419,15 +473,15 @@ class ManageTopicsView(AdminRequiredMixin, TemplateView):
 
 
 class ManageQuestionsView(AdminRequiredMixin, TemplateView):
-    """View for managing questions"""
+    """View for managing questions with hierarchical filtering"""
     template_name = 'admin_panel/questions.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get filter parameters
+        # Get hierarchical filter parameters
+        class_filter = self.request.GET.get('class_level')
         subject_filter = self.request.GET.get('subject')
-        level_filter = self.request.GET.get('level')
         topic_filter = self.request.GET.get('topic')
         type_filter = self.request.GET.get('type')
         search_query = self.request.GET.get('search')
@@ -437,11 +491,12 @@ class ManageQuestionsView(AdminRequiredMixin, TemplateView):
             choices_count=Count('answer_choices')
         )
 
-        # Apply filters
+        # Apply hierarchical filters
+        if class_filter:
+            # class_filter now contains level_number, not ID
+            questions = questions.filter(topic__class_level__level_number=class_filter)
         if subject_filter:
             questions = questions.filter(topic__class_level__subject_id=subject_filter)
-        if level_filter:
-            questions = questions.filter(topic__class_level_id=level_filter)
         if topic_filter:
             questions = questions.filter(topic_id=topic_filter)
         if type_filter:
@@ -463,15 +518,57 @@ class ManageQuestionsView(AdminRequiredMixin, TemplateView):
         page_number = self.request.GET.get('page')
         context['questions'] = paginator.get_page(page_number)
 
-        # Get filter options
-        context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
-        context['levels'] = ClassLevel.objects.filter(is_active=True).select_related('subject').order_by('subject__name', 'level_number')
-        context['topics'] = Topic.objects.filter(is_active=True).select_related('class_level__subject').order_by('class_level__subject__name', 'title')
+        # Get hierarchical filter options - distinct grade levels only
+        # Group by level_number to avoid duplicates across subjects
+        class_levels_raw = ClassLevel.objects.filter(is_active=True).values(
+            'level_number'
+        ).annotate(
+            name=models.Min('name'),  # Take the first name for this level
+            id=models.Min('id')       # Take the first ID for this level
+        ).order_by('level_number')
+
+        # Convert to a list of objects that the template can use
+        context['class_levels'] = [
+            {
+                'id': level['level_number'],  # Use level_number as ID for filtering
+                'name': f"Grade {level['level_number']}",  # Standardize the name
+                'level_number': level['level_number']
+            }
+            for level in class_levels_raw
+        ]
+
+        # Get subjects based on selected class level
+        if class_filter:
+            context['subjects'] = Subject.objects.filter(
+                classlevels__level_number=class_filter,
+                is_active=True
+            ).distinct().order_by('name')
+        else:
+            context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
+
+        # Get topics based on selected class and subject (hierarchical filtering)
+        topics_query = Topic.objects.filter(is_active=True).select_related('class_level__subject')
+
+        # Apply hierarchical filters for topics
+        if class_filter and subject_filter:
+            # Both class and subject selected - filter by both
+            topics_query = topics_query.filter(
+                class_level__level_number=class_filter,
+                class_level__subject_id=subject_filter
+            )
+        elif class_filter:
+            # Only class selected - show topics for that class level
+            topics_query = topics_query.filter(class_level__level_number=class_filter)
+        elif subject_filter:
+            # Only subject selected - show topics for that subject across all classes
+            topics_query = topics_query.filter(class_level__subject_id=subject_filter)
+
+        context['topics'] = topics_query.order_by('class_level__level_number', 'title')
 
         # Current filter values
         context['current_filters'] = {
+            'class_level': class_filter,
             'subject': subject_filter,
-            'level': level_filter,
             'topic': topic_filter,
             'type': type_filter,
             'search': search_query,

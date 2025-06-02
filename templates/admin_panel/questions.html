@@ -33,23 +33,23 @@
         <form method="get" id="filterForm">
             <div class="row g-3">
                 <div class="col-md-2">
+                    <label class="form-label">Class Level</label>
+                    <select class="form-select" name="class_level" onchange="updateFilters()">
+                        <option value="">All Levels</option>
+                        {% for level in class_levels %}
+                            <option value="{{ level.id }}" {% if current_filters.class_level == level.id|stringformat:"s" %}selected{% endif %}>
+                                {{ level.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
                     <label class="form-label">Subject</label>
                     <select class="form-select" name="subject" onchange="updateFilters()">
                         <option value="">All Subjects</option>
                         {% for subject in subjects %}
                             <option value="{{ subject.id }}" {% if current_filters.subject == subject.id|stringformat:"s" %}selected{% endif %}>
                                 {{ subject.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Class Level</label>
-                    <select class="form-select" name="level" onchange="updateFilters()">
-                        <option value="">All Levels</option>
-                        {% for level in levels %}
-                            <option value="{{ level.id }}" {% if current_filters.level == level.id|stringformat:"s" %}selected{% endif %}>
-                                {{ level.name }}
                             </option>
                         {% endfor %}
                     </select>
@@ -77,7 +77,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Search Questions</label>
-                    <input type="text" class="form-control" name="search" value="{% if current_filters.search %}{{ current_filters.search }}{% endif %}" placeholder="Search question text...">
+                    <input type="text" class="form-control" name="search" value="{{ current_filters.search|default_if_none:'' }}" placeholder="Search question text...">
                 </div>
                 <div class="col-md-1">
                     <label class="form-label">&nbsp;</label>
@@ -119,7 +119,7 @@
                             <th width="30">
                                 <input type="checkbox" class="form-check-input" id="selectAll">
                             </th>
-                            <th>Class/Subject/Topic</th>
+                            <th>Topic</th>
                             <th>Question</th>
                             <th>Type</th>
                             <th>Difficulty</th>
@@ -143,7 +143,6 @@
                                             <i class="fas {{ question.topic.class_level.subject.icon }} fa-xs"></i>
                                         </div>
                                         <div>
-                                            <span class="badge bg-primary small">{{ question.topic.class_level.name }}</span>
                                             <small class="text-muted d-block">{{ question.topic.class_level.subject.name }}</small>
                                             <strong class="small">{{ question.topic.title }}</strong>
                                         </div>

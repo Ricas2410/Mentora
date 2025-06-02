@@ -82,6 +82,22 @@
                         </div>
                     </div>
 
+                    <!-- Correct Answer (for fill-in-the-blank, true/false, short answer) -->
+                    <div id="correct-answer-section" class="mb-3">
+                        <label for="{{ form.correct_answer.id_for_label }}" class="form-label">
+                            Correct Answer <span class="text-danger">*</span>
+                        </label>
+                        {{ form.correct_answer }}
+                        <div class="form-text">
+                            <strong>For Fill-in-the-Blank/Short Answer:</strong> Enter the correct answer(s). For multiple acceptable answers, separate with commas (e.g., "smart, clever, intelligent").<br>
+                            <strong>For True/False:</strong> Enter "True" or "False".<br>
+                            <strong>For Multiple Choice:</strong> This field is ignored - use the answer choices below.
+                        </div>
+                        {% if form.correct_answer.errors %}
+                            <div class="text-danger small">{{ form.correct_answer.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
                     <div class="mb-3">
                         <label for="{{ form.explanation.id_for_label }}" class="form-label">
                             Explanation
@@ -193,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const pointsInput = document.getElementById('{{ form.points.id_for_label }}');
 
     const answerChoicesSection = document.getElementById('answer-choices-section');
+    const correctAnswerSection = document.getElementById('correct-answer-section');
     const previewQuestion = document.getElementById('preview-question');
     const previewTopic = document.getElementById('preview-topic');
     const previewDifficulty = document.getElementById('preview-difficulty');
@@ -200,11 +217,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewPoints = document.getElementById('preview-points');
     const previewChoices = document.getElementById('preview-choices');
 
-    function toggleAnswerChoices() {
+    function toggleAnswerSections() {
         if (questionTypeSelect.value === 'multiple_choice') {
             answerChoicesSection.style.display = 'block';
+            correctAnswerSection.style.display = 'none';
         } else {
             answerChoicesSection.style.display = 'none';
+            correctAnswerSection.style.display = 'block';
         }
         updatePreview();
     }
@@ -251,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners
-    questionTypeSelect.addEventListener('change', toggleAnswerChoices);
+    questionTypeSelect.addEventListener('change', toggleAnswerSections);
     topicSelect.addEventListener('change', updatePreview);
     questionTextInput.addEventListener('input', updatePreview);
     difficultySelect.addEventListener('change', updatePreview);
@@ -271,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Initial setup
-    toggleAnswerChoices();
+    toggleAnswerSections();
     updatePreview();
 });
 </script>
