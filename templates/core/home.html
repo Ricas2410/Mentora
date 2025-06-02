@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}Mentora - Free Online Learning Platform for Grades 1-12 | Educational Quizzes & Study Materials{% endblock %}
-{% block description %}Mentora offers free online education for Grades 1-12 with interactive quizzes, comprehensive study materials, and mobile-friendly learning. Access English, Mathematics, Science, Social Studies, ICT, and Life Skills courses.{% endblock %}
+{% block title %}Mentora - Free K-12 Learning Platform{% endblock %}
+{% block description %}Free online education for Grades 1-12 with interactive quizzes and study materials. Learn English, Math, Science, and more on any device.{% endblock %}
 {% block keywords %}free online learning, educational platform, grades 1-12, online quizzes, study materials, English learning, Mathematics, Science, Social Studies, ICT, Life Skills, free education, mobile learning, K-12 education{% endblock %}
 
 {% block og_title %}Mentora - Free Online Learning Platform for All Grades{% endblock %}
@@ -414,12 +414,154 @@
     </div>
 </section>
 
+<!-- Subjects Overview Section -->
+<section class="py-16 md:py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Comprehensive K-12 Curriculum</h2>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                Our educational platform covers all essential subjects for Grades 1-12, providing structured learning paths
+                that align with international educational standards. Each subject includes detailed study notes, interactive
+                quizzes, and progress tracking to ensure effective learning outcomes.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <!-- English Language Arts -->
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-book-open text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">English Language Arts</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Develop reading comprehension, writing skills, grammar, and vocabulary through engaging lessons
+                    and interactive exercises designed for all grade levels.
+                </p>
+                <a href="{% url 'subjects:list' %}" class="text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center">
+                    Explore English Courses <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Mathematics -->
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-calculator text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Mathematics</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Master mathematical concepts from basic arithmetic to advanced algebra and geometry.
+                    Step-by-step explanations make complex topics easy to understand.
+                </p>
+                <a href="{% url 'subjects:list' %}" class="text-green-600 hover:text-green-800 font-semibold inline-flex items-center">
+                    Start Math Learning <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Science -->
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-microscope text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Science</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Explore the wonders of biology, chemistry, and physics through interactive content
+                    that brings scientific concepts to life with real-world applications.
+                </p>
+                <a href="{% url 'subjects:list' %}" class="text-purple-600 hover:text-purple-800 font-semibold inline-flex items-center">
+                    Discover Science <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Social Studies -->
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-globe text-orange-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Social Studies</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Learn about history, geography, civics, and cultural studies to develop a comprehensive
+                    understanding of the world and society around us.
+                </p>
+                <a href="{% url 'subjects:list' %}" class="text-orange-600 hover:text-orange-800 font-semibold inline-flex items-center">
+                    Study Social Sciences <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- ICT -->
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-laptop text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">ICT</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Build essential digital literacy skills including computer basics, internet safety,
+                    and technology applications for modern learning and communication.
+                </p>
+                <a href="{% url 'subjects:list' %}" class="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center">
+                    Learn Technology <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Life Skills -->
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-heart text-red-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Life Skills</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    Develop practical life skills including personal development, health education,
+                    financial literacy, and social skills for success in daily life.
+                </p>
+                <a href="{% url 'subjects:list' %}" class="text-red-600 hover:text-red-800 font-semibold inline-flex items-center">
+                    Build Life Skills <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Additional Learning Resources -->
+        <div class="mt-16 text-center">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Additional Learning Resources</h3>
+            <div class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                <a href="{% url 'subjects:quiz_list' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Practice Quizzes
+                </a>
+                <a href="{% url 'subjects:simple_learn' %}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center">
+                    <i class="fas fa-book-reader mr-2"></i>
+                    Study Notes
+                </a>
+                <a href="{% url 'core:help' %}" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center">
+                    <i class="fas fa-question mr-2"></i>
+                    Learning Guide
+                </a>
+                <a href="{% url 'core:about' %}" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    About Mentora
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- CTA Section -->
 <section class="py-16 md:py-20 hero-gradient">
     <div class="container mx-auto px-4 text-center text-white">
         <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Your Learning Journey?</h2>
         <p class="text-lg md:text-xl mb-8 opacity-90 max-w-2xl mx-auto leading-relaxed">
-            Join learners worldwide who are building their future through quality education.
+            Join thousands of learners worldwide who are building their future through quality education.
+            Start with any grade level and progress at your own pace with our comprehensive curriculum.
         </p>
         {% if not user.is_authenticated %}
             <div class="flex flex-col sm:flex-row gap-3 justify-center">

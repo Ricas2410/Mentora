@@ -4,77 +4,25 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-    <!-- Homepage -->
+    <!-- High Priority Pages -->
+    {% for page in high_priority_urls %}
     <url>
-        <loc>{{ domain }}{% url 'core:home' %}</loc>
+        <loc>{{ domain }}{{ page.url }}</loc>
         <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
+        <changefreq>{{ page.changefreq }}</changefreq>
+        <priority>{{ page.priority }}</priority>
     </url>
+    {% endfor %}
 
-    <!-- About Page -->
+    <!-- Medium Priority Pages -->
+    {% for page in medium_priority_urls %}
     <url>
-        <loc>{{ domain }}{% url 'core:about' %}</loc>
+        <loc>{{ domain }}{{ page.url }}</loc>
         <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <changefreq>{{ page.changefreq }}</changefreq>
+        <priority>{{ page.priority }}</priority>
     </url>
-
-    <!-- Contact Page -->
-    <url>
-        <loc>{{ domain }}{% url 'core:contact' %}</loc>
-        <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-
-    <!-- Help Page -->
-    <url>
-        <loc>{{ domain }}{% url 'core:help' %}</loc>
-        <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-    </url>
-
-    <!-- Subjects List -->
-    <url>
-        <loc>{{ domain }}{% url 'subjects:list' %}</loc>
-        <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-
-    <!-- Simple Learn -->
-    <url>
-        <loc>{{ domain }}{% url 'subjects:simple_learn' %}</loc>
-        <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-
-    <!-- Quiz List -->
-    <url>
-        <loc>{{ domain }}{% url 'subjects:quiz_list' %}</loc>
-        <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-
-    <!-- User Registration -->
-    <url>
-        <loc>{{ domain }}{% url 'users:register' %}</loc>
-        <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-
-    <!-- User Login -->
-    <url>
-        <loc>{{ domain }}{% url 'users:login' %}</loc>
-        <lastmod>{{ current_date|date:"Y-m-d" }}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
+    {% endfor %}
 
     <!-- Dynamic Subject Pages -->
     {% for subject in subjects %}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For serving static files in production
+    'core.middleware.WWWRedirectMiddleware',  # SEO: Handle WWW redirects
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'admin_panel.middleware.MaintenanceModeMiddleware',
+    'core.middleware.SecurityHeadersMiddleware',  # SEO: Add security and cache headers
 ]
 
 ROOT_URLCONF = 'mentora_platform.urls'
@@ -145,6 +147,15 @@ SITE_ID = 1
 # Site Domain Configuration
 SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
 SITE_PROTOCOL = config('SITE_PROTOCOL', default='http')  # http or https
+
+# WWW Redirect Configuration
+PREPEND_WWW = config('PREPEND_WWW', default=False, cast=bool)
+APPEND_SLASH = True
+
+# SEO and Performance Settings
+USE_ETAGS = True
+USE_L10N = True
+USE_TZ = True
 
 # Email Configuration - Use environment variables for security
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')

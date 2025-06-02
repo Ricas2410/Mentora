@@ -1,7 +1,9 @@
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponsePermanentRedirect
+from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 import json
 
 
@@ -130,3 +132,73 @@ class LoginPromptMiddleware:
                     response.context_data['login_message'] = "Sign in to start learning and track your progress!"
         
         return response
+
+
+class WWWRedirectMiddleware(MiddlewareMixin):
+    """
+    Middleware to handle WWW redirects for SEO
+    """
+
+    def process_request(self, request):
+        """
+        Redirect www to non-www or vice versa based on settings
+        """
+        if not hasattr(settings, 'PREPEND_WWW'):
+            return None
+
+        host = request.get_host().lower()
+
+        # Skip for localhost and development
+        if 'localhost' in host or '127.0.0.1' in host:
+            return None
+
+        # Handle WWW redirect
+        if settings.PREPEND_WWW:
+            # Redirect non-www to www
+            if not host.startswith('www.'):
+                new_host = f"www.{host}"
+                new_url = f"{request.scheme}://{new_host}{request.get_full_path()}"
+                return HttpResponsePermanentRedirect(new_url)
+        else:
+            # Redirect www to non-www (default)
+            if host.startswith('www.'):
+                new_host = host[4:]  # Remove 'www.'
+                new_url = f"{request.scheme}://{new_host}{request.get_full_path()}"
+                return HttpResponsePermanentRedirect(new_url)
+
+        return None
+
+
+class SecurityHeadersMiddleware(MiddlewareMixin):
+    """
+    Add security and performance headers
+    """
+
+    def process_response(self, request, response):
+        """
+        Add security and caching headers
+        """
+        # Security headers
+        response['X-Content-Type-Options'] = 'nosniff'
+        response['X-Frame-Options'] = 'DENY'
+        response['X-XSS-Protection'] = '1; mode=block'
+        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+
+        # Cache headers for static content
+        if request.path.startswith('/static/') or request.path.startswith('/media/'):
+            # Cache static files for 1 year
+            response['Cache-Control'] = 'public, max-age=31536000, immutable'
+            response['Expires'] = 'Thu, 31 Dec 2025 23:59:59 GMT'
+        elif request.path in ['/sitemap.xml', '/robots.txt']:
+            # Cache sitemap and robots.txt for 1 day
+            response['Cache-Control'] = 'public, max-age=86400'
+        else:
+            # Don't cache dynamic content
+            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response['Pragma'] = 'no-cache'
+            response['Expires'] = '0'
+
+        return response
+
+
+

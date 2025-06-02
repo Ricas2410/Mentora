@@ -229,17 +229,34 @@ class HelpView(TemplateView):
 
 def sitemap_view(request):
     """
-    Generate XML sitemap for SEO
+    Generate XML sitemap for SEO with improved structure and priorities
     """
     from django.template.loader import render_to_string
 
-    # Get all active subjects, class levels, and topics
-    subjects = Subject.objects.filter(is_active=True)
-    class_levels = ClassLevel.objects.filter(is_active=True)
-    topics = Topic.objects.filter(is_active=True)
+    # Get all active content with optimized queries
+    subjects = Subject.objects.filter(is_active=True).select_related()
+    class_levels = ClassLevel.objects.filter(is_active=True).select_related('subject')
+    topics = Topic.objects.filter(is_active=True).select_related('class_level__subject')
 
-    # Get domain
-    domain = f"{request.scheme}://{request.get_host()}"
+    # Get domain from settings for consistency
+    from django.conf import settings
+    domain = f"{settings.SITE_PROTOCOL}://{settings.SITE_DOMAIN}"
+
+    # Calculate priorities and change frequencies
+    high_priority_urls = [
+        {'url': '/', 'priority': '1.0', 'changefreq': 'daily'},
+        {'url': '/subjects/', 'priority': '0.9', 'changefreq': 'weekly'},
+        {'url': '/quiz/', 'priority': '0.9', 'changefreq': 'weekly'},
+        {'url': '/learn/', 'priority': '0.9', 'changefreq': 'weekly'},
+    ]
+
+    medium_priority_urls = [
+        {'url': '/about/', 'priority': '0.8', 'changefreq': 'monthly'},
+        {'url': '/contact/', 'priority': '0.7', 'changefreq': 'monthly'},
+        {'url': '/help/', 'priority': '0.6', 'changefreq': 'monthly'},
+        {'url': '/auth/register/', 'priority': '0.8', 'changefreq': 'monthly'},
+        {'url': '/auth/login/', 'priority': '0.7', 'changefreq': 'monthly'},
+    ]
 
     context = {
         'domain': domain,
@@ -247,6 +264,8 @@ def sitemap_view(request):
         'subjects': subjects,
         'class_levels': class_levels,
         'topics': topics,
+        'high_priority_urls': high_priority_urls,
+        'medium_priority_urls': medium_priority_urls,
     }
 
     xml_content = render_to_string('sitemap.xml', context, request=request)
