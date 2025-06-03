@@ -215,6 +215,15 @@
         0%, 100% { transform: translateY(0px); }
         50% { transform: translateY(-20px); }
     }
+
+    /* Remove inline styles for better SEO */
+    .floating-delay-2s {
+        animation-delay: -2s;
+    }
+
+    .floating-delay-4s {
+        animation-delay: -4s;
+    }
 </style>
 {% endblock %}
 
@@ -238,10 +247,10 @@
     <div class="absolute top-20 left-10 floating-element opacity-20 hidden lg:block">
         <i class="fas fa-graduation-cap text-white text-6xl"></i>
     </div>
-    <div class="absolute top-40 right-20 floating-element opacity-20 hidden lg:block" style="animation-delay: -2s;">
+    <div class="absolute top-40 right-20 floating-element floating-delay-2s opacity-20 hidden lg:block">
         <i class="fas fa-book text-white text-4xl"></i>
     </div>
-    <div class="absolute bottom-40 left-20 floating-element opacity-20 hidden lg:block" style="animation-delay: -4s;">
+    <div class="absolute bottom-40 left-20 floating-element floating-delay-4s opacity-20 hidden lg:block">
         <i class="fas fa-lightbulb text-white text-5xl"></i>
     </div>
 
@@ -550,6 +559,69 @@
                     <i class="fas fa-info-circle mr-2"></i>
                     About Mentora
                 </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Educational Excellence Section -->
+<section class="py-16 md:py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Why Mentora Stands Out in Online Education</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="text-left">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Comprehensive Curriculum Design</h3>
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        Our educational platform follows international standards for K-12 education, ensuring students receive
+                        quality instruction across all core subjects. Each lesson is carefully crafted by education professionals
+                        to provide clear explanations, practical examples, and engaging activities that promote deep understanding.
+                    </p>
+                    <p class="text-gray-600 leading-relaxed">
+                        From foundational concepts in early grades to advanced topics in higher levels, our curriculum builds
+                        progressively to ensure students develop strong academic foundations while maintaining engagement through
+                        interactive learning experiences.
+                    </p>
+                </div>
+
+                <div class="text-left">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Accessibility and Inclusion</h3>
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        Mentora was specifically designed with underprivileged learners in mind, recognizing that quality education
+                        should be accessible to everyone regardless of economic background. Our mobile-first approach ensures that
+                        students can learn effectively using basic smartphones with limited internet connectivity.
+                    </p>
+                    <p class="text-gray-600 leading-relaxed">
+                        We believe that every student deserves access to excellent educational resources. Our platform removes
+                        financial barriers while maintaining high educational standards, making it possible for students worldwide
+                        to pursue their academic goals and build brighter futures.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Interactive Learning Experience</h3>
+                <p class="text-gray-600 leading-relaxed mb-6">
+                    Our platform combines traditional study materials with modern interactive elements to create an engaging
+                    learning environment. Students can access comprehensive study notes, take practice quizzes with immediate
+                    feedback, and track their progress through detailed analytics. The gamified approach to learning helps
+                    maintain motivation while ensuring educational objectives are met.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                        <div class="text-2xl font-bold text-blue-600 mb-2">15+</div>
+                        <div class="text-sm text-gray-600">Questions per Topic</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                        <div class="text-2xl font-bold text-green-600 mb-2">6</div>
+                        <div class="text-sm text-gray-600">Core Subjects</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                        <div class="text-2xl font-bold text-purple-600 mb-2">12</div>
+                        <div class="text-sm text-gray-600">Grade Levels</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
