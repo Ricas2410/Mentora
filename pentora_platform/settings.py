@@ -214,9 +214,21 @@ if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
     DEFAULT_FILE_STORAGE = 'pentora_platform.storage_backends.SupabaseMediaStorage'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
-    print(f"✅ Supabase Storage configured: {MEDIA_URL}")
-    print(f"📡 Endpoint: {AWS_S3_ENDPOINT_URL}")
-    print(f"🪣 Bucket: {AWS_STORAGE_BUCKET_NAME}")
+    # Test if the endpoint is reachable
+    try:
+        import requests
+        test_url = AWS_S3_ENDPOINT_URL.replace('/storage/v1/s3', '')
+        response = requests.head(test_url, timeout=5)
+        print(f"✅ Supabase Storage configured: {MEDIA_URL}")
+        print(f"📡 Endpoint: {AWS_S3_ENDPOINT_URL}")
+        print(f"🪣 Bucket: {AWS_STORAGE_BUCKET_NAME}")
+    except Exception as e:
+        print(f"⚠️  Supabase endpoint not reachable: {e}")
+        print("🔄 Falling back to local storage")
+        # Fallback to local storage
+        DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+        MEDIA_URL = '/media/'
+        MEDIA_ROOT = BASE_DIR / 'media'
 else:
     print("⚠️  Supabase credentials not found, using local storage")
 
