@@ -186,27 +186,39 @@ STATICFILES_STORAGE = config('STATICFILES_STORAGE', default='django.contrib.stat
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# AWS S3 Configuration for Media Storage (Production)
-if not DEBUG:
-    # AWS S3 Settings
-    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
-    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
-    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='pentora-media-storage')
-    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
-    AWS_S3_CUSTOM_DOMAIN = config('AWS_S3_CUSTOM_DOMAIN', default=f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com')
+# Supabase Storage Configuration (S3-compatible)
+# Enable for both development and production when credentials are available
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='pentora-media-storage')
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
+
+# Supabase Storage Configuration
+if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+    # Supabase S3-compatible endpoint configuration
+    AWS_S3_ENDPOINT_URL = config('AWS_S3_ENDPOINT_URL', default='')
+    AWS_S3_CUSTOM_DOMAIN = config('AWS_S3_CUSTOM_DOMAIN', default='')
     AWS_DEFAULT_ACL = config('AWS_DEFAULT_ACL', default='public-read')
+
+    # Supabase-specific S3 settings
     AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': config('AWS_S3_OBJECT_PARAMETERS', default='max-age=86400'),
+        'CacheControl': 'max-age=86400',
     }
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_VERIFY = True
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_USE_SSL = True
+    AWS_S3_ADDRESSING_STYLE = 'path'  # Required for Supabase
 
-    # S3 Media Storage
-    if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
-        DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-        MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+    # Use custom Supabase storage backend
+    DEFAULT_FILE_STORAGE = 'pentora_platform.storage_backends.SupabaseMediaStorage'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
-        # Optional: Use S3 for static files too (uncomment if needed)
-        # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-        # STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+    print(f"✅ Supabase Storage configured: {MEDIA_URL}")
+    print(f"📡 Endpoint: {AWS_S3_ENDPOINT_URL}")
+    print(f"🪣 Bucket: {AWS_STORAGE_BUCKET_NAME}")
+else:
+    print("⚠️  Supabase credentials not found, using local storage")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

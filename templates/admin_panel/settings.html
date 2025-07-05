@@ -57,7 +57,12 @@
                             <label for="{{ form.site_description.id_for_label }}" class="form-label fw-bold">
                                 Site Description
                             </label>
-                            {{ form.site_description }}
+                            <textarea name="{{ form.site_description.name }}"
+                                     id="{{ form.site_description.id_for_label }}"
+                                     class="form-control"
+                                     rows="3"
+                                     placeholder="Brief description of your educational platform">{{ form.site_description.value|default_if_none:"" }}</textarea>
+                            <div class="form-text">Brief description of your educational platform (expandable)</div>
                             {% if form.site_description.errors %}
                                 <div class="text-danger small mt-1">{{ form.site_description.errors.0 }}</div>
                             {% endif %}
@@ -79,7 +84,12 @@
                             <label for="{{ form.contact_address.id_for_label }}" class="form-label fw-bold">
                                 Contact Address
                             </label>
-                            {{ form.contact_address }}
+                            <textarea name="{{ form.contact_address.name }}"
+                                     id="{{ form.contact_address.id_for_label }}"
+                                     class="form-control"
+                                     rows="3"
+                                     placeholder="Physical address or mailing address">{{ form.contact_address.value|default_if_none:"" }}</textarea>
+                            <div class="form-text">Physical address or mailing address (expandable)</div>
                             {% if form.contact_address.errors %}
                                 <div class="text-danger small mt-1">{{ form.contact_address.errors.0 }}</div>
                             {% endif %}
@@ -350,29 +360,88 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-check">
-                                    {{ form.allow_user_registration }}
-                                    <label class="form-check-label fw-bold" for="{{ form.allow_user_registration.id_for_label }}">
+                                    {{ form.enable_user_registration }}
+                                    <label class="form-check-label fw-bold" for="{{ form.enable_user_registration.id_for_label }}">
                                         Allow User Registration
                                     </label>
                                 </div>
                                 <div class="form-text">Allow new users to create accounts</div>
-                                {% if form.allow_user_registration.errors %}
-                                    <div class="text-danger small mt-1">{{ form.allow_user_registration.errors.0 }}</div>
+                                {% if form.enable_user_registration.errors %}
+                                    <div class="text-danger small mt-1">{{ form.enable_user_registration.errors.0 }}</div>
                                 {% endif %}
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="{{ form.keep_users_logged_in.id_for_label }}" class="form-label fw-bold">
-                                    Keep Users Logged In
+                                <label for="{{ form.session_timeout_minutes.id_for_label }}" class="form-label fw-bold">
+                                    Session Timeout (Minutes)
                                 </label>
-                                {{ form.keep_users_logged_in }}
-                                <div class="form-text">How long users stay logged in on mobile devices</div>
-                                {% if form.keep_users_logged_in.errors %}
-                                    <div class="text-danger small mt-1">{{ form.keep_users_logged_in.errors.0 }}</div>
+                                {{ form.session_timeout_minutes }}
+                                <div class="form-text">How long users stay logged in</div>
+                                {% if form.session_timeout_minutes.errors %}
+                                    <div class="text-danger small mt-1">{{ form.session_timeout_minutes.errors.0 }}</div>
                                 {% endif %}
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.max_login_attempts.id_for_label }}" class="form-label fw-bold">
+                                    Max Login Attempts
+                                </label>
+                                {{ form.max_login_attempts }}
+                                <div class="form-text">Failed attempts before account lockout</div>
+                                {% if form.max_login_attempts.errors %}
+                                    <div class="text-danger small mt-1">{{ form.max_login_attempts.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.max_retake_attempts.id_for_label }}" class="form-label fw-bold">
+                                    Max Retake Attempts
+                                </label>
+                                {{ form.max_retake_attempts }}
+                                <div class="form-text">Maximum quiz/test retake attempts</div>
+                                {% if form.max_retake_attempts.errors %}
+                                    <div class="text-danger small mt-1">{{ form.max_retake_attempts.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.daily_reminder_time.id_for_label }}" class="form-label fw-bold">
+                                    Daily Reminder Time
+                                </label>
+                                {{ form.daily_reminder_time }}
+                                <div class="form-text">Time for daily learning reminders</div>
+                                {% if form.daily_reminder_time.errors %}
+                                    <div class="text-danger small mt-1">{{ form.daily_reminder_time.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.max_file_size_mb.id_for_label }}" class="form-label fw-bold">
+                                    Max File Size (MB)
+                                </label>
+                                {{ form.max_file_size_mb }}
+                                <div class="form-text">Maximum upload file size</div>
+                                {% if form.max_file_size_mb.errors %}
+                                    <div class="text-danger small mt-1">{{ form.max_file_size_mb.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.allowed_file_types.id_for_label }}" class="form-label fw-bold">
+                                    Allowed File Types
+                                </label>
+                                {{ form.allowed_file_types }}
+                                <div class="form-text">Comma-separated file extensions</div>
+                                {% if form.allowed_file_types.errors %}
+                                    <div class="text-danger small mt-1">{{ form.allowed_file_types.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-check">
                                     {{ form.maintenance_mode }}
@@ -394,8 +463,12 @@
                             <label for="{{ form.maintenance_message.id_for_label }}" class="form-label fw-bold">
                                 Maintenance Message
                             </label>
-                            {{ form.maintenance_message }}
-                            <div class="form-text">Message to display to users during maintenance</div>
+                            <textarea name="{{ form.maintenance_message.name }}"
+                                     id="{{ form.maintenance_message.id_for_label }}"
+                                     class="form-control"
+                                     rows="3"
+                                     placeholder="Message to display to users during maintenance">{{ form.maintenance_message.value|default_if_none:"" }}</textarea>
+                            <div class="form-text">Message to display to users during maintenance (expandable)</div>
                             {% if form.maintenance_message.errors %}
                                 <div class="text-danger small mt-1">{{ form.maintenance_message.errors.0 }}</div>
                             {% endif %}
