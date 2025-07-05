@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     # Third party apps
     'rest_framework',
+    'cloudinary_storage',
+    'cloudinary',
 
     # Local apps
     'users',
@@ -180,57 +182,61 @@ STATICFILES_DIRS = [
 ]
 
 # Static files storage for production
-STATICFILES_STORAGE = config('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
+if DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    # Production: Use WhiteNoise for static file serving
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# WhiteNoise Configuration for production
+if not DEBUG:
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_AUTOREFRESH = False  # Set to False in production
+    WHITENOISE_MAX_AGE = 31536000  # 1 year
+    WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']
+    WHITENOISE_INDEX_FILE = True  # Serve index.html for directory requests
+    WHITENOISE_ROOT = BASE_DIR / 'staticfiles'  # Ensure WhiteNoise serves from the correct directory
+
+# Static files finders configuration
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Supabase Storage Configuration (S3-compatible)
-# Enable for both development and production when credentials are available
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
-AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
-AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='pentora-media-storage')
-AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
+# Cloudinary Configuration
+CLOUDINARY_CLOUD_NAME = config('CLOUDINARY_CLOUD_NAME', default='')
+CLOUDINARY_API_KEY = config('CLOUDINARY_API_KEY', default='')
+CLOUDINARY_API_SECRET = config('CLOUDINARY_API_SECRET', default='')
 
-# Supabase Storage Configuration
-if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
-    # Supabase S3-compatible endpoint configuration
-    AWS_S3_ENDPOINT_URL = config('AWS_S3_ENDPOINT_URL', default='')
-    AWS_S3_CUSTOM_DOMAIN = config('AWS_S3_CUSTOM_DOMAIN', default='')
-    AWS_DEFAULT_ACL = config('AWS_DEFAULT_ACL', default='public-read')
+# Configure Cloudinary storage
+if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+    import cloudinary
 
-    # Supabase-specific S3 settings
-    AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': 'max-age=86400',
-    }
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_S3_VERIFY = True
-    AWS_QUERYSTRING_AUTH = False
-    AWS_S3_USE_SSL = True
-    AWS_S3_ADDRESSING_STYLE = 'path'  # Required for Supabase
+    # Cloudinary configuration
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+        secure=True
+    )
 
-    # Use custom Supabase storage backend
-    DEFAULT_FILE_STORAGE = 'pentora_platform.storage_backends.SupabaseMediaStorage'
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+    # Use Cloudinary for media files
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/'
 
-    # Test if the endpoint is reachable
-    try:
-        import requests
-        test_url = AWS_S3_ENDPOINT_URL.replace('/storage/v1/s3', '')
-        response = requests.head(test_url, timeout=5)
-        print(f"✅ Supabase Storage configured: {MEDIA_URL}")
-        print(f"📡 Endpoint: {AWS_S3_ENDPOINT_URL}")
-        print(f"🪣 Bucket: {AWS_STORAGE_BUCKET_NAME}")
-    except Exception as e:
-        print(f"⚠️  Supabase endpoint not reachable: {e}")
-        print("🔄 Falling back to local storage")
-        # Fallback to local storage
-        DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-        MEDIA_URL = '/media/'
-        MEDIA_ROOT = BASE_DIR / 'media'
+    print(f"✅ Cloudinary Storage configured: {MEDIA_URL}")
+    print(f"☁️  Cloud Name: {CLOUDINARY_CLOUD_NAME}")
+
 else:
-    print("⚠️  Supabase credentials not found, using local storage")
+    print("⚠️  Cloudinary credentials not found, using local storage")
+    # Fallback to local storage
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -351,9 +357,8 @@ if not DEBUG:
         }
     }
 
-    # Static file compression (disabled for deployment stability)
-    if config('STATIC_FILE_COMPRESSION', default=False, cast=bool):
-        STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    # Static file compression is handled by WhiteNoise in production
+    # No additional configuration needed here
 
     # Logging optimization - reduce I/O
     LOGGING = {

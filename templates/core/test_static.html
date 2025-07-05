@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Files Test - Pentora</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .exists { background-color: #d4edda; color: #155724; }
+        .missing { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Static Files Test</h1>
+    
+    <div class="status info">
+        <strong>Configuration:</strong><br>
+        Static Root: {{ static_root }}<br>
+        Static URL: {{ static_url }}<br>
+        Debug Mode: {{ debug }}<br>
+        Storage Backend: {{ staticfiles_storage }}
+    </div>
+    
+    <h2>File Status:</h2>
+    {% for file_path, info in file_status.items %}
+    <div class="status {% if info.exists %}exists{% else %}missing{% endif %}">
+        <strong>{{ file_path }}</strong><br>
+        Status: {% if info.exists %}✅ Exists{% else %}❌ Missing{% endif %}<br>
+        URL: <a href="{{ info.url }}" target="_blank">{{ info.url }}</a><br>
+        Path: {{ info.full_path }}
+    </div>
+    {% endfor %}
+    
+    <h2>Test Static Files:</h2>
+    <p>Try loading these files directly:</p>
+    <ul>
+        <li><a href="{{ static_url }}css/enhanced-ui.css" target="_blank">CSS File</a></li>
+        <li><a href="{{ static_url }}js/app.js" target="_blank">JS File</a></li>
+        <li><a href="{{ static_url }}sw.js" target="_blank">Service Worker</a></li>
+    </ul>
+    
+    <h2>Environment Info:</h2>
+    <pre>{{ request.META|pprint }}</pre>
+</body>
+</html> 

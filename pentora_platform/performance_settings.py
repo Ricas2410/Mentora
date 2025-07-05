@@ -82,7 +82,7 @@ DATABASE_OPTIONS = {
 # ============================================================================
 
 # Static Files Compression
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # WhiteNoise Configuration
 WHITENOISE_USE_FINDERS = True

@@ -13,4 +13,7 @@ urlpatterns = [
     # SEO URLs
     path('sitemap.xml', views.sitemap_view, name='sitemap'),
     path('robots.txt', views.robots_txt_view, name='robots'),
+    
+    # Test URLs
+    path('test-static/', views.test_static_files, name='test_static'),
 ]

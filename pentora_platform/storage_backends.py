@@ -9,14 +9,19 @@ class SupabaseMediaStorage(S3Boto3Storage):
     """
     Custom storage backend for Supabase storage
     """
-    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
     default_acl = 'public-read'
     file_overwrite = False
-    custom_domain = getattr(settings, 'AWS_S3_CUSTOM_DOMAIN', None)
     addressing_style = 'path'  # Required for Supabase
 
     def __init__(self, *args, **kwargs):
+        # Get settings dynamically to avoid import issues
+        from django.conf import settings
+        
+        self.bucket_name = getattr(settings, 'AWS_STORAGE_BUCKET_NAME', 'pentora-media-storage')
+        self.custom_domain = getattr(settings, 'AWS_S3_CUSTOM_DOMAIN', None)
+        
         super().__init__(*args, **kwargs)
+        
         # Supabase-specific settings
         self.default_acl = 'public-read'
         self.querystring_auth = False
@@ -46,11 +51,18 @@ class SupabaseStaticStorage(S3Boto3Storage):
     """
     Custom storage backend for Supabase static files
     """
-    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
     location = 'static'
     default_acl = 'public-read'
     file_overwrite = True
-    custom_domain = getattr(settings, 'AWS_S3_CUSTOM_DOMAIN', None)
+
+    def __init__(self, *args, **kwargs):
+        # Get settings dynamically to avoid import issues
+        from django.conf import settings
+        
+        self.bucket_name = getattr(settings, 'AWS_STORAGE_BUCKET_NAME', 'pentora-media-storage')
+        self.custom_domain = getattr(settings, 'AWS_S3_CUSTOM_DOMAIN', None)
+        
+        super().__init__(*args, **kwargs)
     
     def url(self, name):
         """

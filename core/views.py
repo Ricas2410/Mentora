@@ -506,3 +506,46 @@ class HelpView(TemplateView):
         ))
 
         return context
+
+
+def test_static_files(request):
+    """Test view to check if static files are being served correctly"""
+    from django.conf import settings
+    import os
+    
+    static_root = settings.STATIC_ROOT
+    static_url = settings.STATIC_URL
+    
+    # Check if static files exist
+    test_files = [
+        'css/enhanced-ui.css',
+        'js/app.js',
+        'js/progress-bar-cleanup.js',
+        'js/ux-enhancements.js',
+        'js/mobile-navigation.js',
+        'js/performance-optimizer.js',
+        'js/ui-interactions.js',
+        'js/page-specific-enhancements.js',
+        'sw.js',
+        'manifest.json'
+    ]
+    
+    file_status = {}
+    for file_path in test_files:
+        full_path = os.path.join(static_root, file_path)
+        exists = os.path.exists(full_path)
+        file_status[file_path] = {
+            'exists': exists,
+            'url': f"{static_url}{file_path}",
+            'full_path': full_path
+        }
+    
+    context = {
+        'file_status': file_status,
+        'static_root': static_root,
+        'static_url': static_url,
+        'debug': settings.DEBUG,
+        'staticfiles_storage': settings.STATICFILES_STORAGE,
+    }
+    
+    return render(request, 'core/test_static.html', context)
