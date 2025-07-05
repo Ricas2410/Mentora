@@ -71,13 +71,21 @@ class SiteSettingsForm(forms.ModelForm):
         """Validate site logo upload"""
         logo = self.cleaned_data.get('site_logo')
         if logo:
-            # Check file size (max 2MB for logos)
-            if logo.size > 2 * 1024 * 1024:
-                raise forms.ValidationError("Logo file size cannot exceed 2MB")
+            # Check file size (max 2MB for logos) - only for new uploads
+            try:
+                if hasattr(logo, 'size') and logo.size > 2 * 1024 * 1024:
+                    raise forms.ValidationError("Logo file size cannot exceed 2MB")
+            except (AttributeError, FileNotFoundError):
+                # Skip size check for existing Cloudinary files
+                pass
 
-            # Check file type
-            if not logo.content_type.startswith('image/'):
-                raise forms.ValidationError("Logo must be an image file")
+            # Check file type - only for new uploads
+            try:
+                if hasattr(logo, 'content_type') and not logo.content_type.startswith('image/'):
+                    raise forms.ValidationError("Logo must be an image file")
+            except (AttributeError, FileNotFoundError):
+                # Skip content type check for existing Cloudinary files
+                pass
 
             # Check dimensions (optional - can be removed if too restrictive)
             try:
@@ -94,26 +102,42 @@ class SiteSettingsForm(forms.ModelForm):
         """Validate favicon upload"""
         favicon = self.cleaned_data.get('site_favicon')
         if favicon:
-            # Check file size (max 1MB for favicons)
-            if favicon.size > 1024 * 1024:
-                raise forms.ValidationError("Favicon file size cannot exceed 1MB")
+            # Check file size (max 1MB for favicons) - only for new uploads
+            try:
+                if hasattr(favicon, 'size') and favicon.size > 1024 * 1024:
+                    raise forms.ValidationError("Favicon file size cannot exceed 1MB")
+            except (AttributeError, FileNotFoundError):
+                # Skip size check for existing Cloudinary files
+                pass
 
-            # Check file type
-            if not favicon.content_type.startswith('image/'):
-                raise forms.ValidationError("Favicon must be an image file")
+            # Check file type - only for new uploads
+            try:
+                if hasattr(favicon, 'content_type') and not favicon.content_type.startswith('image/'):
+                    raise forms.ValidationError("Favicon must be an image file")
+            except (AttributeError, FileNotFoundError):
+                # Skip content type check for existing Cloudinary files
+                pass
         return favicon
 
     def clean_hero_banner(self):
         """Validate hero banner upload"""
         banner = self.cleaned_data.get('hero_banner')
         if banner:
-            # Check file size (max 5MB for banners)
-            if banner.size > 5 * 1024 * 1024:
-                raise forms.ValidationError("Banner file size cannot exceed 5MB")
+            # Check file size (max 5MB for banners) - only for new uploads
+            try:
+                if hasattr(banner, 'size') and banner.size > 5 * 1024 * 1024:
+                    raise forms.ValidationError("Banner file size cannot exceed 5MB")
+            except (AttributeError, FileNotFoundError):
+                # Skip size check for existing Cloudinary files
+                pass
 
-            # Check file type
-            if not banner.content_type.startswith('image/'):
-                raise forms.ValidationError("Banner must be an image file")
+            # Check file type - only for new uploads
+            try:
+                if hasattr(banner, 'content_type') and not banner.content_type.startswith('image/'):
+                    raise forms.ValidationError("Banner must be an image file")
+            except (AttributeError, FileNotFoundError):
+                # Skip content type check for existing Cloudinary files
+                pass
         return banner
 
 
@@ -401,8 +425,12 @@ class CSVImportForm(forms.Form):
 
     def clean_csv_file(self):
         file = self.cleaned_data['csv_file']
-        if file.size > 5 * 1024 * 1024:  # 5MB limit
-            raise forms.ValidationError("File size cannot exceed 5MB")
+        try:
+            if hasattr(file, 'size') and file.size > 5 * 1024 * 1024:  # 5MB limit
+                raise forms.ValidationError("File size cannot exceed 5MB")
+        except (AttributeError, FileNotFoundError):
+            # Skip size check for existing files
+            pass
         return file
 
 

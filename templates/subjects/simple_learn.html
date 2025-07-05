@@ -4,15 +4,63 @@
 
 {% block extra_css %}
 <style>
-    /* Mobile-first design with proper contrast */
+    /* Modern hero gradient */
+    .hero-gradient {
+        background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0891b2 100%) !important;
+        min-height: 400px;
+        position: relative;
+    }
+
+    .hero-pattern {
+        background-image:
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%) !important;
+    }
+
+    /* Enhanced subject cards */
     .subject-card {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        min-height: 200px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        min-height: 220px;
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .subject-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.1), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .subject-card:hover::before {
+        left: 100%;
     }
 
     .subject-card:hover {
-        transform: translateY(-2px) scale(1.01);
-        box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.15), 0 8px 8px -5px rgba(0, 0, 0, 0.08);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(5, 150, 105, 0.15);
+        border-color: #059669;
+    }
+
+    /* Modern glass morphism effect */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Ensure glass card text is dark and visible */
+    .glass-card h3,
+    .glass-card p,
+    .glass-card div {
+        color: #1f2937 !important;
     }
 
     /* Text clamp for descriptions */
@@ -113,37 +161,94 @@
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50">
-    <!-- Clean Professional Header -->
-    <div class="bg-white border-b border-gray-200 py-8">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <h1 class="text-3xl font-bold mb-2 text-gray-900">
-                    <i class="fas fa-book-open mr-2 text-gray-600"></i>
-                    {{ user_class_level_name }} Subjects
-                </h1>
-                <p class="text-lg text-gray-600 mb-4">
-                    Tap any subject to start learning
-                </p>
+<!-- Modern Hero Section -->
+<div class="hero-gradient hero-pattern relative overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0891b2 100%) !important; color: white !important; min-height: 400px;">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-white rounded-full animate-pulse"></div>
+        <div class="absolute top-32 right-20 w-16 h-16 bg-white rounded-full animate-pulse delay-1000"></div>
+        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full animate-pulse delay-2000"></div>
+        <div class="absolute bottom-32 right-1/3 w-8 h-8 bg-white rounded-full animate-pulse delay-3000"></div>
+    </div>
 
-                {% if user.is_authenticated %}
-                <div class="bg-gray-100 rounded-lg p-4 inline-block">
-                    <div class="flex items-center space-x-6 text-sm">
-                        <div class="text-center">
-                            <div class="text-xl font-bold text-gray-900">{{ completion_rate|floatformat:0 }}%</div>
-                            <div class="text-xs text-gray-600">Progress</div>
+    <div class="relative container mx-auto px-6 py-16 lg:py-20">
+        <div class="text-center max-w-4xl mx-auto">
+            <!-- Modern heading with icons -->
+            <div class="flex items-center justify-center mb-6">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mr-4 backdrop-blur-sm">
+                    <i class="fas fa-book-open text-white text-2xl"></i>
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight" style="color: white !important;">
+                    {{ user_class_level_name }} Learning
+                </h1>
+            </div>
+
+            <!-- Enhanced description -->
+            <p class="text-xl lg:text-2xl leading-relaxed mb-8 max-w-3xl mx-auto" style="color: rgba(255,255,255,0.9) !important;">
+                Explore comprehensive study materials designed to help you master every subject with confidence.
+            </p>
+
+            <!-- Modern stats section -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 max-w-2xl mx-auto">
+                <div class="text-center">
+                    <div class="text-2xl lg:text-3xl font-bold mb-1" style="color: white !important;">{{ subjects|length|default:"12" }}</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.9) !important;">Subjects</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl lg:text-3xl font-bold mb-1" style="color: white !important;">500+</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.9) !important;">Lessons</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl lg:text-3xl font-bold mb-1" style="color: white !important;">1000+</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.9) !important;">Topics</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl lg:text-3xl font-bold mb-1" style="color: white !important;">Free</div>
+                    <div class="text-sm" style="color: rgba(255,255,255,0.9) !important;">Access</div>
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+                <!-- Enhanced user progress display -->
+                <div class="glass-card rounded-2xl p-6 max-w-md mx-auto" style="background: rgba(255, 255, 255, 0.95) !important;">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-chart-line text-white text-xl"></i>
                         </div>
-                        <div class="w-px h-8 bg-gray-300"></div>
-                        <div class="text-center">
-                            <div class="text-xl font-bold text-gray-900">{{ completed_subjects }}/{{ total_subjects }}</div>
-                            <div class="text-xs text-gray-600">Complete</div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-lg" style="color: #1f2937 !important;">Your Progress</h3>
+                            <p class="text-sm" style="color: #4b5563 !important;">Keep up the great work!</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-green-50 rounded-lg p-3">
+                            <div class="text-2xl font-bold" style="color: #1f2937 !important;">{{ completion_rate|floatformat:0 }}%</div>
+                            <div class="text-xs" style="color: #4b5563 !important;">Complete</div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-3">
+                            <div class="text-2xl font-bold" style="color: #1f2937 !important;">{{ completed_subjects }}/{{ total_subjects }}</div>
+                            <div class="text-xs" style="color: #4b5563 !important;">Subjects</div>
                         </div>
                     </div>
                 </div>
-                {% endif %}
-            </div>
+            {% endif %}
         </div>
     </div>
+
+    <!-- Bottom wave -->
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-12 lg:h-20">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#f8fafc"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#f8fafc"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#f8fafc"></path>
+        </svg>
+    </div>
+</div>
+
+<!-- Main Content Section -->
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="container mx-auto px-6">
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">

@@ -203,53 +203,62 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME = config('CLOUDINARY_CLOUD_NAME', default='')
-CLOUDINARY_API_KEY = config('CLOUDINARY_API_KEY', default='')
-CLOUDINARY_API_SECRET = config('CLOUDINARY_API_SECRET', default='')
-
-# Configure Cloudinary storage
-if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
-    import cloudinary
-
-    # Cloudinary configuration
-    cloudinary.config(
-        cloud_name=CLOUDINARY_CLOUD_NAME,
-        api_key=CLOUDINARY_API_KEY,
-        api_secret=CLOUDINARY_API_SECRET,
-        secure=True
-    )
-
-    # Use Cloudinary for media files
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-    # Cloudinary storage settings
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
-        'API_KEY': CLOUDINARY_API_KEY,
-        'API_SECRET': CLOUDINARY_API_SECRET,
-        'SECURE': True,
-        'MEDIA_TAG': 'media',
-        'INVALID_VIDEO_ERROR_MESSAGE': 'Please upload a valid video file.',
-        'EXCLUDE_DELETE_ORPHANED_MEDIA_PATHS': (),
-        'STATIC_TAG': 'static',
-    }
-
-    MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/image/upload/'
-
-    print(f"✅ Cloudinary Storage configured: {MEDIA_URL}")
-    print(f"☁️  Cloud Name: {CLOUDINARY_CLOUD_NAME}")
-
-else:
-    print("⚠️  Cloudinary credentials not found, using local storage")
-    # Fallback to local storage
+# Media Storage Configuration
+if DEBUG:
+    # Development: Use local file storage
+    print("🔧 Development mode: Using local file storage")
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
+else:
+    # Production: Use Cloudinary for media storage
+    # Production: Use Cloudinary
+    CLOUDINARY_CLOUD_NAME = config('CLOUDINARY_CLOUD_NAME', default='')
+    CLOUDINARY_API_KEY = config('CLOUDINARY_API_KEY', default='')
+    CLOUDINARY_API_SECRET = config('CLOUDINARY_API_SECRET', default='')
+
+    # Configure Cloudinary storage
+    if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+        import cloudinary
+
+        # Cloudinary configuration
+        cloudinary.config(
+            cloud_name=CLOUDINARY_CLOUD_NAME,
+            api_key=CLOUDINARY_API_KEY,
+            api_secret=CLOUDINARY_API_SECRET,
+            secure=True
+        )
+
+        # Use Cloudinary for media files
+        DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+        # Cloudinary storage settings
+        CLOUDINARY_STORAGE = {
+            'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+            'API_KEY': CLOUDINARY_API_KEY,
+            'API_SECRET': CLOUDINARY_API_SECRET,
+            'SECURE': True,
+            'MEDIA_TAG': 'media',
+            'INVALID_VIDEO_ERROR_MESSAGE': 'Please upload a valid video file.',
+            'EXCLUDE_DELETE_ORPHANED_MEDIA_PATHS': (),
+            'STATIC_TAG': 'static',
+            'STATICFILES_MANIFEST_ROOT': BASE_DIR / 'staticfiles',
+        }
+
+        # Override MEDIA_URL to use Cloudinary's base URL
+        MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/image/upload/'
+
+        MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/image/upload/'
+
+        print(f"✅ Cloudinary Storage configured: {MEDIA_URL}")
+        print(f"☁️  Cloud Name: {CLOUDINARY_CLOUD_NAME}")
+
+    else:
+        print("⚠️  Cloudinary credentials not found, using local storage")
+        # Fallback to local storage
+        DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+        MEDIA_URL = '/media/'
+        MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -566,8 +566,84 @@ function selectLevel(level) {
     document.getElementById('selectedLevel').value = level;
 
     // Enable submit button
-    document.getElementById('submitBtn').disabled = false;
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('opacity-50');
 }
+
+// Handle form submission with proper loading state and error handling
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('levelForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+            // Prevent double submission
+            if (submitBtn.disabled) {
+                e.preventDefault();
+                return;
+            }
+
+            // Validate selection
+            const selectedLevel = document.getElementById('selectedLevel').value;
+            if (!selectedLevel) {
+                e.preventDefault();
+                alert('Please select a class level first.');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+            submitBtn.classList.add('opacity-75');
+
+            // Add progress indicator
+            let dots = 0;
+            const progressInterval = setInterval(() => {
+                dots = (dots + 1) % 4;
+                const dotString = '.'.repeat(dots);
+                submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Loading${dotString}`;
+            }, 500);
+
+            // Add timeout fallback in case of server issues
+            const timeoutId = setTimeout(() => {
+                clearInterval(progressInterval);
+                if (submitBtn.disabled) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Continue to Dashboard';
+                    submitBtn.classList.remove('opacity-75');
+
+                    // Show more helpful error message
+                    const errorMsg = `
+                        <div class="alert alert-error mt-4">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <div>
+                                <strong>Request timed out</strong><br>
+                                This might be due to slow internet connection. Please try again.
+                                <br><small>If the problem persists, try refreshing the page.</small>
+                            </div>
+                        </div>
+                    `;
+
+                    // Insert error message after the form
+                    form.insertAdjacentHTML('afterend', errorMsg);
+
+                    // Remove error message after 10 seconds
+                    setTimeout(() => {
+                        const errorAlert = document.querySelector('.alert-error');
+                        if (errorAlert) errorAlert.remove();
+                    }, 10000);
+                }
+            }, 15000); // 15 second timeout
+
+            // Clear timeout if form submits successfully
+            form.addEventListener('beforeunload', () => {
+                clearTimeout(timeoutId);
+                clearInterval(progressInterval);
+            });
+        });
+    }
+});
 </script>
 
 {% else %}

@@ -217,6 +217,193 @@
         img.lazy.loaded {
             opacity: 1;
         }
+
+        /* Accessibility Elements */
+
+        /* Hide screen reader only content and unwanted elements */
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        .sr-only:focus {
+            position: fixed !important;
+            top: 1rem !important;
+            left: 1rem !important;
+            width: auto !important;
+            height: auto !important;
+            padding: inherit !important;
+            margin: inherit !important;
+            overflow: visible !important;
+            clip: auto !important;
+            white-space: normal !important;
+            z-index: 9999 !important;
+            background: #1e40af !important;
+            color: white !important;
+            border-radius: 0.375rem !important;
+        }
+
+        /* Hide any unwanted symbols or content */
+        body::before,
+        nav::before,
+        .navbar::before {
+            display: none !important;
+            content: none !important;
+        }
+
+        /* Hide DaisyUI dropdown indicators and unwanted elements */
+        .dropdown:not(.dropdown-open) .dropdown-content {
+            display: none !important;
+        }
+
+        /* Hide any unwanted dropdown arrows or indicators */
+        .dropdown-toggle::after,
+        .dropdown > summary::after,
+        .dropdown > details > summary::after {
+            display: none !important;
+        }
+
+        /* Ensure no unwanted pseudo-elements are visible */
+        .navbar *::before,
+        .navbar *::after {
+            content: none !important;
+        }
+
+        /* Override any DaisyUI default dropdown indicators */
+        .dropdown > *:not(.dropdown-content)::after {
+            display: none !important;
+        }
+
+        /* Professional Mobile Menu Styles */
+        #mobile-menu-sidebar {
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .mobile-nav-link:hover {
+            transform: translateX(4px);
+        }
+
+        .mobile-nav-link:active {
+            transform: translateX(2px);
+        }
+
+        /* Mobile navbar improvements */
+        @media (max-width: 1279px) {
+            .navbar {
+                padding: 0;
+                min-height: 4rem;
+            }
+
+            .navbar .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            /* Mobile menu toggle button */
+            #mobile-menu-toggle {
+                width: 2.5rem;
+                height: 2.5rem;
+                min-height: 2.5rem;
+                flex-shrink: 0;
+                display: block !important;
+            }
+
+            /* Logo adjustments for mobile */
+            .navbar a[href*="home"] {
+                padding: 0.5rem;
+            }
+
+            .navbar a[href*="home"] span {
+                font-size: 1.25rem;
+                font-weight: 700;
+            }
+
+            /* User avatar adjustments */
+            .btn-circle.avatar {
+                width: 2.5rem;
+                height: 2.5rem;
+                min-height: 2.5rem;
+                flex-shrink: 0;
+            }
+
+            /* Better mobile button visibility */
+            .navbar .btn-ghost {
+                background: rgba(255, 255, 255, 0.1) !important;
+                border: 1px solid rgba(255, 255, 255, 0.3) !important;
+                backdrop-filter: blur(10px);
+                color: white !important;
+            }
+
+            .navbar .btn-ghost:hover {
+                background: rgba(255, 255, 255, 0.2) !important;
+                border: 1px solid rgba(255, 255, 255, 0.5) !important;
+                color: white !important;
+            }
+
+            /* Ensure all navbar text is white */
+            .navbar .btn,
+            .navbar .btn span,
+            .navbar .btn svg {
+                color: white !important;
+            }
+
+            /* Hide any overflow content */
+            .navbar {
+                overflow: hidden;
+            }
+        }
+
+        /* Desktop navbar - Hide mobile toggle completely */
+        @media (min-width: 1280px) {
+            #mobile-menu-toggle {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+
+            /* Ensure desktop navigation is visible */
+            .navbar-center {
+                display: flex !important;
+            }
+
+            /* Enhanced logo sizing for desktop */
+            .navbar a[href*="home"] img {
+                max-width: 600px;
+            }
+
+            /* Extra large screens */
+            @media (min-width: 1536px) {
+                .navbar a[href*="home"] img {
+                    max-width: 700px;
+                }
+            }
+        }
+
+        /* Smooth transitions for mobile menu */
+        #mobile-menu-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        #mobile-menu-sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Prevent scrolling when mobile menu is open */
+        body.mobile-menu-open {
+            overflow: hidden;
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -235,80 +422,38 @@
 <body class="min-h-screen bg-base-100">
     <!-- Navigation -->
     <nav class="navbar gradient-bg shadow-lg sticky top-0 z-50">
-        <div class="navbar-start">
-            <!-- Mobile menu button -->
-            <div class="dropdown lg:hidden">
-                <div tabindex="0" role="button" class="btn btn-ghost btn-circle text-white" aria-label="Open menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"></path>
-                    </svg>
-                </div>
-                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-0 shadow-lg bg-white rounded-lg w-64 border">
-                    <!-- Always show these to visitors -->
-                    <li class="mobile-nav-item">
-                        <a href="{% url 'core:home' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-3 px-4">
-                            <i class="fas fa-home nav-icon text-blue-500 text-lg mr-3"></i>
-                            <span class="font-medium text-base">Home</span>
-                        </a>
-                    </li>
-                    <li class="mobile-nav-item">
-                        <a href="{% url 'subjects:simple_learn' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-3 px-4">
-                            <i class="fas fa-book nav-icon text-green-500 text-lg mr-3"></i>
-                            <span class="font-medium text-base">Learn</span>
-                        </a>
-                    </li>
-                    <li class="mobile-nav-item">
-                        <a href="{% url 'subjects:quiz_list' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-3 px-4">
-                            <i class="fas fa-question-circle nav-icon text-purple-500 text-lg mr-3"></i>
-                            <span class="font-medium text-base">Quiz</span>
-                        </a>
-                    </li>
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between w-full h-16">
+                <!-- Left Section: Mobile Menu + Logo -->
+                <div class="flex items-center space-x-3">
+                    <!-- Mobile menu button - Only show on mobile/tablet (hidden on desktop 1280px+) -->
+                    <button id="mobile-menu-toggle" class="block xl:!hidden btn btn-ghost btn-circle text-white hover:bg-white hover:bg-opacity-20 border border-white border-opacity-30 w-10 h-10 min-h-10" aria-label="Toggle menu" style="display: block;">
+                        <svg id="hamburger-icon" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <svg id="close-icon" class="w-5 h-5 hidden transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
 
-                    {% if user.is_authenticated %}
-                        <div class="divider my-1"></div>
-                        <li class="mobile-nav-item">
-                            <a href="{% url 'core:dashboard' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-3 px-4">
-                                <i class="fas fa-tachometer-alt nav-icon text-blue-600 text-lg mr-3"></i>
-                                <span class="font-medium text-base">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="mobile-nav-item">
-                            <a href="{% url 'users:profile' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-3 px-4">
-                                <i class="fas fa-cog nav-icon text-gray-500 text-lg mr-3"></i>
-                                <span class="font-medium text-base">Settings</span>
-                            </a>
-                        </li>
-                        {% if billing_enabled %}
-                        <li class="mobile-nav-item">
-                            <a href="{% url 'billing:dashboard' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-3 px-4">
-                                <i class="fas fa-credit-card nav-icon text-green-500 text-lg mr-3"></i>
-                                <span class="font-medium text-base">Billing</span>
-                                {% if not user_subscription_active %}
-                                <span class="badge badge-warning badge-xs ml-2">!</span>
-                                {% endif %}
-                            </a>
-                        </li>
+                    <!-- Logo -->
+                    <a href="{% url 'core:home' %}" class="flex items-center text-white hover:text-opacity-80 transition-all duration-200">
+                        {% get_site_logo as custom_logo %}
+                        {% if custom_logo %}
+                            <img src="{{ custom_logo }}" alt="{% get_site_name %}" class="h-12 sm:h-14 lg:h-16 w-auto max-w-[320px] sm:max-w-[420px] lg:max-w-[520px] xl:max-w-[600px] 2xl:max-w-[700px]">
+                        {% else %}
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3 sm:mr-4">
+                                    <i class="fas fa-graduation-cap text-white text-base sm:text-lg lg:text-xl"></i>
+                                </div>
+                                <span class="font-bold text-xl sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl">{% get_site_name %}</span>
+                            </div>
                         {% endif %}
-                    {% endif %}
-                </ul>
-            </div>
-
-            <!-- Logo -->
-            <a href="{% url 'core:home' %}" class="btn btn-ghost text-xl font-bold text-white hover:bg-white hover:bg-opacity-20">
-                {% get_site_logo as custom_logo %}
-                {% if custom_logo %}
-                    <img src="{{ custom_logo }}" alt="{% get_site_name %}" class="h-8 w-auto mr-2">
-                {% else %}
-                    <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-2">
-                        <i class="fas fa-graduation-cap text-white text-sm"></i>
-                    </div>
-                    {% get_site_name %}
-                {% endif %}
-            </a>
-        </div>
+                    </a>
+                </div>
 
         <!-- Desktop Navigation -->
-        <div class="navbar-center hidden lg:flex">
+        <div class="navbar-center hidden xl:flex">
             <ul class="menu menu-horizontal px-1 space-x-3">
                 <!-- Always show these to visitors -->
                 <li>
@@ -352,17 +497,17 @@
             </ul>
         </div>
 
-        <!-- User Menu -->
-        <div class="navbar-end">
-            {% if user.is_authenticated %}
-                <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover:bg-white hover:bg-opacity-20">
-                        <div class="w-10 h-10 rounded-full border-2 border-white border-opacity-50">
+                <!-- Right Section: User Menu -->
+                <div class="flex items-center space-x-2">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown dropdown-end">
+                            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover:bg-white hover:bg-opacity-20 bg-white bg-opacity-10 border border-white border-opacity-30 w-10 h-10 min-h-10">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-white border-opacity-50">
                             {% if user.profile_picture %}
-                                <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-full" />
+                                <img src="{{ user.profile_picture.url }}" alt="Profile" class="w-full h-full rounded-full object-cover" />
                             {% else %}
-                                <div class="bg-white bg-opacity-20 text-white w-full h-full rounded-full flex items-center justify-center font-bold">
-                                    {{ user.first_name|first }}{{ user.last_name|first }}
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white w-full h-full rounded-full flex items-center justify-center font-bold text-xs">
+                                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
                                 </div>
                             {% endif %}
                         </div>
@@ -396,16 +541,132 @@
                     </ul>
                 </div>
             {% else %}
-                <div class="flex items-center space-x-3">
-                    <a href="{% url 'users:login' %}" class="btn btn-ghost text-white hover:bg-white hover:bg-opacity-20 font-medium">Sign In</a>
-                    <a href="{% url 'users:register' %}" class="btn bg-white bg-opacity-20 text-white hover:bg-white hover:text-blue-600 font-medium border-0">Get Started</a>
+                <div class="flex items-center space-x-1 sm:space-x-2">
+                    <a href="{% url 'users:login' %}" class="btn btn-ghost hover:bg-white hover:bg-opacity-20 font-medium btn-sm sm:btn-md px-2 sm:px-4" style="color: white !important; border: 1px solid rgba(255,255,255,0.3);">
+                        <span style="color: white !important;">Sign In</span>
+                    </a>
+                    <a href="{% url 'users:register' %}" class="btn hover:bg-white hover:text-blue-600 font-medium btn-sm sm:btn-md px-2 sm:px-4" style="background: rgba(255,255,255,0.2); color: white !important; border: 1px solid rgba(255,255,255,0.3);">
+                        <span style="color: white !important;">Get Started</span>
+                    </a>
                 </div>
-            {% endif %}
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </nav>
 
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 xl:hidden hidden transition-opacity duration-300"></div>
+
+    <!-- Mobile Menu Sidebar -->
+    <div id="mobile-menu-sidebar" class="fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-50 xl:hidden transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <!-- Mobile Menu Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 gradient-bg">
+                <div class="flex items-center">
+                    {% get_site_logo as custom_logo %}
+                    {% if custom_logo %}
+                        <img src="{{ custom_logo }}" alt="{% get_site_name %}" class="h-8 w-auto mr-2">
+                    {% else %}
+                        <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-2">
+                            <i class="fas fa-graduation-cap text-white text-sm"></i>
+                        </div>
+                        <span class="text-white font-bold text-lg">{% get_site_name %}</span>
+                    {% endif %}
+                </div>
+                <button id="mobile-menu-close" class="btn btn-ghost btn-circle text-white hover:bg-white hover:bg-opacity-20">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Content -->
+            <div class="flex-1 overflow-y-auto py-4">
+                <!-- Main Navigation -->
+                <div class="px-4 mb-6">
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Navigation</h3>
+                    <nav class="space-y-1">
+                        <a href="{% url 'core:home' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                            <i class="fas fa-home text-blue-500 w-5 text-center mr-3"></i>
+                            <span class="font-medium">Home</span>
+                        </a>
+                        <a href="{% url 'subjects:simple_learn' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200">
+                            <i class="fas fa-book text-green-500 w-5 text-center mr-3"></i>
+                            <span class="font-medium">Learn</span>
+                        </a>
+                        <a href="{% url 'subjects:quiz_list' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
+                            <i class="fas fa-question-circle text-purple-500 w-5 text-center mr-3"></i>
+                            <span class="font-medium">Quiz</span>
+                        </a>
+                    </nav>
+                </div>
+
+                {% if user.is_authenticated %}
+                    <!-- User Section -->
+                    <div class="px-4 mb-6">
+                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h3>
+                        <nav class="space-y-1">
+                            <a href="{% url 'core:dashboard' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                                <i class="fas fa-tachometer-alt text-blue-600 w-5 text-center mr-3"></i>
+                                <span class="font-medium">Dashboard</span>
+                            </a>
+                            <a href="{% url 'users:profile' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 hover:text-gray-600 transition-colors duration-200">
+                                <i class="fas fa-cog text-gray-500 w-5 text-center mr-3"></i>
+                                <span class="font-medium">Settings</span>
+                            </a>
+                            {% if billing_enabled %}
+                            <a href="{% url 'billing:dashboard' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200">
+                                <i class="fas fa-credit-card text-green-500 w-5 text-center mr-3"></i>
+                                <span class="font-medium">Billing</span>
+                                {% if not user_subscription_active %}
+                                <span class="ml-auto bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full">!</span>
+                                {% endif %}
+                            </a>
+                            {% endif %}
+                        </nav>
+                    </div>
+                {% else %}
+                    <!-- Guest Section -->
+                    <div class="px-4 mb-6">
+                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Get Started</h3>
+                        <nav class="space-y-2">
+                            <a href="{% url 'users:login' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors duration-200 border border-blue-200">
+                                <i class="fas fa-sign-in-alt text-blue-500 w-5 text-center mr-3"></i>
+                                <span class="font-medium">Sign In</span>
+                            </a>
+                            <a href="{% url 'users:register' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-white bg-green-600 hover:bg-green-700 transition-colors duration-200">
+                                <i class="fas fa-user-plus text-white w-5 text-center mr-3"></i>
+                                <span class="font-medium">Get Started</span>
+                            </a>
+                        </nav>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if user.is_authenticated %}
+                <!-- User Info Footer -->
+                <div class="border-t border-gray-200 p-4">
+                    <div class="flex items-center mb-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm mr-3">
+                            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900 truncate">{{ user.full_name }}</p>
+                            <p class="text-xs text-gray-500 truncate">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <a href="{% url 'users:logout' %}" class="mobile-nav-link flex items-center px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors duration-200 w-full">
+                        <i class="fas fa-sign-out-alt text-red-500 w-5 text-center mr-3"></i>
+                        <span class="font-medium">Sign Out</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main class="min-h-screen">
+    <main id="main-content" class="min-h-screen">
         <!-- Billing Announcements -->
         <div class="container mx-auto px-4 pt-4">
             {% include 'billing/announcement_banner.html' %}
@@ -428,89 +689,154 @@
     <!-- Feedback Widget -->
     {% include 'components/feedback_widget.html' %}
 
-    <!-- Footer -->
-    <footer class="gradient-bg text-white mt-8 sm:mt-16">
-        <div class="container mx-auto px-4 py-8 sm:py-12">
-            <!-- Mobile: 3 columns, Desktop: 4 columns -->
-            <div class="grid grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8">
-                <!-- Brand Section - spans full width on mobile -->
-                <div class="col-span-3 lg:col-span-1 text-center lg:text-left mb-4 lg:mb-0">
-                    <div class="flex items-center justify-center lg:justify-start mb-3">
-                        <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-2 lg:mr-3">
-                            <i class="fas fa-graduation-cap text-white text-sm lg:text-lg"></i>
+    <!-- Enhanced Modern Footer -->
+    <footer class="gradient-bg text-white mt-12 sm:mt-20 relative overflow-hidden">
+        <!-- Decorative background elements -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-24 h-24 bg-white rounded-full blur-2xl"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative container mx-auto px-6 py-12 sm:py-16">
+            <!-- Mobile: 2 columns, Desktop: 4 columns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+                <!-- Enhanced Brand Section -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-1 text-center lg:text-left">
+                    <div class="flex items-center justify-center lg:justify-start mb-6">
+                        <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-white bg-opacity-20 flex items-center justify-center mr-4 backdrop-blur-sm">
+                            <i class="fas fa-graduation-cap text-white text-xl lg:text-2xl"></i>
                         </div>
-                        <h3 class="text-lg lg:text-xl font-bold">Pentora</h3>
+                        <h3 class="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                            Pentora
+                        </h3>
                     </div>
-                    <p class="text-white text-opacity-80 mb-3 text-xs lg:text-sm leading-relaxed">
-                        Empowering underprivileged learners through quality education.
+                    <p class="text-white text-opacity-90 mb-6 text-base lg:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
+                        Empowering underprivileged learners through quality education and innovative learning experiences.
                     </p>
-                    <div class="flex justify-center lg:justify-start space-x-2">
-                        <a href="#" class="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 transition-all">
-                            <i class="fab fa-facebook-f text-xs"></i>
+                    <div class="flex justify-center lg:justify-start space-x-4">
+                        <a href="#" class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 hover:scale-110 transition-all duration-300 backdrop-blur-sm group">
+                            <i class="fab fa-facebook-f text-base lg:text-lg group-hover:text-blue-300 transition-colors"></i>
                         </a>
-                        <a href="#" class="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 transition-all">
-                            <i class="fab fa-twitter text-xs"></i>
+                        <a href="#" class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 hover:scale-110 transition-all duration-300 backdrop-blur-sm group">
+                            <i class="fab fa-twitter text-base lg:text-lg group-hover:text-blue-300 transition-colors"></i>
                         </a>
-                        <a href="#" class="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 transition-all">
-                            <i class="fab fa-instagram text-xs"></i>
+                        <a href="#" class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 hover:scale-110 transition-all duration-300 backdrop-blur-sm group">
+                            <i class="fab fa-instagram text-base lg:text-lg group-hover:text-pink-300 transition-colors"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white bg-opacity-20 flex items-center justify-center hover:bg-opacity-30 hover:scale-110 transition-all duration-300 backdrop-blur-sm group">
+                            <i class="fab fa-linkedin-in text-base lg:text-lg group-hover:text-blue-300 transition-colors"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Quick Links -->
+                <!-- Enhanced Quick Links -->
                 <div class="text-center lg:text-left">
-                    <h4 class="text-sm lg:text-base font-semibold mb-2 lg:mb-3">Quick Links</h4>
-                    <ul class="space-y-1">
-                        <li><a href="{% url 'core:home' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Home</a></li>
-                        <li><a href="{% url 'subjects:list' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Subjects</a></li>
-                        <li><a href="{% url 'core:about' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">About</a></li>
-                        <li><a href="{% url 'core:contact' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Contact</a></li>
+                    <h4 class="text-lg lg:text-xl font-bold mb-4 lg:mb-6 text-white">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'core:home' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-blue-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-home mr-3 group-hover:scale-110 transition-transform"></i>Home
+                        </a></li>
+                        <li><a href="{% url 'subjects:list' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-blue-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-book mr-3 group-hover:scale-110 transition-transform"></i>Subjects
+                        </a></li>
+                        <li><a href="{% url 'core:about' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-blue-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-info-circle mr-3 group-hover:scale-110 transition-transform"></i>About
+                        </a></li>
+                        <li><a href="{% url 'core:contact' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-blue-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-envelope mr-3 group-hover:scale-110 transition-transform"></i>Contact
+                        </a></li>
                     </ul>
                 </div>
 
-                <!-- Learning -->
+                <!-- Enhanced Learning Section -->
                 <div class="text-center lg:text-left">
-                    <h4 class="text-sm lg:text-base font-semibold mb-2 lg:mb-3">Learning</h4>
-                    <ul class="space-y-1">
+                    <h4 class="text-lg lg:text-xl font-bold mb-4 lg:mb-6 text-white">Learning</h4>
+                    <ul class="space-y-3">
                         {% if user.is_authenticated %}
-                            <li><a href="{% url 'core:dashboard' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Dashboard</a></li>
-                            <li><a href="{% url 'progress:overview' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Progress</a></li>
-                            <li><a href="{% url 'progress:achievements' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Achievements</a></li>
+                            <li><a href="{% url 'core:dashboard' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-green-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                                <i class="fas fa-tachometer-alt mr-3 group-hover:scale-110 transition-transform"></i>Dashboard
+                            </a></li>
+                            <li><a href="{% url 'progress:overview' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-green-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                                <i class="fas fa-chart-line mr-3 group-hover:scale-110 transition-transform"></i>Progress
+                            </a></li>
+                            <li><a href="{% url 'progress:achievements' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-green-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                                <i class="fas fa-trophy mr-3 group-hover:scale-110 transition-transform"></i>Achievements
+                            </a></li>
                         {% else %}
-                            <li><a href="{% url 'users:register' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Get Started</a></li>
-                            <li><a href="{% url 'users:login' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Sign In</a></li>
+                            <li><a href="{% url 'users:register' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-green-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                                <i class="fas fa-user-plus mr-3 group-hover:scale-110 transition-transform"></i>Get Started
+                            </a></li>
+                            <li><a href="{% url 'users:login' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-green-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                                <i class="fas fa-sign-in-alt mr-3 group-hover:scale-110 transition-transform"></i>Sign In
+                            </a></li>
                         {% endif %}
-                        <li><a href="{% url 'subjects:list' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Browse</a></li>
+                        <li><a href="{% url 'subjects:list' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-green-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-search mr-3 group-hover:scale-110 transition-transform"></i>Browse
+                        </a></li>
                     </ul>
                 </div>
 
-                <!-- Support -->
+                <!-- Enhanced Support Section -->
                 <div class="text-center lg:text-left">
-                    <h4 class="text-sm lg:text-base font-semibold mb-2 lg:mb-3">Support</h4>
-                    <ul class="space-y-1">
-                        <li><a href="{% url 'core:help' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Help</a></li>
-                        <li><a href="#" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Privacy</a></li>
-                        <li><a href="#" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Terms</a></li>
-                        <li><a href="{% url 'core:contact' %}" class="text-white text-opacity-80 hover:text-opacity-100 transition-all text-sm lg:text-sm">Support</a></li>
+                    <h4 class="text-lg lg:text-xl font-bold mb-4 lg:mb-6 text-white">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'core:help' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-yellow-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-life-ring mr-3 group-hover:scale-110 transition-transform"></i>Help Center
+                        </a></li>
+                        <li><a href="{% url 'core:privacy' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-yellow-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-shield-alt mr-3 group-hover:scale-110 transition-transform"></i>Privacy Policy
+                        </a></li>
+                        <li><a href="{% url 'core:terms' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-yellow-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-file-contract mr-3 group-hover:scale-110 transition-transform"></i>Terms of Service
+                        </a></li>
+                        <li><a href="{% url 'core:contact' %}" class="text-white text-opacity-90 hover:text-opacity-100 hover:text-yellow-200 transition-all text-base lg:text-lg flex items-center justify-center lg:justify-start group">
+                            <i class="fas fa-headset mr-3 group-hover:scale-110 transition-transform"></i>Support
+                        </a></li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Bottom Section -->
-            <div class="border-t border-white border-opacity-20 mt-6 sm:mt-8 pt-6 sm:pt-8">
-                <div class="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
-                    <div class="text-white text-opacity-80 text-xs sm:text-sm mb-3 sm:mb-0">
-                        © 2024 Pentora Educational Platform. Empowering learners to rebuild their dreams.
+            <!-- Enhanced Bottom Section -->
+            <div class="border-t border-white border-opacity-30 mt-8 sm:mt-12 pt-8 sm:pt-10">
+                <div class="flex flex-col lg:flex-row justify-between items-center text-center lg:text-left space-y-4 lg:space-y-0">
+                    <div class="text-white text-opacity-90 text-base lg:text-lg font-medium">
+                        © 2025 Pentora Educational Platform. Empowering learners to rebuild their dreams.
                     </div>
-                    <div class="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
-                        <span class="text-white text-opacity-80">Made with</span>
-                        <i class="fas fa-heart text-red-400"></i>
-                        <span class="text-white text-opacity-80">for underprivileged learners</span>
+                    <div class="flex items-center space-x-3 text-base lg:text-lg">
+                        <span class="text-white text-opacity-90 font-medium">Made with</span>
+                        <i class="fas fa-heart text-red-400 text-xl animate-pulse"></i>
+                        <span class="text-white text-opacity-90 font-medium">for underprivileged learners</span>
+                    </div>
+                </div>
+
+                <!-- Additional stats or info -->
+                <div class="mt-6 pt-6 border-t border-white border-opacity-20 text-center">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+                        <div class="text-center">
+                            <div class="text-white text-opacity-90 text-sm lg:text-base font-medium">Free Education</div>
+                            <div class="text-white text-opacity-70 text-xs lg:text-sm">Always & Forever</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-white text-opacity-90 text-sm lg:text-base font-medium">Quality Content</div>
+                            <div class="text-white text-opacity-70 text-xs lg:text-sm">Expert Curated</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-white text-opacity-90 text-sm lg:text-base font-medium">Progress Tracking</div>
+                            <div class="text-white text-opacity-70 text-xs lg:text-sm">Personal Growth</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-white text-opacity-90 text-sm lg:text-base font-medium">Community</div>
+                            <div class="text-white text-opacity-70 text-xs lg:text-sm">Learn Together</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Accessibility Feedback Widget -->
+    {% include 'includes/feedback_widget.html' %}
 
     <!-- Scripts -->
     <script>
@@ -547,7 +873,8 @@
     <!-- Enhanced JavaScript -->
     <script src="{% load static %}{% static 'js/app.js' %}?v=4"></script>
     <script src="{% load static %}{% static 'js/ux-enhancements.js' %}"></script>
-    <script src="{% load static %}{% static 'js/mobile-navigation.js' %}"></script>
+    <script src="{% load static %}{% static 'js/mobile-menu.js' %}?v=1"></script>
+    <script src="{% load static %}{% static 'js/cleanup-unwanted-elements.js' %}?v=1"></script>
     <script src="{% load static %}{% static 'js/performance-optimizer.js' %}?v=4"></script>
     <script src="{% load static %}{% static 'js/ui-interactions.js' %}"></script>
     <script src="{% load static %}{% static 'js/page-specific-enhancements.js' %}?v=3"></script>

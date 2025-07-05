@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
@@ -9,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from subjects.models import Subject, ClassLevel, Topic
 from progress.models import UserProgress
-from .models import HeroSection, SiteStatistic
+from .models import HeroSection, SiteStatistic, UserFeedback
 from .seo import SEOManager, MetaTagsHelper
 import logging
 
@@ -218,17 +219,33 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             }
 
     def post(self, request, *args, **kwargs):
-        """Handle level selection"""
+        """Handle level selection with improved error handling"""
         if 'class_level' in request.POST:
             try:
                 class_level = int(request.POST['class_level'])
                 valid_levels = [choice[0] for choice in request.user.CLASS_LEVEL_CHOICES]
+
                 if class_level in valid_levels:
+                    # Update user's class level
                     request.user.current_class_level = class_level
-                    request.user.save()
+                    request.user.save(update_fields=['current_class_level', 'updated_at'])
+
+                    # Add success message
+                    messages.success(request, f'Class level updated to Grade {class_level}!')
+
                     return redirect('core:dashboard')
-            except (ValueError, TypeError):
-                pass
+                else:
+                    messages.error(request, 'Invalid class level selected. Please try again.')
+
+            except (ValueError, TypeError) as e:
+                messages.error(request, 'Invalid class level format. Please select a valid option.')
+            except Exception as e:
+                # Log the error for debugging
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Dashboard level selection error for user {request.user.id}: {str(e)}")
+                messages.error(request, 'An error occurred while updating your class level. Please try again.')
+
         return self.get(request, *args, **kwargs)
 
 
@@ -549,3 +566,91 @@ def test_static_files(request):
     }
     
     return render(request, 'core/test_static.html', context)
+
+
+class PrivacyView(TemplateView):
+    """
+    Privacy Policy page view
+    """
+    template_name = 'core/privacy.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # SEO optimization
+        seo_manager = SEOManager(self.request)
+        context.update(seo_manager.get_meta_tags(
+            title="Privacy Policy - Pentora Educational Platform",
+            description="Learn how Pentora protects your privacy and personal information. Our comprehensive privacy policy explains data collection, usage, and security practices.",
+            keywords="privacy policy, data protection, personal information, privacy rights, data security, educational platform privacy"
+        ))
+
+        return context
+
+
+class TermsView(TemplateView):
+    """
+    Terms of Service page view
+    """
+    template_name = 'core/terms.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # SEO optimization
+        seo_manager = SEOManager(self.request)
+        context.update(seo_manager.get_meta_tags(
+            title="Terms of Service - Pentora Educational Platform",
+            description="Read our terms of service to understand your rights and responsibilities when using Pentora educational platform.",
+            keywords="terms of service, user agreement, terms and conditions, educational platform terms, user rights, service terms"
+        ))
+
+        return context
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def submit_feedback(request):
+    """
+    Handle feedback form submission via AJAX
+    """
+    try:
+        import json
+
+        # Parse JSON data
+        data = json.loads(request.body)
+
+        # Get client IP
+        def get_client_ip(request):
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+            return ip
+
+        # Create feedback record
+        feedback = UserFeedback.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            rating=data.get('rating'),
+            feedback_type=data.get('feedback_type', 'general'),
+            message=data.get('message', ''),
+            include_screenshot=data.get('include_screenshot', False),
+            page_url=request.META.get('HTTP_REFERER', ''),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            ip_address=get_client_ip(request)
+        )
+
+        logger.info(f"Feedback submitted: {feedback.id} by {feedback.user or 'Anonymous'}")
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Thank you for your feedback! We appreciate your input.'
+        })
+
+    except Exception as e:
+        logger.error(f"Error submitting feedback: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Sorry, there was an error submitting your feedback. Please try again.'
+        }, status=500)

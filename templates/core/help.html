@@ -2,47 +2,183 @@
 
 {% block title %}Help Center - Pentora{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Modern hero gradient */
+    .hero-gradient {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #ea580c 100%) !important;
+        min-height: 400px;
+        position: relative;
+    }
+
+    .hero-pattern {
+        background-image:
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%) !important;
+    }
+
+    /* Enhanced help cards */
+    .help-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .help-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .help-card:hover::before {
+        left: 100%;
+    }
+
+    .help-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
+        border-color: #f59e0b;
+    }
+
+    /* FAQ accordion styling */
+    .faq-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        border-color: #f59e0b;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+    }
+
+    .faq-question {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background: linear-gradient(145deg, #fef3c7 0%, #fde68a 100%);
+    }
+
+    .faq-answer {
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    /* Glass morphism effect */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="text-center mb-12">
-        <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
-            <i class="fas fa-question-circle text-white text-3xl"></i>
-        </div>
-        <h1 class="text-4xl font-bold text-gray-800 mb-4">Help Center</h1>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-            Find answers to common questions and learn how to make the most of Pentora.
-        </p>
+<!-- Modern Hero Section -->
+<div class="hero-gradient hero-pattern relative overflow-hidden" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #ea580c 100%) !important; color: white !important;">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-white rounded-full animate-pulse"></div>
+        <div class="absolute top-32 right-20 w-16 h-16 bg-white rounded-full animate-pulse delay-1000"></div>
+        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white rounded-full animate-pulse delay-2000"></div>
+        <div class="absolute bottom-32 right-1/3 w-8 h-8 bg-white rounded-full animate-pulse delay-3000"></div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {% if not user.is_authenticated %}
-            <a href="{% url 'users:register' %}" class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-user-plus text-green-600 text-2xl"></i>
+    <div class="relative container mx-auto px-6 py-16 lg:py-20">
+        <div class="text-center max-w-4xl mx-auto">
+            <!-- Modern heading with icons -->
+            <div class="flex items-center justify-center mb-6">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mr-4 backdrop-blur-sm">
+                    <i class="fas fa-life-ring text-white text-2xl"></i>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Get Started</h3>
-                <p class="text-gray-600 text-sm">Create your free account and start learning today</p>
-            </a>
-        {% endif %}
-        
-        <a href="{% url 'subjects:list' %}" class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-book text-blue-600 text-2xl"></i>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight" style="color: white !important;">
+                    Help Center
+                </h1>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Browse Subjects</h3>
-            <p class="text-gray-600 text-sm">Explore our educational content and subjects</p>
-        </a>
-        
-        <a href="{% url 'core:contact' %}" class="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-envelope text-purple-600 text-2xl"></i>
+
+            <!-- Enhanced description -->
+            <p class="text-xl lg:text-2xl leading-relaxed mb-8 max-w-3xl mx-auto" style="color: rgba(255,255,255,0.9) !important;">
+                Find answers to your questions and get the support you need to succeed in your learning journey.
+            </p>
+
+            <!-- Search box -->
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input type="text" placeholder="Search for help topics..."
+                           class="w-full px-6 py-4 rounded-2xl text-gray-800 text-lg border-0 shadow-lg focus:ring-4 focus:ring-white focus:ring-opacity-30 outline-none"
+                           style="background: rgba(255, 255, 255, 0.95) !important;">
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-orange-500 text-white px-6 py-2 rounded-xl hover:bg-orange-600 transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Contact Support</h3>
-            <p class="text-gray-600 text-sm">Get personalized help from our support team</p>
-        </a>
+        </div>
     </div>
+
+    <!-- Bottom wave -->
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-12 lg:h-20">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#f8fafc"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#f8fafc"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#f8fafc"></path>
+        </svg>
+    </div>
+</div>
+
+<!-- Main Content Section -->
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="container mx-auto px-6">
+
+        <!-- Enhanced Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'users:register' %}" class="help-card rounded-2xl p-8 text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-user-plus text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Get Started</h3>
+                    <p class="text-gray-600 leading-relaxed">Create your free account and start learning today with personalized content</p>
+                    <div class="mt-4 text-green-600 font-semibold group-hover:text-green-700 transition-colors">
+                        Start Learning →
+                    </div>
+                </a>
+            {% endif %}
+
+            <a href="{% url 'subjects:list' %}" class="help-card rounded-2xl p-8 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-book-open text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Browse Subjects</h3>
+                <p class="text-gray-600 leading-relaxed">Explore our comprehensive educational content across all grade levels</p>
+                <div class="mt-4 text-blue-600 font-semibold group-hover:text-blue-700 transition-colors">
+                    Explore Now →
+                </div>
+            </a>
+
+            <a href="{% url 'core:contact' %}" class="help-card rounded-2xl p-8 text-center group">
+                <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-headset text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Contact Support</h3>
+                <p class="text-gray-600 leading-relaxed">Get personalized help from our dedicated support team</p>
+                <div class="mt-4 text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                    Get Help →
+                </div>
+            </a>
+        </div>
 
     <!-- FAQ Section -->
     <div class="max-w-4xl mx-auto">

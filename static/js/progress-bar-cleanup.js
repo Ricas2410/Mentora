@@ -40,36 +40,6 @@
     // Expose cleanup function globally for manual cleanup
     window.cleanupProgressBars = cleanupDuplicateProgressBars;
 
-    // Add a temporary cleanup button for testing (remove in production)
-    if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-        setTimeout(() => {
-            const cleanupBtn = document.createElement('button');
-            cleanupBtn.textContent = 'Clean Duplicates';
-            cleanupBtn.style.cssText = `
-                position: fixed;
-                top: 10px;
-                right: 10px;
-                z-index: 9999;
-                background: #10b981;
-                color: white;
-                padding: 8px 12px;
-                border: none;
-                border-radius: 4px;
-                font-size: 12px;
-                cursor: pointer;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            `;
-            cleanupBtn.onclick = () => {
-                cleanupDuplicateProgressBars();
-                cleanupBtn.textContent = 'Cleaned!';
-                cleanupBtn.style.background = '#059669';
-                setTimeout(() => {
-                    cleanupBtn.textContent = 'Clean Duplicates';
-                    cleanupBtn.style.background = '#10b981';
-                }, 1500);
-            };
-            document.body.appendChild(cleanupBtn);
-        }, 1000);
-    }
+    // Cleanup button removed for production
 
 })();

@@ -235,3 +235,62 @@ class SiteStatistic(models.Model):
 
     def __str__(self):
         return f"{self.label}: {self.value}"
+
+
+class UserFeedback(models.Model):
+    """
+    Model for storing user feedback and experience ratings
+    """
+    FEEDBACK_TYPES = [
+        ('bug_report', 'Bug Report'),
+        ('feature_request', 'Feature Request'),
+        ('improvement', 'Improvement'),
+        ('general', 'General'),
+    ]
+
+    RATING_CHOICES = [
+        (1, '1 Star'),
+        (2, '2 Stars'),
+        (3, '3 Stars'),
+        (4, '4 Stars'),
+        (5, '5 Stars'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True)
+
+    # Feedback details
+    rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
+    feedback_type = models.CharField(max_length=20, choices=FEEDBACK_TYPES, default='general')
+    message = models.TextField()
+    include_screenshot = models.BooleanField(default=False)
+
+    # Technical details
+    page_url = models.URLField(max_length=500, blank=True)
+    user_agent = models.TextField(blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+
+    # Status
+    is_resolved = models.BooleanField(default=False)
+    admin_notes = models.TextField(blank=True)
+
+    # Metadata
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'user_feedback'
+        verbose_name = 'User Feedback'
+        verbose_name_plural = 'User Feedback'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        user_display = self.user.email if self.user else 'Anonymous'
+        return f"{user_display} - {self.get_feedback_type_display()} ({self.rating}★)"
+
+    @property
+    def star_rating(self):
+        """Return star rating as string"""
+        if self.rating:
+            return '★' * self.rating + '☆' * (5 - self.rating)
+        return 'No rating'

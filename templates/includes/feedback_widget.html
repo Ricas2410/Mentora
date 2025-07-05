@@ -1,0 +1,390 @@
+<!-- Accessibility Feedback Widget -->
+<div id="feedback-widget" class="fixed bottom-6 right-6 z-50">
+    <!-- Feedback Button -->
+    <button id="feedback-btn" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-purple-300" 
+            aria-label="Open feedback form">
+        <i class="fas fa-comment-alt text-xl"></i>
+    </button>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-heart text-2xl mr-3"></i>
+                        <h3 class="text-xl font-bold">How was your experience?</h3>
+                    </div>
+                    <button id="close-feedback" class="text-white hover:text-gray-200 transition-colors" aria-label="Close feedback form">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <p class="text-purple-100 mt-2">Rate your experience</p>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6">
+                <form id="feedback-form" class="space-y-6">
+                    <!-- Star Rating -->
+                    <div class="text-center">
+                        <div class="flex justify-center space-x-2 mb-4">
+                            <button type="button" class="star-rating text-4xl text-gray-300 hover:text-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-300 rounded" data-rating="1" aria-label="Rate 1 star">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button type="button" class="star-rating text-4xl text-gray-300 hover:text-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-300 rounded" data-rating="2" aria-label="Rate 2 stars">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button type="button" class="star-rating text-4xl text-gray-300 hover:text-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-300 rounded" data-rating="3" aria-label="Rate 3 stars">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button type="button" class="star-rating text-4xl text-gray-300 hover:text-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-300 rounded" data-rating="4" aria-label="Rate 4 stars">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button type="button" class="star-rating text-4xl text-gray-300 hover:text-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-300 rounded" data-rating="5" aria-label="Rate 5 stars">
+                                <i class="fas fa-star"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" id="rating-value" name="rating" value="">
+                    </div>
+
+                    <!-- Feedback Type -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">What type of feedback?</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="feedback-type-option cursor-pointer">
+                                <input type="radio" name="feedback_type" value="bug_report" class="sr-only">
+                                <div class="border-2 border-gray-200 rounded-lg p-3 text-center hover:border-red-400 transition-colors">
+                                    <i class="fas fa-bug text-red-500 text-xl mb-2"></i>
+                                    <div class="text-sm font-medium">Bug Report</div>
+                                </div>
+                            </label>
+                            <label class="feedback-type-option cursor-pointer">
+                                <input type="radio" name="feedback_type" value="feature_request" class="sr-only">
+                                <div class="border-2 border-gray-200 rounded-lg p-3 text-center hover:border-blue-400 transition-colors">
+                                    <i class="fas fa-lightbulb text-blue-500 text-xl mb-2"></i>
+                                    <div class="text-sm font-medium">Feature Request</div>
+                                </div>
+                            </label>
+                            <label class="feedback-type-option cursor-pointer">
+                                <input type="radio" name="feedback_type" value="improvement" class="sr-only">
+                                <div class="border-2 border-gray-200 rounded-lg p-3 text-center hover:border-green-400 transition-colors">
+                                    <i class="fas fa-arrow-up text-green-500 text-xl mb-2"></i>
+                                    <div class="text-sm font-medium">Improvement</div>
+                                </div>
+                            </label>
+                            <label class="feedback-type-option cursor-pointer">
+                                <input type="radio" name="feedback_type" value="general" class="sr-only">
+                                <div class="border-2 border-gray-200 rounded-lg p-3 text-center hover:border-purple-400 transition-colors">
+                                    <i class="fas fa-comment text-purple-500 text-xl mb-2"></i>
+                                    <div class="text-sm font-medium">General</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Message -->
+                    <div>
+                        <label for="feedback-message" class="block text-sm font-semibold text-gray-700 mb-2">Tell us more:</label>
+                        <textarea id="feedback-message" name="message" rows="4" 
+                                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition-all resize-none"
+                                  placeholder="Your feedback helps us improve Pentora..."></textarea>
+                    </div>
+
+                    <!-- Include Screenshot Option -->
+                    <div class="flex items-center">
+                        <input type="checkbox" id="include-screenshot" name="include_screenshot" 
+                               class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <label for="include-screenshot" class="ml-2 text-sm text-gray-700">Include screenshot</label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex space-x-3">
+                        <button type="button" id="cancel-feedback" 
+                                class="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all font-medium shadow-lg hover:shadow-xl">
+                            <span id="submit-text">Send Feedback</span>
+                            <i id="loading-icon" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Toast -->
+<div id="feedback-toast" class="fixed top-6 right-6 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+    <div class="flex items-center">
+        <i class="fas fa-check-circle text-xl mr-3"></i>
+        <span>Thank you for your feedback!</span>
+    </div>
+</div>
+
+<style>
+/* Feedback Widget Styles */
+#feedback-btn {
+    animation: pulse-gentle 3s infinite;
+}
+
+@keyframes pulse-gentle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.feedback-type-option input:checked + div {
+    border-color: #8b5cf6;
+    background-color: #f3f4f6;
+}
+
+.star-rating.active {
+    color: #fbbf24 !important;
+}
+
+/* Accessibility improvements */
+.star-rating:focus {
+    outline: 2px solid #8b5cf6;
+    outline-offset: 2px;
+}
+
+.feedback-type-option:focus-within div {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+    #feedback-modal .bg-white {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+    
+    .star-rating {
+        font-size: 2rem !important;
+    }
+    
+    .grid-cols-2 {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .star-rating {
+        border: 2px solid currentColor;
+    }
+    
+    .feedback-type-option div {
+        border-width: 3px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    #feedback-btn {
+        animation: none;
+    }
+    
+    .transition-all,
+    .transition-colors,
+    .transition-transform {
+        transition: none;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const feedbackBtn = document.getElementById('feedback-btn');
+    const feedbackModal = document.getElementById('feedback-modal');
+    const closeFeedback = document.getElementById('close-feedback');
+    const cancelFeedback = document.getElementById('cancel-feedback');
+    const feedbackForm = document.getElementById('feedback-form');
+    const starRatings = document.querySelectorAll('.star-rating');
+    const ratingValue = document.getElementById('rating-value');
+    const feedbackToast = document.getElementById('feedback-toast');
+    const submitText = document.getElementById('submit-text');
+    const loadingIcon = document.getElementById('loading-icon');
+
+    // Open feedback modal
+    feedbackBtn.addEventListener('click', function() {
+        feedbackModal.classList.remove('hidden');
+        feedbackModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        
+        // Focus first interactive element for accessibility
+        setTimeout(() => {
+            starRatings[0].focus();
+        }, 100);
+    });
+
+    // Close feedback modal
+    function closeFeedbackModal() {
+        feedbackModal.classList.add('hidden');
+        feedbackModal.classList.remove('flex');
+        document.body.style.overflow = '';
+        resetForm();
+    }
+
+    closeFeedback.addEventListener('click', closeFeedbackModal);
+    cancelFeedback.addEventListener('click', closeFeedbackModal);
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !feedbackModal.classList.contains('hidden')) {
+            closeFeedbackModal();
+        }
+    });
+
+    // Close modal on backdrop click
+    feedbackModal.addEventListener('click', function(e) {
+        if (e.target === feedbackModal) {
+            closeFeedbackModal();
+        }
+    });
+
+    // Star rating functionality
+    starRatings.forEach((star, index) => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.dataset.rating);
+            ratingValue.value = rating;
+            
+            // Update star display
+            starRatings.forEach((s, i) => {
+                if (i < rating) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+
+        // Keyboard navigation for stars
+        star.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    });
+
+    // Form submission
+    feedbackForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Validate form
+        const rating = ratingValue.value;
+        const feedbackType = document.querySelector('input[name="feedback_type"]:checked');
+        const message = document.getElementById('feedback-message').value.trim();
+
+        if (!rating) {
+            alert('Please provide a rating');
+            return;
+        }
+
+        if (!feedbackType) {
+            alert('Please select a feedback type');
+            return;
+        }
+
+        if (!message) {
+            alert('Please provide a message');
+            return;
+        }
+
+        // Show loading state
+        submitText.textContent = 'Sending...';
+        loadingIcon.classList.remove('hidden');
+
+        // Prepare form data
+        const formData = {
+            rating: parseInt(rating),
+            feedback_type: feedbackType.value,
+            message: message,
+            include_screenshot: document.getElementById('include-screenshot').checked
+        };
+
+        // Submit to backend
+        fetch('{% url "core:submit_feedback" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Reset loading state
+            submitText.textContent = 'Send Feedback';
+            loadingIcon.classList.add('hidden');
+
+            if (data.success) {
+                // Close modal
+                closeFeedbackModal();
+
+                // Show success toast
+                showSuccessToast();
+            } else {
+                alert(data.message || 'Error submitting feedback');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+
+            // Reset loading state
+            submitText.textContent = 'Send Feedback';
+            loadingIcon.classList.add('hidden');
+
+            alert('Error submitting feedback. Please try again.');
+        });
+    });
+
+    // Reset form
+    function resetForm() {
+        feedbackForm.reset();
+        ratingValue.value = '';
+        starRatings.forEach(star => star.classList.remove('active'));
+        
+        // Reset feedback type options
+        document.querySelectorAll('.feedback-type-option input').forEach(input => {
+            input.checked = false;
+        });
+        document.querySelectorAll('.feedback-type-option div').forEach(div => {
+            div.style.borderColor = '';
+            div.style.backgroundColor = '';
+        });
+    }
+
+    // Show success toast
+    function showSuccessToast() {
+        feedbackToast.style.transform = 'translateX(0)';
+        
+        setTimeout(() => {
+            feedbackToast.style.transform = 'translateX(100%)';
+        }, 3000);
+    }
+
+    // Feedback type selection
+    document.querySelectorAll('.feedback-type-option input').forEach(input => {
+        input.addEventListener('change', function() {
+            // Reset all options
+            document.querySelectorAll('.feedback-type-option div').forEach(div => {
+                div.style.borderColor = '';
+                div.style.backgroundColor = '';
+            });
+            
+            // Highlight selected option
+            if (this.checked) {
+                const div = this.nextElementSibling;
+                div.style.borderColor = '#8b5cf6';
+                div.style.backgroundColor = '#f3f4f6';
+            }
+        });
+    });
+});
+</script>
