@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Pentora Admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <strong>Pentora</strong> Administration
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}
+<div style="float: right; margin-top: 10px;">
+    <a href="{% url 'analytics:dashboard' %}" style="color: #fff; text-decoration: none; margin-right: 20px; background: #417690; padding: 8px 12px; border-radius: 4px;">
+        📊 Analytics Dashboard
+    </a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'admin:logout' %}" style="color: #fff; text-decoration: none;">
+            Logout {{ user.get_short_name|default:user.get_username }}
+        </a>
+    {% endif %}
+</div>
+{% endblock %}

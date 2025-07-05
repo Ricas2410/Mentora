@@ -17,8 +17,18 @@ from subjects.models import Subject, ClassLevel, Topic
 from content.models import Question, AnswerChoice, StudyNote, Quiz
 from users.models import User
 from progress.models import UserProgress
+from analytics.models import PageVisit, UserActivity, SystemPerformanceMetrics
+from analytics.utils import business_intelligence
 from .models import SiteSettings, AdminActivity
 from core.models import CSVImportLog
+import os
+
+# Optional import for system monitoring
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
 from .forms import (
     SiteSettingsForm, SubjectForm, ClassLevelForm, TopicForm,
     QuestionForm, AnswerChoiceFormSet,
@@ -439,8 +449,7 @@ class ManageTopicsView(AdminRequiredMixin, TemplateView):
         class_levels_raw = ClassLevel.objects.filter(is_active=True).values(
             'level_number'
         ).annotate(
-            name=models.Min('name'),  # Take the first name for this level
-            id=models.Min('id')       # Take the first ID for this level
+            name=models.Min('name')  # Take the first name for this level
         ).order_by('level_number')
 
         # Convert to a list of objects that the template can use
@@ -534,8 +543,7 @@ class ManageQuestionsView(AdminRequiredMixin, TemplateView):
         class_levels_raw = ClassLevel.objects.filter(is_active=True).values(
             'level_number'
         ).annotate(
-            name=models.Min('name'),  # Take the first name for this level
-            id=models.Min('id')       # Take the first ID for this level
+            name=models.Min('name')  # Take the first name for this level
         ).order_by('level_number')
 
         # Convert to a list of objects that the template can use
@@ -1355,23 +1363,58 @@ class SiteSettingsView(AdminRequiredMixin, TemplateView):
         form = SiteSettingsForm(request.POST, request.FILES, instance=settings)
 
         if form.is_valid():
-            updated_settings = form.save(commit=False)
-            updated_settings.updated_by = request.user
-            updated_settings.save()
+            try:
+                updated_settings = form.save(commit=False)
+                updated_settings.updated_by = request.user
+                updated_settings.save()
 
-            # Log activity
-            AdminActivity.objects.create(
-                admin_user=request.user,
-                action='UPDATE_SETTINGS',
-                description='Updated site settings',
-                model_name='SiteSettings',
-                object_id=str(settings.id),
-                ip_address=request.META.get('REMOTE_ADDR'),
-                user_agent=request.META.get('HTTP_USER_AGENT', '')
-            )
+                # Log activity
+                AdminActivity.objects.create(
+                    admin_user=request.user,
+                    action='UPDATE_SETTINGS',
+                    description='Updated site settings',
+                    model_name='SiteSettings',
+                    object_id=str(settings.id),
+                    ip_address=request.META.get('REMOTE_ADDR'),
+                    user_agent=request.META.get('HTTP_USER_AGENT', '')
+                )
 
-            messages.success(request, 'Settings updated successfully!')
-            return redirect('admin_panel:settings')
+                # Provide specific success feedback
+                updated_fields = []
+                if 'site_logo' in request.FILES:
+                    updated_fields.append('Site Logo')
+                if 'site_favicon' in request.FILES:
+                    updated_fields.append('Site Favicon')
+                if 'hero_banner' in request.FILES:
+                    updated_fields.append('Hero Banner')
+
+                if updated_fields:
+                    messages.success(request, f'Settings updated successfully! Updated: {", ".join(updated_fields)}')
+                else:
+                    messages.success(request, 'Settings updated successfully!')
+
+                return redirect('admin_panel:settings')
+
+            except Exception as e:
+                messages.error(request, f'Error saving settings: {str(e)}')
+
+        else:
+            # Provide detailed error feedback
+            error_messages = []
+            for field, errors in form.errors.items():
+                field_name = form.fields[field].label or field.replace('_', ' ').title()
+                for error in errors:
+                    error_messages.append(f"{field_name}: {error}")
+
+            if error_messages:
+                messages.error(request, f'Please fix the following errors: {"; ".join(error_messages)}')
+            else:
+                messages.error(request, 'Please check the form for errors.')
+
+        # Return form with errors
+        context = self.get_context_data(**kwargs)
+        context['form'] = form
+        return self.render_to_response(context)
 
         context = self.get_context_data(**kwargs)
         context['form'] = form

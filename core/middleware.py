@@ -4,7 +4,13 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponsePermanentRedirect
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
+from django.db import connection
+from django.core.cache import cache
 import json
+import time
+import logging
+
+logger = logging.getLogger('Pentora')
 
 
 class VisitorAccessMiddleware:
@@ -190,7 +196,7 @@ class IPCanonicalizationMiddleware(MiddlewareMixin):
 
         if re.match(ip_pattern, host):
             # Get proper domain from settings
-            proper_domain = getattr(settings, 'SITE_DOMAIN', 'mentora.pythonanywhere.com')
+            proper_domain = getattr(settings, 'SITE_DOMAIN', 'Pentora.pythonanywhere.com')
             protocol = getattr(settings, 'SITE_PROTOCOL', 'https')
 
             # Redirect to proper domain
@@ -232,4 +238,101 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
         return response
 
 
+class PerformanceMiddleware:
+    """
+    Monitor and log performance metrics
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
 
+    def __call__(self, request):
+        # Start timing
+        start_time = time.time()
+        start_queries = len(connection.queries)
+
+        # Process request
+        response = self.get_response(request)
+
+        # Calculate metrics
+        end_time = time.time()
+        response_time = end_time - start_time
+        query_count = len(connection.queries) - start_queries
+
+        # Add performance headers in debug mode
+        if settings.DEBUG:
+            response['X-Response-Time'] = f"{response_time:.3f}s"
+            response['X-Query-Count'] = str(query_count)
+
+        # Log slow requests
+        if hasattr(settings, 'PERFORMANCE_MONITORING'):
+            threshold = settings.PERFORMANCE_MONITORING.get('RESPONSE_TIME_THRESHOLD', 2.0)
+            if response_time > threshold:
+                logger.warning(
+                    f"Slow request: {request.method} {request.path} "
+                    f"took {response_time:.3f}s with {query_count} queries"
+                )
+
+        # Log slow queries in debug mode
+        if settings.DEBUG and query_count > 10:
+            logger.warning(f"High query count: {query_count} queries for {request.path}")
+
+        return response
+
+
+class MaintenanceModeMiddleware:
+    """
+    Handle maintenance mode
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Check if maintenance mode is enabled
+        maintenance_mode = cache.get('maintenance_mode', False)
+
+        if maintenance_mode:
+            # Allow admin access
+            if request.user.is_authenticated and request.user.is_staff:
+                return self.get_response(request)
+
+            # Allow access to admin and maintenance pages
+            if request.path.startswith('/admin/') or request.path.startswith('/maintenance/'):
+                return self.get_response(request)
+
+            # Return maintenance page
+            from django.http import HttpResponse
+            return HttpResponse(
+                self._get_maintenance_page(),
+                status=503,
+                content_type='text/html'
+            )
+
+        return self.get_response(request)
+
+    def _get_maintenance_page(self):
+        """Return maintenance page HTML"""
+        return """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Maintenance - Pentora</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
+                .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                h1 { color: #333; margin-bottom: 20px; }
+                p { color: #666; line-height: 1.6; }
+                .logo { font-size: 2em; color: #121d83; margin-bottom: 20px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="logo">🎓 Pentora</div>
+                <h1>We'll be back soon!</h1>
+                <p>We're currently performing scheduled maintenance to improve your learning experience.</p>
+                <p>Please check back in a few minutes. Thank you for your patience!</p>
+            </div>
+        </body>
+        </html>
+        """

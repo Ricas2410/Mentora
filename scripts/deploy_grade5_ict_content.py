@@ -8,11 +8,11 @@ import django
 
 # Setup Django - try different settings module names
 try:
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora_platform.settings')
     django.setup()
 except ModuleNotFoundError:
     try:
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora.settings')
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora.settings')
         django.setup()
     except ModuleNotFoundError:
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')

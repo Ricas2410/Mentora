@@ -61,7 +61,7 @@
     
     <!-- Text placeholder -->
     <text x="0" y="80" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="24" font-weight="bold" opacity="0.9">
-      Mentora Learning Platform
+      Pentora Learning Platform
     </text>
     <text x="0" y="110" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" opacity="0.7">
       Empowering learners through quality education

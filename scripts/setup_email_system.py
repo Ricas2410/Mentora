@@ -12,7 +12,7 @@ import django
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora_platform.settings')
 django.setup()
 
 from django.core.mail import send_mail
@@ -58,7 +58,7 @@ def test_basic_email(recipient_email):
     
     try:
         send_mail(
-            subject='Test Email from Mentora',
+            subject='Test Email from Pentora',
             message='This is a test email to verify your email configuration is working correctly.',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[recipient_email],
@@ -116,7 +116,7 @@ def create_env_template():
     
     env_content = """
 # ===========================================
-# EMAIL CONFIGURATION FOR MENTORA
+# EMAIL CONFIGURATION FOR Pentora
 # ===========================================
 
 # For Development (emails printed to console)
@@ -129,14 +129,14 @@ EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
 # EMAIL_USE_TLS=True
 # EMAIL_HOST_USER=your-email@gmail.com
 # EMAIL_HOST_PASSWORD=your-app-password
-# DEFAULT_FROM_EMAIL=Mentora <noreply@mentora.com>
+# DEFAULT_FROM_EMAIL=Pentora <noreply@Pentora.com>
 
 # ===========================================
 # HOW TO SET UP GMAIL FOR SENDING EMAILS
 # ===========================================
 # 1. Go to your Google Account settings
 # 2. Enable 2-Factor Authentication
-# 3. Generate an "App Password" for Mentora
+# 3. Generate an "App Password" for Pentora
 # 4. Use your Gmail address as EMAIL_HOST_USER
 # 5. Use the App Password as EMAIL_HOST_PASSWORD
 # 6. Update EMAIL_BACKEND to smtp.EmailBackend
@@ -168,7 +168,7 @@ def provide_setup_instructions():
    Step 1: Set up Gmail App Password
    • Go to https://myaccount.google.com/
    • Security → 2-Step Verification (enable if not already)
-   • Security → App passwords → Generate password for "Mentora"
+   • Security → App passwords → Generate password for "Pentora"
    
    Step 2: Update your .env file:
    EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
@@ -177,7 +177,7 @@ def provide_setup_instructions():
    EMAIL_USE_TLS=True
    EMAIL_HOST_USER=your-email@gmail.com
    EMAIL_HOST_PASSWORD=your-16-character-app-password
-   DEFAULT_FROM_EMAIL=Mentora <noreply@mentora.com>
+   DEFAULT_FROM_EMAIL=Pentora <noreply@Pentora.com>
    
    Step 3: Restart your Django server
    
@@ -196,7 +196,7 @@ def provide_setup_instructions():
 
 def main():
     """Main function to setup and test email system"""
-    print("🎯 MENTORA EMAIL SYSTEM SETUP & TEST")
+    print("🎯 Pentora EMAIL SYSTEM SETUP & TEST")
     print("=" * 60)
     
     # Check current configuration

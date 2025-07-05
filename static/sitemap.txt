@@ -1,0 +1,294 @@
+# Pentora Educational Platform - Comprehensive Sitemap
+# Ghana's Leading Online Education Platform for BECE & WASSCE Preparation
+# Helping students find quality education, online studies, and academic excellence
+
+# Main Pages - High Priority for Education Searches
+https://pentora.com/
+https://pentora.com/subjects/learn/
+https://pentora.com/subjects/quiz/
+https://pentora.com/about/
+https://pentora.com/contact/
+https://pentora.com/help/
+
+# Educational Content Pages - Core Learning Resources
+https://pentora.com/subjects/
+https://pentora.com/content/study-notes/
+https://pentora.com/content/exam/
+
+# User Registration and Access - Free Education for All
+https://pentora.com/users/register/
+https://pentora.com/users/login/
+
+# Subject-Specific Pages for Curriculum Coverage
+# Mathematics - Essential for BECE and WASSCE
+https://pentora.com/subjects/mathematics/
+https://pentora.com/subjects/mathematics/grade-1/
+https://pentora.com/subjects/mathematics/grade-2/
+https://pentora.com/subjects/mathematics/grade-3/
+https://pentora.com/subjects/mathematics/grade-4/
+https://pentora.com/subjects/mathematics/grade-5/
+https://pentora.com/subjects/mathematics/grade-6/
+https://pentora.com/subjects/mathematics/jhs-1/
+https://pentora.com/subjects/mathematics/jhs-2/
+https://pentora.com/subjects/mathematics/jhs-3/
+https://pentora.com/subjects/mathematics/shs-1/
+https://pentora.com/subjects/mathematics/shs-2/
+https://pentora.com/subjects/mathematics/shs-3/
+
+# English Language - Critical for Academic Success
+https://pentora.com/subjects/english/
+https://pentora.com/subjects/english/grade-1/
+https://pentora.com/subjects/english/grade-2/
+https://pentora.com/subjects/english/grade-3/
+https://pentora.com/subjects/english/grade-4/
+https://pentora.com/subjects/english/grade-5/
+https://pentora.com/subjects/english/grade-6/
+https://pentora.com/subjects/english/jhs-1/
+https://pentora.com/subjects/english/jhs-2/
+https://pentora.com/subjects/english/jhs-3/
+https://pentora.com/subjects/english/shs-1/
+https://pentora.com/subjects/english/shs-2/
+https://pentora.com/subjects/english/shs-3/
+
+# Science - Comprehensive Science Education
+https://pentora.com/subjects/science/
+https://pentora.com/subjects/science/grade-1/
+https://pentora.com/subjects/science/grade-2/
+https://pentora.com/subjects/science/grade-3/
+https://pentora.com/subjects/science/grade-4/
+https://pentora.com/subjects/science/grade-5/
+https://pentora.com/subjects/science/grade-6/
+https://pentora.com/subjects/science/jhs-1/
+https://pentora.com/subjects/science/jhs-2/
+https://pentora.com/subjects/science/jhs-3/
+
+# Social Studies - Understanding Society and Culture
+https://pentora.com/subjects/social-studies/
+https://pentora.com/subjects/social-studies/grade-1/
+https://pentora.com/subjects/social-studies/grade-2/
+https://pentora.com/subjects/social-studies/grade-3/
+https://pentora.com/subjects/social-studies/grade-4/
+https://pentora.com/subjects/social-studies/grade-5/
+https://pentora.com/subjects/social-studies/grade-6/
+https://pentora.com/subjects/social-studies/jhs-1/
+https://pentora.com/subjects/social-studies/jhs-2/
+https://pentora.com/subjects/social-studies/jhs-3/
+
+# ICT - Digital Literacy and Technology Skills
+https://pentora.com/subjects/ict/
+https://pentora.com/subjects/ict/grade-4/
+https://pentora.com/subjects/ict/grade-5/
+https://pentora.com/subjects/ict/grade-6/
+https://pentora.com/subjects/ict/jhs-1/
+https://pentora.com/subjects/ict/jhs-2/
+https://pentora.com/subjects/ict/jhs-3/
+
+# Life Skills - Personal Development and Life Preparation
+https://pentora.com/subjects/life-skills/
+https://pentora.com/subjects/life-skills/grade-1/
+https://pentora.com/subjects/life-skills/grade-2/
+https://pentora.com/subjects/life-skills/grade-3/
+https://pentora.com/subjects/life-skills/grade-4/
+https://pentora.com/subjects/life-skills/grade-5/
+https://pentora.com/subjects/life-skills/grade-6/
+
+# Exam Preparation Pages - BECE and WASSCE Focus
+https://pentora.com/exam-preparation/
+https://pentora.com/exam-preparation/bece/
+https://pentora.com/exam-preparation/wassce/
+https://pentora.com/exam-preparation/bece/mathematics/
+https://pentora.com/exam-preparation/bece/english/
+https://pentora.com/exam-preparation/bece/science/
+https://pentora.com/exam-preparation/bece/social-studies/
+https://pentora.com/exam-preparation/wassce/mathematics/
+https://pentora.com/exam-preparation/wassce/english/
+https://pentora.com/exam-preparation/wassce/science/
+
+# Practice Tests and Quizzes - Interactive Learning
+https://pentora.com/practice-tests/
+https://pentora.com/practice-tests/mathematics/
+https://pentora.com/practice-tests/english/
+https://pentora.com/practice-tests/science/
+https://pentora.com/practice-tests/social-studies/
+https://pentora.com/practice-tests/ict/
+https://pentora.com/practice-tests/life-skills/
+
+# Study Materials and Resources
+https://pentora.com/study-materials/
+https://pentora.com/study-materials/notes/
+https://pentora.com/study-materials/guides/
+https://pentora.com/study-materials/worksheets/
+https://pentora.com/study-materials/past-questions/
+
+# Educational Tools and Features
+https://pentora.com/tools/
+https://pentora.com/tools/calculator/
+https://pentora.com/tools/dictionary/
+https://pentora.com/tools/progress-tracker/
+https://pentora.com/tools/study-planner/
+
+# Support and Help Resources
+https://pentora.com/support/
+https://pentora.com/support/faq/
+https://pentora.com/support/tutorials/
+https://pentora.com/support/contact/
+https://pentora.com/support/feedback/
+
+# Legal and Policy Pages
+https://pentora.com/privacy-policy/
+https://pentora.com/terms-of-service/
+https://pentora.com/cookie-policy/
+https://pentora.com/accessibility/
+
+# Blog and Educational Articles (if available)
+https://pentora.com/blog/
+https://pentora.com/blog/study-tips/
+https://pentora.com/blog/exam-preparation/
+https://pentora.com/blog/educational-news/
+https://pentora.com/blog/success-stories/
+
+# Mobile App Information
+https://pentora.com/mobile-app/
+https://pentora.com/mobile-app/download/
+https://pentora.com/mobile-app/features/
+
+# Partnership and Collaboration
+https://pentora.com/partnerships/
+https://pentora.com/partnerships/schools/
+https://pentora.com/partnerships/teachers/
+https://pentora.com/partnerships/parents/
+
+# Success Stories and Testimonials
+https://pentora.com/success-stories/
+https://pentora.com/testimonials/
+https://pentora.com/case-studies/
+
+# Educational Research and Insights
+https://pentora.com/research/
+https://pentora.com/research/educational-trends/
+https://pentora.com/research/learning-analytics/
+https://pentora.com/research/student-performance/
+
+# Community and Social Learning
+https://pentora.com/community/
+https://pentora.com/community/forums/
+https://pentora.com/community/study-groups/
+https://pentora.com/community/peer-learning/
+
+# Teacher Resources and Support
+https://pentora.com/teachers/
+https://pentora.com/teachers/resources/
+https://pentora.com/teachers/training/
+https://pentora.com/teachers/support/
+
+# Parent Resources and Involvement
+https://pentora.com/parents/
+https://pentora.com/parents/guides/
+https://pentora.com/parents/progress-monitoring/
+https://pentora.com/parents/support/
+
+# Educational Technology and Innovation
+https://pentora.com/technology/
+https://pentora.com/technology/features/
+https://pentora.com/technology/innovation/
+https://pentora.com/technology/accessibility/
+
+# Quality Assurance and Standards
+https://pentora.com/quality/
+https://pentora.com/quality/standards/
+https://pentora.com/quality/curriculum-alignment/
+https://pentora.com/quality/expert-review/
+
+# Future of Education and Vision
+https://pentora.com/vision/
+https://pentora.com/vision/future-education/
+https://pentora.com/vision/educational-goals/
+https://pentora.com/vision/impact/
+
+# Accessibility and Inclusion
+https://pentora.com/accessibility/
+https://pentora.com/accessibility/features/
+https://pentora.com/accessibility/support/
+https://pentora.com/accessibility/guidelines/
+
+# International Standards and Recognition
+https://pentora.com/standards/
+https://pentora.com/standards/international/
+https://pentora.com/standards/quality-assurance/
+https://pentora.com/standards/accreditation/
+
+# Educational Impact and Outcomes
+https://pentora.com/impact/
+https://pentora.com/impact/student-success/
+https://pentora.com/impact/academic-improvement/
+https://pentora.com/impact/community-benefit/
+
+# Innovation and Development
+https://pentora.com/innovation/
+https://pentora.com/innovation/educational-technology/
+https://pentora.com/innovation/learning-methods/
+https://pentora.com/innovation/future-features/
+
+# Sustainability and Environment
+https://pentora.com/sustainability/
+https://pentora.com/sustainability/digital-learning/
+https://pentora.com/sustainability/environmental-impact/
+https://pentora.com/sustainability/green-education/
+
+# Awards and Recognition (if applicable)
+https://pentora.com/awards/
+https://pentora.com/awards/educational-excellence/
+https://pentora.com/awards/innovation/
+https://pentora.com/awards/community-impact/
+
+# Media and Press
+https://pentora.com/media/
+https://pentora.com/media/press-releases/
+https://pentora.com/media/news/
+https://pentora.com/media/coverage/
+
+# Careers and Opportunities
+https://pentora.com/careers/
+https://pentora.com/careers/opportunities/
+https://pentora.com/careers/internships/
+https://pentora.com/careers/volunteers/
+
+# API and Developer Resources
+https://pentora.com/developers/
+https://pentora.com/developers/api/
+https://pentora.com/developers/documentation/
+https://pentora.com/developers/integration/
+
+# Security and Privacy
+https://pentora.com/security/
+https://pentora.com/security/data-protection/
+https://pentora.com/security/privacy-measures/
+https://pentora.com/security/compliance/
+
+# Performance and Analytics
+https://pentora.com/analytics/
+https://pentora.com/analytics/learning-insights/
+https://pentora.com/analytics/performance-metrics/
+https://pentora.com/analytics/progress-tracking/
+
+# Global Reach and Expansion
+https://pentora.com/global/
+https://pentora.com/global/expansion/
+https://pentora.com/global/partnerships/
+https://pentora.com/global/impact/
+
+# Educational Philosophy and Approach
+https://pentora.com/philosophy/
+https://pentora.com/philosophy/learning-approach/
+https://pentora.com/philosophy/educational-values/
+https://pentora.com/philosophy/student-centered/
+
+# Continuous Improvement and Feedback
+https://pentora.com/improvement/
+https://pentora.com/improvement/feedback/
+https://pentora.com/improvement/updates/
+https://pentora.com/improvement/enhancement/
+
+# End of Sitemap - Pentora Educational Platform
+# Committed to providing quality education for all Ghanaian students
+# Empowering academic excellence through innovative online learning

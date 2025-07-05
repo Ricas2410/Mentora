@@ -1,0 +1,470 @@
+<!-- Enhanced SEO Meta Tags for Better Search Visibility -->
+<!-- This template ensures Pentora appears in searches for education, Mentora, online studies, BECE, WASSCE -->
+
+{% load seo_tags %}
+
+<!-- Basic Meta Tags -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Enhanced Title and Description -->
+<title>{{ meta.title|default:"Pentora - Quality Online Education Platform | BECE & WASSCE Preparation" }}</title>
+<meta name="description" content="{{ meta.description|default:'Pentora (formerly Mentora) - Ghana\'s leading online education platform. Free quality education, BECE preparation, WASSCE preparation, interactive learning, and comprehensive study materials for JHS and SHS students.' }}">
+
+<!-- Comprehensive Keywords for Education Searches -->
+<meta name="keywords" content="{{ meta.keywords|default:'education, online learning, e-learning, digital education, Mentora, Pentora, educational platform, online studies, BECE preparation, WASSCE preparation, Ghana education, primary education, secondary education, JHS, SHS, mathematics, english, science, social studies, online quizzes, study notes, exam preparation, free education, quality education, academic excellence, student learning, educational resources, study materials, interactive learning, personalized education, learning platform, educational technology, EdTech Ghana, online tutoring, curriculum-based learning, grade-specific content, comprehensive education, academic support, learning management, distance learning, virtual classroom, educational app, study platform, learning app, education Ghana, school online' }}">
+
+<!-- Author and Publisher Information -->
+<meta name="author" content="Pentora Educational Platform - Quality Education for All">
+<meta name="publisher" content="Pentora Education">
+<meta name="copyright" content="© {{ current_year|default:'2025' }} Pentora Educational Platform">
+<meta name="language" content="English">
+<meta name="revisit-after" content="7 days">
+
+<!-- Enhanced Robots Meta -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="bingbot" content="index, follow">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ meta.canonical_url|default:request.build_absolute_uri }}">
+
+<!-- Open Graph Meta Tags for Social Media -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pentora Educational Platform">
+<meta property="og:title" content="{{ meta.og_title|default:meta.title|default:'Pentora - Quality Online Education Platform' }}">
+<meta property="og:description" content="{{ meta.og_description|default:meta.description|default:'Ghana\'s leading online education platform for BECE and WASSCE preparation' }}">
+<meta property="og:image" content="{{ meta.og_image|default:'https://pentora.com/static/images/pentora-og-image.jpg' }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pentora Educational Platform - Quality Online Education">
+<meta property="og:url" content="{{ meta.og_url|default:request.build_absolute_uri }}">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@Pentora">
+<meta name="twitter:creator" content="@Pentora">
+<meta name="twitter:title" content="{{ meta.twitter_title|default:meta.title|default:'Pentora - Quality Online Education Platform' }}">
+<meta name="twitter:description" content="{{ meta.twitter_description|default:meta.description|default:'Ghana\'s leading online education platform for BECE and WASSCE preparation' }}">
+<meta name="twitter:image" content="{{ meta.twitter_image|default:'https://pentora.com/static/images/pentora-twitter-card.jpg' }}">
+<meta name="twitter:image:alt" content="Pentora Educational Platform">
+
+<!-- Educational Schema.org Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "Pentora Educational Platform",
+  "alternateName": ["Mentora", "Pentora Education"],
+  "description": "Ghana's leading online education platform providing free quality education, BECE preparation, WASSCE preparation, and comprehensive study materials for JHS and SHS students.",
+  "url": "{{ request.scheme }}://{{ request.get_host }}",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "{{ request.scheme }}://{{ request.get_host }}/static/images/pentora-logo.png",
+    "width": 300,
+    "height": 100
+  },
+  "sameAs": [
+    "https://facebook.com/Pentora",
+    "https://twitter.com/Pentora",
+    "https://instagram.com/Pentora"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "Ghana"
+  },
+  "educationalCredentialAwarded": "Certificate of Completion",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Educational Courses",
+    "itemListElement": [
+      {
+        "@type": "Course",
+        "name": "BECE Preparation",
+        "description": "Comprehensive preparation for Basic Education Certificate Examination",
+        "provider": {
+          "@type": "EducationalOrganization",
+          "name": "Pentora"
+        }
+      },
+      {
+        "@type": "Course",
+        "name": "WASSCE Preparation", 
+        "description": "Complete preparation for West African Senior School Certificate Examination",
+        "provider": {
+          "@type": "EducationalOrganization",
+          "name": "Pentora"
+        }
+      }
+    ]
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "GHS",
+    "description": "Free quality education for all students"
+  }
+}
+</script>
+
+<!-- Website Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Pentora Educational Platform",
+  "alternateName": "Mentora Education",
+  "url": "{{ request.scheme }}://{{ request.get_host }}",
+  "description": "Online education platform for Ghana students - BECE and WASSCE preparation",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ request.scheme }}://{{ request.get_host }}/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Pentora Educational Platform",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ request.scheme }}://{{ request.get_host }}/static/images/pentora-logo.png"
+    }
+  }
+}
+</script>
+
+<!-- Mobile App Meta Tags -->
+<meta name="apple-mobile-web-app-title" content="Pentora Education">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Pentora">
+
+<!-- Theme Colors -->
+<meta name="theme-color" content="#3B82F6">
+<meta name="msapplication-TileColor" content="#3B82F6">
+<meta name="msapplication-navbutton-color" content="#3B82F6">
+<meta name="apple-mobile-web-app-status-bar-style" content="#3B82F6">
+
+<!-- Preconnect to External Resources -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+<!-- DNS Prefetch for Performance -->
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+
+<!-- Favicon and App Icons -->
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
+<link rel="manifest" href="/static/manifest.json">
+
+<!-- Additional SEO Meta for Education Searches -->
+<meta name="category" content="Education">
+<meta name="coverage" content="Worldwide">
+<meta name="distribution" content="Global">
+<meta name="rating" content="General">
+<meta name="target" content="Students, Teachers, Parents">
+<meta name="audience" content="Students preparing for BECE and WASSCE examinations">
+
+<!-- Geographic Meta -->
+<meta name="geo.region" content="GH">
+<meta name="geo.country" content="Ghana">
+<meta name="ICBM" content="5.6037, -0.1870">
+<meta name="geo.position" content="5.6037;-0.1870">
+
+<!-- Educational Content Classification -->
+<meta name="educational-level" content="Primary, Secondary">
+<meta name="educational-subject" content="Mathematics, English, Science, Social Studies">
+<meta name="educational-audience" content="Student">
+<meta name="educational-type" content="Online Course, Quiz, Study Material">
+
+<!-- Verification Meta Tags (Add your actual verification codes) -->
+<!-- <meta name="google-site-verification" content="your-google-verification-code"> -->
+<!-- <meta name="msvalidate.01" content="your-bing-verification-code"> -->
+<!-- <meta name="yandex-verification" content="your-yandex-verification-code"> -->
+
+<!-- Structured Data for Breadcrumbs (if applicable) -->
+{% if breadcrumbs %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {% for breadcrumb in breadcrumbs %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "name": "{{ breadcrumb.name }}",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{{ breadcrumb.url }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+
+<!-- Performance and Security Headers -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+<!-- Cache Control -->
+<meta http-equiv="Cache-Control" content="public, max-age=3600">
+<meta http-equiv="Expires" content="{{ cache_expires|default:'3600' }}">
+
+<!-- Educational Platform Specific Meta -->
+<meta name="platform-type" content="Educational">
+<meta name="content-type" content="Educational Resources">
+<meta name="learning-objectives" content="BECE Preparation, WASSCE Preparation, Academic Excellence">
+<meta name="grade-levels" content="Primary 1-6, JHS 1-3, SHS 1-3">
+<meta name="subjects-covered" content="Mathematics, English Language, Science, Social Studies, ICT">
+
+<!-- Accessibility Meta -->
+<meta name="accessibility-features" content="keyboard-navigation, screen-reader-compatible, high-contrast-mode">
+<meta name="accessibility-compliance" content="WCAG 2.1 AA">
+
+<!-- Educational Standards Compliance -->
+<meta name="curriculum-standard" content="Ghana Education Service Curriculum">
+<meta name="educational-framework" content="Competency-Based Curriculum">
+
+<!-- Last Modified for SEO -->
+<meta name="last-modified" content="{{ last_modified|default:now|date:'c' }}">
+
+<!-- Additional Educational Keywords for Search Engines -->
+<meta name="subject" content="Online Education, E-Learning, Digital Learning, Educational Technology">
+<meta name="abstract" content="Pentora provides comprehensive online education for Ghanaian students, including BECE and WASSCE preparation, interactive quizzes, study notes, and personalized learning experiences.">
+
+<!-- Social Media Optimization -->
+<meta property="article:publisher" content="https://facebook.com/Pentora">
+<meta property="article:author" content="Pentora Educational Team">
+<meta property="article:section" content="Education">
+<meta property="article:tag" content="Education, Online Learning, BECE, WASSCE, Ghana">
+
+<!-- Additional Twitter Meta -->
+<meta name="twitter:domain" content="{{ request.get_host }}">
+<meta name="twitter:url" content="{{ request.build_absolute_uri }}">
+
+<!-- Educational Content Rating -->
+<meta name="rating" content="safe for kids">
+<meta name="content-rating" content="educational">
+
+<!-- Platform Information -->
+<meta name="generator" content="Pentora Educational Platform v2.0">
+<meta name="framework" content="Django">
+
+<!-- Contact Information for Search Engines -->
+<meta name="contact" content="support@pentora.com">
+<meta name="reply-to" content="support@pentora.com">
+
+<!-- Copyright and Legal -->
+<meta name="copyright" content="Pentora Educational Platform">
+<meta name="legal" content="© 2025 Pentora. All rights reserved.">
+
+<!-- Educational Accreditation (if applicable) -->
+<!-- <meta name="accreditation" content="Ghana Education Service Approved"> -->
+
+<!-- Learning Analytics -->
+<meta name="analytics-category" content="Education">
+<meta name="analytics-label" content="Online Learning Platform">
+
+<!-- Multi-language Support -->
+<meta name="language" content="en-GH">
+<link rel="alternate" hreflang="en-gh" href="{{ request.build_absolute_uri }}">
+<link rel="alternate" hreflang="en" href="{{ request.build_absolute_uri }}">
+
+<!-- Educational Resource Type -->
+<meta name="resource-type" content="Interactive Educational Platform">
+<meta name="document-type" content="Educational Website">
+
+<!-- Learning Management System Classification -->
+<meta name="lms-type" content="Web-based Learning Platform">
+<meta name="delivery-method" content="Online, Self-paced">
+
+<!-- Student Support Information -->
+<meta name="support-available" content="24/7 Online Support">
+<meta name="help-resources" content="Study Guides, Video Tutorials, Practice Tests">
+
+<!-- Educational Goals -->
+<meta name="learning-outcomes" content="Academic Excellence, Exam Success, Skill Development">
+<meta name="educational-goals" content="BECE Success, WASSCE Excellence, Lifelong Learning">
+
+<!-- Platform Features -->
+<meta name="features" content="Interactive Quizzes, Progress Tracking, Personalized Learning, Mobile-Friendly">
+<meta name="accessibility" content="Mobile Responsive, Offline Capable, Multi-device Support">
+
+<!-- Quality Assurance -->
+<meta name="content-quality" content="Curriculum-aligned, Expert-reviewed, Regularly Updated">
+<meta name="educational-standards" content="Ghana Education Service Standards Compliant">
+
+<!-- Performance Metrics -->
+<meta name="load-time-target" content="< 3 seconds">
+<meta name="mobile-friendly" content="yes">
+<meta name="responsive-design" content="yes">
+
+<!-- Educational Impact -->
+<meta name="impact-metrics" content="Student Success Rate, Engagement Levels, Learning Outcomes">
+<meta name="success-indicators" content="Improved Grades, Higher Pass Rates, Enhanced Understanding">
+
+<!-- Community and Social Learning -->
+<meta name="community-features" content="Student Forums, Peer Learning, Collaborative Study">
+<meta name="social-learning" content="Group Discussions, Study Groups, Peer Support">
+
+<!-- Innovation in Education -->
+<meta name="educational-innovation" content="AI-powered Learning, Adaptive Content, Gamification">
+<meta name="technology-integration" content="Modern Web Technologies, Progressive Web App, Cloud-based">
+
+<!-- Sustainability and Future -->
+<meta name="sustainability" content="Environmentally Friendly Digital Learning">
+<meta name="future-ready" content="21st Century Skills, Digital Literacy, Critical Thinking">
+
+<!-- Educational Philosophy -->
+<meta name="learning-philosophy" content="Student-Centered, Inclusive Education, Quality for All">
+<meta name="educational-approach" content="Competency-Based, Personalized, Engaging">
+
+<!-- Success Stories and Testimonials -->
+<meta name="student-success" content="Thousands of Students Benefited">
+<meta name="testimonials" content="Positive Student and Teacher Feedback">
+
+<!-- Partnership and Collaboration -->
+<meta name="partnerships" content="Educational Institutions, Technology Partners">
+<meta name="collaboration" content="Teachers, Students, Parents, Community">
+
+<!-- Continuous Improvement -->
+<meta name="updates" content="Regular Content Updates, Feature Enhancements">
+<meta name="feedback-integration" content="User Feedback Driven Improvements">
+
+<!-- Educational Research and Development -->
+<meta name="research-based" content="Evidence-based Educational Practices">
+<meta name="development-approach" content="Agile, User-Centered Design">
+
+<!-- Global Educational Standards -->
+<meta name="international-standards" content="UNESCO Education Goals Aligned">
+<meta name="global-compatibility" content="International Best Practices">
+
+<!-- Digital Transformation in Education -->
+<meta name="digital-transformation" content="Leading Educational Technology Innovation">
+<meta name="edtech-leadership" content="Ghana's Premier Educational Platform">
+
+<!-- Educational Equity and Access -->
+<meta name="educational-equity" content="Free Quality Education for All">
+<meta name="access-commitment" content="Breaking Educational Barriers">
+
+<!-- Learning Analytics and Insights -->
+<meta name="learning-analytics" content="Data-Driven Educational Insights">
+<meta name="performance-tracking" content="Comprehensive Progress Monitoring">
+
+<!-- Educational Content Curation -->
+<meta name="content-curation" content="Expert-Curated Educational Materials">
+<meta name="quality-assurance" content="Rigorous Content Review Process">
+
+<!-- Educational Technology Integration -->
+<meta name="tech-integration" content="Seamless Technology-Enhanced Learning">
+<meta name="digital-pedagogy" content="Modern Teaching Methodologies">
+
+<!-- Student Empowerment -->
+<meta name="student-empowerment" content="Self-Directed Learning, Critical Thinking">
+<meta name="learner-autonomy" content="Independent Learning Skills Development">
+
+<!-- Educational Innovation Awards -->
+<!-- <meta name="awards" content="Educational Excellence Awards, Innovation Recognition"> -->
+
+<!-- Future of Education -->
+<meta name="future-education" content="Preparing Students for Tomorrow's Challenges">
+<meta name="21st-century-skills" content="Digital Literacy, Problem Solving, Collaboration">
+
+<!-- Educational Impact Measurement -->
+<meta name="impact-assessment" content="Regular Educational Outcome Evaluation">
+<meta name="success-metrics" content="Student Achievement, Engagement, Satisfaction">
+
+<!-- Educational Community Building -->
+<meta name="community-building" content="Fostering Educational Communities">
+<meta name="stakeholder-engagement" content="Students, Teachers, Parents, Community Leaders">
+
+<!-- Educational Resource Sharing -->
+<meta name="resource-sharing" content="Open Educational Resources, Collaborative Content">
+<meta name="knowledge-sharing" content="Peer-to-Peer Learning, Expert Knowledge Transfer">
+
+<!-- Educational Technology Leadership -->
+<meta name="edtech-leadership" content="Leading Educational Technology Innovation in Ghana">
+<meta name="technology-adoption" content="Early Adopter of Educational Technologies">
+
+<!-- Educational Transformation -->
+<meta name="educational-transformation" content="Transforming Education Through Technology">
+<meta name="learning-revolution" content="Revolutionizing How Students Learn">
+
+<!-- Educational Excellence Commitment -->
+<meta name="excellence-commitment" content="Unwavering Commitment to Educational Excellence">
+<meta name="quality-education" content="Delivering World-Class Educational Experiences">
+
+<!-- Educational Accessibility -->
+<meta name="accessibility-commitment" content="Making Quality Education Accessible to All">
+<meta name="inclusive-education" content="Inclusive Learning Environment for Every Student">
+
+<!-- Educational Innovation Pipeline -->
+<meta name="innovation-pipeline" content="Continuous Educational Innovation and Development">
+<meta name="future-features" content="AI Tutoring, VR Learning, Advanced Analytics">
+
+<!-- Educational Partnership Network -->
+<meta name="partnership-network" content="Extensive Educational Partnership Network">
+<meta name="collaboration-ecosystem" content="Collaborative Educational Ecosystem">
+
+<!-- Educational Research and Evidence -->
+<meta name="research-evidence" content="Research-Based Educational Practices">
+<meta name="evidence-based" content="Evidence-Driven Educational Decisions">
+
+<!-- Educational Sustainability -->
+<meta name="educational-sustainability" content="Sustainable Educational Development">
+<meta name="long-term-impact" content="Long-term Educational Impact and Growth">
+
+<!-- Educational Vision and Mission -->
+<meta name="educational-vision" content="Empowering Every Student to Achieve Academic Excellence">
+<meta name="educational-mission" content="Providing Quality, Accessible Education for All Ghanaian Students">
+
+<!-- Educational Values -->
+<meta name="educational-values" content="Excellence, Integrity, Innovation, Inclusivity">
+<meta name="core-principles" content="Student-Centered, Quality-Focused, Technology-Enhanced">
+
+<!-- Educational Legacy -->
+<meta name="educational-legacy" content="Building a Legacy of Educational Excellence">
+<meta name="generational-impact" content="Impacting Current and Future Generations">
+
+<!-- Educational Empowerment -->
+<meta name="educational-empowerment" content="Empowering Students Through Quality Education">
+<meta name="student-success" content="Dedicated to Every Student's Academic Success">
+
+<!-- Educational Innovation Culture -->
+<meta name="innovation-culture" content="Fostering a Culture of Educational Innovation">
+<meta name="creative-learning" content="Encouraging Creative and Critical Thinking">
+
+<!-- Educational Technology Advancement -->
+<meta name="tech-advancement" content="Advancing Educational Technology in Ghana">
+<meta name="digital-education-leader" content="Leading Digital Education Transformation">
+
+<!-- Educational Quality Assurance -->
+<meta name="quality-assurance" content="Rigorous Educational Quality Assurance">
+<meta name="continuous-improvement" content="Continuous Educational Quality Improvement">
+
+<!-- Educational Impact Stories -->
+<meta name="impact-stories" content="Inspiring Educational Success Stories">
+<meta name="student-achievements" content="Celebrating Student Achievements and Success">
+
+<!-- Educational Future Vision -->
+<meta name="future-vision" content="Shaping the Future of Education in Ghana">
+<meta name="educational-leadership" content="Leading Educational Excellence and Innovation">
+
+<!-- Final Educational Commitment -->
+<meta name="educational-commitment" content="Committed to Transforming Lives Through Quality Education">
+<meta name="student-first" content="Students First, Excellence Always">
+
+<!-- End of Enhanced SEO Meta Tags -->

@@ -20,7 +20,7 @@ SITE_PROTOCOL=https
 In your PythonAnywhere console, navigate to your project directory and run:
 
 ```bash
-cd /home/yourusername/Mentora
+cd /home/yourusername/Pentora
 python scripts/fix_email_verification.py
 ```
 

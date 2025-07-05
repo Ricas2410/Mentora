@@ -8,16 +8,16 @@ class Command(BaseCommand):
     help = 'Create a superuser'
 
     def handle(self, *args, **options):
-        if not User.objects.filter(email='admin@mentora.com').exists():
+        if not User.objects.filter(email='admin@Pentora.com').exists():
             User.objects.create_superuser(
-                email='admin@mentora.com',
+                email='admin@Pentora.com',
                 username='admin',
                 first_name='Admin',
                 last_name='User',
                 password='admin123'
             )
             self.stdout.write(
-                self.style.SUCCESS('Successfully created superuser: admin@mentora.com / admin123')
+                self.style.SUCCESS('Successfully created superuser: admin@Pentora.com / admin123')
             )
         else:
             self.stdout.write(

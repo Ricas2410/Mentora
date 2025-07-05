@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Deployment script for Mentora platform
+Deployment script for Pentora platform
 This script helps with common deployment tasks
 """
 
@@ -63,7 +63,7 @@ def run_tests():
 
 def main():
     """Main deployment function"""
-    print("🚀 Mentora Deployment Script")
+    print("🚀 Pentora Deployment Script")
     print("=" * 40)
     
     if not check_environment():

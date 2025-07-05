@@ -1,0 +1,372 @@
+/**
+ * Enhanced UI/UX Improvements for Pentora Platform
+ * Modern design enhancements for better user experience
+ */
+
+/* ============================================================================
+   ENHANCED CARD INTERACTIONS
+   ============================================================================ */
+
+.quiz-card, .subject-card, .topic-card, .feature-card {
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.quiz-card::before, .subject-card::before, .topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
+
+.quiz-card:hover::before, .subject-card:hover::before, .topic-card:hover::before {
+    left: 100%;
+}
+
+/* Enhanced hover states with better performance */
+.quiz-card:hover, .subject-card:hover, .topic-card:hover, .feature-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(59, 130, 246, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================================================
+   ENHANCED BUTTONS AND INTERACTIVE ELEMENTS
+   ============================================================================ */
+
+.btn, .start-exam-btn, button[type="submit"] {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn::before, .start-exam-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+    pointer-events: none;
+}
+
+.btn:active::before, .start-exam-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Enhanced focus states for accessibility */
+.btn:focus, .start-exam-btn:focus, button:focus, input:focus, textarea:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* ============================================================================
+   LOADING STATES AND SKELETONS
+   ============================================================================ */
+
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes loading-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.card-loading {
+    min-height: 200px;
+    position: relative;
+}
+
+.card-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+    animation: loading-sweep 2s infinite;
+}
+
+@keyframes loading-sweep {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ============================================================================
+   ENHANCED MOBILE INTERACTIONS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    /* Larger touch targets for mobile */
+    .btn, .quiz-card, .subject-card, .topic-card {
+        min-height: 48px;
+        min-width: 48px;
+    }
+    
+    /* Enhanced mobile hover states (touch feedback) */
+    .quiz-card:active, .subject-card:active, .topic-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+    
+    /* Better mobile spacing */
+    .quiz-card, .subject-card, .topic-card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Mobile-optimized animations */
+    .quiz-card, .subject-card, .topic-card {
+        animation-duration: 0.3s;
+    }
+}
+
+/* ============================================================================
+   ENHANCED VISUAL FEEDBACK
+   ============================================================================ */
+
+/* Success states */
+.success-feedback {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    animation: success-pulse 0.5s ease-out;
+}
+
+@keyframes success-pulse {
+    0% { transform: scale(0.95); opacity: 0; }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Error states */
+.error-feedback {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    animation: error-shake 0.5s ease-out;
+}
+
+@keyframes error-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* ============================================================================
+   ENHANCED PROGRESS INDICATORS
+   ============================================================================ */
+
+.progress-bar-enhanced {
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    height: 8px;
+}
+
+.progress-fill-enhanced {
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8, #3b82f6);
+    background-size: 200% 100%;
+    height: 100%;
+    border-radius: 10px;
+    animation: progress-shimmer 2s infinite;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes progress-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ============================================================================
+   ENHANCED TOOLTIPS AND POPOVERS
+   ============================================================================ */
+
+.tooltip-enhanced {
+    position: relative;
+}
+
+.tooltip-enhanced::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+}
+
+.tooltip-enhanced::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-2px);
+    border: 4px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.tooltip-enhanced:hover::before,
+.tooltip-enhanced:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* ============================================================================
+   ENHANCED FORM ELEMENTS
+   ============================================================================ */
+
+.form-input-enhanced {
+    position: relative;
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.form-input-enhanced:focus {
+    border-color: #3b82f6;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.form-input-enhanced.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.form-input-enhanced.success {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+/* ============================================================================
+   ENHANCED ACCESSIBILITY FEATURES
+   ============================================================================ */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .quiz-card, .subject-card, .topic-card {
+        border: 2px solid #000;
+        background: #fff;
+        color: #000;
+    }
+    
+    .btn, .start-exam-btn {
+        border: 2px solid #000;
+        background: #fff;
+        color: #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .quiz-card, .subject-card, .topic-card,
+    .btn, .start-exam-btn,
+    .loading-skeleton,
+    .progress-fill-enhanced {
+        animation: none;
+        transition: none;
+    }
+    
+    .quiz-card:hover, .subject-card:hover, .topic-card:hover {
+        transform: none;
+    }
+}
+
+/* Focus visible for keyboard navigation */
+.focus-visible:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* ============================================================================
+   ENHANCED DARK MODE SUPPORT
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .quiz-card, .subject-card, .topic-card {
+        background: rgba(31, 41, 55, 0.8);
+        border-color: rgba(75, 85, 99, 0.3);
+        color: #f9fafb;
+    }
+    
+    .loading-skeleton {
+        background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+        background-size: 200% 100%;
+    }
+    
+    .form-input-enhanced {
+        background: rgba(31, 41, 55, 0.8);
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+}
+
+/* ============================================================================
+   ENHANCED MICRO-INTERACTIONS
+   ============================================================================ */
+
+.micro-bounce {
+    animation: micro-bounce 0.6s ease-out;
+}
+
+@keyframes micro-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+.micro-pulse {
+    animation: micro-pulse 2s infinite;
+}
+
+@keyframes micro-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.micro-glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    animation: micro-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes micro-glow {
+    from { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+    to { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
+}

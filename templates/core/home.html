@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}Mentora - Free Online Learning Platform for Grades 1-12 {% endblock %}
+{% block title %}Pentora - Free Online Learning Platform for Grades 1-12 {% endblock %}
 {% block description %}Free online education for Grades 1-12 with interactive quizzes and study materials. Learn English, Math, Science, and more on any device.{% endblock %}
 {% block keywords %}free online learning, educational platform, grades 1-12, online quizzes, study materials, English learning, Mathematics, Science, Social Studies, ICT, Life Skills, free education, mobile learning, K-12 education{% endblock %}
 
-{% block og_title %}Mentora - Free Online Learning Platform for All Grades{% endblock %}
+{% block og_title %}Pentora - Free Online Learning Platform for All Grades{% endblock %}
 {% block og_description %}Access free educational content, interactive quizzes, and comprehensive study materials for Grades 1-12. Learn English, Math, Science, and more on any device!{% endblock %}
 
 {% block extra_js %}
@@ -13,14 +13,14 @@
 {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "name": "Mentora Learning Platform",
+  "name": "Pentora Learning Platform",
   "description": "Free online learning platform offering comprehensive educational content for Grades 1-12 with interactive quizzes and study materials.",
   "url": "{{ request.build_absolute_uri }}",
-  "logo": "{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/mentora-logo.png' %}",
+  "logo": "{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/Pentora-logo.png' %}",
   "sameAs": [
-    "https://www.facebook.com/mentora",
-    "https://www.twitter.com/mentora",
-    "https://www.instagram.com/mentora"
+    "https://www.facebook.com/Pentora",
+    "https://www.twitter.com/Pentora",
+    "https://www.instagram.com/Pentora"
   ],
   "address": {
     "@type": "PostalAddress",
@@ -50,7 +50,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Mentora Learning Platform",
+  "name": "Pentora Learning Platform",
   "url": "{{ request.build_absolute_uri }}",
   "description": "Free online learning platform for Grades 1-12",
   "potentialAction": {
@@ -72,7 +72,7 @@
   "description": "Complete educational curriculum covering Grades 1-12 with subjects including English, Mathematics, Science, Social Studies, ICT, and Life Skills",
   "provider": {
     "@type": "EducationalOrganization",
-    "name": "Mentora Learning Platform"
+    "name": "Pentora Learning Platform"
   },
   "educationalLevel": "K-12",
   "teaches": [
@@ -231,7 +231,14 @@
 <!-- Hero Section -->
 <section class="relative min-h-screen flex items-center overflow-hidden">
     <!-- Background Image or Gradient -->
-    {% if hero_section and hero_section.hero_image %}
+    {% load site_images %}
+    {% get_hero_banner as custom_hero %}
+    {% if custom_hero %}
+        <div class="absolute inset-0 z-0">
+            <img src="{{ custom_hero }}" alt="Hero Background" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-purple-900/80"></div>
+        </div>
+    {% elif hero_section and hero_section.hero_image %}
         <div class="absolute inset-0 z-0">
             <img src="{{ hero_section.hero_image.url }}" alt="Hero Background" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-purple-900/80"></div>
@@ -322,7 +329,7 @@
 <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Why Choose Mentora?</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Why Choose Pentora?</h2>
             <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
                 Comprehensive education platform designed for learners worldwide with mobile-first accessibility
             </p>
@@ -391,7 +398,7 @@
 <section class="py-16 md:py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12 md:mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">How Mentora Works</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">How Pentora Works</h2>
             <p class="text-lg md:text-xl text-gray-600">Simple steps to start your learning journey</p>
         </div>
 
@@ -557,7 +564,7 @@
                 </a>
                 <a href="{% url 'core:about' %}" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-flex items-center">
                     <i class="fas fa-info-circle mr-2"></i>
-                    About Mentora
+                    About Pentora
                 </a>
             </div>
         </div>
@@ -568,7 +575,7 @@
 <section class="py-16 md:py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Why Mentora Stands Out in Online Education</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Why Pentora Stands Out in Online Education</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 <div class="text-left">
@@ -588,7 +595,7 @@
                 <div class="text-left">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">Accessibility and Inclusion</h3>
                     <p class="text-gray-600 leading-relaxed mb-4">
-                        Mentora was specifically designed with underprivileged learners in mind, recognizing that quality education
+                        Pentora was specifically designed with underprivileged learners in mind, recognizing that quality education
                         should be accessible to everyone regardless of economic background. Our mobile-first approach ensures that
                         students can learn effectively using basic smartphones with limited internet connectivity.
                     </p>

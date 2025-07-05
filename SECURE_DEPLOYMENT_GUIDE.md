@@ -3,7 +3,7 @@
 ## ⚠️ SECURITY NOTICE
 **NEVER commit email credentials to Git repositories!**
 
-## 📧 Email Setup for Mentora Platform
+## 📧 Email Setup for Pentora Platform
 
 ### 🔧 Local Development Setup
 
@@ -22,7 +22,7 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-16-character-app-password
-DEFAULT_FROM_EMAIL=Mentora <your-email@gmail.com>
+DEFAULT_FROM_EMAIL=Pentora <your-email@gmail.com>
 ```
 
 ### 🔑 Gmail App Password Setup
@@ -35,7 +35,7 @@ DEFAULT_FROM_EMAIL=Mentora <your-email@gmail.com>
    - Security → App passwords
    - Select app: **Mail**
    - Select device: **Other (Custom name)**
-   - Enter: **Mentora Platform**
+   - Enter: **Pentora Platform**
    - Copy the 16-character password
 
 3. **Update `.env.local`**:
@@ -60,7 +60,7 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-16-character-app-password
-DEFAULT_FROM_EMAIL=Mentora <your-email@gmail.com>
+DEFAULT_FROM_EMAIL=Pentora <your-email@gmail.com>
 ```
 
 4. **Restart your web app** from the PythonAnywhere dashboard
@@ -93,11 +93,11 @@ python manage.py test_verification --email your-test-email@gmail.com
 ### 📁 File Structure
 
 ```
-Mentora/
+Pentora/
 ├── .env                 # Template with placeholder values (committed)
 ├── .env.local          # Real credentials (NOT committed)
 ├── .gitignore          # Includes .env.local
-└── mentora_platform/
+└── Pentora_platform/
     └── settings.py     # Loads from .env.local if exists
 ```
 

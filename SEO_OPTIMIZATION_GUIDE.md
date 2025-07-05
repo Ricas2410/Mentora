@@ -1,10 +1,10 @@
-# 🚀 SEO Optimization Guide for Mentora Platform
+# 🚀 SEO Optimization Guide for Pentora Platform
 
 ## ✅ Issues Fixed
 
 ### 1. **Title Tag Optimization**
 - **Before**: 95 characters (too long)
-- **After**: 35 characters ("Mentora - Free Online Learning Platform for Grades 1-12 ")
+- **After**: 35 characters ("Pentora - Free Online Learning Platform for Grades 1-12 ")
 - **Impact**: Better search result display and click-through rates
 
 ### 2. **Meta Description Optimization**
@@ -89,7 +89,7 @@ USE_ETAGS = True
 ### 1. Update Environment Variables
 ```bash
 # In your .env file on PythonAnywhere
-SITE_DOMAIN=mentora.pythonanywhere.com
+SITE_DOMAIN=Pentora.pythonanywhere.com
 SITE_PROTOCOL=https
 PREPEND_WWW=False
 GOOGLE_ANALYTICS_ID=your-actual-ga-id
@@ -112,11 +112,11 @@ python scripts/seo_optimization.py
 ## 🔍 Testing Checklist
 
 ### URLs to Test
-- [ ] `https://mentora.pythonanywhere.com/` (homepage)
-- [ ] `https://mentora.pythonanywhere.com/sitemap.xml` (sitemap)
-- [ ] `https://mentora.pythonanywhere.com/robots.txt` (robots)
-- [ ] `https://mentora.pythonanywhere.com/subjects/` (subjects)
-- [ ] `https://mentora.pythonanywhere.com/about/` (about)
+- [ ] `https://Pentora.pythonanywhere.com/` (homepage)
+- [ ] `https://Pentora.pythonanywhere.com/sitemap.xml` (sitemap)
+- [ ] `https://Pentora.pythonanywhere.com/robots.txt` (robots)
+- [ ] `https://Pentora.pythonanywhere.com/subjects/` (subjects)
+- [ ] `https://Pentora.pythonanywhere.com/about/` (about)
 
 ### SEO Elements to Verify
 - [ ] Title tags are 50-60 characters
@@ -185,4 +185,4 @@ python scripts/seo_optimization.py
 - **Page load speed**: Faster loading times
 - **User engagement**: Lower bounce rates, higher session duration
 
-Your Mentora platform is now fully optimized for search engines! 🎉
+Your Pentora platform is now fully optimized for search engines! 🎉

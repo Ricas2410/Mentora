@@ -244,15 +244,17 @@ def get_site_info():
             'contact_address': site_settings.contact_address,
             'site_logo': site_settings.site_logo.url if site_settings.site_logo else None,
             'site_favicon': site_settings.site_favicon.url if site_settings.site_favicon else None,
+            'hero_banner': site_settings.hero_banner.url if site_settings.hero_banner else None,
         }
     except:
         # Fallback settings
         return {
-            'site_name': 'Mentora Learning Platform',
+            'site_name': 'Pentora Learning Platform',
             'site_description': 'Empowering underprivileged learners through quality education',
-            'contact_email': 'info@mentora.edu.gh',
+            'contact_email': 'info@Pentora.edu.gh',
             'contact_phone': '',
             'contact_address': '',
             'site_logo': None,
             'site_favicon': None,
+            'hero_banner': None,
         }

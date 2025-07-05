@@ -1,0 +1,704 @@
+{% extends 'base.html' %}
+
+{% block title %}Subscription Plans - Pentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Mobile-first responsive design for billing plans */
+    .plan-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        height: 100%;
+        min-height: 520px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .plan-card.featured {
+        transform: scale(1.02);
+        z-index: 10;
+    }
+
+    .plan-card.featured:hover {
+        transform: scale(1.02) translateY(-4px);
+    }
+
+    .price-display {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .feature-list {
+        flex-grow: 1;
+    }
+
+    /* Responsive grid improvements - Mobile first approach */
+    .plans-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Mobile: 1 column */
+        gap: 1.5rem;
+    }
+
+    /* Small screens (640px+): 2 columns */
+    @media (min-width: 640px) {
+        .plans-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+    }
+
+    /* Medium screens (1024px+): 3 columns */
+    @media (min-width: 1024px) {
+        .plans-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+    }
+
+    /* Large screens (1280px+): 4 columns - Perfect for 21" monitors */
+    @media (min-width: 1280px) {
+        .plans-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2.5rem;
+        }
+    }
+
+    /* Ultra-wide screens (1920px+): 5 columns only for very large displays */
+    @media (min-width: 1920px) {
+        .plans-grid {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+        }
+    }
+
+    /* Badge animations */
+    .popular-badge {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translateX(-50%) scale(1); }
+        50% { transform: translateX(-50%) scale(1.05); }
+    }
+
+    /* Currency Toggle Styles */
+    .currency-toggle {
+        color: #6b7280;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    .currency-toggle.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .currency-toggle:hover:not(.active) {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="min-h-screen bg-gradient-to-br from-base-200 via-base-100 to-base-200">
+    <div class="container mx-auto px-4 py-8 lg:py-12">
+        <!-- Header Section -->
+        <div class="text-center mb-12 lg:mb-16">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Choose Your Learning Plan
+                </h1>
+                <p class="text-base sm:text-lg lg:text-xl text-base-content/70 max-w-3xl mx-auto leading-relaxed">
+                    Unlock your potential with flexible plans designed for every learner.
+                    Start free, upgrade anytime, and enjoy unlimited access to premium features.
+                </p>
+            </div>
+        </div>
+
+        <!-- Currency Toggle -->
+        <div class="text-center mb-8">
+            <div class="inline-flex bg-base-200 rounded-lg p-1">
+                <button id="usd-toggle" class="currency-toggle px-4 py-2 rounded-md font-medium transition-all active" data-currency="USD">
+                    🇺🇸 USD ($)
+                </button>
+                <button id="ghs-toggle" class="currency-toggle px-4 py-2 rounded-md font-medium transition-all" data-currency="GHS">
+                    🇬🇭 GHS (₵)
+                </button>
+            </div>
+            <p class="text-sm text-base-content/60 mt-2">
+                <span id="exchange-rate-info">Exchange rate: 1 USD = 12.5 GHS</span>
+            </p>
+        </div>
+
+        <!-- Billing Announcement (if enabled) -->
+        {% if billing_settings.show_billing_announcement %}
+        <div class="alert alert-{{ billing_settings.announcement_type }} mb-8 lg:mb-12 rounded-xl shadow-lg">
+            <div class="flex-1">
+                <h3 class="font-bold text-lg">{{ billing_settings.announcement_title }}</h3>
+                <div class="text-sm opacity-90">{{ billing_settings.announcement_message|linebreaks }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Current Subscription Status -->
+        {% if current_subscription %}
+        <div class="card bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 shadow-xl mb-8 lg:mb-12">
+            <div class="card-body">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fas fa-crown text-primary text-xl"></i>
+                    <h2 class="card-title text-xl">Your Current Plan</h2>
+                </div>
+                <div class="flex flex-wrap gap-3 items-center mb-4">
+                    <div class="badge badge-primary badge-lg px-4 py-3 text-sm font-semibold">
+                        {{ current_subscription.plan.name }}
+                    </div>
+                    <div class="badge {% if current_subscription.status == 'active' %}badge-success{% elif current_subscription.status == 'trialing' %}badge-info{% else %}badge-warning{% endif %} badge-lg px-4 py-3">
+                        {{ current_subscription.get_status_display }}
+                    </div>
+                    {% if current_subscription.current_period_end %}
+                    <div class="text-sm text-base-content/70 bg-base-200 px-3 py-2 rounded-full">
+                        <i class="fas fa-calendar-alt mr-1"></i>
+                        {% if current_subscription.is_trial %}
+                            Trial ends: {{ current_subscription.trial_end|date:"M d, Y" }}
+                        {% else %}
+                            Renews: {{ current_subscription.current_period_end|date:"M d, Y" }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{% url 'billing:dashboard' %}" class="btn btn-outline btn-sm">
+                        <i class="fas fa-cog mr-2"></i>
+                        Manage Subscription
+                    </a>
+                    <a href="#plans" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-up mr-2"></i>
+                        Upgrade Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Plans Grid -->
+        <div id="plans" class="plans-grid">
+            {% for plan in plans %}
+            <div class="plan-card card bg-base-100 shadow-xl border-2 border-transparent {% if plan.is_featured %}featured border-primary/30{% endif %} hover:border-primary/50"
+                 data-plan-id="{{ plan.id }}"
+                 data-monthly-usd="{{ plan.monthly_price }}"
+                 data-yearly-usd="{{ plan.yearly_price|default:0 }}"
+                 data-monthly-ghs="{{ plan.get_monthly_price_ghs }}"
+                 data-yearly-ghs="{{ plan.get_yearly_price_ghs|default:0 }}">
+                {% if plan.is_featured %}
+                <div class="popular-badge badge badge-primary badge-lg absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-2 text-xs font-bold shadow-lg">
+                    <i class="fas fa-star mr-1"></i>
+                    MOST POPULAR
+                </div>
+                {% endif %}
+
+                <div class="card-body p-6 lg:p-8 flex flex-col flex-grow">
+                    <!-- Plan Header -->
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl lg:text-2xl font-bold mb-2">{{ plan.name }}</h3>
+
+                        <!-- Pricing Toggle (if yearly option available) -->
+                        {% if plan.has_yearly_option %}
+                        <div class="flex justify-center mb-4">
+                            <div class="join">
+                                <input class="join-item btn btn-sm" type="radio" name="billing-{{ plan.id }}" aria-label="Monthly" checked onclick="updatePricing('{{ plan.id }}', 'monthly')"/>
+                                <input class="join-item btn btn-sm" type="radio" name="billing-{{ plan.id }}" aria-label="Yearly" onclick="updatePricing('{{ plan.id }}', 'yearly')"/>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="price-display text-4xl lg:text-5xl font-black mb-2" id="price-{{ plan.id }}">
+                            {% if plan.is_free %}
+                                <span class="text-success">Free</span>
+                            {% else %}
+                                <span class="currency-price usd-price">
+                                    ${{ plan.monthly_price }}
+                                </span>
+                                <span class="currency-price ghs-price" style="display: none;">
+                                    GH₵{{ plan.get_monthly_price_ghs|floatformat:2 }}
+                                </span>
+                                <span class="text-lg lg:text-xl font-normal text-base-content/60" id="cycle-{{ plan.id }}">
+                                    /month
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if plan.has_yearly_option %}
+                        <div class="badge badge-success badge-sm" id="discount-{{ plan.id }}" style="display: none;">
+                            Save {{ plan.yearly_discount_percentage }}%
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Plan Description -->
+                    <p class="text-center text-base-content/70 mb-6 text-sm lg:text-base leading-relaxed">
+                        {{ plan.description }}
+                    </p>
+
+                    <!-- Features List -->
+                    <div class="feature-list space-y-3 mb-8">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-5 h-5 bg-success rounded-full flex items-center justify-center mt-0.5">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <span class="text-sm lg:text-base">
+                                <strong>{{ plan.subject_count_display }}</strong>
+                                {% if plan.allowed_subjects.exists %}
+                                    <div class="text-xs text-base-content/60 mt-1">
+                                        {% for subject in plan.allowed_subjects.all %}
+                                            {{ subject.name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-5 h-5 bg-success rounded-full flex items-center justify-center mt-0.5">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <span class="text-sm lg:text-base">
+                                {% if plan.max_quizzes_per_day %}
+                                    <strong>{{ plan.max_quizzes_per_day }}</strong> quizzes per day
+                                {% else %}
+                                    <strong>Unlimited</strong> daily quizzes
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-5 h-5 bg-success rounded-full flex items-center justify-center mt-0.5">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <span class="text-sm lg:text-base">Progress tracking & reports</span>
+                        </div>
+
+                        {% if plan.advanced_analytics %}
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-5 h-5 bg-success rounded-full flex items-center justify-center mt-0.5">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <span class="text-sm lg:text-base">Advanced analytics & insights</span>
+                        </div>
+                        {% endif %}
+
+                        {% if plan.offline_access %}
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-5 h-5 bg-success rounded-full flex items-center justify-center mt-0.5">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <span class="text-sm lg:text-base">Offline access & downloads</span>
+                        </div>
+                        {% endif %}
+
+                        {% if plan.priority_support %}
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-5 h-5 bg-success rounded-full flex items-center justify-center mt-0.5">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <span class="text-sm lg:text-base">Priority email support</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="mt-auto">
+                        {% if current_subscription and current_subscription.plan == plan %}
+                            <button class="btn btn-outline w-full" disabled>
+                                <i class="fas fa-check mr-2"></i>
+                                Current Plan
+                            </button>
+                        {% elif not billing_enabled %}
+                            <button class="btn btn-primary w-full" disabled>
+                                <i class="fas fa-clock mr-2"></i>
+                                Coming Soon
+                            </button>
+                        {% else %}
+                            <a href="{% url 'billing:subscribe' plan.id %}" class="btn btn-primary w-full btn-lg hover:scale-105 transition-transform" id="btn-{{ plan.id }}" onclick="addBillingCycle(this, '{{ plan.id }}')">
+                                {% if current_subscription %}
+                                    <i class="fas fa-arrow-up mr-2"></i>
+                                    Switch to {{ plan.name }}
+                                {% else %}
+                                    <i class="fas fa-rocket mr-2"></i>
+                                    Get Started
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-16 lg:mt-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-4xl mx-auto">
+                <div class="text-center p-6 bg-base-100 rounded-xl shadow-lg">
+                    <div class="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-success text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">30-Day Guarantee</h3>
+                    <p class="text-sm text-base-content/70">Not satisfied? Get a full refund within 30 days, no questions asked.</p>
+                </div>
+
+                <div class="text-center p-6 bg-base-100 rounded-xl shadow-lg">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-sync-alt text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Flexible Plans</h3>
+                    <p class="text-sm text-base-content/70">Change or cancel your plan anytime. No long-term commitments required.</p>
+                </div>
+
+                <div class="text-center p-6 bg-base-100 rounded-xl shadow-lg">
+                    <div class="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-headset text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Expert Support</h3>
+                    <p class="text-sm text-base-content/70">Get help when you need it with our responsive customer support team.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-16 lg:mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl lg:text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+                <p class="text-base-content/70 max-w-2xl mx-auto">
+                    Have questions? We've got answers. Can't find what you're looking for?
+                    <a href="{% url 'core:contact' %}" class="link link-primary">Contact our support team</a>.
+                </p>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-4">
+                <div class="collapse collapse-arrow bg-base-100 shadow-lg rounded-xl">
+                    <input type="radio" name="faq-accordion" checked="checked" />
+                    <div class="collapse-title text-lg font-medium">
+                        <i class="fas fa-sync-alt text-primary mr-3"></i>
+                        Can I change my plan anytime?
+                    </div>
+                    <div class="collapse-content">
+                        <p class="text-base-content/80 leading-relaxed">
+                            Absolutely! You can upgrade or downgrade your plan at any time from your billing dashboard.
+                            Upgrades take effect immediately, while downgrades take effect at the end of your current billing period.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="collapse collapse-arrow bg-base-100 shadow-lg rounded-xl">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        <i class="fas fa-times-circle text-warning mr-3"></i>
+                        What happens if I cancel my subscription?
+                    </div>
+                    <div class="collapse-content">
+                        <p class="text-base-content/80 leading-relaxed">
+                            You'll continue to have full access to your plan's features until the end of your current billing period.
+                            After that, your account will automatically switch to our free plan, so you won't lose your progress or data.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="collapse collapse-arrow bg-base-100 shadow-lg rounded-xl">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        <i class="fas fa-shield-alt text-success mr-3"></i>
+                        Do you offer refunds?
+                    </div>
+                    <div class="collapse-content">
+                        <p class="text-base-content/80 leading-relaxed">
+                            Yes! We offer a 30-day money-back guarantee for all paid plans. If you're not completely satisfied,
+                            contact our support team within 30 days of your purchase for a full refund.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="collapse collapse-arrow bg-base-100 shadow-lg rounded-xl">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        <i class="fas fa-credit-card text-info mr-3"></i>
+                        What payment methods do you accept?
+                    </div>
+                    <div class="collapse-content">
+                        <p class="text-base-content/80 leading-relaxed">
+                            We accept all major credit cards (Visa, MasterCard, American Express) and PayPal.
+                            All payments are processed securely through industry-standard encryption.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="collapse collapse-arrow bg-base-100 shadow-lg rounded-xl">
+                    <input type="radio" name="faq-accordion" />
+                    <div class="collapse-title text-lg font-medium">
+                        <i class="fas fa-graduation-cap text-secondary mr-3"></i>
+                        Is there a student discount?
+                    </div>
+                    <div class="collapse-content">
+                        <p class="text-base-content/80 leading-relaxed">
+                            Yes! We offer a special Student plan at a discounted rate. You'll get all premium features
+                            at a student-friendly price. Contact support with your student ID for verification.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-16 lg:mt-20 text-center">
+            <div class="bg-gradient-to-r from-primary to-secondary p-8 lg:p-12 rounded-2xl text-white">
+                <h2 class="text-2xl lg:text-3xl font-bold mb-4">Ready to Start Learning?</h2>
+                <p class="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
+                    Join thousands of learners who are already improving their skills with Pentora.
+                    Start your free trial today!
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    {% if not current_subscription %}
+                    <a href="#plans" class="btn btn-accent btn-lg">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Choose Your Plan
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'core:contact' %}" class="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-primary">
+                        <i class="fas fa-comments mr-2"></i>
+                        Talk to Sales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Store selected billing cycles for each plan
+const selectedCycles = {};
+let currentCurrency = 'USD';
+
+// Currency switching functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const usdToggle = document.getElementById('usd-toggle');
+    const ghsToggle = document.getElementById('ghs-toggle');
+
+    usdToggle.addEventListener('click', () => switchCurrency('USD'));
+    ghsToggle.addEventListener('click', () => switchCurrency('GHS'));
+
+    // Load exchange rate
+    loadExchangeRate();
+});
+
+function switchCurrency(currency) {
+    currentCurrency = currency;
+
+    // Update toggle buttons
+    document.querySelectorAll('.currency-toggle').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(currency.toLowerCase() + '-toggle').classList.add('active');
+
+    // Show/hide price displays
+    document.querySelectorAll('.usd-price').forEach(el => {
+        el.style.display = currency === 'USD' ? 'inline' : 'none';
+    });
+    document.querySelectorAll('.ghs-price').forEach(el => {
+        el.style.display = currency === 'GHS' ? 'inline' : 'none';
+    });
+
+    // Update payment buttons
+    updatePaymentButtons();
+}
+
+function loadExchangeRate() {
+    fetch('/billing/api/currency/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('exchange-rate-info').textContent =
+                    `Exchange rate: 1 USD = ${data.exchange_rate} GHS`;
+            }
+        })
+        .catch(error => console.error('Error loading exchange rate:', error));
+}
+
+function updatePricing(planId, cycle) {
+    selectedCycles[planId] = cycle;
+
+    const priceElement = document.getElementById(`price-${planId}`);
+    const cycleElement = document.getElementById(`cycle-${planId}`);
+    const discountElement = document.getElementById(`discount-${planId}`);
+
+    if (priceElement && cycleElement) {
+        // Get the plan data from the page
+        const planCard = document.querySelector(`[data-plan-id="${planId}"]`);
+        if (!planCard) return;
+
+        const monthlyUsd = parseFloat(planCard.dataset.monthlyUsd);
+        const yearlyUsd = parseFloat(planCard.dataset.yearlyUsd);
+        const monthlyGhs = parseFloat(planCard.dataset.monthlyGhs);
+        const yearlyGhs = parseFloat(planCard.dataset.yearlyGhs);
+
+        // Update price display based on current currency and cycle
+        const usdPrice = priceElement.querySelector('.usd-price');
+        const ghsPrice = priceElement.querySelector('.ghs-price');
+
+        if (cycle === 'yearly') {
+            if (usdPrice) usdPrice.textContent = `$${yearlyUsd.toFixed(2)}`;
+            if (ghsPrice) ghsPrice.textContent = `GH₵${yearlyGhs.toFixed(2)}`;
+            cycleElement.innerHTML = '/year';
+        } else {
+            if (usdPrice) usdPrice.textContent = `$${monthlyUsd.toFixed(2)}`;
+            if (ghsPrice) ghsPrice.textContent = `GH₵${monthlyGhs.toFixed(2)}`;
+            cycleElement.innerHTML = '/month';
+        }
+
+        // Show/hide discount badge
+        if (discountElement) {
+            if (cycle === 'yearly') {
+                discountElement.style.display = 'inline-block';
+            } else {
+                discountElement.style.display = 'none';
+            }
+        }
+    }
+}
+
+function updatePaymentButtons() {
+    // Update payment button text based on currency
+    document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+        if (currentCurrency === 'GHS') {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                const planId = this.id.replace('btn-', '');
+                initiatePaystackPayment(planId);
+            };
+        }
+    });
+}
+
+function addBillingCycle(element, planId) {
+    const cycle = selectedCycles[planId] || 'monthly';
+    const href = element.getAttribute('href');
+    const separator = href.includes('?') ? '&' : '?';
+    element.setAttribute('href', `${href}${separator}cycle=${cycle}`);
+    return true;
+}
+
+function initiatePaystackPayment(planId) {
+    const cycle = selectedCycles[planId] || 'monthly';
+
+    // Show loading state
+    const btn = document.getElementById(`btn-${planId}`);
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+    btn.disabled = true;
+
+    // Initialize Paystack payment
+    fetch('/billing/paystack/pay/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            plan_id: planId,
+            billing_cycle: cycle
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirect to Paystack payment page
+            window.location.href = data.authorization_url;
+        } else {
+            alert('Payment initialization failed: ' + data.error);
+            // Restore button
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Payment error:', error);
+        alert('Payment initialization failed. Please try again.');
+        // Restore button
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all plans with monthly cycle
+    document.querySelectorAll('.plan-card').forEach(card => {
+        const planId = card.querySelector('[id^="price-"]')?.id.replace('price-', '');
+        if (planId) {
+            selectedCycles[planId] = 'monthly';
+        }
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add animation delay to plan cards for staggered effect
+    const planCards = document.querySelectorAll('.plan-card');
+    planCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('animate-fade-in-up');
+    });
+
+    // Highlight featured plan on page load
+    const featuredCard = document.querySelector('.plan-card.featured');
+    if (featuredCard) {
+        setTimeout(() => {
+            featuredCard.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                featuredCard.style.transform = '';
+            }, 1000);
+        }, 500);
+    }
+});
+
+// Add CSS animation classes
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

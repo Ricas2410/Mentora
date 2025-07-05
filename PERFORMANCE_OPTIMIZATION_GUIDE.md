@@ -1,4 +1,4 @@
-# ⚡ Performance Optimization Guide for Mentora Platform
+# ⚡ Performance Optimization Guide for Pentora Platform
 
 ## 📊 Current Issues to Address
 
@@ -222,8 +222,8 @@ self.addEventListener('fetch', event => {
 #### **Web App Manifest:**
 ```json
 {
-    "name": "Mentora Learning Platform",
-    "short_name": "Mentora",
+    "name": "Pentora Learning Platform",
+    "short_name": "Pentora",
     "description": "Free K-12 Learning Platform",
     "start_url": "/",
     "display": "standalone",

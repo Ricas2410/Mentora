@@ -11,7 +11,7 @@ import django
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora_platform.settings')
 django.setup()
 
 from django.contrib.sites.models import Site
@@ -46,7 +46,7 @@ def main():
         
         # Update the site
         current_site.domain = site_domain
-        current_site.name = f'Mentora ({site_domain})'
+        current_site.name = f'Pentora ({site_domain})'
         current_site.save()
         
         print(f"✅ Updated site domain to: {site_domain}")
@@ -62,7 +62,7 @@ def main():
         response = input("\nUpdate Sites framework to match settings? (y/n): ")
         if response.lower() == 'y':
             current_site.domain = site_domain
-            current_site.name = f'Mentora ({site_domain})'
+            current_site.name = f'Pentora ({site_domain})'
             current_site.save()
             print(f"✅ Updated site domain to: {site_domain}")
     

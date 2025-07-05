@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SEO Optimization Script for Mentora Platform
+SEO Optimization Script for Pentora Platform
 Addresses all major SEO issues identified by SEO analyzers
 """
 
@@ -12,7 +12,7 @@ import django
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora_platform.settings')
 django.setup()
 
 from django.contrib.sites.models import Site
@@ -20,7 +20,7 @@ from django.conf import settings
 
 
 def main():
-    print("🚀 SEO OPTIMIZATION FOR MENTORA PLATFORM")
+    print("🚀 SEO OPTIMIZATION FOR Pentora PLATFORM")
     print("=" * 60)
     
     # Check current SEO status
@@ -157,7 +157,7 @@ def main():
     print("• Analytics: Missing → Google Analytics ✓")
     
     print(f"\n🏆 SEO OPTIMIZATION COMPLETE!")
-    print("Your Mentora platform is now optimized for search engines.")
+    print("Your Pentora platform is now optimized for search engines.")
     print("Deploy these changes and monitor your SEO performance!")
 
 

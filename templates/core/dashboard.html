@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard - Mentora{% endblock %}
+{% block title %}Dashboard - Pentora{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -515,7 +515,7 @@
             <!-- Welcome Header -->
             <div class="welcome-header">
                 <h1 class="welcome-title">
-                    Welcome to Mentora, {{ user.first_name }}!
+                    Welcome to Pentora, {{ user.first_name }}!
                 </h1>
                 <p class="welcome-subtitle">
                     To provide you with the most appropriate learning materials and track your progress effectively, please select your current class level.
@@ -627,6 +627,72 @@ function selectLevel(level) {
                 </div>
             </div>
         </div>
+
+        <!-- Subscription Promotion (only show if billing is enabled and user doesn't have active subscription) -->
+        {% if billing_enabled and not user_subscription.is_active %}
+        <div class="dashboard-card mb-6">
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-6">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold mb-2">
+                            <i class="fas fa-star mr-2"></i>
+                            Unlock Premium Learning
+                        </h3>
+                        <p class="text-blue-100">
+                            Get access to all subjects, unlimited quizzes, and personalized learning paths
+                        </p>
+                        <div class="flex items-center mt-2 text-sm text-blue-100">
+                            <i class="fas fa-check mr-2"></i>
+                            <span class="mr-4">All 12 Subjects</span>
+                            <i class="fas fa-check mr-2"></i>
+                            <span class="mr-4">Unlimited Practice</span>
+                            <i class="fas fa-check mr-2"></i>
+                            <span>Progress Tracking</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a href="{% url 'billing:plans' %}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                            <i class="fas fa-crown mr-2"></i>
+                            View Plans
+                        </a>
+                        <a href="{% url 'billing:dashboard' %}" class="border border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                            <i class="fas fa-cog mr-2"></i>
+                            Manage Billing
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif billing_enabled and user_subscription.is_active %}
+        <!-- Active Subscription Status -->
+        <div class="dashboard-card mb-6">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg p-6">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold mb-2">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            {{ user_subscription.plan.name }} Plan Active
+                        </h3>
+                        <p class="text-green-100">
+                            Your subscription is active until {{ user_subscription.current_period_end|date:"F d, Y" }}
+                        </p>
+                        <div class="flex items-center mt-2 text-sm text-green-100">
+                            <i class="fas fa-calendar mr-2"></i>
+                            <span class="mr-4">{{ user_subscription.billing_cycle|title }} Billing</span>
+                            <i class="fas fa-unlock mr-2"></i>
+                            <span>Full Access Enabled</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a href="{% url 'billing:dashboard' %}" class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+                            <i class="fas fa-cog mr-2"></i>
+                            Manage Subscription
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Subjects Grid -->
         <div class="dashboard-card">

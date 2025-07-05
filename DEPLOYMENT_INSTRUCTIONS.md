@@ -4,7 +4,7 @@
 
 ### **Step 1: Pull Latest Changes**
 ```bash
-cd ~/Mentora
+cd ~/Pentora
 git pull origin main
 ```
 
@@ -72,8 +72,8 @@ TOTAL: 8 notes, 40 questions
 ## 🔧 **Troubleshooting**
 
 ### **If the script fails:**
-1. **Check you're in the right directory:** `cd ~/Mentora`
-2. **Ensure virtual environment is active:** `source mentora_venv/bin/activate`
+1. **Check you're in the right directory:** `cd ~/Pentora`
+2. **Ensure virtual environment is active:** `source Pentora_venv/bin/activate`
 3. **Try running through Django shell:**
    ```bash
    python manage.py shell

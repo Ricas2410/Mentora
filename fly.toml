@@ -1,0 +1,49 @@
+# Fly.io configuration for Pentora Platform
+# Optimized for free tier with minimal resource usage
+
+app = "pentora"
+primary_region = "lhr"  # London - optimal for Ghana users
+
+[build]
+
+[env]
+  PORT = "8000"
+  PYTHONUNBUFFERED = "1"
+  DJANGO_SETTINGS_MODULE = "pentora_platform.settings"
+  DEBUG = "false"
+  ALLOWED_HOSTS = "pentora.fly.dev,*.fly.dev"
+
+  # Performance optimizations for free tier
+  DJANGO_CACHE_TIMEOUT = "3600"
+  STATIC_FILE_COMPRESSION = "true"
+  DATABASE_CONN_MAX_AGE = "600"
+
+  # Disable heavy features on free tier
+  ENABLE_PERFORMANCE_TRACKING = "false"
+  ENABLE_DETAILED_MONITORING = "false"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0  # Allow scaling to zero for free tier
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25      # Conservative limit for free tier
+    soft_limit = 20
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1             # Minimum CPU for free tier
+  memory_mb = 512      # Minimum memory for free tier
+
+[processes]
+  app = "gunicorn pentora_platform.wsgi:application --bind 0.0.0.0:8000 --workers 1 --threads 2 --max-requests 1000 --max-requests-jitter 100 --preload"
+
+# Health checks handled by http_service section above
+
+[deploy]
+  strategy = "immediate"

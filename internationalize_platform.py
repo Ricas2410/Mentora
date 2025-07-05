@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Script to internationalize the Mentora platform
+Script to internationalize the Pentora platform
 - Removes Ghana-specific references
 - Updates to international grade system (Grades 1-12)
 - Clears existing data and repopulates with international content
@@ -9,7 +9,7 @@ import os
 import django
 
 # Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora_platform.settings')
 django.setup()
 
 from django.db import transaction
@@ -227,7 +227,7 @@ def create_admin_user():
     admin_user, created = User.objects.get_or_create(
         username='admin',
         defaults={
-            'email': 'admin@mentora.edu',
+            'email': 'admin@Pentora.edu',
             'first_name': 'System',
             'last_name': 'Administrator',
             'is_staff': True,
@@ -245,7 +245,7 @@ def create_admin_user():
 
 def main():
     """Main internationalization process"""
-    print("🌍 Starting Mentora Platform Internationalization...")
+    print("🌍 Starting Pentora Platform Internationalization...")
     print("=" * 60)
 
     # Step 1: Clear existing data

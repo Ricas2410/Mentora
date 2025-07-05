@@ -5,38 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO Meta Tags -->
-    <title>{% block title %}Mentora - Free Online Learning Platform for Grades 1-12 | Educational Quizzes & Study Materials{% endblock %}</title>
-    <meta name="description" content="{% block description %}Mentora is a free online learning platform offering comprehensive educational content for Grades 1-12. Access interactive quizzes, study notes, and learning materials for English, Mathematics, Science, Social Studies, ICT, and Life Skills.{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}free online learning, educational platform, grades 1-12, online quizzes, study materials, English learning, Mathematics, Science, Social Studies, ICT, Life Skills, free education, online school, learning platform, mentora, educational resources{% endblock %}">
-    <meta name="author" content="Mentora Learning Platform">
+    <title>{% block title %}Pentora (Mentora) - Ghana's Leading Online Education Platform | BECE & WASSCE Preparation | Free Quality Education{% endblock %}</title>
+    <meta name="description" content="{% block description %}Pentora (formerly Mentora) - Ghana's premier online education platform providing free quality education, BECE preparation, WASSCE preparation, interactive learning, and comprehensive study materials for JHS and SHS students. Access online studies, educational quizzes, and expert-curated content for academic excellence.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}education, online learning, e-learning, digital education, Mentora, Pentora, educational platform, online studies, BECE preparation, WASSCE preparation, Ghana education, primary education, secondary education, JHS, SHS, mathematics, english, science, social studies, online quizzes, study notes, exam preparation, free education, quality education, academic excellence, student learning, educational resources, study materials, interactive learning, personalized education, learning platform, educational technology, EdTech Ghana, online tutoring, curriculum-based learning, grade-specific content, comprehensive education, academic support, learning management, distance learning, virtual classroom, educational app, study platform, learning app, education Ghana, school online, free online learning, grades 1-12, English learning, Mathematics, ICT, Life Skills, online school{% endblock %}">
+    <meta name="author" content="Pentora Learning Platform">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
 
     <!-- Open Graph Meta Tags for Social Media -->
-    <meta property="og:title" content="{% block og_title %}Mentora - Free Online Learning Platform for All Grades{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}Pentora - Free Online Learning Platform for All Grades{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Access free educational content, interactive quizzes, and comprehensive study materials for Grades 1-12. Learn English, Math, Science, and more!{% endblock %}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/mentora-og-image.jpg' %}{% endblock %}">
-    <meta property="og:site_name" content="Mentora Learning Platform">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/Pentora-og-image.jpg' %}{% endblock %}">
+    <meta property="og:site_name" content="Pentora Learning Platform">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}Mentora - Free Online Learning Platform{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}Pentora - Free Online Learning Platform{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Free educational platform with quizzes and study materials for all grades{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/mentora-twitter-card.jpg' %}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/Pentora-twitter-card.jpg' %}{% endblock %}">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
 
     <!-- Favicon and App Icons -->
-    <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'favicon.ico' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% load static %}{% static 'images/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% load static %}{% static 'images/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% load static %}{% static 'images/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% load static %}{% static 'site.webmanifest' %}">
+    {% load site_images %}
+    {% get_site_favicon as custom_favicon %}
+    {% if custom_favicon %}
+        <link rel="icon" type="image/x-icon" href="{{ custom_favicon }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ custom_favicon }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ custom_favicon }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ custom_favicon }}">
+    {% else %}
+        <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'favicon.ico' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% load static %}{% static 'images/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% load static %}{% static 'images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% load static %}{% static 'images/favicon-16x16.png' %}">
+    {% endif %}>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{% load static %}{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#121d83">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Pentora">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
 
     <meta name="msvalidate.01" content="B22122BDFE18A09A555F2621A0E58E75" />
     <meta name="google-site-verification" content="A_Kcye10Uv-VNismGcofJo8uoiHPW5EUPTKRIo37V1c" />
@@ -47,6 +69,9 @@
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Enhanced UI CSS -->
+    <link rel="stylesheet" href="{% load static %}{% static 'css/enhanced-ui.css' %}">
 
     <!-- Custom CSS -->
     <style>
@@ -124,6 +149,74 @@
             background: var(--card-white);
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         }
+
+        /* PWA Install Button */
+        #install-app {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Offline indicator */
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #f59e0b;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            z-index: 1001;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .offline-indicator.show {
+            transform: translateY(0);
+        }
+
+        /* Scroll animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Keyboard navigation focus styles */
+        .keyboard-navigation *:focus {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Lazy loading images */
+        img.lazy {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        img.lazy.loaded {
+            opacity: 1;
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -185,16 +278,32 @@
                                 <span class="font-medium text-base">Settings</span>
                             </a>
                         </li>
+                        {% if billing_enabled %}
+                        <li class="mobile-nav-item">
+                            <a href="{% url 'billing:dashboard' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-3 px-4">
+                                <i class="fas fa-credit-card nav-icon text-green-500 text-lg mr-3"></i>
+                                <span class="font-medium text-base">Billing</span>
+                                {% if not user_subscription_active %}
+                                <span class="badge badge-warning badge-xs ml-2">!</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </div>
 
             <!-- Logo -->
             <a href="{% url 'core:home' %}" class="btn btn-ghost text-xl font-bold text-white hover:bg-white hover:bg-opacity-20">
-                <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-2">
-                    <i class="fas fa-graduation-cap text-white text-sm"></i>
-                </div>
-                Mentora
+                {% get_site_logo as custom_logo %}
+                {% if custom_logo %}
+                    <img src="{{ custom_logo }}" alt="{% get_site_name %}" class="h-8 w-auto mr-2">
+                {% else %}
+                    <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-2">
+                        <i class="fas fa-graduation-cap text-white text-sm"></i>
+                    </div>
+                    {% get_site_name %}
+                {% endif %}
             </a>
         </div>
 
@@ -228,6 +337,17 @@
                             <span class="font-medium text-lg">Dashboard</span>
                         </a>
                     </li>
+                    {% if billing_enabled %}
+                    <li>
+                        <a href="{% url 'billing:dashboard' %}" class="nav-item tooltip flex items-center text-white hover:bg-white hover:bg-opacity-20 px-4 py-2 rounded-lg" data-tooltip="Manage your subscription">
+                            <i class="fas fa-credit-card nav-icon text-lg mr-2"></i>
+                            <span class="font-medium text-lg">Billing</span>
+                            {% if not user_subscription_active %}
+                            <span class="badge badge-warning badge-xs ml-2">!</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </div>
@@ -254,6 +374,20 @@
                         </li>
                         <div class="divider my-1"></div>
                         <li><a href="{% url 'users:profile' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-user mr-2"></i> Profile & Settings</a></li>
+                        {% if billing_enabled %}
+                        <li>
+                            <a href="{% url 'billing:dashboard' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2">
+                                <i class="fas fa-crown mr-2"></i>
+                                {% if user_subscription.is_active %}
+                                    <span>{{ user_subscription.plan.name }} Plan</span>
+                                    <span class="badge badge-success badge-xs ml-2">Active</span>
+                                {% else %}
+                                    <span>Subscription</span>
+                                    <span class="badge badge-warning badge-xs ml-2">Free</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        {% endif %}
                         <li><a href="{% url 'progress:overview' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-chart-line mr-2"></i> My Progress</a></li>
                         <li><a href="{% url 'progress:achievements' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-trophy mr-2"></i> Achievements</a></li>
                         <li><a href="{% url 'core:help' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-question mr-2"></i> Help Center</a></li>
@@ -272,6 +406,11 @@
 
     <!-- Main Content -->
     <main class="min-h-screen">
+        <!-- Billing Announcements -->
+        <div class="container mx-auto px-4 pt-4">
+            {% include 'billing/announcement_banner.html' %}
+        </div>
+
         <!-- Messages -->
         {% if messages %}
             <div class="container mx-auto px-4 mb-4">
@@ -286,6 +425,9 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Feedback Widget -->
+    {% include 'components/feedback_widget.html' %}
+
     <!-- Footer -->
     <footer class="gradient-bg text-white mt-8 sm:mt-16">
         <div class="container mx-auto px-4 py-8 sm:py-12">
@@ -297,7 +439,7 @@
                         <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-2 lg:mr-3">
                             <i class="fas fa-graduation-cap text-white text-sm lg:text-lg"></i>
                         </div>
-                        <h3 class="text-lg lg:text-xl font-bold">Mentora</h3>
+                        <h3 class="text-lg lg:text-xl font-bold">Pentora</h3>
                     </div>
                     <p class="text-white text-opacity-80 mb-3 text-xs lg:text-sm leading-relaxed">
                         Empowering underprivileged learners through quality education.
@@ -358,7 +500,7 @@
             <div class="border-t border-white border-opacity-20 mt-6 sm:mt-8 pt-6 sm:pt-8">
                 <div class="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
                     <div class="text-white text-opacity-80 text-xs sm:text-sm mb-3 sm:mb-0">
-                        © 2024 Mentora Educational Platform. Empowering learners to rebuild their dreams.
+                        © 2024 Pentora Educational Platform. Empowering learners to rebuild their dreams.
                     </div>
                     <div class="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm">
                         <span class="text-white text-opacity-80">Made with</span>
@@ -385,6 +527,73 @@
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+    </script>
+
+    <!-- PWA Install Button -->
+    <button id="install-app" class="btn btn-primary btn-circle shadow-lg">
+        <i class="fas fa-download"></i>
+    </button>
+
+    <!-- Offline Indicator -->
+    <div class="offline-indicator" id="offline-indicator">
+        <i class="fas fa-wifi-slash mr-2"></i>
+        You're offline. Some features may be limited.
+    </div>
+
+    <!-- Ultra-Conservative Progress Bar Cleanup (Load First) -->
+    <script src="{% load static %}{% static 'js/progress-bar-cleanup.js' %}?v=3"></script>
+
+    <!-- Enhanced JavaScript -->
+    <script src="{% load static %}{% static 'js/app.js' %}?v=4"></script>
+    <script src="{% load static %}{% static 'js/ux-enhancements.js' %}"></script>
+    <script src="{% load static %}{% static 'js/mobile-navigation.js' %}"></script>
+    <script src="{% load static %}{% static 'js/performance-optimizer.js' %}?v=4"></script>
+    <script src="{% load static %}{% static 'js/ui-interactions.js' %}"></script>
+    <script src="{% load static %}{% static 'js/page-specific-enhancements.js' %}?v=3"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Handle online/offline status
+        function updateOnlineStatus() {
+            const indicator = document.getElementById('offline-indicator');
+            if (navigator.onLine) {
+                indicator.classList.remove('show');
+            } else {
+                indicator.classList.add('show');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Initial check
+        updateOnlineStatus();
+
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            // Monitor Core Web Vitals
+            if ('web-vitals' in window) {
+                // This would require importing the web-vitals library
+                // getCLS(console.log);
+                // getFID(console.log);
+                // getFCP(console.log);
+                // getLCP(console.log);
+                // getTTFB(console.log);
+            }
         });
     </script>
 

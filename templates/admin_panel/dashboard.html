@@ -253,6 +253,32 @@
                 </div>
             </div>
         </div>
+
+        <!-- Quick Actions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'analytics:dashboard' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-chart-line me-2"></i>
+                        View Analytics & Monitoring
+                    </a>
+                    <a href="/admin/billing/" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Manage Billing
+                    </a>
+                    <a href="{% url 'admin_panel:settings' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-cog me-2"></i>
+                        Site Settings
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -12,7 +12,7 @@ import django
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora_platform.settings')
 django.setup()
 
 from users.models import User

@@ -1,4 +1,4 @@
-# 🔗 Backlink Strategy Guide for Mentora Platform
+# 🔗 Backlink Strategy Guide for Pentora Platform
 
 ## 📊 Current Status: Weak Backlink Activity
 
@@ -82,7 +82,7 @@ Submit your platform to educational directories:
 
 #### **Press Release Topics:**
 - "New Free Educational Platform Launches for Underprivileged Students"
-- "Mentora Reaches [X] Students Worldwide with Free K-12 Education"
+- "Pentora Reaches [X] Students Worldwide with Free K-12 Education"
 - "Mobile-First Learning Platform Addresses Digital Divide"
 - "Educational Technology Startup Offers Completely Free Learning"
 
@@ -184,7 +184,7 @@ Submit your platform to educational directories:
 
 #### **Anchor Text Strategy:**
 - Use natural, varied anchor text
-- Include branded terms (Mentora)
+- Include branded terms (Pentora)
 - Use educational keywords naturally
 - Avoid over-optimization
 - Focus on contextual relevance

@@ -1,7 +1,7 @@
-# 📧 Email Verification Setup Guide for Mentora
+# 📧 Email Verification Setup Guide for Pentora
 
 ## 🔧 Current Status
-Your Mentora platform is currently configured to print emails to the console (development mode). This means when users register, the verification email will appear in your terminal/console instead of being sent to their actual email address.
+Your Pentora platform is currently configured to print emails to the console (development mode). This means when users register, the verification email will appear in your terminal/console instead of being sent to their actual email address.
 
 ## 🚀 Quick Setup Options
 
@@ -43,7 +43,7 @@ EMAIL_HOST_PASSWORD=your-16-character-app-password
 2. Under "Signing in to Google," click **App passwords**
 3. Select app: **Mail**
 4. Select device: **Other (Custom name)**
-5. Enter: **Mentora Platform**
+5. Enter: **Pentora Platform**
 6. Click **Generate**
 7. **Copy the 16-character password** (you'll need this)
 
@@ -56,7 +56,7 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=abcd efgh ijkl mnop  # Your 16-character app password
-DEFAULT_FROM_EMAIL=Mentora <noreply@mentora.com>
+DEFAULT_FROM_EMAIL=Pentora <noreply@Pentora.com>
 ```
 
 ### Step 4: Test the Setup

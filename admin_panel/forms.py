@@ -12,11 +12,61 @@ class SiteSettingsForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
         exclude = ['id', 'created_at', 'updated_at', 'updated_by']
+
+    def clean_site_logo(self):
+        """Validate site logo upload"""
+        logo = self.cleaned_data.get('site_logo')
+        if logo:
+            # Check file size (max 2MB for logos)
+            if logo.size > 2 * 1024 * 1024:
+                raise forms.ValidationError("Logo file size cannot exceed 2MB")
+
+            # Check file type
+            if not logo.content_type.startswith('image/'):
+                raise forms.ValidationError("Logo must be an image file")
+
+            # Check dimensions (optional - can be removed if too restrictive)
+            try:
+                from PIL import Image
+                image = Image.open(logo)
+                width, height = image.size
+                if width > 1000 or height > 500:
+                    raise forms.ValidationError("Logo dimensions should not exceed 1000x500 pixels")
+            except Exception:
+                pass  # Skip dimension check if PIL not available
+        return logo
+
+    def clean_site_favicon(self):
+        """Validate favicon upload"""
+        favicon = self.cleaned_data.get('site_favicon')
+        if favicon:
+            # Check file size (max 1MB for favicons)
+            if favicon.size > 1024 * 1024:
+                raise forms.ValidationError("Favicon file size cannot exceed 1MB")
+
+            # Check file type
+            if not favicon.content_type.startswith('image/'):
+                raise forms.ValidationError("Favicon must be an image file")
+        return favicon
+
+    def clean_hero_banner(self):
+        """Validate hero banner upload"""
+        banner = self.cleaned_data.get('hero_banner')
+        if banner:
+            # Check file size (max 5MB for banners)
+            if banner.size > 5 * 1024 * 1024:
+                raise forms.ValidationError("Banner file size cannot exceed 5MB")
+
+            # Check file type
+            if not banner.content_type.startswith('image/'):
+                raise forms.ValidationError("Banner must be an image file")
+        return banner
         widgets = {
             'site_name': forms.TextInput(attrs={'class': 'form-control'}),
             'site_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'site_logo': forms.FileInput(attrs={'class': 'form-control'}),
-            'site_favicon': forms.FileInput(attrs={'class': 'form-control'}),
+            'site_logo': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'site_favicon': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'hero_banner': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
             'contact_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'contact_phone': forms.TextInput(attrs={'class': 'form-control'}),
             'contact_address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),

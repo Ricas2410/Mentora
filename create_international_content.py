@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Create international sample content for the Mentora platform
+Create international sample content for the Pentora platform
 - Grade 1-3 English Language Arts content
 - Grade 1-3 Mathematics content
 - International comprehension passages
@@ -9,7 +9,7 @@ import os
 import django
 
 # Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mentora_platform.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Pentora_platform.settings')
 django.setup()
 
 from subjects.models import Subject, ClassLevel, Topic

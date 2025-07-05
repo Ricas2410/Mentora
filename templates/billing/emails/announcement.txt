@@ -1,0 +1,40 @@
+🎉 Exciting News: Premium Subscription Plans Are Now Available!
+
+Hi {{ user.first_name|default:user.email }},
+
+We're thrilled to announce that Pentora Premium is now live! After months of development and testing, we're ready to offer you an enhanced learning experience with our new subscription plans.
+
+🚀 What's New?
+
+📚 All 12 Subjects - Complete access to Mathematics, Science, English, and more
+♾️ Unlimited Practice - Take as many quizzes and tests as you want  
+📊 Progress Tracking - Detailed analytics and personalized insights
+🏆 Achievements - Earn badges and certificates for your accomplishments
+📱 Mobile Access - Learn anywhere, anytime on any device
+🎧 Priority Support - Get help when you need it most
+
+💰 Affordable Pricing
+Starting at just $4.99/month (or GH₵62.38/month)
+Save 20% with yearly plans!
+
+👑 View Subscription Plans: {{ site_url }}/billing/plans/
+📖 Learn More: {{ site_url }}/billing/announcement/
+
+🤔 Frequently Asked Questions
+
+Can I cancel anytime?
+Yes! You can cancel your subscription at any time from your billing dashboard.
+
+What payment methods do you accept?
+We use Paystack, which supports all major cards, mobile money, and bank transfers in Ghana.
+
+Is there a free trial?
+You can continue using our free plan, or upgrade to premium for full access to all features.
+
+Thank you for being part of the Pentora learning community!
+
+Manage Billing: {{ site_url }}/billing/dashboard/
+Update Preferences: {{ site_url }}/auth/profile/
+Help Center: {{ site_url }}/core/help/
+
+If you no longer wish to receive these emails, you can update your preferences in your profile settings.

@@ -35,7 +35,7 @@ class Command(BaseCommand):
             site = Site.objects.get_current()
             old_domain = site.domain
             site.domain = domain
-            site.name = f'Mentora ({domain})'
+            site.name = f'Pentora ({domain})'
             site.save()
 
             self.stdout.write(

@@ -1,0 +1,254 @@
+# Pentora Educational Platform - Enhanced .htaccess for SEO and Performance
+# Optimized for education searches: Mentora, Pentora, BECE, WASSCE, online studies
+
+# Enable URL Rewriting
+RewriteEngine On
+
+# Force HTTPS for Security and SEO
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirect www to non-www (or vice versa based on preference)
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# SEO-Friendly URL Redirects for Education Keywords
+RewriteRule ^education/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^online-learning/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^e-learning/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^mentora/?$ / [R=301,L]
+RewriteRule ^online-studies/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^bece-preparation/?$ /subjects/quiz/ [R=301,L]
+RewriteRule ^wassce-preparation/?$ /subjects/quiz/ [R=301,L]
+RewriteRule ^ghana-education/?$ / [R=301,L]
+RewriteRule ^free-education/?$ / [R=301,L]
+RewriteRule ^quality-education/?$ / [R=301,L]
+RewriteRule ^educational-platform/?$ / [R=301,L]
+RewriteRule ^learning-platform/?$ / [R=301,L]
+RewriteRule ^study-materials/?$ /content/study-notes/ [R=301,L]
+RewriteRule ^exam-preparation/?$ /content/exam/ [R=301,L]
+RewriteRule ^online-quizzes/?$ /subjects/quiz/ [R=301,L]
+RewriteRule ^interactive-learning/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^digital-education/?$ / [R=301,L]
+RewriteRule ^edtech-ghana/?$ / [R=301,L]
+RewriteRule ^jhs-education/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^shs-education/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^primary-education/?$ /subjects/learn/ [R=301,L]
+RewriteRule ^secondary-education/?$ /subjects/learn/ [R=301,L]
+
+# Cache Control for Better Performance and SEO
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # HTML
+    ExpiresByType text/html "access plus 1 hour"
+    
+    # Fonts
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    
+    # Documents
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/msword "access plus 1 month"
+    ExpiresByType application/vnd.ms-excel "access plus 1 month"
+</IfModule>
+
+# Gzip Compression for Better Performance
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML and fonts
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE application/x-font
+    AddOutputFilterByType DEFLATE application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/x-font-otf
+    AddOutputFilterByType DEFLATE application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE image/x-icon
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+</IfModule>
+
+# Security Headers for Better SEO Trust
+<IfModule mod_headers.c>
+    # Security Headers
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    
+    # HSTS for HTTPS
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # Cache Control
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|webp|svg|woff|woff2)$">
+        Header set Cache-Control "public, max-age=31536000"
+    </FilesMatch>
+    
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+</IfModule>
+
+# Prevent Access to Sensitive Files
+<Files ".htaccess">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Custom Error Pages for Better UX
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+
+# Prevent Directory Browsing
+Options -Indexes
+
+# Enable Follow Symlinks
+Options +FollowSymLinks
+
+# Charset for Better SEO
+AddDefaultCharset UTF-8
+
+# MIME Types for Better Performance
+<IfModule mod_mime.c>
+    # Web fonts
+    AddType application/font-woff woff
+    AddType application/font-woff2 woff2
+    AddType application/vnd.ms-fontobject eot
+    AddType application/x-font-ttf ttf
+    AddType font/opentype otf
+    
+    # Images
+    AddType image/webp webp
+    AddType image/svg+xml svg
+    
+    # JavaScript
+    AddType application/javascript js
+    AddType text/javascript js
+    
+    # CSS
+    AddType text/css css
+    
+    # Manifest
+    AddType application/manifest+json webmanifest
+    AddType application/x-web-app-manifest+json webapp
+</IfModule>
+
+# Remove Server Signature for Security
+ServerSignature Off
+
+# Prevent Image Hotlinking (Optional)
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?pentora\.com [NC]
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?mentora\.com [NC]
+RewriteRule \.(jpg|jpeg|png|gif|webp)$ - [F]
+
+# SEO-Friendly Trailing Slash Handling
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1/ [L,R=301]
+
+# Canonical URL Enforcement
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+([^?]*)\?[^\s]*\sHTTP [NC]
+RewriteRule ^ /%1? [R=301,L]
+
+# Remove Multiple Slashes
+RewriteCond %{THE_REQUEST} \s/+([^?]*)\s [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Educational Content Optimization
+<LocationMatch "/(subjects|content|exam|quiz|study)">
+    Header set Cache-Control "public, max-age=7200"
+    Header set X-Educational-Content "true"
+</LocationMatch>
+
+# Sitemap and Robots Optimization
+<Files "sitemap.xml">
+    Header set Content-Type "application/xml"
+    Header set Cache-Control "public, max-age=86400"
+</Files>
+
+<Files "robots.txt">
+    Header set Content-Type "text/plain"
+    Header set Cache-Control "public, max-age=86400"
+</Files>
+
+# Educational Platform Identification
+Header set X-Platform "Pentora Educational Platform"
+Header set X-Education-Focus "BECE, WASSCE, Ghana Education"
+Header set X-Target-Audience "Students, Teachers, Parents"
+
+# Performance Optimization
+<IfModule mod_pagespeed.c>
+    ModPagespeed on
+    ModPagespeedEnableFilters rewrite_css,rewrite_javascript,rewrite_images
+    ModPagespeedEnableFilters collapse_whitespace,remove_comments
+</IfModule>
+
+# Educational SEO Boost
+<LocationMatch "/(bece|wassce|mathematics|english|science|social-studies)">
+    Header set X-Educational-Subject "true"
+    Header set Cache-Control "public, max-age=14400"
+</LocationMatch>
+
+# Mobile Optimization
+<IfModule mod_setenvif.c>
+    SetEnvIfNoCase User-Agent "Mobile" mobile
+    SetEnvIfNoCase User-Agent "Android" mobile
+    SetEnvIfNoCase User-Agent "iPhone" mobile
+    SetEnvIfNoCase User-Agent "iPad" mobile
+</IfModule>
+
+# Educational Content Security
+<LocationMatch "/(admin|api|private)">
+    Header set X-Robots-Tag "noindex, nofollow"
+</LocationMatch>
+
+# Search Engine Optimization Headers
+Header set X-UA-Compatible "IE=edge"
+Header set X-Educational-Platform "Pentora"
+Header set X-Content-Language "en-GH"
+Header set X-Geographic-Region "Ghana"
+
+# Educational Keywords in Headers (for debugging)
+Header set X-Keywords "education, online learning, BECE, WASSCE, Ghana, Mentora, Pentora"
+
+# End of .htaccess - Pentora Educational Platform
+# Optimized for search visibility and performance

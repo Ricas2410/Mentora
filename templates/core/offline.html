@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}You're Offline - Pentora{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+    <div class="max-w-md w-full mx-4">
+        <div class="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <!-- Offline Icon -->
+            <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center">
+                <i class="fas fa-wifi-slash text-white text-3xl"></i>
+            </div>
+            
+            <!-- Title -->
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">
+                You're Offline
+            </h1>
+            
+            <!-- Description -->
+            <p class="text-gray-600 mb-6 leading-relaxed">
+                It looks like you've lost your internet connection. Don't worry - you can still access some features while offline!
+            </p>
+            
+            <!-- Available Features -->
+            <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-blue-800 mb-3">Available Offline:</h3>
+                <ul class="text-sm text-blue-700 space-y-2">
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Previously viewed content
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Cached study materials
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Basic navigation
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+                <button 
+                    onclick="window.location.reload()" 
+                    class="w-full btn btn-primary"
+                    id="retry-button"
+                >
+                    <i class="fas fa-sync-alt mr-2"></i>
+                    Try Again
+                </button>
+                
+                <a href="/" class="w-full btn btn-outline">
+                    <i class="fas fa-home mr-2"></i>
+                    Go to Homepage
+                </a>
+            </div>
+            
+            <!-- Connection Status -->
+            <div class="mt-6 p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-center text-sm text-gray-600">
+                    <div class="w-3 h-3 rounded-full mr-2" id="connection-indicator"></div>
+                    <span id="connection-status">Checking connection...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="mt-6 bg-white rounded-lg shadow-lg p-6">
+            <h3 class="font-semibold text-gray-800 mb-3">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                Tips while offline:
+            </h3>
+            <ul class="text-sm text-gray-600 space-y-2">
+                <li>• Check your internet connection</li>
+                <li>• Try switching between WiFi and mobile data</li>
+                <li>• Move to an area with better signal</li>
+                <li>• Your progress will sync when you're back online</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const connectionIndicator = document.getElementById('connection-indicator');
+    const connectionStatus = document.getElementById('connection-status');
+    const retryButton = document.getElementById('retry-button');
+    
+    function updateConnectionStatus() {
+        if (navigator.onLine) {
+            connectionIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-green-500';
+            connectionStatus.textContent = 'Connection restored!';
+            retryButton.innerHTML = '<i class="fas fa-check mr-2"></i>Reload Page';
+            retryButton.classList.remove('btn-primary');
+            retryButton.classList.add('btn-success');
+            
+            // Auto-reload after a short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            connectionIndicator.className = 'w-3 h-3 rounded-full mr-2 bg-red-500';
+            connectionStatus.textContent = 'No internet connection';
+            retryButton.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Try Again';
+            retryButton.classList.remove('btn-success');
+            retryButton.classList.add('btn-primary');
+        }
+    }
+    
+    // Initial check
+    updateConnectionStatus();
+    
+    // Listen for connection changes
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+    
+    // Periodic connection check
+    setInterval(updateConnectionStatus, 5000);
+    
+    // Add loading state to retry button
+    retryButton.addEventListener('click', function() {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Checking...';
+        this.disabled = true;
+        
+        setTimeout(() => {
+            this.disabled = false;
+            updateConnectionStatus();
+        }, 1000);
+    });
+});
+
+// Service Worker messaging
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'CACHE_UPDATED') {
+            // Show notification that new content is available
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-download mr-2"></i>
+                    <span>New content cached for offline use!</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+    });
+}
+</script>
+{% endblock %}

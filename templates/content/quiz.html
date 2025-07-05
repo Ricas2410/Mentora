@@ -1504,8 +1504,21 @@ function showDetailedResults() {
     }, 1000); // Small delay to show loading
 }
 
-// Function to redirect to results page
+// Function to redirect to results page (optimized for free tier)
 function redirectToResults() {
+    // Store results in sessionStorage to avoid data loss
+    const resultsData = {
+        score: currentScore,
+        totalQuestions: totalQuestions,
+        percentage: Math.round((currentScore / totalQuestions) * 100),
+        timeSpent: Math.floor((Date.now() - quizStartTime) / 1000),
+        answers: quizResults,
+        topicId: '{{ topic.id }}',
+        timestamp: Date.now()
+    };
+
+    sessionStorage.setItem('quizResults', JSON.stringify(resultsData));
+
     // Use the current topic ID for the results page
     const topicId = '{{ topic.id }}';
     window.location.href = `/content/quiz/${topicId}/result/`;

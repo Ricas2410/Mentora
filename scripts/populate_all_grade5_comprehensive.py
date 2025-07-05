@@ -44,7 +44,7 @@ def run_script(script_name):
 
 def main():
     """Run all Grade 5 comprehensive content scripts"""
-    print("🎓 MENTORA GRADE 5 COMPREHENSIVE CONTENT POPULATION")
+    print("🎓 Pentora GRADE 5 COMPREHENSIVE CONTENT POPULATION")
     print("=" * 60)
     print("This script will populate comprehensive educational content for all Grade 5 subjects:")
     print("📚 English Language Arts")

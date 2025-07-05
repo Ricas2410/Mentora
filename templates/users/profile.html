@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Profile - Mentora{% endblock %}
+{% block title %}Profile - Pentora{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-base-200">
@@ -71,6 +71,22 @@
                                     <span class="text-xs">Not Verified</span>
                                 </div>
                             {% endif %}
+
+                            <!-- Gender -->
+                            {% if user.gender %}
+                                <div class="badge badge-info badge-sm gap-1">
+                                    <i class="fas fa-venus-mars text-xs"></i>
+                                    <span class="text-xs">{{ user.get_gender_display }}</span>
+                                </div>
+                            {% endif %}
+
+                            <!-- Country -->
+                            {% if user.country %}
+                                <div class="badge badge-secondary badge-sm gap-1">
+                                    <i class="fas fa-globe text-xs"></i>
+                                    <span class="text-xs">{{ user.get_country_display }}</span>
+                                </div>
+                            {% endif %}
                         </div>
 
                         <!-- Member Since -->
@@ -139,6 +155,22 @@
                                                class="input input-bordered w-full profile-input text-sm md:text-base break-all" readonly>
                                     </div>
 
+                                    <!-- Username -->
+                                    <div>
+                                        <label class="label">
+                                            <span class="label-text font-semibold text-sm md:text-base">Username</span>
+                                            <span class="label-text-alt text-xs">(Optional - for easy login)</span>
+                                        </label>
+                                        <input type="text" name="username" value="{{ user.username|default:'' }}"
+                                               placeholder="Choose a username for easy login"
+                                               class="input input-bordered w-full profile-input text-sm md:text-base" readonly>
+                                        <div class="label">
+                                            <span class="label-text-alt text-xs text-base-content/60">
+                                                If set, you can login with either your username or email address
+                                            </span>
+                                        </div>
+                                    </div>
+
                                     <!-- Phone Number -->
                                     <div>
                                         <label class="label">
@@ -172,6 +204,53 @@
                                             </label>
                                             <input type="date" name="date_of_birth" value="{{ user.date_of_birth|date:'Y-m-d'|default:'' }}"
                                                    class="input input-bordered w-full profile-input text-sm md:text-base" readonly>
+                                        </div>
+                                    </div>
+
+                                    <!-- Gender and Country Row -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                                        <div>
+                                            <label class="label">
+                                                <span class="label-text font-semibold text-sm md:text-base">Gender</span>
+                                                <span class="label-text-alt text-xs">(Optional)</span>
+                                            </label>
+                                            <select name="gender" class="select select-bordered w-full profile-input text-sm md:text-base" disabled>
+                                                <option value="">Select Gender</option>
+                                                <option value="M" {% if user.gender == 'M' %}selected{% endif %}>Male</option>
+                                                <option value="F" {% if user.gender == 'F' %}selected{% endif %}>Female</option>
+                                                <option value="O" {% if user.gender == 'O' %}selected{% endif %}>Other</option>
+                                                <option value="P" {% if user.gender == 'P' %}selected{% endif %}>Prefer not to say</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="label">
+                                                <span class="label-text font-semibold text-sm md:text-base">Country</span>
+                                                <span class="label-text-alt text-xs">(Optional)</span>
+                                            </label>
+                                            <select name="country" class="select select-bordered w-full profile-input text-sm md:text-base" disabled>
+                                                <option value="">Select Country</option>
+                                                <option value="GH" {% if user.country == 'GH' %}selected{% endif %}>Ghana</option>
+                                                <option value="NG" {% if user.country == 'NG' %}selected{% endif %}>Nigeria</option>
+                                                <option value="KE" {% if user.country == 'KE' %}selected{% endif %}>Kenya</option>
+                                                <option value="ZA" {% if user.country == 'ZA' %}selected{% endif %}>South Africa</option>
+                                                <option value="EG" {% if user.country == 'EG' %}selected{% endif %}>Egypt</option>
+                                                <option value="MA" {% if user.country == 'MA' %}selected{% endif %}>Morocco</option>
+                                                <option value="TZ" {% if user.country == 'TZ' %}selected{% endif %}>Tanzania</option>
+                                                <option value="UG" {% if user.country == 'UG' %}selected{% endif %}>Uganda</option>
+                                                <option value="ZW" {% if user.country == 'ZW' %}selected{% endif %}>Zimbabwe</option>
+                                                <option value="BW" {% if user.country == 'BW' %}selected{% endif %}>Botswana</option>
+                                                <option value="US" {% if user.country == 'US' %}selected{% endif %}>United States</option>
+                                                <option value="GB" {% if user.country == 'GB' %}selected{% endif %}>United Kingdom</option>
+                                                <option value="CA" {% if user.country == 'CA' %}selected{% endif %}>Canada</option>
+                                                <option value="AU" {% if user.country == 'AU' %}selected{% endif %}>Australia</option>
+                                                <option value="DE" {% if user.country == 'DE' %}selected{% endif %}>Germany</option>
+                                                <option value="FR" {% if user.country == 'FR' %}selected{% endif %}>France</option>
+                                                <option value="IN" {% if user.country == 'IN' %}selected{% endif %}>India</option>
+                                                <option value="CN" {% if user.country == 'CN' %}selected{% endif %}>China</option>
+                                                <option value="JP" {% if user.country == 'JP' %}selected{% endif %}>Japan</option>
+                                                <option value="BR" {% if user.country == 'BR' %}selected{% endif %}>Brazil</option>
+                                                <option value="OTHER" {% if user.country == 'OTHER' %}selected{% endif %}>Other</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -213,6 +292,66 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Subscription Status -->
+                {% if billing_enabled %}
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <i class="fas fa-crown mr-2"></i>
+                            Subscription Status
+                        </h3>
+                        <div class="mt-4">
+                            {% if user_subscription.is_active %}
+                                <div class="alert alert-success">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-xl mr-3"></i>
+                                        <div>
+                                            <h4 class="font-semibold">{{ user_subscription.plan.name }} Plan Active</h4>
+                                            <p class="text-sm opacity-75">
+                                                Valid until {{ user_subscription.current_period_end|date:"F d, Y" }}
+                                                • {{ user_subscription.billing_cycle|title }} billing
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 mt-4">
+                                    <a href="{% url 'billing:dashboard' %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-cog mr-2"></i>
+                                        Manage Subscription
+                                    </a>
+                                    <a href="{% url 'billing:plans' %}" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-arrow-up mr-2"></i>
+                                        Upgrade Plan
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-xl mr-3"></i>
+                                        <div>
+                                            <h4 class="font-semibold">Free Plan</h4>
+                                            <p class="text-sm opacity-75">
+                                                Upgrade to unlock all subjects and features
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 mt-4">
+                                    <a href="{% url 'billing:plans' %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-crown mr-2"></i>
+                                        View Plans
+                                    </a>
+                                    <a href="{% url 'billing:dashboard' %}" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-chart-line mr-2"></i>
+                                        Billing Dashboard
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
 
                 <!-- Account Settings -->
                 <div class="card bg-base-100 shadow-xl">

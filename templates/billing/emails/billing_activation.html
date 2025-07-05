@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Important Update - Pentora</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #3B82F6; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background: #f9f9f9; }
+        .button { display: inline-block; background: #3B82F6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Important Update from Pentora</h1>
+        </div>
+        
+        <div class="content">
+            <h2>Hello {{ user.first_name }},</h2>
+            
+            <p>We hope you've been enjoying your learning journey with Pentora! We have an important update to share with you.</p>
+            
+            <p><strong>We're introducing subscription plans to help us continue providing you with the best learning experience possible.</strong></p>
+            
+            <p>Here's what this means for you:</p>
+            
+            <ul>
+                <li>✅ <strong>Your current access remains unchanged</strong> - you can continue using all features you currently have access to</li>
+                <li>✅ <strong>Free trial available</strong> - try our premium features with a {{ billing_settings.free_trial_days }}-day free trial</li>
+                <li>✅ <strong>Flexible plans</strong> - choose the plan that works best for your learning needs</li>
+                <li>✅ <strong>Enhanced features</strong> - premium plans include advanced analytics, priority support, and more</li>
+            </ul>
+            
+            <p>We believe in making quality education accessible, and our subscription model helps us:</p>
+            <ul>
+                <li>Continuously improve our platform</li>
+                <li>Add new subjects and content regularly</li>
+                <li>Provide better support to our learners</li>
+                <li>Keep the platform running smoothly</li>
+            </ul>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'billing:plans' %}" class="button">
+                    View Our Plans
+                </a>
+            </div>
+            
+            <p><strong>Questions?</strong> We're here to help! Feel free to reach out to our support team if you have any questions about the new subscription plans.</p>
+            
+            <p>Thank you for being part of the Pentora community. We're excited to continue supporting your learning journey!</p>
+            
+            <p>Best regards,<br>
+            The Pentora Team</p>
+        </div>
+        
+        <div class="footer">
+            <p>This email was sent to {{ user.email }}. If you have questions, please contact our support team.</p>
+            <p>&copy; 2025 Pentora. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

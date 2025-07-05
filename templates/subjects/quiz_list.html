@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Practice Quizzes - Mentora{% endblock %}
+{% block title %}Practice Quizzes - Pentora{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -226,7 +226,10 @@
             <!-- Subject Cards Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {% for subject_data in current_grade_subjects %}
-                <div class="quiz-card bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 overflow-hidden {% if subject_data.is_completed %}opacity-75{% endif %}">
+                <div class="quiz-card bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 overflow-hidden {% if subject_data.is_completed %}opacity-75{% endif %} relative group" data-tooltip="Start {{ subject_data.subject.name }} quiz for Grade {{ subject_data.class_level.level_number }}">
+                    <!-- Enhanced visual indicator -->
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:h-2 transition-all duration-300"></div>
+
                     <!-- Clean Subject Header -->
                     <div class="relative">
                         <div class="p-6 bg-gray-50 border-b border-gray-100">

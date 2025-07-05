@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Subscribe to {{ plan.name }} - Pentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .subscription-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .feature-check {
+        animation: checkmark 0.5s ease-in-out;
+    }
+
+    @keyframes checkmark {
+        0% { transform: scale(0); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-base-200 via-base-100 to-base-200">
+    <div class="container mx-auto px-4 py-8 lg:py-12">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8 lg:mb-12">
+                <h1 class="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Subscribe to {{ plan.name }}
+                </h1>
+                <p class="text-base-content/70 text-lg">Confirm your subscription details and start learning</p>
+            </div>
+
+            <!-- Plan Details -->
+            <div class="card bg-base-100 shadow-lg mb-6">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">{{ plan.name }}</h2>
+                    
+                    <div class="text-4xl font-bold text-primary mb-4">
+                        {% if plan.is_free %}
+                            Free
+                        {% else %}
+                            ${{ plan.price }}
+                            <span class="text-lg font-normal text-base-content/70">
+                                /{{ plan.billing_cycle }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-base-content/70 mb-6">{{ plan.description }}</p>
+                    
+                    <!-- Features -->
+                    <div class="space-y-3 mb-6">
+                        <h3 class="font-semibold">What's included:</h3>
+                        <div class="grid grid-cols-1 gap-2">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-success"></i>
+                                <span>
+                                    {% if plan.max_subjects %}
+                                        Up to {{ plan.max_subjects }} subjects
+                                    {% else %}
+                                        Unlimited subjects
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-success"></i>
+                                <span>
+                                    {% if plan.max_quizzes_per_day %}
+                                        {{ plan.max_quizzes_per_day }} quizzes per day
+                                    {% else %}
+                                        Unlimited quizzes
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            {% if plan.priority_support %}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-success"></i>
+                                <span>Priority support</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if plan.advanced_analytics %}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-success"></i>
+                                <span>Advanced analytics</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if plan.offline_access %}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-success"></i>
+                                <span>Offline access</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Trial Information -->
+                    {% if billing_settings.free_trial_days > 0 and not current_subscription %}
+                    <div class="alert alert-info mb-6">
+                        <div>
+                            <h3 class="font-bold">Free Trial Included!</h3>
+                            <div class="text-sm">
+                                Start with a {{ billing_settings.free_trial_days }}-day free trial. 
+                                You won't be charged until the trial ends.
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Current Subscription Warning -->
+                    {% if current_subscription %}
+                    <div class="alert alert-warning mb-6">
+                        <div>
+                            <h3 class="font-bold">Plan Change</h3>
+                            <div class="text-sm">
+                                You're currently subscribed to {{ current_subscription.plan.name }}. 
+                                Switching to this plan will take effect immediately.
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Subscription Form -->
+            <div class="card bg-base-100 shadow-lg">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Confirm Subscription</h3>
+                    
+                    <form method="post" id="subscriptionForm">
+                        {% csrf_token %}
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="form-control mb-6">
+                            <label class="label cursor-pointer justify-start gap-3">
+                                <input type="checkbox" class="checkbox checkbox-primary" required id="termsCheckbox">
+                                <span class="label-text">
+                                    I agree to the 
+                                    <a href="{% url 'core:terms' %}" class="link link-primary" target="_blank">Terms of Service</a>
+                                    and 
+                                    <a href="{% url 'core:privacy' %}" class="link link-primary" target="_blank">Privacy Policy</a>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Billing Summary -->
+                        <div class="bg-base-200 p-4 rounded-lg mb-6">
+                            <h4 class="font-semibold mb-2">Billing Summary</h4>
+                            <div class="flex justify-between items-center">
+                                <span>{{ plan.name }} ({{ plan.billing_cycle }})</span>
+                                <span class="font-semibold">
+                                    {% if plan.is_free %}
+                                        Free
+                                    {% else %}
+                                        ${{ plan.price }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% if billing_settings.free_trial_days > 0 and not current_subscription %}
+                            <div class="text-sm text-base-content/70 mt-2">
+                                Free trial for {{ billing_settings.free_trial_days }} days, then ${{ plan.price }}/{{ plan.billing_cycle }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex gap-4">
+                            <a href="{% url 'billing:plans' %}" class="btn btn-outline flex-1">
+                                Back to Plans
+                            </a>
+                            <button type="submit" class="btn btn-primary flex-1" id="subscribeBtn">
+                                {% if current_subscription %}
+                                    Switch Plan
+                                {% elif plan.is_free %}
+                                    Start Free Plan
+                                {% elif billing_settings.free_trial_days > 0 %}
+                                    Start Free Trial
+                                {% else %}
+                                    Subscribe Now
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Money Back Guarantee -->
+            {% if not plan.is_free %}
+            <div class="text-center mt-6">
+                <div class="flex items-center justify-center gap-2 text-sm text-base-content/70">
+                    <i class="fas fa-shield-alt text-success"></i>
+                    <span>30-day money-back guarantee</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('subscriptionForm').addEventListener('submit', function(e) {
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    
+    if (!termsCheckbox.checked) {
+        e.preventDefault();
+        alert('Please accept the Terms of Service and Privacy Policy to continue.');
+        return;
+    }
+    
+    // Disable button to prevent double submission
+    subscribeBtn.disabled = true;
+    subscribeBtn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Processing...';
+});
+</script>
+{% endblock %}

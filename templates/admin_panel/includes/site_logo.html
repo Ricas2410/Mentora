@@ -1,0 +1,5 @@
+{% if logo_url %}
+    <img src="{{ logo_url }}" alt="{{ alt_text }}" class="{{ css_class }}" style="{{ style }}">
+{% else %}
+    <span class="site-name-fallback {{ css_class }}" style="{{ style }}">{{ site_name }}</span>
+{% endif %}

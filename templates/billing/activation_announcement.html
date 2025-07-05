@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Subscription Plans Now Available - Pentora{% endblock %}
+
+{% block extra_css %}
+<style>
+    .announcement-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+    }
+    
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin: 60px 0;
+    }
+    
+    .feature-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .pricing-highlight {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 40px;
+        margin: 40px 0;
+        text-align: center;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 60px 0;
+        text-align: center;
+        border-radius: 12px;
+        margin: 40px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="announcement-hero">
+    <div class="container mx-auto px-4">
+        <h1 class="text-5xl font-bold mb-6">
+            🎉 Subscription Plans Are Now Live!
+        </h1>
+        <p class="text-xl mb-8 opacity-90">
+            Unlock the full potential of your learning journey with our premium subscription plans
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'billing:plans' %}" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-colors">
+                <i class="fas fa-crown mr-2"></i>
+                View Subscription Plans
+            </a>
+            <a href="{% url 'core:dashboard' %}" class="border border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-12">
+    
+    <!-- What's New Section -->
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">What's New?</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            We're excited to introduce subscription plans that unlock premium features and give you access to our complete learning platform.
+        </p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">All 12 Subjects</h3>
+            <p class="text-gray-600">
+                Get unlimited access to all subjects including Mathematics, Science, English, and more.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-infinity"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Unlimited Practice</h3>
+            <p class="text-gray-600">
+                Take unlimited quizzes and practice tests to master every topic at your own pace.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Progress Tracking</h3>
+            <p class="text-gray-600">
+                Monitor your learning progress with detailed analytics and personalized insights.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Achievements</h3>
+            <p class="text-gray-600">
+                Earn badges and certificates as you complete topics and reach learning milestones.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Mobile Access</h3>
+            <p class="text-gray-600">
+                Learn anywhere, anytime with our mobile-optimized platform that works on all devices.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Priority Support</h3>
+            <p class="text-gray-600">
+                Get priority customer support and direct access to our educational experts.
+            </p>
+        </div>
+    </div>
+
+    <!-- Pricing Highlight -->
+    <div class="pricing-highlight">
+        <h3 class="text-2xl font-bold mb-4">Affordable Pricing for Everyone</h3>
+        <p class="text-gray-600 mb-6">
+            Choose between monthly and yearly plans, with significant savings on annual subscriptions.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div class="text-center">
+                <div class="text-3xl font-bold text-blue-600">Starting at $4.99/month</div>
+                <div class="text-sm text-gray-500">or GH₵62.38/month</div>
+            </div>
+            <div class="text-gray-400 text-2xl">•</div>
+            <div class="text-center">
+                <div class="text-lg font-semibold text-green-600">Save 20% with yearly plans</div>
+                <div class="text-sm text-gray-500">Pay annually and save money</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="cta-section">
+        <h3 class="text-3xl font-bold mb-4">Ready to Unlock Your Potential?</h3>
+        <p class="text-xl mb-8 opacity-90">
+            Join thousands of students who are already accelerating their learning with Pentora Premium
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'billing:plans' %}" class="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-50 transition-colors">
+                <i class="fas fa-rocket mr-2"></i>
+                Choose Your Plan
+            </a>
+            <a href="{% url 'billing:dashboard' %}" class="border border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-green-600 transition-colors">
+                <i class="fas fa-cog mr-2"></i>
+                Manage Billing
+            </a>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="text-center mt-12">
+        <h3 class="text-2xl font-bold mb-6">Frequently Asked Questions</h3>
+        <div class="max-w-3xl mx-auto text-left">
+            <div class="space-y-6">
+                <div class="border-b pb-4">
+                    <h4 class="font-semibold mb-2">Can I cancel my subscription anytime?</h4>
+                    <p class="text-gray-600">Yes, you can cancel your subscription at any time from your billing dashboard. You'll continue to have access until the end of your current billing period.</p>
+                </div>
+                <div class="border-b pb-4">
+                    <h4 class="font-semibold mb-2">What payment methods do you accept?</h4>
+                    <p class="text-gray-600">We accept payments through Paystack, which supports all major credit/debit cards, mobile money, and bank transfers in Ghana.</p>
+                </div>
+                <div class="border-b pb-4">
+                    <h4 class="font-semibold mb-2">Is there a free trial?</h4>
+                    <p class="text-gray-600">You can continue using our free plan with limited access, or upgrade to premium for full access to all features and subjects.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">Can I change my plan later?</h4>
+                    <p class="text-gray-600">Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -11,13 +11,16 @@ class SiteSettings(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     # Site Information
-    site_name = models.CharField(max_length=100, default="Mentora Learning Platform")
+    site_name = models.CharField(max_length=100, default="Pentora Learning Platform")
     site_description = models.TextField(default="Empowering underprivileged learners through quality education")
-    site_logo = models.ImageField(upload_to='site/', blank=True, null=True)
-    site_favicon = models.ImageField(upload_to='site/', blank=True, null=True)
+    site_logo = models.ImageField(upload_to='site/logos/', blank=True, null=True, help_text="Main site logo (recommended: 200x60px)")
+    site_favicon = models.ImageField(upload_to='site/favicons/', blank=True, null=True, help_text="Site favicon (recommended: 32x32px)")
+
+    # Hero Banner (actually used on homepage)
+    hero_banner = models.ImageField(upload_to='site/banners/', blank=True, null=True, help_text="Main hero banner for homepage (recommended: 1920x600px)")
 
     # Contact Information
-    contact_email = models.EmailField(default="info@mentora.edu.gh")
+    contact_email = models.EmailField(default="info@Pentora.edu.gh")
     contact_phone = models.CharField(max_length=20, blank=True)
     contact_address = models.TextField(blank=True)
 

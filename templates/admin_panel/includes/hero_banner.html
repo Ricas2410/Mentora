@@ -1,0 +1,16 @@
+{% if banner_url %}
+    <div class="hero-banner {{ css_class }}" style="background-image: url('{{ banner_url }}'); {{ style }}">
+        <div class="hero-content">
+            <!-- Content can be added here -->
+        </div>
+    </div>
+{% else %}
+    <div class="hero-banner-fallback {{ css_class }}" style="{{ style }}">
+        <div class="hero-content">
+            <div class="bg-primary text-white p-4 rounded">
+                <h1>Welcome to Pentora</h1>
+                <p>Empowering underprivileged learners through quality education</p>
+            </div>
+        </div>
+    </div>
+{% endif %}

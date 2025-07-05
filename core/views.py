@@ -1,11 +1,19 @@
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.views.decorators.cache import cache_page
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from subjects.models import Subject, ClassLevel, Topic
 from progress.models import UserProgress
 from .models import HeroSection, SiteStatistic
+from .seo import SEOManager, MetaTagsHelper
+import logging
+
+logger = logging.getLogger('Pentora')
 
 
 class HomeView(TemplateView):
@@ -16,6 +24,17 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # SEO optimization
+        seo_manager = SEOManager(self.request)
+        context.update(seo_manager.get_meta_tags(
+            title="Pentora - Free Online Learning Platform for Grades 1-12 | Quality Education for All",
+            description="Access comprehensive educational content, interactive quizzes, and study materials for all grades. Learn English, Mathematics, Science, Social Studies, ICT, and Life Skills - completely free!",
+            keywords="free online learning, educational platform, grades 1-12, online quizzes, study materials, English, Mathematics, Science, free education, online school, learning platform"
+        ))
+
+        # Structured data for organization
+        context['structured_data'] = seo_manager.generate_structured_data('organization', {})
 
         # Get hero section content
         try:
@@ -29,6 +48,13 @@ class HomeView(TemplateView):
 
         # Get subjects for display
         context['subjects'] = Subject.objects.filter(is_active=True).order_by('order')[:6]  # Limit to 6 for display
+
+        # Additional homepage statistics
+        context.update({
+            'total_subjects': Subject.objects.filter(is_active=True).count(),
+            'total_topics': Topic.objects.filter(is_active=True).count(),
+            'recent_topics': Topic.objects.filter(is_active=True).order_by('-created_at')[:8],
+        })
 
         return context
 
@@ -328,25 +354,39 @@ Allow: /
 # Sitemap
 Sitemap: {domain}/sitemap.xml
 
-# Disallow admin areas
+# Disallow admin and private areas
 Disallow: /admin/
 Disallow: /my-admin/
 Disallow: /auth/logout/
 Disallow: /auth/password/
+Disallow: /api/private/
+Disallow: /media/private/
+Disallow: /users/profile/
+Disallow: /users/dashboard/
+Disallow: /analytics/
+Disallow: /billing/
 
-# Allow important pages
+# Encourage crawling of educational content for better search visibility
+# This helps with searches for: education, online learning, e-learning, Mentora, Pentora
+# BECE preparation, WASSCE preparation, Ghana education, online studies
 Allow: /
-Allow: /learn/
-Allow: /quiz/
 Allow: /subjects/
+Allow: /subjects/learn/
+Allow: /subjects/quiz/
+Allow: /content/
+Allow: /content/study-notes/
+Allow: /content/exam/
 Allow: /about/
 Allow: /contact/
 Allow: /help/
 Allow: /auth/register/
 Allow: /auth/login/
 
-# Crawl delay
+# Crawl delay for respectful crawling
 Crawl-delay: 1
+
+# Cache directive for better performance
+Cache-delay: 86400
 """
 
     return HttpResponse(robots_content, content_type='text/plain')
@@ -363,4 +403,106 @@ def custom_500_view(request):
     """
     Custom 500 error page for server errors
     """
+    logger.error(f"500 error on {request.path}")
     return render(request, '500.html', status=500)
+
+
+@require_http_methods(["GET"])
+def offline_view(request):
+    """Offline page for PWA"""
+    return render(request, 'core/offline.html', {
+        'title': 'You\'re Offline - Pentora',
+        'description': 'You\'re currently offline. Some features may be limited.'
+    })
+
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def track_performance(request):
+    """Track performance metrics from frontend - CSRF exempt for analytics"""
+    try:
+        import json
+        data = json.loads(request.body)
+
+        # Only log significant performance data to avoid spam
+        load_time = data.get('loadTime', 0)
+        if load_time > 100:  # Only log if load time > 100ms
+            logger.info(f"Performance: Load time {load_time}ms, "
+                       f"DOM ready {data.get('domContentLoaded', 0)}ms, "
+                       f"URL: {data.get('url', 'unknown')}")
+
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        logger.error(f"Performance tracking error: {e}")
+        return JsonResponse({'status': 'error'}, status=400)
+
+
+@require_http_methods(["GET"])
+def health_check(request):
+    """Health check endpoint for monitoring"""
+    try:
+        # Basic database check
+        Subject.objects.first()
+
+        return JsonResponse({
+            'status': 'healthy',
+            'timestamp': timezone.now().isoformat(),
+            'version': '1.0.0'
+        })
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return JsonResponse({
+            'status': 'unhealthy',
+            'error': str(e)
+        }, status=503)
+
+
+class AboutView(TemplateView):
+    """About page with SEO optimization"""
+    template_name = 'core/about.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        seo_manager = SEOManager(self.request)
+        context.update(seo_manager.get_meta_tags(
+            title="About Pentora - Empowering Education for All | Our Mission & Vision",
+            description="Learn about Pentora's mission to provide free, quality education to underprivileged learners worldwide. Discover our story, values, and commitment to educational equity.",
+            keywords="about Pentora, educational mission, free education, underprivileged learners, educational equity, online learning platform"
+        ))
+
+        return context
+
+
+class ContactView(TemplateView):
+    """Contact page"""
+    template_name = 'core/contact.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        seo_manager = SEOManager(self.request)
+        context.update(seo_manager.get_meta_tags(
+            title="Contact Pentora - Get Help & Support | Educational Platform",
+            description="Need help with Pentora? Contact our support team for assistance with learning, technical issues, or general inquiries. We're here to help!",
+            keywords="contact Pentora, support, help, customer service, educational support"
+        ))
+
+        return context
+
+
+class HelpView(TemplateView):
+    """Help center"""
+    template_name = 'core/help.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        seo_manager = SEOManager(self.request)
+        context.update(seo_manager.get_meta_tags(
+            title="Help Center - Pentora Learning Platform | FAQs & Guides",
+            description="Find answers to common questions about using Pentora. Browse our comprehensive help guides, tutorials, and FAQs to get the most out of your learning experience.",
+            keywords="Pentora help, FAQ, learning guides, tutorials, how to use Pentora, educational platform help"
+        ))
+
+        return context

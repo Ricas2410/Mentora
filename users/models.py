@@ -1,20 +1,141 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 import uuid
 import re
 
 
+class UserManager(BaseUserManager):
+    """Custom user manager for email-based authentication"""
+
+    def generate_username_from_email(self, email):
+        """Generate a unique username from email address"""
+        # Extract the part before @ from email
+        base_username = email.split('@')[0]
+
+        # Clean the username - remove special characters except underscore
+        base_username = re.sub(r'[^a-zA-Z0-9_]', '', base_username)
+
+        # Ensure it starts with a letter
+        if not base_username or not base_username[0].isalpha():
+            base_username = 'user_' + base_username
+
+        # Limit length to 30 characters (Django's default max_length for username)
+        base_username = base_username[:26]  # Leave room for numbers
+
+        # Check if username exists, if so, add numbers
+        username = base_username
+        counter = 1
+        while self.model.objects.filter(username=username).exists():
+            username = f"{base_username}_{counter}"
+            counter += 1
+            # Ensure we don't exceed 30 characters
+            if len(username) > 30:
+                base_username = base_username[:26-len(str(counter))]
+                username = f"{base_username}_{counter}"
+
+        return username
+
+    def create_user(self, email, password=None, **extra_fields):
+        """Create and return a regular user with an email and password."""
+        if not email:
+            raise ValueError('The Email field must be set')
+
+        email = self.normalize_email(email)
+
+        # Auto-generate username from email if not provided and username is required
+        if 'username' not in extra_fields or extra_fields.get('username') is None:
+            # For superusers or when explicitly needed, generate username
+            if extra_fields.get('is_superuser') or extra_fields.get('is_staff'):
+                extra_fields['username'] = self.generate_username_from_email(email)
+            else:
+                # For regular users, set username to None (optional)
+                extra_fields['username'] = None
+
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        """Create and return a superuser with an email and password."""
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        # Auto-generate username from email if not provided
+        if 'username' not in extra_fields:
+            extra_fields['username'] = self.generate_username_from_email(email)
+
+        return self.create_user(email, password, **extra_fields)
+
+
 class User(AbstractUser):
     """
     Custom User model extending Django's AbstractUser
     """
+
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+        ('P', 'Prefer not to say'),
+    ]
+
+    COUNTRY_CHOICES = [
+        ('GH', 'Ghana'),
+        ('NG', 'Nigeria'),
+        ('KE', 'Kenya'),
+        ('ZA', 'South Africa'),
+        ('EG', 'Egypt'),
+        ('MA', 'Morocco'),
+        ('TZ', 'Tanzania'),
+        ('UG', 'Uganda'),
+        ('ZW', 'Zimbabwe'),
+        ('BW', 'Botswana'),
+        ('US', 'United States'),
+        ('GB', 'United Kingdom'),
+        ('CA', 'Canada'),
+        ('AU', 'Australia'),
+        ('DE', 'Germany'),
+        ('FR', 'France'),
+        ('IN', 'India'),
+        ('CN', 'China'),
+        ('JP', 'Japan'),
+        ('BR', 'Brazil'),
+        ('OTHER', 'Other'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    username = models.CharField(max_length=150, unique=True, blank=True, null=True,
+                               help_text="Optional username for easy login. If not set, email will be used.",
+                               db_index=True)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     date_of_birth = models.DateField(null=True, blank=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+
+    # Personal information
+    gender = models.CharField(
+        max_length=1,
+        choices=GENDER_CHOICES,
+        blank=True,
+        null=True,
+        help_text="Gender identity"
+    )
+    country = models.CharField(
+        max_length=10,
+        choices=COUNTRY_CHOICES,
+        blank=True,
+        null=True,
+        help_text="Country of residence"
+    )
 
     # Email verification
     is_email_verified = models.BooleanField(default=False)
@@ -60,6 +181,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
+    objects = UserManager()
+
     class Meta:
         db_table = 'users'
         verbose_name = 'User'
@@ -77,31 +200,7 @@ class User(AbstractUser):
         """
         Generate a unique username from email address
         """
-        # Extract the part before @ from email
-        base_username = email.split('@')[0]
-
-        # Clean the username - remove special characters except underscore
-        base_username = re.sub(r'[^a-zA-Z0-9_]', '', base_username)
-
-        # Ensure it starts with a letter
-        if not base_username or not base_username[0].isalpha():
-            base_username = 'user_' + base_username
-
-        # Limit length to 30 characters (Django's default max_length for username)
-        base_username = base_username[:26]  # Leave room for numbers
-
-        # Check if username exists, if so, add numbers
-        username = base_username
-        counter = 1
-        while User.objects.filter(username=username).exists():
-            username = f"{base_username}_{counter}"
-            counter += 1
-            # Ensure we don't exceed 30 characters
-            if len(username) > 30:
-                base_username = base_username[:26-len(str(counter))]
-                username = f"{base_username}_{counter}"
-
-        return username
+        return User.objects.generate_username_from_email(email)
 
     def get_current_level(self):
         """Get user's current learning level"""

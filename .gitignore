@@ -109,8 +109,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-mentora_env/
-mentora_venv/
+Pentora_env/
+Pentora_venv/
 
 # Spyder project settings
 .spyderproject

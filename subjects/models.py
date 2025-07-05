@@ -10,7 +10,7 @@ class Subject(models.Model):
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True, null=True)
     description = models.TextField(blank=True)
     icon = models.CharField(max_length=50, blank=True, help_text="CSS icon class or emoji")
     color = models.CharField(max_length=7, default="#3B82F6", help_text="Hex color code")

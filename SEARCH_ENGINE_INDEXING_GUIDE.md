@@ -1,4 +1,4 @@
-# 🔍 Search Engine Indexing Guide for Mentora Platform
+# 🔍 Search Engine Indexing Guide for Pentora Platform
 
 ## 📊 Current Status: 0 Indexed Pages
 
@@ -9,17 +9,17 @@ This is normal for a new website. Here's how to get your site indexed by search 
 ### **1.1 Set up Google Search Console**
 1. Go to [Google Search Console](https://search.google.com/search-console/)
 2. Click "Start now" and sign in with Google account
-3. Add your property: `https://mentora.pythonanywhere.com`
+3. Add your property: `https://Pentora.pythonanywhere.com`
 4. Verify ownership using HTML file method or DNS
 
 ### **1.2 Submit Your Sitemap**
 1. In Google Search Console, go to "Sitemaps"
-2. Add sitemap URL: `https://mentora.pythonanywhere.com/sitemap.xml`
+2. Add sitemap URL: `https://Pentora.pythonanywhere.com/sitemap.xml`
 3. Click "Submit"
 
 ### **1.3 Request Indexing**
 1. Go to "URL Inspection" tool
-2. Enter your homepage URL: `https://mentora.pythonanywhere.com/`
+2. Enter your homepage URL: `https://Pentora.pythonanywhere.com/`
 3. Click "Request Indexing"
 4. Repeat for key pages:
    - `/subjects/`
@@ -31,12 +31,12 @@ This is normal for a new website. Here's how to get your site indexed by search 
 ### **2.1 Set up Bing Webmaster Tools**
 1. Go to [Bing Webmaster Tools](https://www.bing.com/webmasters/)
 2. Sign in with Microsoft account
-3. Add your site: `https://mentora.pythonanywhere.com`
+3. Add your site: `https://Pentora.pythonanywhere.com`
 4. Verify ownership
 
 ### **2.2 Submit Sitemap to Bing**
 1. Go to "Sitemaps" section
-2. Submit: `https://mentora.pythonanywhere.com/sitemap.xml`
+2. Submit: `https://Pentora.pythonanywhere.com/sitemap.xml`
 
 ## 📝 **Step 3: Create Quality Content**
 
@@ -170,6 +170,7 @@ This is normal for a new website. Here's how to get your site indexed by search 
 - [ ] Local SEO optimization (if applicable)
 
 ## 🎓 **Educational SEO Keywords to Target**
+
 
 ### **Primary Keywords:**
 - "free online learning platform"

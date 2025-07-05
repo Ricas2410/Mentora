@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Subscription Plans Now Available - Pentora</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .content {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 10px;
+        }
+        .pricing {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎉 Exciting News!</h1>
+        <h2>Premium Subscription Plans Are Now Available</h2>
+        <p>Unlock the full potential of your learning journey</p>
+    </div>
+
+    <div class="content">
+        <p>Hi {{ user.first_name|default:user.email }},</p>
+        
+        <p>We're thrilled to announce that <strong>Pentora Premium</strong> is now live! After months of development and testing, we're ready to offer you an enhanced learning experience with our new subscription plans.</p>
+        
+        <h3>🚀 What's New?</h3>
+        <ul class="feature-list">
+            <li><strong>📚 All 12 Subjects</strong> - Complete access to Mathematics, Science, English, and more</li>
+            <li><strong>♾️ Unlimited Practice</strong> - Take as many quizzes and tests as you want</li>
+            <li><strong>📊 Progress Tracking</strong> - Detailed analytics and personalized insights</li>
+            <li><strong>🏆 Achievements</strong> - Earn badges and certificates for your accomplishments</li>
+            <li><strong>📱 Mobile Access</strong> - Learn anywhere, anytime on any device</li>
+            <li><strong>🎧 Priority Support</strong> - Get help when you need it most</li>
+        </ul>
+        
+        <div class="pricing">
+            <h3>💰 Affordable Pricing</h3>
+            <p><strong>Starting at just $4.99/month</strong><br>
+            <small>or GH₵62.38/month</small></p>
+            <p><strong>Save 20% with yearly plans!</strong></p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="{{ site_url }}/billing/plans/" class="cta-button">
+                👑 View Subscription Plans
+            </a>
+            <a href="{{ site_url }}/billing/announcement/" class="cta-button" style="background: #10b981;">
+                📖 Learn More
+            </a>
+        </div>
+        
+        <h3>🤔 Frequently Asked Questions</h3>
+        <p><strong>Can I cancel anytime?</strong><br>
+        Yes! You can cancel your subscription at any time from your billing dashboard.</p>
+        
+        <p><strong>What payment methods do you accept?</strong><br>
+        We use Paystack, which supports all major cards, mobile money, and bank transfers in Ghana.</p>
+        
+        <p><strong>Is there a free trial?</strong><br>
+        You can continue using our free plan, or upgrade to premium for full access to all features.</p>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for being part of the Pentora learning community!</p>
+        <p>
+            <a href="{{ site_url }}/billing/dashboard/">Manage Billing</a> | 
+            <a href="{{ site_url }}/auth/profile/">Update Preferences</a> | 
+            <a href="{{ site_url }}/core/help/">Help Center</a>
+        </p>
+        <p><small>If you no longer wish to receive these emails, you can update your preferences in your profile settings.</small></p>
+    </div>
+</body>
+</html>

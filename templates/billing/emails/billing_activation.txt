@@ -1,0 +1,33 @@
+Important Update from Pentora
+
+Hello {{ user.first_name }},
+
+We hope you've been enjoying your learning journey with Pentora! We have an important update to share with you.
+
+We're introducing subscription plans to help us continue providing you with the best learning experience possible.
+
+Here's what this means for you:
+
+✅ Your current access remains unchanged - you can continue using all features you currently have access to
+✅ Free trial available - try our premium features with a {{ billing_settings.free_trial_days }}-day free trial
+✅ Flexible plans - choose the plan that works best for your learning needs
+✅ Enhanced features - premium plans include advanced analytics, priority support, and more
+
+We believe in making quality education accessible, and our subscription model helps us:
+- Continuously improve our platform
+- Add new subjects and content regularly
+- Provide better support to our learners
+- Keep the platform running smoothly
+
+View Our Plans: {{ request.scheme }}://{{ request.get_host }}{% url 'billing:plans' %}
+
+Questions? We're here to help! Feel free to reach out to our support team if you have any questions about the new subscription plans.
+
+Thank you for being part of the Pentora community. We're excited to continue supporting your learning journey!
+
+Best regards,
+The Pentora Team
+
+---
+This email was sent to {{ user.email }}. If you have questions, please contact our support team.
+© 2025 Pentora. All rights reserved.

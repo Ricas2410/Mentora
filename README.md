@@ -1,6 +1,6 @@
-# Mentora - Educational Learning Platform
+# Pentora - Educational Learning Platform
 
-Mentora is a comprehensive educational platform designed to provide quality learning experiences for students from Grade 1 to Grade 12. The platform offers interactive quizzes, study materials, progress tracking, and comprehensive assessments across multiple subjects.
+Pentora is a comprehensive educational platform designed to provide quality learning experiences for students from Grade 1 to Grade 12. The platform offers interactive quizzes, study materials, progress tracking, and comprehensive assessments across multiple subjects.
 
 ## Features
 
@@ -50,19 +50,19 @@ Mentora is a comprehensive educational platform designed to provide quality lear
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/mentora.git
-   cd mentora
+   git clone https://github.com/yourusername/Pentora.git
+   cd Pentora
    ```
 
 2. **Create and activate virtual environment**
    ```bash
-   python -m venv mentora_env
+   python -m venv Pentora_env
    
    # On Windows
-   mentora_env\Scripts\activate
+   Pentora_env\Scripts\activate
    
    # On macOS/Linux
-   source mentora_env/bin/activate
+   source Pentora_env/bin/activate
    ```
 
 3. **Install dependencies**
@@ -113,7 +113,7 @@ SITE_DOMAIN=localhost:8000
 SITE_PROTOCOL=http
 
 # Database Configuration (for production)
-# DATABASE_URL=postgresql://username:password@localhost:5432/mentora_db
+# DATABASE_URL=postgresql://username:password@localhost:5432/Pentora_db
 
 # Email Configuration
 EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
@@ -122,11 +122,11 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-app-password
-DEFAULT_FROM_EMAIL=Mentora <noreply@mentora.com>
+DEFAULT_FROM_EMAIL=Pentora <noreply@Pentora.com>
 
 # Application Settings
-SITE_NAME=Mentora
-ADMIN_EMAIL=admin@mentora.com
+SITE_NAME=Pentora
+ADMIN_EMAIL=admin@Pentora.com
 ```
 
 ### 🚀 Production Deployment (PythonAnywhere)
@@ -178,7 +178,7 @@ python manage.py update_site_domain --domain yourusername.pythonanywhere.com --p
 
 ## Contributing
 
-We welcome contributions to improve Mentora! Please follow these steps:
+We welcome contributions to improve Pentora! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -192,7 +192,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-For support, email admin@mentora.com or create an issue in the GitHub repository.
+For support, email admin@Pentora.com or create an issue in the GitHub repository.
 
 ## Acknowledgments
 

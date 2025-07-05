@@ -25,7 +25,7 @@
 
 ### **Step 1: Pull Latest Changes**
 ```bash
-cd ~/Mentora
+cd ~/Pentora
 git pull origin main
 ```
 

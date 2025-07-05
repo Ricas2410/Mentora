@@ -19,7 +19,7 @@ class Command(BaseCommand):
         try:
             # Test basic email
             send_mail(
-                'Test Email from Mentora',
+                'Test Email from Pentora',
                 'This is a test email to verify the email configuration is working.',
                 settings.DEFAULT_FROM_EMAIL,
                 [email],
@@ -35,10 +35,10 @@ class Command(BaseCommand):
             context = {
                 'user': {'first_name': 'Test', 'email': email},
                 'verification_url': 'http://localhost:8000/auth/verify-email/test-token/',
-                'site_name': 'Mentora',
+                'site_name': 'Pentora',
             }
             
-            subject = 'Test Verification Email - Mentora'
+            subject = 'Test Verification Email - Pentora'
             text_content = render_to_string('emails/verification_email.txt', context)
             html_content = render_to_string('emails/verification_email.html', context)
             
