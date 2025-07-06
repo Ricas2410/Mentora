@@ -255,7 +255,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn-primary-custom w-full mb-3 py-2" id="submit-btn" disabled>
+                <button type="submit" class="btn-primary-custom w-full mb-3 py-2" id="submit-btn" data-custom-loading disabled>
                     <i class="fas fa-rocket mr-2"></i>
                     Start My Learning Journey
                 </button>
@@ -404,6 +404,7 @@ function checkFormValidity() {
 // Add event listeners
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registration-form');
+    const submitBtn = document.getElementById('submit-btn');
     const inputs = form.querySelectorAll('input, textarea');
 
     inputs.forEach(input => {
@@ -414,6 +415,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set today's date as max for date of birth
     const today = new Date().toISOString().split('T')[0];
     document.querySelector('input[name="date_of_birth"]').max = today;
+
+    // Handle form submission with proper error handling
+    form.addEventListener('submit', function(e) {
+        console.log('Registration form submitted');
+
+        if (submitBtn.disabled) {
+            e.preventDefault();
+            return;
+        }
+
+        // Show loading state
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+        submitBtn.disabled = true;
+
+        // Add timeout to reset button if something goes wrong
+        const timeoutId = setTimeout(() => {
+            console.log('Registration form timeout');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+
+            // Show error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-error mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg';
+            errorDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span>Registration is taking longer than expected. Please check your internet connection and try again.</span>
+                </div>
+            `;
+            form.insertAdjacentElement('afterend', errorDiv);
+
+            // Remove error after 8 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 8000);
+        }, 15000);
+
+        // Clear timeout if page unloads (successful submission)
+        window.addEventListener('beforeunload', () => {
+            clearTimeout(timeoutId);
+        });
+    });
 });
 </script>
 {% endblock %}

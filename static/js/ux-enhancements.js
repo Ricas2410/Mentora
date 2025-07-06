@@ -17,6 +17,7 @@ class PentoraUXEnhancements {
         this.setupTooltips();
         this.setupKeyboardShortcuts();
         this.setupScrollEnhancements();
+        this.addEnhancementStyles();
     }
 
     setupAccessibilityFeatures() {
@@ -153,23 +154,31 @@ class PentoraUXEnhancements {
     }
 
     enhanceButtons() {
+        // Disable automatic button loading to prevent conflicts
+        // Individual forms will handle their own loading states
+        console.log('Button enhancements disabled to prevent conflicts with form-specific handlers');
+        return;
+
         document.querySelectorAll('button[type="submit"], .btn-primary').forEach(button => {
-            button.addEventListener('click', (e) => {
-                if (!button.disabled) {
-                    button.classList.add('loading');
-                    button.disabled = true;
-                    
-                    const originalText = button.innerHTML;
-                    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
-                    
-                    // Re-enable after 3 seconds (adjust based on your needs)
-                    setTimeout(() => {
-                        button.classList.remove('loading');
-                        button.disabled = false;
-                        button.innerHTML = originalText;
-                    }, 3000);
-                }
-            });
+            // Only add loading if the button doesn't have a custom handler
+            if (!button.hasAttribute('data-custom-loading')) {
+                button.addEventListener('click', (e) => {
+                    if (!button.disabled) {
+                        button.classList.add('loading');
+                        button.disabled = true;
+
+                        const originalText = button.innerHTML;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+
+                        // Re-enable after 3 seconds (adjust based on your needs)
+                        setTimeout(() => {
+                            button.classList.remove('loading');
+                            button.disabled = false;
+                            button.innerHTML = originalText;
+                        }, 3000);
+                    }
+                });
+            }
         });
     }
 
@@ -202,13 +211,130 @@ class PentoraUXEnhancements {
         document.documentElement.classList.add('smooth-scroll');
     }
 
+    setupNavigationEnhancements() {
+        // Add mobile menu toggle functionality
+        this.setupMobileMenu();
+
+        // Add breadcrumb navigation
+        this.setupBreadcrumbs();
+
+        // Add active navigation highlighting
+        this.highlightActiveNavigation();
+
+        // Add navigation keyboard support
+        this.setupNavigationKeyboard();
+    }
+
+    setupMobileMenu() {
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle, .navbar-toggler');
+        const mobileMenu = document.querySelector('.mobile-menu, .navbar-collapse');
+
+        if (mobileMenuToggle && mobileMenu) {
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('show');
+                mobileMenuToggle.setAttribute('aria-expanded',
+                    mobileMenu.classList.contains('show') ? 'true' : 'false'
+                );
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.remove('show');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+    }
+
+    setupBreadcrumbs() {
+        // Add breadcrumb navigation based on current page
+        const breadcrumbContainer = document.querySelector('.breadcrumb-container');
+        if (breadcrumbContainer) {
+            const currentPath = window.location.pathname;
+            const breadcrumbs = this.generateBreadcrumbs(currentPath);
+            breadcrumbContainer.innerHTML = breadcrumbs;
+        }
+    }
+
+    generateBreadcrumbs(path) {
+        const pathSegments = path.split('/').filter(segment => segment);
+        let breadcrumbHTML = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
+
+        breadcrumbHTML += '<li class="breadcrumb-item"><a href="/">Home</a></li>';
+
+        let currentPath = '';
+        pathSegments.forEach((segment, index) => {
+            currentPath += '/' + segment;
+            const isLast = index === pathSegments.length - 1;
+            const segmentName = this.formatBreadcrumbName(segment);
+
+            if (isLast) {
+                breadcrumbHTML += `<li class="breadcrumb-item active" aria-current="page">${segmentName}</li>`;
+            } else {
+                breadcrumbHTML += `<li class="breadcrumb-item"><a href="${currentPath}">${segmentName}</a></li>`;
+            }
+        });
+
+        breadcrumbHTML += '</ol></nav>';
+        return breadcrumbHTML;
+    }
+
+    formatBreadcrumbName(segment) {
+        const nameMap = {
+            'dashboard': 'Dashboard',
+            'quiz': 'Quiz',
+            'learn': 'Learn',
+            'profile': 'Profile',
+            'settings': 'Settings'
+        };
+
+        return nameMap[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
+    }
+
+    highlightActiveNavigation() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link, .navbar-nav a');
+
+        navLinks.forEach(link => {
+            const linkPath = new URL(link.href).pathname;
+            if (linkPath === currentPath || (currentPath.startsWith(linkPath) && linkPath !== '/')) {
+                link.classList.add('active');
+                link.setAttribute('aria-current', 'page');
+            }
+        });
+    }
+
+    setupNavigationKeyboard() {
+        // Add keyboard navigation support for dropdown menus
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggle.click();
+                }
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const dropdown = toggle.nextElementSibling;
+                    if (dropdown) {
+                        const firstLink = dropdown.querySelector('a, button');
+                        if (firstLink) firstLink.focus();
+                    }
+                }
+            });
+        });
+    }
+
     setupFormEnhancements() {
         // Add real-time validation
         this.addRealTimeValidation();
-        
+
         // Add password strength indicator
         this.addPasswordStrengthIndicator();
-        
+
         // Add form auto-save
         this.addFormAutoSave();
     }
@@ -398,26 +524,7 @@ class PentoraUXEnhancements {
         this.addScrollProgressIndicator();
     }
 
-    addScrollToTopButton() {
-        const scrollButton = document.createElement('button');
-        scrollButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
-        scrollButton.className = 'fixed bottom-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg z-50 opacity-0 transition-opacity hover:bg-blue-700';
-        scrollButton.setAttribute('aria-label', 'Scroll to top');
-        
-        scrollButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollButton.style.opacity = '1';
-            } else {
-                scrollButton.style.opacity = '0';
-            }
-        });
-        
-        document.body.appendChild(scrollButton);
-    }
+  
 
     addScrollProgressIndicator() {
         const progressBar = document.createElement('div');
@@ -463,57 +570,59 @@ class PentoraUXEnhancements {
         observer.observe(content);
         document.body.appendChild(progressBar);
     }
+
+    // Add CSS for enhanced styles
+    addEnhancementStyles() {
+        const enhancementStyles = document.createElement('style');
+        enhancementStyles.textContent = `
+            .field-error {
+                animation: shake 0.3s ease-in-out;
+            }
+
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+
+            .strength-bar {
+                width: 100%;
+                height: 4px;
+                background: #e5e7eb;
+                border-radius: 2px;
+                overflow: hidden;
+            }
+
+            .strength-fill {
+                height: 100%;
+                transition: width 0.3s ease, background-color 0.3s ease;
+                background: #ef4444;
+            }
+
+            .strength-fill.text-orange-500 { background: #f97316; }
+            .strength-fill.text-yellow-500 { background: #eab308; }
+            .strength-fill.text-green-500 { background: #22c55e; }
+
+            .loading {
+                pointer-events: none;
+                opacity: 0.7;
+            }
+
+            input.valid {
+                border-color: #22c55e;
+                box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+            }
+
+            input.invalid {
+                border-color: #ef4444;
+                box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+            }
+        `;
+        document.head.appendChild(enhancementStyles);
+    }
 }
 
-// Initialize UX enhancements when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize UX enhancements when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
     new PentoraUXEnhancements();
 });
-
-// Add CSS for enhanced styles
-const enhancementStyles = document.createElement('style');
-enhancementStyles.textContent = `
-    .field-error {
-        animation: shake 0.3s ease-in-out;
-    }
-    
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-    }
-    
-    .strength-bar {
-        width: 100%;
-        height: 4px;
-        background: #e5e7eb;
-        border-radius: 2px;
-        overflow: hidden;
-    }
-    
-    .strength-fill {
-        height: 100%;
-        transition: width 0.3s ease, background-color 0.3s ease;
-        background: #ef4444;
-    }
-    
-    .strength-fill.text-orange-500 { background: #f97316; }
-    .strength-fill.text-yellow-500 { background: #eab308; }
-    .strength-fill.text-green-500 { background: #22c55e; }
-    
-    .loading {
-        pointer-events: none;
-        opacity: 0.7;
-    }
-    
-    input.valid {
-        border-color: #22c55e;
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
-    }
-    
-    input.invalid {
-        border-color: #ef4444;
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-    }
-`;
-document.head.appendChild(enhancementStyles);

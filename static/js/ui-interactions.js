@@ -72,8 +72,9 @@ class UIInteractions {
                 this.addButtonClickFeedback(e.target);
             });
 
-            // Loading state for form submissions
-            if (button.type === 'submit') {
+            // Disable automatic loading state to prevent conflicts
+            // Individual forms will handle their own loading states
+            if (button.type === 'submit' && button.hasAttribute('data-auto-loading')) {
                 button.addEventListener('click', (e) => {
                     this.showButtonLoading(e.target);
                 });

@@ -72,17 +72,25 @@ class RegisterView(View):
                 user.save()
 
                 # Create email verification
-                verification = EmailVerification.create_verification(user)
+                try:
+                    verification = EmailVerification.create_verification(user)
+                    # Send verification email
+                    email_sent = self.send_verification_email(user, verification)
 
-                # Send verification email
-                email_sent = self.send_verification_email(user, verification)
+                    if email_sent:
+                        messages.success(request,
+                            'Account created successfully! Please check your email to verify your account.')
+                    else:
+                        messages.warning(request,
+                            'Account created successfully! However, we couldn\'t send the verification email. You can still log in.')
+                except Exception as email_error:
+                    # Log email error but don't fail registration
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(f"Email verification creation failed for user {user.id}: {str(email_error)}")
 
-                if email_sent:
                     messages.success(request,
-                        'Account created successfully! Please check your email to verify your account.')
-                else:
-                    messages.warning(request,
-                        'Account created successfully! However, we couldn\'t send the verification email. Please contact support.')
+                        'Account created successfully! You can log in now.')
 
                 return redirect('users:login')
 

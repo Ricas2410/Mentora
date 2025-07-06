@@ -195,16 +195,19 @@ class PerformanceOptimizer {
     }
 
     preloadCriticalResources() {
+        // Disable preloading to avoid console warnings
+        // Scripts are already loaded in the correct order in base.html
+        console.log('Preloading disabled to prevent console warnings');
+        return;
+
         const criticalResources = [
-            '/static/css/main.css',
-            '/static/js/main.js',
-            '/static/images/logo.png'
+            '/static/css/enhanced-ui.css'
         ];
 
         criticalResources.forEach(resource => {
             const link = document.createElement('link');
             link.rel = 'preload';
-            
+
             if (resource.endsWith('.css')) {
                 link.as = 'style';
             } else if (resource.endsWith('.js')) {
@@ -212,7 +215,7 @@ class PerformanceOptimizer {
             } else if (resource.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
                 link.as = 'image';
             }
-            
+
             link.href = resource;
             document.head.appendChild(link);
         });

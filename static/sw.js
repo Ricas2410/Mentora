@@ -6,11 +6,10 @@ const OFFLINE_URL = '/offline/';
 const STATIC_CACHE_URLS = [
   '/',
   '/offline/',
-  '/static/css/main.css',
-  '/static/js/main.js',
-  '/static/images/logo.png',
-  '/static/images/icons/icon-192x192.png',
-  '/static/images/icons/icon-512x512.png',
+  '/static/css/enhanced-ui.css',
+  '/static/js/app.js',
+  '/static/js/ux-enhancements.js',
+  '/static/js/performance-optimizer.js',
   'https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css',
   'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'

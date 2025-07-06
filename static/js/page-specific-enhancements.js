@@ -305,16 +305,9 @@ class PageSpecificEnhancements {
             });
         });
         
-        // Add loading states to all forms
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', () => {
-                const submitBtn = form.querySelector('button[type="submit"]');
-                if (submitBtn && !submitBtn.disabled) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-                    submitBtn.disabled = true;
-                }
-            });
-        });
+        // Disable global form loading states to prevent conflicts
+        // Individual forms will handle their own loading states
+        console.log('Global form loading states disabled to prevent conflicts');
         
         // Add keyboard shortcuts
         this.addKeyboardShortcuts();

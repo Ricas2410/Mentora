@@ -536,7 +536,7 @@
                     </div>
 
                     <input type="hidden" name="class_level" id="selectedLevel" value="">
-                    <button type="submit" class="submit-button" id="submitBtn" disabled>
+                    <button type="submit" class="submit-button" id="submitBtn" data-custom-loading disabled>
                         Continue to Dashboard
                     </button>
 
@@ -554,6 +554,8 @@
 
 <script>
 function selectLevel(level) {
+    console.log('Level selected:', level);
+
     // Remove selected class from all options
     document.querySelectorAll('.level-option').forEach(option => {
         option.classList.remove('selected');
@@ -564,11 +566,54 @@ function selectLevel(level) {
 
     // Set hidden input value
     document.getElementById('selectedLevel').value = level;
+    console.log('Hidden input value set to:', document.getElementById('selectedLevel').value);
 
     // Enable submit button
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = false;
     submitBtn.classList.remove('opacity-50');
+    console.log('Submit button enabled');
+}
+
+function showError(message) {
+    // Remove any existing error messages
+    const existingError = document.querySelector('.level-selection-error');
+    if (existingError) {
+        existingError.remove();
+    }
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'level-selection-error alert alert-error mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg';
+    errorDiv.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    const form = document.getElementById('levelForm');
+    form.insertAdjacentElement('afterend', errorDiv);
+
+    // Remove error after 8 seconds
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.remove();
+        }
+    }, 8000);
+}
+
+function showSuccess(message) {
+    const successDiv = document.createElement('div');
+    successDiv.className = 'level-selection-success alert alert-success mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg';
+    successDiv.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    const form = document.getElementById('levelForm');
+    form.insertAdjacentElement('afterend', successDiv);
 }
 
 // Handle form submission with proper loading state and error handling
@@ -578,24 +623,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (form && submitBtn) {
         form.addEventListener('submit', function(e) {
+            console.log('Form submission started');
+
             // Prevent double submission
             if (submitBtn.disabled) {
+                console.log('Form submission prevented - button already disabled');
                 e.preventDefault();
                 return;
             }
 
             // Validate selection
             const selectedLevel = document.getElementById('selectedLevel').value;
+            console.log('Selected level:', selectedLevel);
+
             if (!selectedLevel) {
+                console.log('No level selected - showing error');
                 e.preventDefault();
-                alert('Please select a class level first.');
+                showError('Please select a class level first.');
                 return;
             }
+
+            // Validate CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (!csrfToken || !csrfToken.value) {
+                console.log('CSRF token missing');
+                e.preventDefault();
+                showError('Security token missing. Please refresh the page and try again.');
+                return;
+            }
+
+            console.log('Form validation passed, submitting...');
 
             // Show loading state
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
             submitBtn.classList.add('opacity-75');
+
+            // Use simple form submission - more reliable
+            console.log('Submitting form normally...');
+
+            // Let the form submit normally, but add a timeout for user feedback
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    console.log('Form submission taking longer than expected');
+                    showError('This is taking longer than expected. Please wait or try refreshing the page if nothing happens.');
+                }
+            }, 8000);
 
             // Add progress indicator
             let dots = 0;
@@ -605,39 +678,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Loading${dotString}`;
             }, 500);
 
-            // Add timeout fallback in case of server issues
+            // Simplified timeout handling
             const timeoutId = setTimeout(() => {
+                console.log('Form submission timed out');
                 clearInterval(progressInterval);
                 if (submitBtn.disabled) {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = 'Continue to Dashboard';
                     submitBtn.classList.remove('opacity-75');
 
-                    // Show more helpful error message
-                    const errorMsg = `
-                        <div class="alert alert-error mt-4">
-                            <i class="fas fa-exclamation-triangle mr-2"></i>
-                            <div>
-                                <strong>Request timed out</strong><br>
-                                This might be due to slow internet connection. Please try again.
-                                <br><small>If the problem persists, try refreshing the page.</small>
-                            </div>
-                        </div>
-                    `;
-
-                    // Insert error message after the form
-                    form.insertAdjacentHTML('afterend', errorMsg);
-
-                    // Remove error message after 10 seconds
-                    setTimeout(() => {
-                        const errorAlert = document.querySelector('.alert-error');
-                        if (errorAlert) errorAlert.remove();
-                    }, 10000);
+                    showError('Request timed out. Please check your internet connection and try again.');
                 }
-            }, 15000); // 15 second timeout
+            }, 20000); // 20 second timeout
 
-            // Clear timeout if form submits successfully
-            form.addEventListener('beforeunload', () => {
+            // Clear timeout if page unloads (form submitted successfully)
+            window.addEventListener('beforeunload', () => {
                 clearTimeout(timeoutId);
                 clearInterval(progressInterval);
             });

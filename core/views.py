@@ -220,31 +220,54 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         """Handle level selection with improved error handling"""
+        import logging
+        logger = logging.getLogger(__name__)
+
+        logger.info(f"Dashboard POST request from user {request.user.id}")
+        logger.info(f"POST data: {request.POST}")
+
         if 'class_level' in request.POST:
             try:
-                class_level = int(request.POST['class_level'])
+                class_level_str = request.POST['class_level']
+                logger.info(f"Received class_level: '{class_level_str}'")
+
+                if not class_level_str:
+                    logger.warning("Empty class_level received")
+                    messages.error(request, 'No class level selected. Please select a class level.')
+                    return self.get(request, *args, **kwargs)
+
+                class_level = int(class_level_str)
+                logger.info(f"Parsed class_level as integer: {class_level}")
+
                 valid_levels = [choice[0] for choice in request.user.CLASS_LEVEL_CHOICES]
+                logger.info(f"Valid levels for user: {valid_levels}")
 
                 if class_level in valid_levels:
                     # Update user's class level
+                    old_level = request.user.current_class_level
                     request.user.current_class_level = class_level
                     request.user.save(update_fields=['current_class_level', 'updated_at'])
+
+                    logger.info(f"Successfully updated user {request.user.id} class level from {old_level} to {class_level}")
 
                     # Add success message
                     messages.success(request, f'Class level updated to Grade {class_level}!')
 
                     return redirect('core:dashboard')
                 else:
-                    messages.error(request, 'Invalid class level selected. Please try again.')
+                    logger.warning(f"Invalid class level {class_level} not in valid levels {valid_levels}")
+                    messages.error(request, f'Invalid class level {class_level} selected. Valid options are: {", ".join(map(str, valid_levels))}')
 
             except (ValueError, TypeError) as e:
-                messages.error(request, 'Invalid class level format. Please select a valid option.')
+                logger.error(f"ValueError/TypeError parsing class_level '{request.POST.get('class_level')}': {str(e)}")
+                messages.error(request, f'Invalid class level format: {request.POST.get("class_level")}. Please select a valid option.')
             except Exception as e:
                 # Log the error for debugging
-                import logging
-                logger = logging.getLogger(__name__)
-                logger.error(f"Dashboard level selection error for user {request.user.id}: {str(e)}")
-                messages.error(request, 'An error occurred while updating your class level. Please try again.')
+                logger.error(f"Dashboard level selection error for user {request.user.id}: {str(e)}", exc_info=True)
+                messages.error(request, f'An error occurred while updating your class level: {str(e)}. Please try again.')
+        else:
+            logger.warning("No class_level in POST data")
+            messages.error(request, 'No class level data received. Please try again.')
 
         return self.get(request, *args, **kwargs)
 
