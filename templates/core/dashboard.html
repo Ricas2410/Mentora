@@ -825,12 +825,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     {% if next_learning_path %}
                     <div class="mt-6 sm:mt-8">
                         <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 sm:p-6 border border-blue-100">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                                <div class="text-center sm:text-left">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-6 sm:space-y-0 sm:space-x-6">
+                                <div class="text-center sm:text-left flex-1">
                                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Continue Learning</h3>
                                     <p class="text-sm text-gray-600">{{ next_learning_path.title }}</p>
                                 </div>
-                                <div class="flex justify-center sm:justify-end">
+                                <div class="flex justify-center sm:justify-end flex-shrink-0">
                                     <a href="{{ next_learning_path.url }}"
                                        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                         <i class="fas fa-play mr-2"></i>
