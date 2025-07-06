@@ -4,11 +4,149 @@
 
 {% block extra_css %}
 <style>
-    /* Modern Clean Dashboard Styles */
+    /* Professional Dashboard Styles */
     .dashboard-container {
-        background: #f8fafc;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         min-height: 100vh;
-        padding: 1rem 0;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Professional Hero Section */
+    .dashboard-hero {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .hero-content {
+        padding: 2rem;
+    }
+
+    .hero-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .hero-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid #e5e7eb;
+        flex-shrink: 0;
+    }
+
+    .hero-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-avatar-initials {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 20px;
+        color: white;
+    }
+
+    .hero-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .hero-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 0.5rem 0;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+        color: #6b7280;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-grade-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Mobile Responsive Hero */
+    @media (max-width: 640px) {
+        .dashboard-container {
+            padding-top: 0.5rem;
+        }
+
+        .hero-content {
+            padding: 1.5rem;
+        }
+
+        .hero-header {
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-avatar {
+            width: 56px;
+            height: 56px;
+        }
+
+        .hero-avatar-initials {
+            font-size: 18px;
+        }
+
+        .hero-title {
+            font-size: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.875rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-content {
+            padding: 1rem;
+        }
+
+        .hero-title {
+            font-size: 1.25rem;
+        }
+
+        .hero-avatar {
+            width: 48px;
+            height: 48px;
+        }
+
+        .hero-avatar-initials {
+            font-size: 16px;
+        }
     }
 
     .dashboard-card {
@@ -700,16 +838,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Dashboard Enhancements
+// Professional Dashboard Enhancements
 document.addEventListener('DOMContentLoaded', function() {
-    // Animate welcome section
+    // Animate hero section
     setTimeout(() => {
-        const welcomeSection = document.querySelector('.welcome-animation');
-        if (welcomeSection) {
-            welcomeSection.style.opacity = '1';
-            welcomeSection.style.transform = 'translateY(0)';
+        const heroSection = document.querySelector('.dashboard-hero');
+        if (heroSection) {
+            heroSection.style.opacity = '0';
+            heroSection.style.transform = 'translateY(20px)';
+            heroSection.style.transition = 'all 0.6s ease';
+
+            setTimeout(() => {
+                heroSection.style.opacity = '1';
+                heroSection.style.transform = 'translateY(0)';
+            }, 100);
         }
-    }, 300);
+    }, 200);
 
     // Animate stats with counting effect
     function animateStats() {
@@ -799,41 +943,36 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 {% else %}
-<!-- Modern Dashboard -->
-<div class="dashboard-container">
-    <div class="container mx-auto px-4 max-w-7xl">
+<!-- Professional Dashboard -->
+<div class="dashboard-container" style="padding-top: 1rem;">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
-        <!-- Welcome Animation -->
-        <div class="welcome-animation mb-6" style="opacity: 0; transform: translateY(20px); transition: all 0.6s ease;">
-            <div class="text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 animate-pulse">
-                    <i class="fas fa-graduation-cap text-white text-2xl"></i>
-                </div>
-                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                    Welcome back, {{ user.first_name }}! 🎓
-                </h1>
-                <p class="text-lg text-gray-600">Ready to continue your learning journey?</p>
-            </div>
-        </div>
-
-        <!-- Clean Hero Section -->
-        <div class="dashboard-card">
-            <div class="hero-section">
-                <div class="hero-content">
-                    <div class="hero-main">
-                        <div class="hero-text">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                                    <i class="fas fa-user text-blue-600 text-xl"></i>
-                                </div>
-                                <div>
-                                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
-                                        Welcome back, {{ user.first_name }}!
-                                    </h1>
-                                    <p class="text-gray-600">{{ user_class_level_name }} • Ready to continue learning?</p>
-                                </div>
+        <!-- Professional Hero Section -->
+        <div class="dashboard-hero">
+            <div class="hero-content">
+                <!-- User Welcome -->
+                <div class="hero-header">
+                    <div class="hero-avatar">
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="{{ user.full_name }}" class="hero-avatar-img" />
+                        {% else %}
+                            <div class="hero-avatar-initials">
+                                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
                             </div>
-                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="hero-info">
+                        <h1 class="hero-title">
+                            Welcome back, {{ user.first_name }}
+                        </h1>
+                        <p class="hero-subtitle">
+                            {{ user_class_level_name }} Student
+                            {% if user.current_class_level %}
+                                <span class="hero-grade-badge">{{ user.get_current_class_level_display }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
 
                         <!-- Enhanced Stats with Animations -->
                         <div class="hero-stats">

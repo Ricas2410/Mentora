@@ -285,6 +285,234 @@
             display: none !important;
         }
 
+        /* Professional Profile Dropdown Styles */
+        .profile-avatar-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        .profile-avatar-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-initials {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: white;
+        }
+
+        .profile-dropdown-icon {
+            font-size: 10px;
+            opacity: 0.8;
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown.dropdown-open .profile-dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .profile-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            width: 280px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .dropdown.dropdown-open .profile-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar-large {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .profile-initials-large {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            opacity: 0.9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-grade {
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .profile-divider {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.08);
+            margin: 0;
+        }
+
+        .profile-menu {
+            padding: 8px 0;
+        }
+
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #374151;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .profile-menu-item:hover {
+            background: #f8fafc;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .profile-menu-item i {
+            width: 16px;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        .profile-menu-item:hover i {
+            opacity: 1;
+        }
+
+        .profile-menu-item-danger {
+            color: #dc2626;
+        }
+
+        .profile-menu-item-danger:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .profile-menu-badge {
+            margin-left: auto;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-menu-badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .profile-menu-badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .profile-dropdown-menu {
+                width: 260px;
+                right: -10px;
+            }
+
+            .profile-header {
+                padding: 16px;
+            }
+
+            .profile-avatar-large {
+                width: 40px;
+                height: 40px;
+            }
+
+            .profile-name {
+                font-size: 15px;
+            }
+
+            .profile-email {
+                font-size: 12px;
+            }
+        }
+
         /* Professional Mobile Menu Styles */
         #mobile-menu-sidebar {
             box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -505,45 +733,99 @@
                 <div class="flex items-center space-x-2">
                     {% if user.is_authenticated %}
                         <div class="dropdown dropdown-end">
-                            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover:bg-white hover:bg-opacity-20 bg-white bg-opacity-10 border border-white border-opacity-30 w-10 h-10 min-h-10">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-white border-opacity-50">
-                            {% if user.profile_picture %}
-                                <img src="{{ user.profile_picture.url }}" alt="Profile" class="w-full h-full rounded-full object-cover" />
-                            {% else %}
-                                <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white w-full h-full rounded-full flex items-center justify-center font-bold text-xs">
-                                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                            <div tabindex="0" role="button" class="profile-avatar-btn">
+                                <div class="profile-avatar">
+                                    {% if user.profile_picture %}
+                                        <img src="{{ user.profile_picture.url }}" alt="{{ user.full_name }}" class="w-full h-full rounded-full object-cover" />
+                                    {% else %}
+                                        <div class="profile-initials">
+                                            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
+                                <i class="fas fa-chevron-down profile-dropdown-icon"></i>
+                            </div>
+
+                            <div tabindex="0" class="dropdown-content profile-dropdown-menu">
+                                <!-- User Info Header -->
+                                <div class="profile-header">
+                                    <div class="profile-avatar-large">
+                                        {% if user.profile_picture %}
+                                            <img src="{{ user.profile_picture.url }}" alt="{{ user.full_name }}" class="w-full h-full rounded-full object-cover" />
+                                        {% else %}
+                                            <div class="profile-initials-large">
+                                                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="profile-info">
+                                        <div class="profile-name">{{ user.full_name }}</div>
+                                        <div class="profile-email">{{ user.email }}</div>
+                                        {% if user.current_class_level %}
+                                            <div class="profile-grade">{{ user.get_current_class_level_display }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="profile-divider"></div>
+
+                                <!-- Menu Items -->
+                                <div class="profile-menu">
+                                    <a href="{% url 'users:profile' %}" class="profile-menu-item">
+                                        <i class="fas fa-user"></i>
+                                        <span>Profile & Settings</span>
+                                    </a>
+
+                                    <a href="{% url 'core:dashboard' %}" class="profile-menu-item">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+
+                                    <a href="{% url 'progress:overview' %}" class="profile-menu-item">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>My Progress</span>
+                                    </a>
+
+                                    <a href="{% url 'progress:achievements' %}" class="profile-menu-item">
+                                        <i class="fas fa-trophy"></i>
+                                        <span>Achievements</span>
+                                    </a>
+
+                                    {% if billing_enabled %}
+                                    <a href="{% url 'billing:dashboard' %}" class="profile-menu-item">
+                                        <i class="fas fa-crown"></i>
+                                        <span>
+                                            {% if user_subscription.is_active %}
+                                                {{ user_subscription.plan.name }} Plan
+                                            {% else %}
+                                                Upgrade to Premium
+                                            {% endif %}
+                                        </span>
+                                        {% if user_subscription.is_active %}
+                                            <span class="profile-menu-badge profile-menu-badge-success">Active</span>
+                                        {% else %}
+                                            <span class="profile-menu-badge profile-menu-badge-warning">Free</span>
+                                        {% endif %}
+                                    </a>
+                                    {% endif %}
+
+                                    <a href="{% url 'core:help' %}" class="profile-menu-item">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span>Help Center</span>
+                                    </a>
+                                </div>
+
+                                <div class="profile-divider"></div>
+
+                                <!-- Sign Out -->
+                                <div class="profile-menu">
+                                    <a href="{% url 'users:logout' %}" class="profile-menu-item profile-menu-item-danger">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Sign Out</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-white rounded-lg w-56 border">
-                        <li class="menu-title px-4 py-2">
-                            <div class="text-gray-800 font-semibold">{{ user.full_name }}</div>
-                            <div class="text-gray-500 text-xs">{{ user.email }}</div>
-                        </li>
-                        <div class="divider my-1"></div>
-                        <li><a href="{% url 'users:profile' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-user mr-2"></i> Profile & Settings</a></li>
-                        {% if billing_enabled %}
-                        <li>
-                            <a href="{% url 'billing:dashboard' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2">
-                                <i class="fas fa-crown mr-2"></i>
-                                {% if user_subscription.is_active %}
-                                    <span>{{ user_subscription.plan.name }} Plan</span>
-                                    <span class="badge badge-success badge-xs ml-2">Active</span>
-                                {% else %}
-                                    <span>Subscription</span>
-                                    <span class="badge badge-warning badge-xs ml-2">Free</span>
-                                {% endif %}
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li><a href="{% url 'progress:overview' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-chart-line mr-2"></i> My Progress</a></li>
-                        <li><a href="{% url 'progress:achievements' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-trophy mr-2"></i> Achievements</a></li>
-                        <li><a href="{% url 'core:help' %}" class="flex items-center text-gray-700 hover:text-blue-600 py-2"><i class="fas fa-question mr-2"></i> Help Center</a></li>
-                        <div class="divider my-1"></div>
-                        <li><a href="{% url 'users:logout' %}" class="flex items-center text-red-600 hover:text-red-700 py-2"><i class="fas fa-sign-out-alt mr-2"></i> Sign Out</a></li>
-                    </ul>
-                </div>
             {% else %}
                 <div class="flex items-center space-x-1 sm:space-x-2">
                     <a href="{% url 'users:login' %}" class="btn btn-ghost hover:bg-white hover:bg-opacity-20 font-medium btn-sm sm:btn-md px-2 sm:px-4" style="color: white !important; border: 1px solid rgba(255,255,255,0.3);">
