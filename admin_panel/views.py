@@ -312,6 +312,11 @@ class CreateSubjectView(AdminRequiredMixin, CreateView):
         messages.success(self.request, f'Subject "{self.object.name}" created successfully!')
         return response
 
+    def form_invalid(self, form):
+        """Handle form validation errors"""
+        messages.error(self.request, 'Please correct the errors below and try again.')
+        return super().form_invalid(form)
+
 
 class EditSubjectView(AdminRequiredMixin, UpdateView):
     """View for editing subjects"""
@@ -337,6 +342,11 @@ class EditSubjectView(AdminRequiredMixin, UpdateView):
 
         messages.success(self.request, f'Subject "{self.object.name}" updated successfully!')
         return response
+
+    def form_invalid(self, form):
+        """Handle form validation errors"""
+        messages.error(self.request, 'Please correct the errors below and try again.')
+        return super().form_invalid(form)
 
 
 class DeleteSubjectView(AdminRequiredMixin, DeleteView):

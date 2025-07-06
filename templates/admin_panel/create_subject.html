@@ -83,7 +83,32 @@
                             {% endif %}
                         </div>
                     </div>
-                    
+
+                    <!-- Class Levels Section -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Grade Levels <span class="text-danger">*</span>
+                        </label>
+                        <div class="form-text mb-3">
+                            Select which grade levels should have this subject
+                        </div>
+                        <div class="row">
+                            {% for choice in form.class_levels %}
+                                <div class="col-md-4 col-sm-6 mb-2">
+                                    <div class="form-check">
+                                        {{ choice.tag }}
+                                        <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                            {{ choice.choice_label }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.class_levels.errors %}
+                            <div class="text-danger small mt-2">{{ form.class_levels.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
                     <!-- Preview Section -->
                     <div class="mb-4">
                         <h6>Preview</h6>
