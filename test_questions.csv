@@ -1,6 +1,0 @@
-subject_name,class_level_name,topic_title,question_text,question_type,correct_answer,explanation,difficulty,points,time_limit,choice_a,choice_b,choice_c,choice_d
-Mathematics,Grade 1,Numbers 1-20,What number comes after 5?,multiple_choice,b,When counting 6 comes after 5,easy,1,30,4,6,7,8
-Mathematics,Grade 1,Basic Addition,What is 2 + 3?,multiple_choice,c,2 + 3 equals 5,easy,1,45,4,6,5,7
-English Language Arts,Grade 1,Alphabet and Phonics,The letter A comes before B in the alphabet.,true_false,true,A comes before B in alphabetical order,easy,1,20,,,,
-English Language Arts,Grade 1,Alphabet and Phonics,What is the first letter of the alphabet?,short_answer,A,A is the first letter of the alphabet,easy,1,30,,,,
-Mathematics,Grade 1,Numbers 1-20,Fill in the missing number: 1 2 3 __ 5,fill_blank,4,The missing number in the sequence is 4,easy,1,30,,,,

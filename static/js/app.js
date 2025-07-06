@@ -277,7 +277,6 @@ class PentoraApp {
                            localStorage.getItem('enablePerformanceTracking') === 'true';
 
         if (!shouldTrack) {
-            console.log('Performance tracking disabled for development');
             return;
         }
 
@@ -286,7 +285,6 @@ class PentoraApp {
             if ('performance' in window) {
                 const perfData = performance.getEntriesByType('navigation')[0];
                 const loadTime = perfData.loadEventEnd - perfData.fetchStart;
-                console.log('Page load time:', loadTime, 'ms');
 
                 // Only track if load time is significant (avoid noise)
                 if (loadTime > 100) {
@@ -303,7 +301,6 @@ class PentoraApp {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach((entry) => {
                     if (entry.duration > 100) { // Increased threshold
-                        console.warn('Long task detected:', entry.duration, 'ms');
 
                         // Store for batch reporting
                         if (!window.performanceMetrics) {

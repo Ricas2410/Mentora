@@ -1152,14 +1152,10 @@
         You're offline. Some features may be limited.
     </div>
 
-    <!-- Ultra-Conservative Progress Bar Cleanup (Load First) -->
-    <script src="{% load static %}{% static 'js/progress-bar-cleanup.js' %}?v=3"></script>
-
     <!-- Enhanced JavaScript -->
     <script src="{% load static %}{% static 'js/app.js' %}?v=4"></script>
     <script src="{% load static %}{% static 'js/ux-enhancements.js' %}"></script>
     <script src="{% load static %}{% static 'js/mobile-menu.js' %}?v=1"></script>
-    <script src="{% load static %}{% static 'js/cleanup-unwanted-elements.js' %}?v=1"></script>
     <script src="{% load static %}{% static 'js/performance-optimizer.js' %}?v=4"></script>
     <script src="{% load static %}{% static 'js/ui-interactions.js' %}"></script>
     <script src="{% load static %}{% static 'js/page-specific-enhancements.js' %}?v=3"></script>
@@ -1269,25 +1265,16 @@
 
     // Global form debugging and enhancement
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('Global form enhancements loaded');
-
-        // Show ready notification
-        showToast('Pentora is ready! Enjoy your studies.', 'success', 2000);
 
         // Fix profile dropdown functionality
         setupProfileDropdown();
 
-        // Add debugging to all forms
+        // Add form enhancements
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', function(e) {
-                console.log('Form submitted:', form.id || form.className);
-                console.log('Form action:', form.action);
-                console.log('Form method:', form.method);
-
                 // Show a subtle loading indicator for forms without custom loading
                 const submitBtn = form.querySelector('button[type="submit"]');
                 if (submitBtn && !submitBtn.hasAttribute('data-custom-loading')) {
-                    console.log('Adding loading state to button:', submitBtn.id);
                     const originalText = submitBtn.innerHTML;
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
                     submitBtn.disabled = true;
@@ -1298,7 +1285,6 @@
                     // Reset after 30 seconds if no response
                     setTimeout(() => {
                         if (submitBtn.disabled) {
-                            console.log('Form timeout - resetting button');
                             submitBtn.innerHTML = originalText;
                             submitBtn.disabled = false;
 

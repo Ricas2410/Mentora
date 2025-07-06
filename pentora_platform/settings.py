@@ -206,7 +206,6 @@ STATICFILES_FINDERS = [
 # Media Storage Configuration
 if DEBUG:
     # Development: Use local file storage
-    print("🔧 Development mode: Using local file storage")
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
@@ -250,11 +249,7 @@ else:
 
         MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/image/upload/'
 
-        print(f"✅ Cloudinary Storage configured: {MEDIA_URL}")
-        print(f"☁️  Cloud Name: {CLOUDINARY_CLOUD_NAME}")
-
     else:
-        print("⚠️  Cloudinary credentials not found, using local storage")
         # Fallback to local storage
         DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
         MEDIA_URL = '/media/'

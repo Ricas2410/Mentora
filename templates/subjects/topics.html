@@ -262,8 +262,63 @@
         </div>
     </div>
 
+    <!-- Search and Filter Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-md">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text"
+                           id="topicSearch"
+                           placeholder="Search topics..."
+                           class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+
+            <!-- Filter and Sort Controls -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <!-- Status Filter -->
+                <select id="statusFilter" class="px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="all">All Topics</option>
+                    <option value="new">New</option>
+                    <option value="started">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+
+                <!-- Difficulty Filter -->
+                <select id="difficultyFilter" class="px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="all">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+
+                <!-- Sort Options -->
+                <select id="sortOptions" class="px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="order">Default Order</option>
+                    <option value="title">Alphabetical</option>
+                    <option value="duration">Duration</option>
+                    <option value="progress">Progress</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-center justify-between text-sm text-gray-600">
+                <span id="resultsCount">Showing {{ topics|length }} topics</span>
+                <button id="clearFilters" class="text-blue-600 hover:text-blue-700 font-medium hidden">
+                    <i class="fas fa-times mr-1"></i>Clear Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Topics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div id="topicsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6 mb-8">
         {% for topic in topics %}
         {% with topic_progress=topic.topic_progress %}
         <div class="topic-card bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 overflow-hidden">
@@ -534,5 +589,127 @@ function showLoginPrompt() {
         }
     });
 }
+
+// Topics Search and Filter Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('topicSearch');
+    const statusFilter = document.getElementById('statusFilter');
+    const difficultyFilter = document.getElementById('difficultyFilter');
+    const sortOptions = document.getElementById('sortOptions');
+    const topicsGrid = document.getElementById('topicsGrid');
+    const resultsCount = document.getElementById('resultsCount');
+    const clearFilters = document.getElementById('clearFilters');
+
+    let allTopics = Array.from(document.querySelectorAll('.topic-card'));
+    let filteredTopics = [...allTopics];
+
+    // Extract topic data for filtering and sorting
+    allTopics.forEach(topic => {
+        const titleElement = topic.querySelector('h3');
+        const progressElement = topic.querySelector('.progress-percentage');
+        const durationElement = topic.querySelector('.duration-text');
+
+        topic.dataset.title = titleElement ? titleElement.textContent.toLowerCase() : '';
+        topic.dataset.progress = progressElement ? parseFloat(progressElement.textContent) || 0 : 0;
+        topic.dataset.duration = durationElement ? durationElement.textContent : '';
+
+        // Determine status based on progress
+        const progress = parseFloat(topic.dataset.progress);
+        if (progress === 0) {
+            topic.dataset.status = 'new';
+        } else if (progress < 100) {
+            topic.dataset.status = 'started';
+        } else {
+            topic.dataset.status = 'completed';
+        }
+
+        // Set difficulty (you can enhance this based on your data)
+        topic.dataset.difficulty = 'intermediate'; // Default, can be enhanced
+    });
+
+    function filterAndSortTopics() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value;
+        const difficultyValue = difficultyFilter.value;
+        const sortValue = sortOptions.value;
+
+        // Filter topics
+        filteredTopics = allTopics.filter(topic => {
+            const matchesSearch = topic.dataset.title.includes(searchTerm);
+            const matchesStatus = statusValue === 'all' || topic.dataset.status === statusValue;
+            const matchesDifficulty = difficultyValue === 'all' || topic.dataset.difficulty === difficultyValue;
+
+            return matchesSearch && matchesStatus && matchesDifficulty;
+        });
+
+        // Sort topics
+        filteredTopics.sort((a, b) => {
+            switch (sortValue) {
+                case 'title':
+                    return a.dataset.title.localeCompare(b.dataset.title);
+                case 'duration':
+                    return a.dataset.duration.localeCompare(b.dataset.duration);
+                case 'progress':
+                    return parseFloat(b.dataset.progress) - parseFloat(a.dataset.progress);
+                default:
+                    return 0; // Keep original order
+            }
+        });
+
+        // Update display
+        updateTopicsDisplay();
+        updateResultsCount();
+        updateClearFiltersButton();
+    }
+
+    function updateTopicsDisplay() {
+        // Hide all topics first
+        allTopics.forEach(topic => {
+            topic.style.display = 'none';
+        });
+
+        // Show filtered topics
+        filteredTopics.forEach(topic => {
+            topic.style.display = 'block';
+        });
+    }
+
+    function updateResultsCount() {
+        const count = filteredTopics.length;
+        const total = allTopics.length;
+        resultsCount.textContent = `Showing ${count} of ${total} topics`;
+    }
+
+    function updateClearFiltersButton() {
+        const hasActiveFilters = searchInput.value !== '' ||
+                                statusFilter.value !== 'all' ||
+                                difficultyFilter.value !== 'all' ||
+                                sortOptions.value !== 'order';
+
+        if (hasActiveFilters) {
+            clearFilters.classList.remove('hidden');
+        } else {
+            clearFilters.classList.add('hidden');
+        }
+    }
+
+    function clearAllFilters() {
+        searchInput.value = '';
+        statusFilter.value = 'all';
+        difficultyFilter.value = 'all';
+        sortOptions.value = 'order';
+        filterAndSortTopics();
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', filterAndSortTopics);
+    statusFilter.addEventListener('change', filterAndSortTopics);
+    difficultyFilter.addEventListener('change', filterAndSortTopics);
+    sortOptions.addEventListener('change', filterAndSortTopics);
+    clearFilters.addEventListener('click', clearAllFilters);
+
+    // Initial setup
+    updateResultsCount();
+});
 </script>
 {% endblock %}

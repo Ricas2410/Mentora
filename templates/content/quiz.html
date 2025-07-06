@@ -1490,6 +1490,7 @@ function showDetailedResults() {
     };
 
     // Store results in sessionStorage for the results page
+    console.log('Storing quiz results:', resultsData);
     sessionStorage.setItem('quizResults', JSON.stringify(resultsData));
 
     // Submit quiz results to backend for progress tracking
@@ -1506,17 +1507,26 @@ function showDetailedResults() {
 
 // Function to redirect to results page (optimized for free tier)
 function redirectToResults() {
-    // Store results in sessionStorage to avoid data loss
+    // Calculate current results if not already done
+    const score = quizResults.filter(r => r.isCorrect).length;
+    const percentage = Math.round((score / totalQuestions) * 100);
+    const totalTime = quizResults.reduce((sum, r) => sum + (r.timeTaken || 0), 0);
+
+    // Store results in sessionStorage using consistent format
     const resultsData = {
-        score: currentScore,
-        totalQuestions: totalQuestions,
-        percentage: Math.round((currentScore / totalQuestions) * 100),
-        timeSpent: Math.floor((Date.now() - quizStartTime) / 1000),
-        answers: quizResults,
+        score: score,
+        total: totalQuestions,
+        percentage: percentage,
+        totalTime: totalTime,
+        quizResults: quizResults,
+        topicTitle: '{{ topic.title }}',
+        subjectName: '{{ subject.name }}',
+        levelNumber: '{{ level.level_number }}',
         topicId: '{{ topic.id }}',
         timestamp: Date.now()
     };
 
+    console.log('Storing quiz results (redirect):', resultsData);
     sessionStorage.setItem('quizResults', JSON.stringify(resultsData));
 
     // Use the current topic ID for the results page

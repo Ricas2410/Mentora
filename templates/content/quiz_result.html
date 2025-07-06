@@ -402,6 +402,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const results = JSON.parse(sessionStorage.getItem('quizResults') || '{}');
 
+    // Debug: Log the results data to console
+    console.log('Quiz Results Data:', results);
+
     if (Object.keys(results).length === 0) {
         // No results found, show error message
         document.querySelector('.results-container').innerHTML = `
@@ -420,17 +423,25 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // Handle different data formats for compatibility
+    const score = results.score || 0;
+    const totalQuestions = results.total || results.totalQuestions || 0;
+    const percentage = results.percentage || 0;
+    const topicTitle = results.topicTitle || '{{ topic.title }}' || 'Quiz';
+
+    // Handle time data - support both formats
+    let totalTime = results.totalTime || results.timeSpent || 0;
+
     // Update quiz title
     document.getElementById('quiz-title').textContent =
-        `Here are your results for "${results.topicTitle || 'Quiz'}"`;
+        `Here are your results for "${topicTitle}"`;
 
     // Update score display
-    document.getElementById('score-percentage').textContent = results.percentage + '%';
-    document.getElementById('correct-count').textContent = results.score || 0;
-    document.getElementById('total-questions').textContent = results.total || 0;
+    document.getElementById('score-percentage').textContent = percentage + '%';
+    document.getElementById('correct-count').textContent = score;
+    document.getElementById('total-questions').textContent = totalQuestions;
 
     // Format time spent - Fix the NaN issue
-    const totalTime = results.totalTime || 0;
     const minutes = Math.floor(totalTime / 60);
     const seconds = totalTime % 60;
     document.getElementById('time-spent').textContent =
@@ -496,10 +507,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('subject-btn').href = `{% url 'subjects:level_detail' subject.id level.id %}`;
 
     // Set up continue button functionality
-    setupContinueButton(results.percentage >= 70);
+    setupContinueButton(percentage >= 70);
 
-    // Generate question review
-    generateQuestionReview(results.quizResults || []);
+    // Generate question review - handle both data formats
+    const quizResults = results.quizResults || results.answers || [];
+    generateQuestionReview(quizResults);
 
     // Don't clear results from storage immediately - let user navigate back if needed
     // sessionStorage.removeItem('quizResults');

@@ -330,7 +330,6 @@ class PerformanceOptimizer {
                              localStorage.getItem('enableDetailedMonitoring') === 'true';
 
         if (!shouldMonitor) {
-            console.log('Detailed performance monitoring disabled for development');
             return;
         }
 
@@ -347,7 +346,6 @@ class PerformanceOptimizer {
     monitorCoreWebVitals() {
         // DISABLED: Consolidated into main app.js to prevent duplicate requests
         // Core Web Vitals are now collected and sent in batch with other metrics
-        console.log('Core Web Vitals monitoring disabled - handled by consolidated system');
 
         // Store metrics locally for batch reporting
         if ('PerformanceObserver' in window) {
@@ -380,10 +378,9 @@ class PerformanceOptimizer {
             window.performanceMetrics.domContentLoaded = navigation.domContentLoadedEventEnd - navigation.fetchStart;
             window.performanceMetrics.resourceCount = resources.length;
 
-            // Find slow resources and log them
+            // Find slow resources
             const slowResources = resources.filter(resource => resource.duration > 1000);
             if (slowResources.length > 0) {
-                console.warn('Slow loading resources:', slowResources.map(r => r.name));
                 window.performanceMetrics.slowResourceCount = slowResources.length;
             }
         });
@@ -392,13 +389,11 @@ class PerformanceOptimizer {
     monitorUserInteractions() {
         // DISABLED: Reduced monitoring to prevent excessive requests
         // User interaction monitoring is now handled by analytics middleware
-        console.log('User interaction monitoring disabled - handled by server-side analytics');
     }
 
     reportMetric(name, value) {
         // DISABLED: Consolidated into main app.js performance monitoring
         // This prevents duplicate requests to the analytics endpoint
-        console.log(`Performance metric: ${name} = ${value}`);
 
         // Store metrics locally for the main monitoring system to collect
         if (!window.performanceMetrics) {
