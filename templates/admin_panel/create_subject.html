@@ -34,7 +34,8 @@
                             </label>
                             {{ form.icon }}
                             <div class="form-text">
-                                Use FontAwesome icon classes (e.g., fa-book, fa-calculator, fa-globe)
+                                Use FontAwesome icon classes (e.g., fas fa-book, fas fa-calculator, fas fa-globe-africa)
+                                <br><small class="text-muted">Include the full class with "fas" prefix</small>
                             </div>
                             {% if form.icon.errors %}
                                 <div class="text-danger small">{{ form.icon.errors.0 }}</div>
@@ -165,8 +166,13 @@ document.addEventListener('DOMContentLoaded', function() {
         previewDescription.textContent = descriptionInput.value || 'Subject description will appear here';
         
         // Update icon
-        const iconClass = iconInput.value || 'fa-book';
-        previewIconElement.className = `fas ${iconClass}`;
+        const iconClass = iconInput.value || 'fas fa-book';
+        // If the input already contains 'fas', use it as is, otherwise add 'fas' prefix
+        if (iconClass.includes('fas ') || iconClass.includes('far ') || iconClass.includes('fab ')) {
+            previewIconElement.className = iconClass;
+        } else {
+            previewIconElement.className = `fas ${iconClass}`;
+        }
         
         // Update color
         const color = colorInput.value || '#3B82F6';

@@ -926,7 +926,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="subject-header">
                         <div class="subject-icon" style="background: {{ subject_data.subject.color }}20; color: {{ subject_data.subject.color }};">
                             {% if subject_data.subject.icon %}
-                                {{ subject_data.subject.icon }}
+                                {% if 'fa-' in subject_data.subject.icon %}
+                                    <i class="{{ subject_data.subject.icon }}"></i>
+                                {% else %}
+                                    {{ subject_data.subject.icon }}
+                                {% endif %}
                             {% else %}
                                 {% if 'math' in subject_data.subject.name|lower or 'calculator' in subject_data.subject.name|lower %}
                                     🧮

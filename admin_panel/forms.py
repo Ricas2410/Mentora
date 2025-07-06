@@ -173,7 +173,7 @@ class SubjectForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Subject name'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Subject description'}),
-            'icon': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'FontAwesome icon class (e.g., fas fa-book)'}),
+            'icon': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., fas fa-book-open, fas fa-calculator, fas fa-flask'}),
             'color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
