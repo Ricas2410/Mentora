@@ -355,6 +355,8 @@ class VerifyEmailView(View):
 
             # Auto-login the user
             if not request.user.is_authenticated:
+                # Specify the backend to avoid authentication backend error
+                user.backend = 'users.backends.EmailBackend'
                 login(request, user)
                 print(f"🔐 User auto-logged in")
                 return redirect('core:dashboard')

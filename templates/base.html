@@ -930,12 +930,70 @@
         }, duration);
     }
 
+    // Profile dropdown functionality
+    function setupProfileDropdown() {
+        const dropdown = document.querySelector('.dropdown.dropdown-end');
+        const dropdownButton = dropdown?.querySelector('[role="button"]');
+        const dropdownContent = dropdown?.querySelector('.dropdown-content');
+
+        if (!dropdown || !dropdownButton || !dropdownContent) {
+            console.log('Profile dropdown elements not found');
+            return;
+        }
+
+        console.log('Setting up profile dropdown');
+
+        // Toggle dropdown on click
+        dropdownButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const isOpen = dropdown.classList.contains('dropdown-open');
+
+            // Close all other dropdowns first
+            document.querySelectorAll('.dropdown.dropdown-open').forEach(d => {
+                d.classList.remove('dropdown-open');
+            });
+
+            // Toggle this dropdown
+            if (!isOpen) {
+                dropdown.classList.add('dropdown-open');
+                console.log('Profile dropdown opened');
+            } else {
+                dropdown.classList.remove('dropdown-open');
+                console.log('Profile dropdown closed');
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('dropdown-open');
+            }
+        });
+
+        // Close dropdown on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('dropdown-open');
+            }
+        });
+
+        // Prevent dropdown content clicks from closing the dropdown
+        dropdownContent.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+
     // Global form debugging and enhancement
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Global form enhancements loaded');
 
         // Show ready notification
-        showToast('Pentora is ready! All systems operational.', 'success', 3000);
+        showToast('Pentora is ready! Enjoy your studies.', 'success', 2000);
+
+        // Fix profile dropdown functionality
+        setupProfileDropdown();
 
         // Add debugging to all forms
         document.querySelectorAll('form').forEach(form => {

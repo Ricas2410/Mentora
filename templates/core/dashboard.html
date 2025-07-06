@@ -699,12 +699,122 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Dashboard Enhancements
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate welcome section
+    setTimeout(() => {
+        const welcomeSection = document.querySelector('.welcome-animation');
+        if (welcomeSection) {
+            welcomeSection.style.opacity = '1';
+            welcomeSection.style.transform = 'translateY(0)';
+        }
+    }, 300);
+
+    // Animate stats with counting effect
+    function animateStats() {
+        const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+
+        statNumbers.forEach((stat, index) => {
+            const target = parseInt(stat.getAttribute('data-target'));
+            const duration = 1500;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            setTimeout(() => {
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = Math.floor(current);
+                }, 16);
+            }, index * 200);
+        });
+    }
+
+    // Animate subject cards
+    function animateSubjectCards() {
+        const subjectCards = document.querySelectorAll('.subject-card');
+
+        subjectCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 600 + (index * 100));
+        });
+    }
+
+    // Add hover effects to subject cards
+    function addSubjectCardEffects() {
+        const subjectCards = document.querySelectorAll('.subject-card');
+
+        subjectCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+            });
+        });
+    }
+
+    // Initialize animations
+    setTimeout(animateStats, 800);
+    setTimeout(animateSubjectCards, 1000);
+    setTimeout(addSubjectCardEffects, 1500);
+
+    // Add motivational messages
+    function showMotivationalMessage() {
+        const messages = [
+            "You're doing great! Keep learning! 🌟",
+            "Every topic completed is progress! 📚",
+            "Knowledge is power! Keep going! 💪",
+            "You're building your future! 🚀",
+            "Learning never stops! Stay curious! 🧠"
+        ];
+
+        const completedTopics = parseInt(document.querySelector('[data-target]')?.getAttribute('data-target') || 0);
+
+        if (completedTopics > 0 && Math.random() < 0.3) {
+            setTimeout(() => {
+                const message = messages[Math.floor(Math.random() * messages.length)];
+                if (typeof showToast !== 'undefined') {
+                    showToast(message, 'success', 4000);
+                }
+            }, 2000);
+        }
+    }
+
+    showMotivationalMessage();
+});
 </script>
 
 {% else %}
 <!-- Modern Dashboard -->
 <div class="dashboard-container">
     <div class="container mx-auto px-4 max-w-7xl">
+
+        <!-- Welcome Animation -->
+        <div class="welcome-animation mb-6" style="opacity: 0; transform: translateY(20px); transition: all 0.6s ease;">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 animate-pulse">
+                    <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                    Welcome back, {{ user.first_name }}! 🎓
+                </h1>
+                <p class="text-lg text-gray-600">Ready to continue your learning journey?</p>
+            </div>
+        </div>
 
         <!-- Clean Hero Section -->
         <div class="dashboard-card">
@@ -725,23 +835,35 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
 
-                        <!-- Stats -->
+                        <!-- Enhanced Stats with Animations -->
                         <div class="hero-stats">
-                            <div class="stat-card">
-                                <div class="stat-number">{{ total_subjects }}</div>
-                                <div class="stat-label">Subjects</div>
+                            <div class="stat-card hover:scale-105 transition-transform duration-200" data-stat="{{ total_subjects }}">
+                                <div class="stat-number" data-target="{{ total_subjects }}">0</div>
+                                <div class="stat-label">
+                                    <i class="fas fa-book text-blue-500 mr-1"></i>
+                                    Subjects
+                                </div>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-number">{{ completed_subjects }}</div>
-                                <div class="stat-label">Completed</div>
+                            <div class="stat-card hover:scale-105 transition-transform duration-200" data-stat="{{ completed_subjects }}">
+                                <div class="stat-number" data-target="{{ completed_subjects }}">0</div>
+                                <div class="stat-label">
+                                    <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                                    Completed
+                                </div>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-number">{{ total_topics }}</div>
-                                <div class="stat-label">Topics</div>
+                            <div class="stat-card hover:scale-105 transition-transform duration-200" data-stat="{{ total_topics }}">
+                                <div class="stat-number" data-target="{{ total_topics }}">0</div>
+                                <div class="stat-label">
+                                    <i class="fas fa-list text-purple-500 mr-1"></i>
+                                    Topics
+                                </div>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-number">{{ completed_topics }}</div>
-                                <div class="stat-label">Finished</div>
+                            <div class="stat-card hover:scale-105 transition-transform duration-200" data-stat="{{ completed_topics }}">
+                                <div class="stat-number" data-target="{{ completed_topics }}">0</div>
+                                <div class="stat-label">
+                                    <i class="fas fa-trophy text-yellow-500 mr-1"></i>
+                                    Finished
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -825,13 +947,69 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         {% endif %}
 
+        <!-- Progress Overview -->
+        <div class="dashboard-card mb-6">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-chart-line mr-3 text-green-600"></i>
+                    Your Learning Progress
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Overall Progress -->
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-blue-700 font-semibold">Overall Progress</span>
+                            <span class="text-blue-600 text-sm">{{ overall_progress_percentage|floatformat:0 }}%</span>
+                        </div>
+                        <div class="w-full bg-blue-200 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-1000"
+                                 style="width: {{ overall_progress_percentage|floatformat:0 }}%"></div>
+                        </div>
+                        <p class="text-blue-600 text-sm mt-2">Keep up the great work!</p>
+                    </div>
+
+                    <!-- Weekly Goal -->
+                    <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-green-700 font-semibold">This Week</span>
+                            <span class="text-green-600 text-sm">{{ weekly_progress|default:0 }}/5 topics</span>
+                        </div>
+                        <div class="w-full bg-green-200 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-1000"
+                                 style="width: {{ weekly_progress_percentage|default:0 }}%"></div>
+                        </div>
+                        <p class="text-green-600 text-sm mt-2">{{ weekly_message|default:"Start your weekly goal!" }}</p>
+                    </div>
+
+                    <!-- Streak -->
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-orange-700 font-semibold">Learning Streak</span>
+                            <span class="text-orange-600 text-sm">{{ learning_streak|default:0 }} days</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-fire text-orange-500 text-2xl mr-2"></i>
+                            <span class="text-orange-600 font-bold text-lg">{{ learning_streak|default:0 }}</span>
+                        </div>
+                        <p class="text-orange-600 text-sm mt-2">{{ streak_message|default:"Start your streak today!" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Subjects Grid -->
         <div class="dashboard-card">
             <div class="p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                    <i class="fas fa-graduation-cap mr-3 text-blue-600"></i>
-                    Your {{ user_class_level_name }} Subjects
-                </h2>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-graduation-cap mr-3 text-blue-600"></i>
+                        Your {{ user_class_level_name }} Subjects
+                    </h2>
+                    <div class="text-sm text-gray-600">
+                        {{ completed_subjects }}/{{ total_subjects }} completed
+                    </div>
+                </div>
             </div>
 
             <div class="subjects-grid">
