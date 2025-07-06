@@ -138,9 +138,17 @@
 
     .subjects-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1.5rem;
-        padding: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    @media (min-width: 640px) {
+        .subjects-grid {
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
     }
 
     .subject-card {
@@ -383,12 +391,25 @@
             padding: 1rem;
         }
 
+        .subject-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .subject-icon {
+            margin-bottom: 0.5rem;
+        }
+
         .subject-actions {
             flex-direction: column;
+            gap: 0.5rem;
         }
 
         .action-btn {
             justify-content: center;
+            width: 100%;
         }
     }
 
@@ -729,8 +750,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="hero-content">
                     <div class="hero-main">
                         <div class="hero-text">
-                            <div class="flex items-center mb-6">
-                                <div class="relative">
+                            <!-- Mobile-First Hero Layout -->
+                            <div class="flex flex-col sm:flex-row sm:items-center mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+                                <div class="relative flex-shrink-0 self-center sm:self-auto">
                                     {% if user.profile_picture %}
                                         <img class="w-16 h-16 rounded-full border-3 border-white shadow-lg" src="{{ user.profile_picture.url }}" alt="{{ user.full_name }}">
                                     {% else %}
@@ -742,66 +764,79 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <i class="fas fa-check text-white text-xs"></i>
                                     </div>
                                 </div>
-                                <div class="ml-4">
-                                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+                                <div class="text-center sm:text-left flex-1">
+                                    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                                         Welcome back, {{ user.first_name }}! 👋
                                     </h1>
-                                    <p class="text-gray-600 flex items-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2">
+                                    <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 self-center sm:self-auto">
                                             {{ user_class_level_name }}
                                         </span>
-                                        Ready to continue your learning journey?
-                                    </p>
+                                        <p class="text-gray-600 text-sm sm:text-base">
+                                            Ready to continue your learning journey?
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Enhanced Stats -->
-                        <div class="hero-stats">
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-book text-blue-500"></i>
+                        <!-- Mobile-Friendly Stats -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                            <div class="bg-white rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100">
+                                <div class="flex flex-col items-center text-center">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mb-2 text-lg">
+                                        📚
+                                    </div>
+                                    <div class="text-xl sm:text-2xl font-bold text-gray-900">{{ total_subjects }}</div>
+                                    <div class="text-xs text-gray-500">Subjects</div>
                                 </div>
-                                <div class="stat-number">{{ total_subjects }}</div>
-                                <div class="stat-label">Subjects</div>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-check-circle text-green-500"></i>
+                            <div class="bg-white rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100">
+                                <div class="flex flex-col items-center text-center">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mb-2 text-lg">
+                                        ✅
+                                    </div>
+                                    <div class="text-xl sm:text-2xl font-bold text-gray-900">{{ completed_subjects }}</div>
+                                    <div class="text-xs text-gray-500">Completed</div>
                                 </div>
-                                <div class="stat-number">{{ completed_subjects }}</div>
-                                <div class="stat-label">Completed</div>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-list text-purple-500"></i>
+                            <div class="bg-white rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100">
+                                <div class="flex flex-col items-center text-center">
+                                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mb-2 text-lg">
+                                        📋
+                                    </div>
+                                    <div class="text-xl sm:text-2xl font-bold text-gray-900">{{ total_topics }}</div>
+                                    <div class="text-xs text-gray-500">Topics</div>
                                 </div>
-                                <div class="stat-number">{{ total_topics }}</div>
-                                <div class="stat-label">Topics</div>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-trophy text-yellow-500"></i>
+                            <div class="bg-white rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 border border-gray-100">
+                                <div class="flex flex-col items-center text-center">
+                                    <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mb-2 text-lg">
+                                        🏆
+                                    </div>
+                                    <div class="text-xl sm:text-2xl font-bold text-gray-900">{{ completed_topics }}</div>
+                                    <div class="text-xs text-gray-500">Finished</div>
                                 </div>
-                                <div class="stat-number">{{ completed_topics }}</div>
-                                <div class="stat-label">Finished</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Enhanced Continue Learning Button -->
+                    <!-- Mobile-Friendly Continue Learning Section -->
                     {% if next_learning_path %}
-                    <div class="mt-8">
-                        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-100">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-sm font-semibold text-gray-900 mb-1">Continue Learning</h3>
+                    <div class="mt-6 sm:mt-8">
+                        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 sm:p-6 border border-blue-100">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                                <div class="text-center sm:text-left">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Continue Learning</h3>
                                     <p class="text-sm text-gray-600">{{ next_learning_path.title }}</p>
                                 </div>
-                                <a href="{{ next_learning_path.url }}" class="continue-learning-btn">
-                                    <i class="fas fa-play mr-2"></i>
-                                    Continue
-                                </a>
+                                <div class="flex justify-center sm:justify-end">
+                                    <a href="{{ next_learning_path.url }}"
+                                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                        <i class="fas fa-play mr-2"></i>
+                                        Continue
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -890,7 +925,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="subject-card {% if subject_data.is_completed %}completed{% elif subject_data.completed_topics > 0 %}in-progress{% else %}not-started{% endif %}">
                     <div class="subject-header">
                         <div class="subject-icon" style="background: {{ subject_data.subject.color }}20; color: {{ subject_data.subject.color }};">
-                            {{ subject_data.subject.icon }}
+                            {% if subject_data.subject.icon %}
+                                {{ subject_data.subject.icon }}
+                            {% else %}
+                                {% if 'math' in subject_data.subject.name|lower or 'calculator' in subject_data.subject.name|lower %}
+                                    🧮
+                                {% elif 'english' in subject_data.subject.name|lower or 'language' in subject_data.subject.name|lower %}
+                                    📚
+                                {% elif 'science' in subject_data.subject.name|lower %}
+                                    🔬
+                                {% elif 'social' in subject_data.subject.name|lower or 'studies' in subject_data.subject.name|lower %}
+                                    🌍
+                                {% elif 'french' in subject_data.subject.name|lower %}
+                                    🇫🇷
+                                {% elif 'technology' in subject_data.subject.name|lower or 'ict' in subject_data.subject.name|lower %}
+                                    💻
+                                {% else %}
+                                    📖
+                                {% endif %}
+                            {% endif %}
                         </div>
                         <div class="subject-info">
                             <h3 class="subject-name">{{ subject_data.subject.name }}</h3>
