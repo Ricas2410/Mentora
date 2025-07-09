@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, requires_csrf_token
 from django.utils.decorators import method_decorator
 from subjects.models import Subject, ClassLevel, Topic
 from progress.models import UserProgress
@@ -184,6 +184,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'user_class_level': user.current_class_level,
             'user_class_level_name': class_level_name,
             'next_learning_path': next_learning_path,
+            'class_levels': user.CLASS_LEVEL_CHOICES,  # For class change modal
         })
 
         return context
@@ -219,14 +220,60 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             }
 
     def post(self, request, *args, **kwargs):
-        """Handle level selection with improved error handling"""
+        """Handle level selection and class changes with improved error handling"""
         import logging
         logger = logging.getLogger(__name__)
 
         logger.info(f"Dashboard POST request from user {request.user.id}")
         logger.info(f"POST data: {request.POST}")
 
-        if 'class_level' in request.POST:
+        # Handle class change from modal
+        if request.POST.get('action') == 'change_class' and 'new_class_level' in request.POST:
+            try:
+                new_class_level_str = request.POST['new_class_level']
+                logger.info(f"Received new_class_level: '{new_class_level_str}'")
+
+                if not new_class_level_str:
+                    logger.warning("Empty new_class_level received")
+                    messages.error(request, 'No class level selected. Please select a class level.')
+                    return self.get(request, *args, **kwargs)
+
+                new_class_level = int(new_class_level_str)
+                logger.info(f"Parsed new_class_level as integer: {new_class_level}")
+
+                valid_levels = [choice[0] for choice in request.user.CLASS_LEVEL_CHOICES]
+                logger.info(f"Valid levels for user: {valid_levels}")
+
+                if new_class_level in valid_levels:
+                    old_level = request.user.current_class_level
+
+                    if old_level == new_class_level:
+                        messages.info(request, f'You are already in Grade {new_class_level}.')
+                        return redirect('core:dashboard')
+
+                    # Update user's class level
+                    request.user.current_class_level = new_class_level
+                    request.user.save(update_fields=['current_class_level', 'updated_at'])
+
+                    logger.info(f"Successfully updated user {request.user.id} class level from {old_level} to {new_class_level}")
+
+                    # Add success message
+                    messages.success(request, f'Class level successfully changed from Grade {old_level} to Grade {new_class_level}!')
+
+                    return redirect('core:dashboard')
+                else:
+                    logger.warning(f"Invalid class level {new_class_level} not in valid levels {valid_levels}")
+                    messages.error(request, f'Invalid class level {new_class_level} selected. Valid options are: {", ".join(map(str, valid_levels))}')
+
+            except (ValueError, TypeError) as e:
+                logger.error(f"ValueError/TypeError parsing new_class_level '{request.POST.get('new_class_level')}': {str(e)}")
+                messages.error(request, f'Invalid class level format: {request.POST.get("new_class_level")}. Please select a valid option.')
+            except Exception as e:
+                logger.error(f"Dashboard class change error for user {request.user.id}: {str(e)}", exc_info=True)
+                messages.error(request, f'An error occurred while changing your class level: {str(e)}. Please try again.')
+
+        # Handle initial level selection
+        elif 'class_level' in request.POST:
             try:
                 class_level_str = request.POST['class_level']
                 logger.info(f"Received class_level: '{class_level_str}'")
@@ -266,7 +313,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 logger.error(f"Dashboard level selection error for user {request.user.id}: {str(e)}", exc_info=True)
                 messages.error(request, f'An error occurred while updating your class level: {str(e)}. Please try again.')
         else:
-            logger.warning("No class_level in POST data")
+            logger.warning("No class_level or new_class_level in POST data")
             messages.error(request, 'No class level data received. Please try again.')
 
         return self.get(request, *args, **kwargs)
@@ -641,7 +688,21 @@ def submit_feedback(request):
         import json
 
         # Parse JSON data
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid data format. Please try again.'
+            }, status=400)
+
+        # Validate required fields
+        if not data.get('message', '').strip():
+            return JsonResponse({
+                'success': False,
+                'message': 'Please provide a feedback message.'
+            }, status=400)
 
         # Get client IP
         def get_client_ip(request):
@@ -655,6 +716,7 @@ def submit_feedback(request):
         # Create feedback record
         feedback = UserFeedback.objects.create(
             user=request.user if request.user.is_authenticated else None,
+            email=data.get('email', '') if not request.user.is_authenticated else '',
             rating=data.get('rating'),
             feedback_type=data.get('feedback_type', 'general'),
             message=data.get('message', ''),
@@ -664,16 +726,46 @@ def submit_feedback(request):
             ip_address=get_client_ip(request)
         )
 
-        logger.info(f"Feedback submitted: {feedback.id} by {feedback.user or 'Anonymous'}")
+        logger.info(f"Feedback submitted successfully: {feedback.id} by {feedback.user or 'Anonymous'}")
 
         return JsonResponse({
             'success': True,
-            'message': 'Thank you for your feedback! We appreciate your input.'
+            'message': 'Thank you for your feedback! We appreciate your input.',
+            'feedback_id': str(feedback.id)
         })
 
     except Exception as e:
-        logger.error(f"Error submitting feedback: {str(e)}")
+        logger.error(f"Error submitting feedback: {str(e)}", exc_info=True)
         return JsonResponse({
             'success': False,
             'message': 'Sorry, there was an error submitting your feedback. Please try again.'
         }, status=500)
+
+
+@requires_csrf_token
+def csrf_failure(request, reason=""):
+    """
+    Custom CSRF failure view to handle CSRF errors gracefully
+    """
+    logger.warning(f"CSRF failure: {reason} for {request.get_host()}")
+
+    # Log additional debugging info
+    logger.warning(f"Request META: {request.META.get('HTTP_REFERER', 'No referer')}")
+    logger.warning(f"User Agent: {request.META.get('HTTP_USER_AGENT', 'No user agent')}")
+
+    # For AJAX requests, return JSON response
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'error': 'CSRF verification failed',
+            'message': 'Security token expired. Please refresh the page and try again.',
+            'reload': True
+        }, status=403)
+
+    # For regular requests, show a user-friendly error page
+    context = {
+        'title': 'Security Error',
+        'message': 'Your session has expired for security reasons. Please refresh the page and try again.',
+        'reason': reason,
+    }
+
+    return render(request, 'errors/csrf_failure.html', context, status=403)

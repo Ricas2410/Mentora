@@ -12,8 +12,11 @@
 
 {% block nav-global %}
 <div style="float: right; margin-top: 10px;">
-    <a href="{% url 'analytics:dashboard' %}" style="color: #fff; text-decoration: none; margin-right: 20px; background: #417690; padding: 8px 12px; border-radius: 4px;">
+    <a href="{% url 'analytics:dashboard' %}" style="color: #fff; text-decoration: none; margin-right: 15px; background: #417690; padding: 8px 12px; border-radius: 4px;">
         📊 Analytics Dashboard
+    </a>
+    <a href="{% url 'core:feedback_list' %}" style="color: #fff; text-decoration: none; margin-right: 20px; background: #28a745; padding: 8px 12px; border-radius: 4px;">
+        💬 User Feedback
     </a>
     {% if user.is_authenticated %}
         <a href="{% url 'admin:logout' %}" style="color: #fff; text-decoration: none;">

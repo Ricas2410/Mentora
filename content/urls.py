@@ -19,4 +19,5 @@ urlpatterns = [
     path('api/submit-quiz/', views.submit_quiz, name='submit_quiz'),
     path('api/submit-exam/', views.submit_exam, name='submit_exam'),
     path('api/next-learning-path/', views.get_next_learning_path, name='next_learning_path'),
+    path('api/latest-quiz-result/<uuid:topic_id>/', views.get_latest_quiz_result, name='latest_quiz_result'),
 ]

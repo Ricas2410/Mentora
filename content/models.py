@@ -365,6 +365,7 @@ class Quiz(models.Model):
     score = models.PositiveIntegerField(default=0)
     total_points = models.PositiveIntegerField(default=0)
     percentage = models.FloatField(default=0.0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    time_taken = models.PositiveIntegerField(default=0, help_text="Time taken in seconds")
 
     # Attempt tracking
     attempt_number = models.PositiveIntegerField(default=1)

@@ -581,6 +581,14 @@ const quizMetadata = JSON.parse('{{ quiz_metadata_json|escapejs }}');
 // User authentication status
 const isUserAuthenticated = quizMetadata.isUserAuthenticated;
 
+// Initialize questions array
+questions = quizQuestions;
+
+console.log('Quiz initialized with', questions.length, 'questions');
+console.log('Questions:', questions);
+console.log('Quiz metadata:', quizMetadata);
+console.log('User authenticated:', isUserAuthenticated);
+
 // Function to get CSRF token
 function getCsrfToken() {
     const csrfMeta = document.querySelector('meta[name="csrf-token"]');
@@ -1453,8 +1461,41 @@ document.getElementById('submitBtn').addEventListener('click', () => {
 });
 
 function showDetailedResults() {
+    console.log('showDetailedResults called');
+    console.log('quizResults length:', quizResults.length);
+    console.log('quizResults:', quizResults);
+    console.log('answers:', answers);
+    console.log('totalQuestions:', totalQuestions);
+    console.log('questions array:', questions);
+
+    // If quizResults is empty but we have answers, try to reconstruct the results
+    if (quizResults.length === 0 && Object.keys(answers).length > 0) {
+        console.log('Reconstructing quiz results from answers...');
+
+        Object.keys(answers).forEach((questionId, index) => {
+            const question = questions.find(q => q.id === questionId);
+            if (question) {
+                const selectedChoiceId = answers[questionId];
+                const selectedChoice = question.choices ? question.choices.find(c => c.id === selectedChoiceId) : null;
+                const correctChoice = question.choices ? question.choices.find(c => c.isCorrect) : null;
+                const isCorrect = selectedChoice ? selectedChoice.isCorrect : false;
+
+                quizResults.push({
+                    question: question,
+                    selectedChoice: selectedChoice || { text: selectedChoiceId, id: selectedChoiceId },
+                    correctChoice: correctChoice || { text: question.correctAnswer, id: 'correct' },
+                    isCorrect: isCorrect,
+                    timeTaken: 30 // Default time
+                });
+            }
+        });
+
+        console.log('Reconstructed quiz results:', quizResults);
+    }
+
     // Ensure we have results for all questions
     if (quizResults.length === 0) {
+        console.error('No quiz results found and could not reconstruct!');
         alert('Error: No quiz results found. Please try again.');
         return;
     }
@@ -1506,7 +1547,7 @@ function showDetailedResults() {
 }
 
 // Function to redirect to results page (optimized for free tier)
-function redirectToResults() {
+function redirectToResults(quizId = null) {
     // Calculate current results if not already done
     const score = quizResults.filter(r => r.isCorrect).length;
     const percentage = Math.round((score / totalQuestions) * 100);
@@ -1529,9 +1570,14 @@ function redirectToResults() {
     console.log('Storing quiz results (redirect):', resultsData);
     sessionStorage.setItem('quizResults', JSON.stringify(resultsData));
 
-    // Use the current topic ID for the results page
-    const topicId = '{{ topic.id }}';
-    window.location.href = `/content/quiz/${topicId}/result/`;
+    // Use the quiz ID if provided, otherwise fallback to topic ID (for non-authenticated users)
+    if (quizId) {
+        console.log('Redirecting to quiz result page with quiz ID:', quizId);
+        window.location.href = `/content/quiz/${quizId}/result/`;
+    } else {
+        console.log('No quiz ID provided, redirecting to dashboard');
+        window.location.href = '/dashboard/';
+    }
 }
 
 
@@ -1640,8 +1686,8 @@ function submitQuizToBackend(score, percentage, totalTime, resultsData) {
             if (data.topic_completed) {
                 showTopicCompletionMessage();
             }
-            // Redirect to results page after successful submission
-            redirectToResults();
+            // Redirect to results page after successful submission using quiz_id
+            redirectToResults(data.quiz_id);
         } else {
             console.error('Quiz submission failed:', data.error);
             // Still redirect to results page even if submission failed

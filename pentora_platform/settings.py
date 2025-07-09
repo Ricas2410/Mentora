@@ -23,7 +23,26 @@ CSRF_TRUSTED_ORIGINS = [
     'https://pentora.fly.dev',
     'https://*.fly.dev',
     'https://pentora.deigratiams.edu.gh',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
 ]
+
+# Additional CSRF settings for better compatibility
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript access to CSRF cookie
+CSRF_USE_SESSIONS = False  # Use cookies instead of sessions for CSRF
+CSRF_COOKIE_SAMESITE = 'Lax'  # Allow cross-site requests with CSRF protection
+CSRF_COOKIE_DOMAIN = None  # Let Django auto-detect the domain
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'  # Custom CSRF failure view
+
+# Temporary CSRF debugging settings (remove after fixing)
+if not DEBUG:
+    # Production CSRF settings
+    CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
+    SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
+else:
+    # Development CSRF settings
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
 
 # Application definition
 
@@ -273,8 +292,14 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 
 # Site Domain Configuration
-SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
-SITE_PROTOCOL = config('SITE_PROTOCOL', default='http')  # http or https
+if DEBUG:
+    # Development settings
+    SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
+    SITE_PROTOCOL = config('SITE_PROTOCOL', default='http')
+else:
+    # Production settings - auto-detect from allowed hosts
+    SITE_DOMAIN = config('SITE_DOMAIN', default='pentora.fly.dev')
+    SITE_PROTOCOL = config('SITE_PROTOCOL', default='https')
 
 # WWW Redirect Configuration
 PREPEND_WWW = config('PREPEND_WWW', default=False, cast=bool)

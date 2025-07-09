@@ -1620,7 +1620,8 @@ class CreateStudyNoteView(AdminRequiredMixin, View):
 
         if not all([subject_id, level_id, note_title, content]):
             messages.error(request, 'Please fill in all required fields.')
-            return redirect(f"{request.path}?subject_id={subject_id}&level_id={level_id}&topic_id={topic_id}")
+            from django.http import HttpResponseRedirect
+            return HttpResponseRedirect(f"{request.path}?subject_id={subject_id}&level_id={level_id}&topic_id={topic_id}")
 
         try:
             # Get the class level that matches both level_number and subject_id
@@ -1643,7 +1644,27 @@ class CreateStudyNoteView(AdminRequiredMixin, View):
                     messages.success(request, f'Created new topic: {topic_title}')
             else:
                 messages.error(request, 'Please select an existing topic or provide a title for a new topic.')
-                return redirect(f"{request.path}?subject_id={subject_id}&level_id={level_id}")
+                from django.http import HttpResponseRedirect
+                return HttpResponseRedirect(f"{request.path}?subject_id={subject_id}&level_id={level_id}")
+
+            # Check for potential duplicate (same title and topic within last 5 seconds)
+            from django.utils import timezone
+            from datetime import timedelta
+
+            recent_cutoff = timezone.now() - timedelta(seconds=5)
+            existing_note = StudyNote.objects.filter(
+                topic=topic,
+                title=note_title,
+                created_by=request.user,
+                created_at__gte=recent_cutoff
+            ).first()
+
+            if existing_note:
+                messages.warning(request, f'Study note "{note_title}" was already created recently.')
+                from django.http import HttpResponseRedirect
+                from django.urls import reverse
+                url = reverse('admin_panel:manage_study_notes')
+                return HttpResponseRedirect(f'{url}?subject_id={subject_id}&level_id={level_id}&topic_id={topic.id}')
 
             # Create study note
             StudyNote.objects.create(
@@ -1654,7 +1675,11 @@ class CreateStudyNoteView(AdminRequiredMixin, View):
             )
 
             messages.success(request, f'Study note "{note_title}" created successfully!')
-            return redirect(f'admin_panel:manage_study_notes?subject_id={subject_id}&level_id={level_id}&topic_id={topic.id}')
+            # Redirect with query parameters
+            from django.http import HttpResponseRedirect
+            from django.urls import reverse
+            url = reverse('admin_panel:manage_study_notes')
+            return HttpResponseRedirect(f'{url}?subject_id={subject_id}&level_id={level_id}&topic_id={topic.id}')
 
         except (ClassLevel.DoesNotExist, Topic.DoesNotExist, ValueError, TypeError):
             messages.error(request, 'Invalid selection. Please try again.')
@@ -1932,6 +1957,47 @@ class ReorderStudyNotesView(AdminRequiredMixin, View):
             return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+
+
+class DeleteStudyNoteView(AdminRequiredMixin, View):
+    """View for deleting study notes"""
+
+    def post(self, request, note_id):
+        try:
+            note = StudyNote.objects.get(id=note_id)
+            note_title = note.title
+            topic_id = note.topic.id
+            subject_id = note.topic.class_level.subject.id
+            level_id = note.topic.class_level.level_number
+
+            # Log activity
+            AdminActivity.objects.create(
+                admin_user=request.user,
+                action='DELETE_STUDY_NOTE',
+                description=f'Deleted study note: {note_title}',
+                model_name='StudyNote',
+                object_id=str(note.id),
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT', '')
+            )
+
+            # Delete the note
+            note.delete()
+
+            messages.success(request, f'Study note "{note_title}" deleted successfully!')
+
+            # Redirect back to manage study notes with the same filters
+            from django.http import HttpResponseRedirect
+            from django.urls import reverse
+            url = reverse('admin_panel:manage_study_notes')
+            return HttpResponseRedirect(f'{url}?subject_id={subject_id}&level_id={level_id}&topic_id={topic_id}')
+
+        except StudyNote.DoesNotExist:
+            messages.error(request, 'Study note not found.')
+            return redirect('admin_panel:manage_study_notes')
+        except Exception as e:
+            messages.error(request, f'Error deleting study note: {str(e)}')
+            return redirect('admin_panel:manage_study_notes')
 
 
 class ReadStudyNotesView(AdminRequiredMixin, TemplateView):

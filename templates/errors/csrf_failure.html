@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Security Error - Pentora{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center px-4">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+        <!-- Error Icon -->
+        <div class="mb-6">
+            <div class="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-shield-alt text-red-500 text-2xl"></i>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <h1 class="text-2xl font-bold text-gray-900 mb-4">{{ title }}</h1>
+        <p class="text-gray-600 mb-6">{{ message }}</p>
+
+        <!-- Debug Info (only in development) -->
+        {% if debug and reason %}
+        <div class="bg-gray-100 rounded-lg p-4 mb-6 text-left">
+            <h3 class="font-semibold text-gray-800 mb-2">Technical Details:</h3>
+            <p class="text-sm text-gray-600">{{ reason }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="space-y-3">
+            <button onclick="window.location.reload()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                <i class="fas fa-refresh mr-2"></i>
+                Refresh Page
+            </button>
+            
+            <a href="{% url 'core:home' %}" class="block w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
+                <i class="fas fa-home mr-2"></i>
+                Go to Homepage
+            </a>
+        </div>
+
+        <!-- Help Text -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">
+                If this problem persists, please 
+                <a href="{% url 'core:contact' %}" class="text-blue-600 hover:text-blue-700 underline">contact support</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-refresh after 10 seconds if user doesn't take action
+setTimeout(function() {
+    if (confirm('Would you like to refresh the page automatically?')) {
+        window.location.reload();
+    }
+}, 10000);
+</script>
+{% endblock %}

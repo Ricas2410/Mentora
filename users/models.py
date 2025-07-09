@@ -237,8 +237,13 @@ class EmailVerification(models.Model):
 
     @classmethod
     def create_verification(cls, user):
-        """Create a new email verification token"""
+        """Create a new email verification token and invalidate old ones"""
         import secrets
+
+        # Invalidate all existing verification tokens for this user
+        cls.objects.filter(user=user, is_used=False).update(is_used=True)
+
+        # Create new token
         token = secrets.token_urlsafe(32)
         expires_at = timezone.now() + timezone.timedelta(hours=24)
 

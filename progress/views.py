@@ -32,7 +32,97 @@ class ProgressOverviewView(LoginRequiredMixin, TemplateView):
         user_progress = UserProgress.objects.filter(user=user)
         topic_progress = TopicProgress.objects.filter(user=user)
 
-        # Subject progress data
+        # Enhanced subject progress data with levels
+        enhanced_subjects = []
+        for subject in subjects:
+            # Get all class levels for this subject
+            from subjects.models import ClassLevel
+            class_levels = ClassLevel.objects.filter(
+                subject=subject,
+                is_active=True
+            ).order_by('level_number')
+
+            # Calculate overall subject progress
+            all_subject_topics = Topic.objects.filter(class_level__subject=subject, is_active=True)
+            completed_subject_topics = topic_progress.filter(topic__in=all_subject_topics, is_completed=True).count()
+            total_subject_topics = all_subject_topics.count()
+            subject_progress_percentage = (completed_subject_topics / total_subject_topics * 100) if total_subject_topics > 0 else 0
+
+            # Build levels data
+            levels = []
+            for level in class_levels:
+                level_topics = Topic.objects.filter(class_level=level, is_active=True)
+                level_completed = topic_progress.filter(topic__in=level_topics, is_completed=True).count()
+                level_total = level_topics.count()
+                level_progress = (level_completed / level_total * 100) if level_total > 0 else 0
+
+                # Determine level status
+                is_completed = level_progress >= 100
+                is_current = (level.level_number == current_class_level and not is_completed)
+
+                levels.append({
+                    'name': f"Grade {level.level_number} - {level.name}",
+                    'progress_percentage': level_progress,
+                    'is_completed': is_completed,
+                    'is_current': is_current,
+                    'url': f"/subjects/{subject.id}/levels/{level.id}/" if level_total > 0 else None
+                })
+
+            # Determine subject color based on name
+            color_map = {
+                'english': 'blue',
+                'mathematics': 'green',
+                'math': 'green',
+                'science': 'purple',
+                'social': 'orange',
+                'history': 'red',
+                'geography': 'teal',
+                'art': 'pink',
+                'music': 'indigo'
+            }
+            subject_color = 'blue'  # default
+            for key, color in color_map.items():
+                if key in subject.name.lower():
+                    subject_color = color
+                    break
+
+            # Determine subject icon
+            icon_map = {
+                'english': '📚',
+                'mathematics': '🔢',
+                'math': '🔢',
+                'science': '🔬',
+                'social': '🌍',
+                'history': '📜',
+                'geography': '🗺️',
+                'art': '🎨',
+                'music': '🎵'
+            }
+            subject_icon = '📚'  # default
+            for key, icon in icon_map.items():
+                if key in subject.name.lower():
+                    subject_icon = icon
+                    break
+
+            # Find current level URL
+            current_level_url = None
+            for level in levels:
+                if level['is_current'] and level['url']:
+                    current_level_url = level['url']
+                    break
+
+            enhanced_subjects.append({
+                'id': subject.id,
+                'name': subject.name,
+                'description': subject.description,
+                'progress_percentage': subject_progress_percentage,
+                'color': subject_color,
+                'icon': subject_icon,
+                'levels': levels,
+                'current_level_url': current_level_url
+            })
+
+        # Keep original subject_progress for backward compatibility
         subject_progress = []
         for subject in subjects:
             # Get topics for this subject at user's level
@@ -81,10 +171,57 @@ class ProgressOverviewView(LoginRequiredMixin, TemplateView):
             total=Sum('duration')
         )['total'] or 0
 
+        # Calculate study streak and week activity
+        from datetime import datetime, timedelta
+        today = timezone.now().date()
+
+        # Calculate study streak (consecutive days with study sessions)
+        study_streak = 0
+        current_date = today
+        while True:
+            sessions_on_date = StudySession.objects.filter(
+                user=user,
+                started_at__date=current_date
+            ).exists()
+
+            if sessions_on_date:
+                study_streak += 1
+                current_date -= timedelta(days=1)
+            else:
+                break
+
+            # Limit to reasonable streak calculation
+            if study_streak > 365:
+                break
+
+        # Calculate this week's activity (last 7 days)
+        week_activity = []
+        week_study_days = 0
+        for i in range(7):
+            date = today - timedelta(days=6-i)
+            has_sessions = StudySession.objects.filter(
+                user=user,
+                started_at__date=date
+            ).exists()
+
+            if has_sessions:
+                week_study_days += 1
+
+            week_activity.append({
+                'date': date,
+                'studied': has_sessions,
+                'partial': False  # Could be enhanced to show partial study days
+            })
+
+        # Get recent achievements (last 5)
+        recent_achievements = []
+        # This would be populated from actual achievement data
+        # For now, we'll leave it empty and the template will handle it
+
         context.update({
             'current_class_level': current_class_level,
-            'subjects': subjects,
-            'subject_progress': subject_progress,
+            'subjects': enhanced_subjects,  # Use enhanced subjects with level data
+            'subject_progress': subject_progress,  # Keep for backward compatibility
             'subjects_enrolled': subjects.count(),
             'levels_completed': user_progress.filter(is_completed=True).count(),
             'total_quizzes': total_quizzes,
@@ -98,6 +235,11 @@ class ProgressOverviewView(LoginRequiredMixin, TemplateView):
             'total_study_time_hours': round(total_study_time / 60, 1) if total_study_time else 0,
             'completed_topics': topic_progress.filter(is_completed=True).count(),
             'total_topics': topic_progress.count(),
+            # New variables for enhanced UI
+            'study_streak': study_streak,
+            'week_activity': week_activity,
+            'week_study_days': week_study_days,
+            'recent_achievements': recent_achievements,
         })
 
         return context

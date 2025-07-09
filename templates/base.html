@@ -12,6 +12,7 @@
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
+    <meta name="csrf-token" content="{{ csrf_token }}">
 
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:title" content="{% block og_title %}Pentora - Free Online Learning Platform for All Grades{% endblock %}">
@@ -44,7 +45,7 @@
         <link rel="apple-touch-icon" sizes="180x180" href="{% load static %}{% static 'images/apple-touch-icon.png' %}">
         <link rel="icon" type="image/png" sizes="32x32" href="{% load static %}{% static 'images/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% load static %}{% static 'images/favicon-16x16.png' %}">
-    {% endif %}>
+    {% endif %}
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="{% load static %}{% static 'manifest.json' %}">
@@ -91,7 +92,7 @@
         }
 
         .footer-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #581c87 100%);
         }
 
         .card-hover:hover {
@@ -351,12 +352,15 @@
             visibility: hidden;
             transform: translateY(-10px);
             transition: all 0.2s ease;
+            /* Ensure dropdown is above other elements */
+            pointer-events: none;
         }
 
         .dropdown.dropdown-open .profile-dropdown-menu {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+            pointer-events: auto;
         }
 
         .profile-header {
@@ -493,6 +497,17 @@
             .profile-dropdown-menu {
                 width: 260px;
                 right: -10px;
+                z-index: 9999 !important; /* Higher z-index for mobile */
+                position: fixed !important; /* Use fixed positioning on mobile */
+                top: 60px !important; /* Position below navbar */
+                right: 10px !important; /* Ensure it's visible */
+                max-height: calc(100vh - 80px); /* Prevent overflow */
+                overflow-y: auto; /* Allow scrolling if needed */
+            }
+
+            /* Ensure dropdown parent has relative positioning */
+            .dropdown.dropdown-end {
+                position: relative;
             }
 
             .profile-header {
@@ -510,6 +525,19 @@
 
             .profile-email {
                 font-size: 12px;
+            }
+
+            /* Add backdrop for mobile dropdown */
+            .dropdown.dropdown-open::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.1);
+                z-index: 9998;
+                backdrop-filter: blur(2px);
             }
         }
 
@@ -1215,11 +1243,8 @@
         const dropdownContent = dropdown?.querySelector('.dropdown-content');
 
         if (!dropdown || !dropdownButton || !dropdownContent) {
-            console.log('Profile dropdown elements not found');
             return;
         }
-
-        console.log('Setting up profile dropdown');
 
         // Toggle dropdown on click
         dropdownButton.addEventListener('click', function(e) {
@@ -1236,10 +1261,25 @@
             // Toggle this dropdown
             if (!isOpen) {
                 dropdown.classList.add('dropdown-open');
-                console.log('Profile dropdown opened');
+
+                // On mobile, ensure dropdown is positioned correctly
+                if (window.innerWidth <= 640) {
+                    setTimeout(() => {
+                        const dropdownRect = dropdownContent.getBoundingClientRect();
+
+                        // Ensure dropdown is visible on screen
+                        if (dropdownRect.right > window.innerWidth) {
+                            dropdownContent.style.right = '10px';
+                            dropdownContent.style.left = 'auto';
+                        }
+                        if (dropdownRect.bottom > window.innerHeight) {
+                            dropdownContent.style.top = 'auto';
+                            dropdownContent.style.bottom = '70px';
+                        }
+                    }, 10);
+                }
             } else {
                 dropdown.classList.remove('dropdown-open');
-                console.log('Profile dropdown closed');
             }
         });
 

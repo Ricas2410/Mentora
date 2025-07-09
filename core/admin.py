@@ -70,7 +70,7 @@ class UserFeedbackAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('User Information', {
-            'fields': ('user', 'ip_address', 'user_agent')
+            'fields': ('user', 'email', 'ip_address', 'user_agent')
         }),
         ('Feedback Details', {
             'fields': ('rating', 'feedback_type', 'message', 'include_screenshot', 'page_url')
@@ -85,7 +85,12 @@ class UserFeedbackAdmin(admin.ModelAdmin):
     )
 
     def user_display(self, obj):
-        return obj.user.email if obj.user else 'Anonymous'
+        if obj.user:
+            return obj.user.email
+        elif obj.email:
+            return f"{obj.email} (Anonymous)"
+        else:
+            return 'Anonymous'
     user_display.short_description = 'User'
     user_display.admin_order_field = 'user__email'
 

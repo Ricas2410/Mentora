@@ -2,306 +2,492 @@
 
 {% block title %}Progress Overview - Pentora{% endblock %}
 
+{% block extra_css %}
+<style>
+    .progress-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 16px;
+    }
+
+    .progress-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card {
+        background: linear-gradient(135deg, var(--tw-gradient-from), var(--tw-gradient-to));
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .subject-progress-bar {
+        height: 8px;
+        border-radius: 4px;
+        background: #e5e7eb;
+        overflow: hidden;
+    }
+
+    .subject-progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.8s ease;
+    }
+
+    @media (max-width: 768px) {
+        .stats-card {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-4xl font-bold mb-4">Your Learning Progress</h1>
-        <p class="text-xl text-base-content/70">Track your journey and celebrate your achievements</p>
-    </div>
-
-    <!-- Overall Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="stat bg-base-100 shadow rounded-lg">
-            <div class="stat-figure text-primary">
-                <i class="fas fa-graduation-cap text-3xl"></i>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div class="container mx-auto px-4 py-6 md:py-8">
+        <!-- Header -->
+        <div class="text-center mb-8 md:mb-12">
+            <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-4 shadow-lg">
+                <i class="fas fa-chart-line text-white text-2xl md:text-3xl"></i>
             </div>
-            <div class="stat-title">Subjects Enrolled</div>
-            <div class="stat-value text-primary">{{ subjects_enrolled }}</div>
-            <div class="stat-desc">
-                {% if current_class_level %}
-                    Grade {{ current_class_level }}
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Your Learning Progress
+            </h1>
+            <p class="text-base md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Track your journey and celebrate your achievements as you master new skills
+            </p>
+        </div>
+
+        <!-- Overall Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8 md:mb-12">
+            <div class="stats-card bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-graduation-cap text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ subjects_enrolled }}</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">Subjects</div>
+                    <div class="text-xs opacity-75 mt-1">
+                        {% if current_class_level %}
+                            Grade {{ current_class_level }}
+                        {% else %}
+                            Multiple levels
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-card bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-layer-group text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ completed_topics }}</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">Topics Done</div>
+                    <div class="text-xs opacity-75 mt-1">of {{ total_topics }} total</div>
+                </div>
+            </div>
+
+            <div class="stats-card bg-gradient-to-br from-yellow-400 to-orange-500 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-clock text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ total_study_time_hours }}h</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">Study Time</div>
+                    <div class="text-xs opacity-75 mt-1">total hours</div>
+                </div>
+            </div>
+
+            <div class="stats-card bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-trophy text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ avg_quiz_score }}%</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">Quiz Avg</div>
+                    <div class="text-xs opacity-75 mt-1">{{ passed_quizzes }}/{{ total_quizzes }} passed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Progress -->
+        <div class="mb-8 md:mb-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 md:mb-8 text-center">Subject Progress</h2>
+
+            {% if subjects %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                {% for subject in subjects %}
+                <div class="progress-card bg-white shadow-xl p-6 md:p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-{{ subject.color|default:'blue' }}-400 to-{{ subject.color|default:'blue' }}-600 rounded-xl flex items-center justify-center mr-4 text-white text-xl md:text-2xl">
+                                {{ subject.icon|default:'📚' }}
+                            </div>
+                            <div>
+                                <h3 class="text-lg md:text-xl font-bold text-gray-900">{{ subject.name }}</h3>
+                                <p class="text-sm md:text-base text-gray-600">{{ subject.description|default:'Learn and master this subject' }}</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl md:text-3xl font-bold text-{{ subject.color|default:'blue' }}-600 mb-1">
+                                {% if subject.progress_percentage %}{{ subject.progress_percentage|floatformat:0 }}%{% else %}0%{% endif %}
+                            </div>
+                            <div class="text-xs text-gray-500">Progress</div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="subject-progress-bar mb-6">
+                        <div class="subject-progress-fill bg-gradient-to-r from-{{ subject.color|default:'blue' }}-400 to-{{ subject.color|default:'blue' }}-600"
+                             style="width: {% if subject.progress_percentage %}{{ subject.progress_percentage }}%{% else %}0%{% endif %}"></div>
+                    </div>
+
+                    <!-- Level Progress -->
+                    <div class="space-y-3 mb-6">
+                        {% for level in subject.levels %}
+                        <div class="flex items-center justify-between p-3 rounded-lg
+                                    {% if level.is_completed %}bg-green-50 border border-green-200{% elif level.is_current %}bg-blue-50 border border-blue-200{% else %}bg-gray-50 border border-gray-200{% endif %}">
+                            <div class="flex items-center">
+                                {% if level.is_completed %}
+                                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                {% elif level.is_current %}
+                                    <i class="fas fa-play-circle text-blue-500 mr-3"></i>
+                                {% else %}
+                                    <i class="fas fa-lock text-gray-400 mr-3"></i>
+                                {% endif %}
+                                <span class="font-semibold text-sm md:text-base text-gray-900">{{ level.name }}</span>
+                            </div>
+                            <div class="text-xs md:text-sm">
+                                {% if level.is_completed %}
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Completed</span>
+                                {% elif level.is_current %}
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">{{ level.progress_percentage|floatformat:0 }}% Complete</span>
+                                {% else %}
+                                    <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-medium">Locked</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-4 text-gray-500">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            No levels available yet
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="flex justify-end">
+                        {% if subject.current_level_url %}
+                            <a href="{{ subject.current_level_url }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-{{ subject.color|default:'blue' }}-500 to-{{ subject.color|default:'blue' }}-600 text-white rounded-lg hover:from-{{ subject.color|default:'blue' }}-600 hover:to-{{ subject.color|default:'blue' }}-700 transition-all duration-200 text-sm font-medium">
+                                <i class="fas fa-play mr-2"></i>
+                                Continue Learning
+                            </a>
+                        {% else %}
+                            <a href="{% url 'subjects:detail' subject.id %}" class="inline-flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium">
+                                <i class="fas fa-eye mr-2"></i>
+                                View Subject
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12 md:py-16">
+                <div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-book text-3xl md:text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">No Subjects Yet</h3>
+                <p class="text-gray-500 mb-4">Start your learning journey by exploring available subjects</p>
+                <a href="{% url 'core:dashboard' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    Explore Subjects
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+            <!-- Recent Achievements -->
+            <div class="progress-card bg-white shadow-xl p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-trophy text-yellow-600"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900">Recent Achievements</h2>
+                </div>
+
+                {% if recent_achievements %}
+                <div class="space-y-3 mb-4">
+                    {% for achievement in recent_achievements %}
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-3">
+                            <i class="{{ achievement.icon }} text-white text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-sm text-gray-900">{{ achievement.title }}</p>
+                            <p class="text-xs text-gray-600">{{ achievement.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
                 {% else %}
-                    Multiple levels
+                <div class="text-center py-6">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-trophy text-gray-400"></i>
+                    </div>
+                    <p class="text-sm text-gray-500">No achievements yet</p>
+                    <p class="text-xs text-gray-400">Start learning to earn badges!</p>
+                </div>
                 {% endif %}
-            </div>
-        </div>
-        
-        <div class="stat bg-base-100 shadow rounded-lg">
-            <div class="stat-figure text-success">
-                <i class="fas fa-layer-group text-3xl"></i>
-            </div>
-            <div class="stat-title">Topics Completed</div>
-            <div class="stat-value text-success">{{ completed_topics }}</div>
-            <div class="stat-desc">out of {{ total_topics }} total</div>
-        </div>
-        
-        <div class="stat bg-base-100 shadow rounded-lg">
-            <div class="stat-figure text-warning">
-                <i class="fas fa-clock text-3xl"></i>
-            </div>
-            <div class="stat-title">Study Time</div>
-            <div class="stat-value text-warning">{{ total_study_time_hours }}h</div>
-            <div class="stat-desc">total hours studied</div>
-        </div>
-        
-        <div class="stat bg-base-100 shadow rounded-lg">
-            <div class="stat-figure text-secondary">
-                <i class="fas fa-trophy text-3xl"></i>
-            </div>
-            <div class="stat-title">Quiz Average</div>
-            <div class="stat-value text-secondary">{{ avg_quiz_score }}%</div>
-            <div class="stat-desc">{{ passed_quizzes }}/{{ total_quizzes }} passed</div>
-        </div>
-    </div>
 
-    <!-- Subject Progress -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <!-- English Progress -->
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <div class="text-3xl mr-4">📚</div>
-                        <div>
-                            <h2 class="card-title">English</h2>
-                            <p class="text-base-content/70">Grammar & Communication</p>
-                        </div>
-                    </div>
-                    <div class="radial-progress text-primary" style="--value:60;" role="progressbar">60%</div>
-                </div>
-                
-                <div class="space-y-3">
-                    <!-- Level 1 -->
-                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-success mr-3"></i>
-                            <span class="font-semibold">Class 1 - Basic English</span>
-                        </div>
-                        <div class="badge badge-success">Completed</div>
-                    </div>
-                    
-                    <!-- Level 2 -->
-                    <div class="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-play-circle text-primary mr-3"></i>
-                            <span class="font-semibold">Class 2 - Grammar Basics</span>
-                        </div>
-                        <div class="badge badge-primary">60% Complete</div>
-                    </div>
-                    
-                    <!-- Level 3 -->
-                    <div class="flex items-center justify-between p-3 bg-base-200 rounded-lg opacity-75">
-                        <div class="flex items-center">
-                            <i class="fas fa-lock text-base-content/50 mr-3"></i>
-                            <span class="font-semibold text-base-content/70">Class 3 - Reading</span>
-                        </div>
-                        <div class="badge badge-ghost">Locked</div>
-                    </div>
-                </div>
-                
-                <div class="card-actions justify-end mt-4">
-                    <a href="#" class="btn btn-primary btn-sm">Continue Learning</a>
+                <div class="flex justify-end">
+                    <a href="{% url 'progress:achievements' %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+                        View All
+                        <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </a>
                 </div>
             </div>
-        </div>
 
-        <!-- Mathematics Progress -->
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <div class="text-3xl mr-4">🔢</div>
-                        <div>
-                            <h2 class="card-title">Mathematics</h2>
-                            <p class="text-base-content/70">Numbers & Problem Solving</p>
-                        </div>
+            <!-- Study Calendar -->
+            <div class="progress-card bg-white shadow-xl p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-calendar text-blue-600"></i>
                     </div>
-                    <div class="radial-progress text-success" style="--value:100;" role="progressbar">100%</div>
+                    <h2 class="text-lg font-bold text-gray-900">This Week's Activity</h2>
                 </div>
-                
-                <div class="space-y-3">
-                    <!-- Level 1 -->
-                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-success mr-3"></i>
-                            <span class="font-semibold">Class 1 - Basic Numbers</span>
-                        </div>
-                        <div class="badge badge-success">Completed</div>
-                    </div>
-                    
-                    <!-- Level 2 -->
-                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-success mr-3"></i>
-                            <span class="font-semibold">Class 2 - Addition & Subtraction</span>
-                        </div>
-                        <div class="badge badge-success">Completed</div>
-                    </div>
-                    
-                    <!-- Level 3 -->
-                    <div class="flex items-center justify-between p-3 bg-info/10 rounded-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-unlock text-info mr-3"></i>
-                            <span class="font-semibold">Class 3 - Multiplication</span>
-                        </div>
-                        <div class="badge badge-info">Available</div>
-                    </div>
-                </div>
-                
-                <div class="card-actions justify-end mt-4">
-                    <a href="#" class="btn btn-success btn-sm">Start Next Level</a>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Recent Activity -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <!-- Recent Achievements -->
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <h2 class="card-title">
-                    <i class="fas fa-trophy text-warning mr-2"></i>
-                    Recent Achievements
-                </h2>
-                <div class="space-y-3 mt-4">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-warning/20 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-star text-warning"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Quiz Master</p>
-                            <p class="text-sm text-base-content/70">Score 80%+ on first quiz</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-graduation-cap text-success"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Level Complete</p>
-                            <p class="text-sm text-base-content/70">Finished Math Class 2</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-fire text-primary"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Study Streak</p>
-                            <p class="text-sm text-base-content/70">7 days in a row</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-actions justify-end mt-4">
-                    <a href="{% url 'progress:achievements' %}" class="btn btn-outline btn-sm">View All</a>
-                </div>
-            </div>
-        </div>
+                <div class="grid grid-cols-7 gap-1 mb-4">
+                    <div class="text-center text-xs font-semibold p-2 text-gray-600">M</div>
+                    <div class="text-center text-xs font-semibold p-2 text-gray-600">T</div>
+                    <div class="text-center text-xs font-semibold p-2 text-gray-600">W</div>
+                    <div class="text-center text-xs font-semibold p-2 text-gray-600">T</div>
+                    <div class="text-center text-xs font-semibold p-2 text-gray-600">F</div>
+                    <div class="text-center text-xs font-semibold p-2 text-gray-600">S</div>
+                    <div class="text-center text-xs font-semibold p-2 text-gray-600">S</div>
 
-        <!-- Study Calendar -->
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <h2 class="card-title">
-                    <i class="fas fa-calendar text-primary mr-2"></i>
-                    This Week's Activity
-                </h2>
-                <div class="grid grid-cols-7 gap-1 mt-4">
-                    <div class="text-center text-xs font-semibold p-2">M</div>
-                    <div class="text-center text-xs font-semibold p-2">T</div>
-                    <div class="text-center text-xs font-semibold p-2">W</div>
-                    <div class="text-center text-xs font-semibold p-2">T</div>
-                    <div class="text-center text-xs font-semibold p-2">F</div>
-                    <div class="text-center text-xs font-semibold p-2">S</div>
-                    <div class="text-center text-xs font-semibold p-2">S</div>
-                    
-                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
-                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
-                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
-                    <div class="w-8 h-8 bg-warning rounded-full flex items-center justify-center text-xs text-white">!</div>
-                    <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-xs text-white">✓</div>
-                    <div class="w-8 h-8 bg-base-300 rounded-full flex items-center justify-center text-xs"></div>
-                    <div class="w-8 h-8 bg-base-300 rounded-full flex items-center justify-center text-xs"></div>
+                    {% for day in week_activity %}
+                    <div class="w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs
+                                {% if day.studied %}bg-green-500 text-white{% elif day.partial %}bg-yellow-500 text-white{% else %}bg-gray-200{% endif %}">
+                        {% if day.studied %}✓{% elif day.partial %}!{% endif %}
+                    </div>
+                    {% empty %}
+                    <!-- Default week if no data -->
+                    <div class="w-6 h-6 md:w-8 md:h-8 bg-green-500 rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-6 h-6 md:w-8 md:h-8 bg-green-500 rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-6 h-6 md:w-8 md:h-8 bg-green-500 rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-6 h-6 md:w-8 md:h-8 bg-yellow-500 rounded-full flex items-center justify-center text-xs text-white">!</div>
+                    <div class="w-6 h-6 md:w-8 md:h-8 bg-green-500 rounded-full flex items-center justify-center text-xs text-white">✓</div>
+                    <div class="w-6 h-6 md:w-8 md:h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs"></div>
+                    <div class="w-6 h-6 md:w-8 md:h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs"></div>
+                    {% endfor %}
                 </div>
-                <div class="mt-4 text-sm">
+
+                <div class="space-y-2 text-sm">
                     <div class="flex items-center justify-between">
-                        <span>Study Streak</span>
-                        <span class="font-bold text-success">5 days</span>
+                        <span class="text-gray-600">Study Streak</span>
+                        <span class="font-bold text-green-600">{{ study_streak|default:0 }} days</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span>This Week</span>
-                        <span class="font-bold">4/7 days</span>
+                        <span class="text-gray-600">This Week</span>
+                        <span class="font-bold text-gray-900">{{ week_study_days|default:4 }}/7 days</span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="progress-card bg-white shadow-xl p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-chart-bar text-purple-600"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-gray-900">Quick Stats</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Quizzes Passed</span>
+                            <span class="font-semibold text-gray-900">{{ passed_quizzes }}/{{ total_quizzes }}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full transition-all duration-500" style="width: {{ quiz_pass_rate }}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Tests Passed</span>
+                            <span class="font-semibold text-gray-900">{{ passed_tests }}/{{ total_tests }}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: {{ test_pass_rate }}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Quiz Average</span>
+                            <span class="font-semibold text-gray-900">{{ avg_quiz_score }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-yellow-500 h-2 rounded-full transition-all duration-500" style="width: {{ avg_quiz_score }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <a href="{% url 'progress:study_sessions' %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 transition-colors">
+                        Detailed Report
+                        <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <h2 class="card-title">
-                    <i class="fas fa-chart-bar text-info mr-2"></i>
-                    Quick Stats
-                </h2>
-                <div class="space-y-4 mt-4">
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Quizzes Passed</span>
-                            <span>{{ passed_quizzes }}/{{ total_quizzes }}</span>
-                        </div>
-                        <progress class="progress progress-success w-full" value="{{ quiz_pass_rate }}" max="100"></progress>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Tests Passed</span>
-                            <span>{{ passed_tests }}/{{ total_tests }}</span>
-                        </div>
-                        <progress class="progress progress-primary w-full" value="{{ test_pass_rate }}" max="100"></progress>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Quiz Average</span>
-                            <span>{{ avg_quiz_score }}%</span>
-                        </div>
-                        <progress class="progress progress-warning w-full" value="{{ avg_quiz_score }}" max="100"></progress>
-                    </div>
+        <!-- Learning Goals -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white rounded-2xl shadow-xl p-6 md:p-8">
+            <div class="text-center mb-6 md:mb-8">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-full mb-3">
+                    <i class="fas fa-target text-xl"></i>
                 </div>
-                <div class="card-actions justify-end mt-4">
-                    <a href="#" class="btn btn-outline btn-sm">Detailed Report</a>
-                </div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-2">Your Learning Goals</h2>
+                <p class="text-white/80">Track your progress towards key milestones</p>
             </div>
-        </div>
-    </div>
 
-    <!-- Learning Goals -->
-    <div class="card bg-gradient-to-r from-primary to-secondary text-primary-content shadow-xl">
-        <div class="card-body">
-            <h2 class="card-title text-2xl mb-4">
-                <i class="fas fa-target mr-2"></i>
-                Your Learning Goals
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- Current Level Goal -->
                 <div class="text-center">
-                    <div class="text-4xl mb-2">🎯</div>
-                    <h3 class="font-bold mb-2">Complete English Class 2</h3>
-                    <div class="radial-progress text-primary-content border-4 border-primary-content/30" style="--value:60;">60%</div>
-                    <p class="text-sm mt-2 text-primary-content/80">3 of 8 topics remaining</p>
+                    <div class="text-3xl md:text-4xl mb-3">🎯</div>
+                    <h3 class="font-bold mb-3 text-lg">
+                        {% if current_class_level %}
+                            Complete Grade {{ current_class_level }}
+                        {% else %}
+                            Choose Your Grade
+                        {% endif %}
+                    </h3>
+                    <div class="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-3">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="white" stroke-opacity="0.3" stroke-width="8" fill="none"/>
+                            <circle cx="50" cy="50" r="40" stroke="white" stroke-width="8" fill="none"
+                                    stroke-dasharray="251.2"
+                                    stroke-dashoffset="{{ 251.2|floatformat:1 }} - ({{ 251.2|floatformat:1 }} * {{ completed_topics|default:0 }} / {{ total_topics|default:1 }})"
+                                    class="transition-all duration-1000"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-lg md:text-xl font-bold">
+                                {% if total_topics > 0 %}
+                                    {{ completed_topics|floatformat:0 }}/{{ total_topics }}
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-white/80">
+                        {% if total_topics > 0 %}
+                            {{ total_topics|add:"-"|add:completed_topics }} topics remaining
+                        {% else %}
+                            Start learning today!
+                        {% endif %}
+                    </p>
                 </div>
+
+                <!-- Quiz Average Goal -->
                 <div class="text-center">
-                    <div class="text-4xl mb-2">📊</div>
-                    <h3 class="font-bold mb-2">Maintain 80% Average</h3>
-                    <div class="radial-progress text-primary-content border-4 border-primary-content/30" style="--value:78;">78%</div>
-                    <p class="text-sm mt-2 text-primary-content/80">Close to target!</p>
+                    <div class="text-3xl md:text-4xl mb-3">📊</div>
+                    <h3 class="font-bold mb-3 text-lg">Maintain 80% Average</h3>
+                    <div class="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-3">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="white" stroke-opacity="0.3" stroke-width="8" fill="none"/>
+                            <circle cx="50" cy="50" r="40" stroke="white" stroke-width="8" fill="none"
+                                    stroke-dasharray="251.2"
+                                    stroke-dashoffset="calc(251.2 - (251.2 * {{ avg_quiz_score|default:0 }} / 100))"
+                                    class="transition-all duration-1000"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-lg md:text-xl font-bold">{{ avg_quiz_score|default:0 }}%</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-white/80">
+                        {% if avg_quiz_score >= 80 %}
+                            Goal achieved! 🎉
+                        {% else %}
+                            {{ 80|add:"-"|add:avg_quiz_score|floatformat:0 }}% to go!
+                        {% endif %}
+                    </p>
                 </div>
+
+                <!-- Study Streak Goal -->
                 <div class="text-center">
-                    <div class="text-4xl mb-2">🔥</div>
-                    <h3 class="font-bold mb-2">Study 30 Days Straight</h3>
-                    <div class="radial-progress text-primary-content border-4 border-primary-content/30" style="--value:23;">23%</div>
-                    <p class="text-sm mt-2 text-primary-content/80">7 of 30 days completed</p>
+                    <div class="text-3xl md:text-4xl mb-3">🔥</div>
+                    <h3 class="font-bold mb-3 text-lg">Study 7 Days Straight</h3>
+                    <div class="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-3">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="white" stroke-opacity="0.3" stroke-width="8" fill="none"/>
+                            <circle cx="50" cy="50" r="40" stroke="white" stroke-width="8" fill="none"
+                                    stroke-dasharray="251.2"
+                                    stroke-dashoffset="calc(251.2 - (251.2 * {{ study_streak|default:0 }} / 7))"
+                                    class="transition-all duration-1000"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-lg md:text-xl font-bold">{{ study_streak|default:0 }}/7</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-white/80">
+                        {% if study_streak >= 7 %}
+                            Amazing streak! 🔥
+                        {% else %}
+                            {{ 7|add:"-"|add:study_streak|default:7 }} days to go!
+                        {% endif %}
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate progress bars on scroll
+    const progressBars = document.querySelectorAll('.subject-progress-fill');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const width = entry.target.style.width;
+                entry.target.style.width = '0%';
+                setTimeout(() => {
+                    entry.target.style.width = width;
+                }, 100);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    progressBars.forEach(bar => observer.observe(bar));
+
+    // Animate stats cards
+    const statsCards = document.querySelectorAll('.stats-card');
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    statsCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        statsObserver.observe(card);
+    });
+});
+</script>
 {% endblock %}

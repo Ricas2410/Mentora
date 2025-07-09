@@ -4,7 +4,6 @@
 
 {% block extra_css %}
 <style>
-    /* Mobile-first responsive design */
     .results-container {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
@@ -29,30 +28,12 @@
         font-size: 1.5rem;
         font-weight: bold;
         margin: 0 auto;
-        position: relative;
-        overflow: hidden;
     }
 
-    .score-excellent {
-        background: linear-gradient(135deg, #10B981, #059669);
-        color: white;
-        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-    }
-    .score-good {
-        background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-        color: white;
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-    }
-    .score-fair {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
-        color: white;
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
-    }
-    .score-poor {
-        background: linear-gradient(135deg, #EF4444, #DC2626);
-        color: white;
-        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-    }
+    .score-excellent { background: linear-gradient(135deg, #10B981, #059669); color: white; }
+    .score-good { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; }
+    .score-fair { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
+    .score-poor { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
 
     .stat-card {
         background: white;
@@ -60,11 +41,6 @@
         padding: 1rem;
         text-align: center;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
     }
 
     .question-card {
@@ -73,7 +49,6 @@
         padding: 1rem;
         margin-bottom: 1rem;
         border-left: 4px solid #e5e7eb;
-        transition: all 0.3s ease;
     }
 
     .question-card.correct {
@@ -91,7 +66,6 @@
         border-radius: 8px;
         margin-bottom: 0.5rem;
         border: 2px solid #e5e7eb;
-        transition: all 0.3s ease;
     }
 
     .answer-option.correct {
@@ -106,10 +80,6 @@
         color: #991b1b;
     }
 
-    .answer-option.user-selected {
-        font-weight: 600;
-    }
-
     .action-btn {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -121,16 +91,14 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
         width: 100%;
         margin-bottom: 0.5rem;
     }
 
     .action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         color: white;
         text-decoration: none;
+        opacity: 0.9;
     }
 
     .action-btn.secondary {
@@ -142,541 +110,208 @@
     .action-btn.secondary:hover {
         background: #f9fafb;
         color: #374151;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    /* Laptop optimizations - Compact layout for 12-15 inch screens */
-    @media (min-width: 641px) and (max-width: 1440px) and (min-height: 600px) and (max-height: 900px) {
-        .results-container {
-            padding: 0.5rem !important;
-        }
-
-        .results-card {
-            margin-bottom: 0.5rem !important;
-            padding: 1rem !important;
-        }
-
-        .score-circle {
-            width: 80px !important;
-            height: 80px !important;
-            font-size: 1.25rem !important;
-        }
-
-        .results-card h1 {
-            font-size: 1.5rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        .results-card h2 {
-            font-size: 1.125rem !important;
-            margin-bottom: 0.75rem !important;
-        }
-
-        .results-card p {
-            font-size: 0.875rem !important;
-            margin-bottom: 0.75rem !important;
-        }
-
-        .stat-card {
-            padding: 0.75rem !important;
-        }
-
-        .stat-card .text-xl,
-        .stat-card .text-2xl {
-            font-size: 1.25rem !important;
-        }
-
-        .question-card {
-            padding: 0.75rem !important;
-            margin-bottom: 0.75rem !important;
-        }
-
-        .question-card h3 {
-            font-size: 0.875rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        .question-card p {
-            font-size: 0.8rem !important;
-        }
-
-        /* Compact buttons */
-        .action-btn {
-            padding: 0.5rem 1rem !important;
-            font-size: 0.875rem !important;
-        }
-
-        /* Compact grid spacing */
-        .grid {
-            gap: 0.5rem !important;
-        }
-
-        /* Compact answer options */
-        .answer-option {
-            padding: 0.5rem !important;
-            font-size: 0.8rem !important;
-        }
-
-        /* Compact explanation boxes */
-        .bg-blue-50 {
-            padding: 0.5rem !important;
-        }
-
-        .bg-blue-50 p {
-            font-size: 0.75rem !important;
-        }
-    }
-
-    /* Mobile optimizations */
-    @media (max-width: 640px) {
-        .results-container {
-            padding: 0.5rem;
-        }
-
-        .score-circle {
-            width: 80px;
-            height: 80px;
-            font-size: 1.25rem;
-        }
-
-        .stat-card {
-            padding: 0.75rem;
-        }
-
-        .question-card {
-            padding: 0.75rem;
-        }
-
-        .answer-option {
-            padding: 0.5rem;
-            font-size: 0.875rem;
-        }
-    }
-
-    /* Animation classes */
-    .fade-in {
-        animation: fadeIn 0.6s ease-out;
-    }
-
-    .slide-up {
-        animation: slideUp 0.6s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
+
 <div class="results-container">
     <div class="max-w-4xl mx-auto">
+
+        {% if error %}
+        <!-- Error Message -->
+        <div class="text-center text-white mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2">Oops!</h1>
+            <p class="text-white/90 text-sm sm:text-base">{{ error }}</p>
+        </div>
+
+        <div class="results-card p-4 sm:p-6 text-center">
+            <div class="mb-4">
+                <i class="fas fa-exclamation-triangle text-yellow-500 text-4xl mb-4"></i>
+                <h2 class="text-lg font-bold text-gray-800 mb-2">Unable to Load Quiz Results</h2>
+                <p class="text-gray-600 mb-4">{{ error }}</p>
+            </div>
+            <a href="/dashboard/" class="action-btn">
+                <i class="fas fa-home mr-2"></i>
+                Back to Dashboard
+            </a>
+        </div>
+
+        {% else %}
         <!-- Header -->
-        <div class="text-center text-white mb-6 fade-in">
+        <div class="text-center text-white mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold mb-2">Quiz Complete!</h1>
-            <p class="text-white/90 text-sm sm:text-base" id="quiz-title">Here are your results</p>
+            <p class="text-white/90 text-sm sm:text-base">
+                {% if topic and topic.title %}
+                    Here are your results for "{{ topic.title }}"
+                {% else %}
+                    Here are your quiz results
+                {% endif %}
+            </p>
         </div>
 
         <!-- Main Results Card -->
-        <div class="results-card p-4 sm:p-6 text-center mb-4 slide-up">
+        <div class="results-card p-4 sm:p-6 text-center mb-4">
             <!-- Score Circle -->
-            <div class="score-circle score-good mb-4" id="score-circle">
-                <span id="score-percentage">0%</span>
+            <div class="score-circle {% if percentage >= 90 %}score-excellent{% elif percentage >= 80 %}score-good{% elif percentage >= 60 %}score-fair{% else %}score-poor{% endif %} mb-4">
+                <span>{{ percentage|floatformat:0 }}%</span>
             </div>
 
             <!-- Performance Badge -->
             <div class="mb-4">
-                <span class="inline-block px-4 py-2 rounded-full text-sm font-semibold" id="performance-badge">
-                    Good Job!
+                <span class="inline-block px-4 py-2 rounded-full text-sm font-semibold
+                    {% if percentage >= 90 %}bg-green-100 text-green-800
+                    {% elif percentage >= 80 %}bg-blue-100 text-blue-800
+                    {% elif percentage >= 60 %}bg-yellow-100 text-yellow-800
+                    {% else %}bg-red-100 text-red-800{% endif %}">
+                    {% if percentage >= 90 %}Excellent!{% elif percentage >= 80 %}Good Job!{% elif percentage >= 60 %}Well Done!{% else %}Keep Trying!{% endif %}
                 </span>
             </div>
 
             <!-- Stats Grid -->
             <div class="grid grid-cols-3 gap-3 sm:gap-4">
                 <div class="stat-card">
-                    <div class="text-xl sm:text-2xl font-bold text-green-600" id="correct-count">0</div>
+                    <div class="text-xl sm:text-2xl font-bold text-green-600">{{ score }}</div>
                     <div class="text-xs sm:text-sm text-gray-600">Correct</div>
                 </div>
                 <div class="stat-card">
-                    <div class="text-xl sm:text-2xl font-bold text-blue-600" id="total-questions">0</div>
+                    <div class="text-xl sm:text-2xl font-bold text-blue-600">{{ total }}</div>
                     <div class="text-xs sm:text-sm text-gray-600">Total</div>
                 </div>
                 <div class="stat-card">
-                    <div class="text-xl sm:text-2xl font-bold text-purple-600" id="time-spent">0:00</div>
+                    <div class="text-xl sm:text-2xl font-bold text-purple-600">{{ time_display }}</div>
                     <div class="text-xs sm:text-sm text-gray-600">Time</div>
                 </div>
             </div>
         </div>
 
         <!-- Actions Card -->
-        <div class="results-card p-4 sm:p-6 mb-4 slide-up">
+        <div class="results-card p-4 sm:p-6 mb-4">
             <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <i class="fas fa-rocket text-purple-600 mr-2"></i>
                 What's Next?
             </h2>
 
             <!-- Pass/Fail Status -->
-            <div class="mb-4 p-3 rounded-lg" id="status-card">
+            <div class="mb-4 p-3 rounded-lg {% if passed %}bg-green-50 border border-green-200{% else %}bg-red-50 border border-red-200{% endif %}">
                 <div class="flex items-center justify-center">
-                    <span class="text-sm font-semibold" id="pass-status">
-                        <i class="fas fa-check mr-1"></i>
-                        Passed! You can continue to the next topic.
+                    <span class="text-sm font-semibold {% if passed %}text-green-800{% else %}text-red-800{% endif %}">
+                        {% if passed %}
+                            <i class="fas fa-check mr-1"></i>Passed! You scored {{ percentage|floatformat:0 }}% (required: {{ pass_percentage }}%)
+                        {% else %}
+                            <i class="fas fa-times mr-1"></i>Not passed. You scored {{ percentage|floatformat:0 }}% (required: {{ pass_percentage }}%)
+                        {% endif %}
                     </span>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="space-y-2 sm:space-y-0">
-                <!-- Primary Action - Continue Button -->
-                <div class="mb-2">
-                    <a href="#" class="action-btn" id="continue-btn">
-                        <i class="fas fa-arrow-right mr-2"></i>
-                        <span id="continue-text">Continue to Next Topic</span>
-                    </a>
-                </div>
-
-                <!-- Secondary Actions - 2x2 grid on desktop, single column on mobile -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <a href="#" class="action-btn secondary" id="retake-btn">
-                        <i class="fas fa-redo mr-2"></i>
-                        Retake Quiz
-                    </a>
-                    <a href="#" class="action-btn secondary" id="study-btn">
-                        <i class="fas fa-book mr-2"></i>
-                        Review Study Materials
-                    </a>
-                    <a href="#" class="action-btn secondary" id="dashboard-btn">
-                        <i class="fas fa-home mr-2"></i>
-                        Back to Dashboard
-                    </a>
-                    <a href="#" class="action-btn secondary" id="subject-btn">
-                        <i class="fas fa-list mr-2"></i>
-                        View All Topics
-                    </a>
-                </div>
-            </div>
-
-            <!-- Achievement (if applicable) -->
-            <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg hidden" id="achievement-card">
-                <div class="flex items-center">
-                    <i class="fas fa-trophy text-yellow-600 mr-2"></i>
-                    <div>
-                        <div class="font-semibold text-yellow-800">Achievement Unlocked!</div>
-                        <div class="text-sm text-yellow-700" id="achievement-text">Great job on your first quiz!</div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {% if topic and topic.id %}
+                <a href="{% url 'content:quiz' topic.id %}" class="action-btn secondary">
+                    <i class="fas fa-redo mr-2"></i>
+                    Retake Quiz
+                </a>
+                <a href="{% url 'content:study_notes' topic.id %}" class="action-btn secondary">
+                    <i class="fas fa-book mr-2"></i>
+                    Review Study Materials
+                </a>
+                {% else %}
+                <a href="/dashboard/" class="action-btn secondary">
+                    <i class="fas fa-redo mr-2"></i>
+                    Take Another Quiz
+                </a>
+                <a href="/dashboard/" class="action-btn secondary">
+                    <i class="fas fa-book mr-2"></i>
+                    Browse Topics
+                </a>
+                {% endif %}
+                <a href="/dashboard/" class="action-btn secondary">
+                    <i class="fas fa-home mr-2"></i>
+                    Back to Dashboard
+                </a>
+                {% if subject and subject.id and level and level.id %}
+                <a href="{% url 'subjects:topics' subject.id level.id %}" class="action-btn secondary">
+                    <i class="fas fa-list mr-2"></i>
+                    View All Topics
+                </a>
+                {% else %}
+                <a href="/dashboard/" class="action-btn secondary">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    Browse Subjects
+                </a>
+                {% endif %}
             </div>
         </div>
 
-        <!-- Detailed Review -->
-        <div class="results-card p-4 sm:p-6 slide-up">
+        <!-- Question Review -->
+        <div class="results-card p-4 sm:p-6">
             <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <i class="fas fa-search text-blue-600 mr-2"></i>
                 Question Review
             </h2>
 
-            <!-- Questions will be populated by JavaScript -->
-            <div id="questions-container">
-                <!-- Questions will be inserted here -->
-            </div>
+            {% if question_reviews %}
+                {% for q in question_reviews %}
+                    <div class="question-card {% if q.is_correct %}correct{% else %}incorrect{% endif %} mb-4">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="font-bold text-base">Question {{ forloop.counter }}</h3>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold {% if q.is_correct %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                <i class="fas {% if q.is_correct %}fa-check{% else %}fa-times{% endif %} mr-1"></i>
+                                {% if q.is_correct %}Correct{% else %}Incorrect{% endif %}
+                            </span>
+                        </div>
+                        <p class="text-gray-800 mb-3 text-sm">{{ q.question_text }}</p>
+                        <div class="space-y-2 mb-3">
+                            {% if q.user_answer %}
+                                <div class="answer-option {% if q.is_correct %}correct{% else %}incorrect{% endif %}">
+                                    <i class="fas {% if q.is_correct %}fa-check{% else %}fa-times{% endif %} mr-2"></i>
+                                    Your answer: {{ q.user_answer }}
+                                </div>
+                            {% else %}
+                                <div class="answer-option incorrect">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    No answer selected (Time expired)
+                                </div>
+                            {% endif %}
+                            {% if not q.is_correct and q.correct_answers %}
+                                <div class="answer-option correct">
+                                    <i class="fas fa-check mr-2"></i>
+                                    Correct answer: {{ q.correct_answers|join:', ' }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if q.explanation %}
+                            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p class="text-sm text-blue-800">
+                                    <strong>Explanation:</strong> {{ q.explanation }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-info-circle text-blue-500 text-3xl mb-4"></i>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Question Review Not Available</h3>
+                    <p class="text-gray-600">Detailed question review is not available for this quiz session.</p>
+                </div>
+            {% endif %}
         </div>
+
+        {% endif %} <!-- End error handling -->
     </div>
 </div>
 
 
 
 <script>
-// Load quiz results from sessionStorage
 document.addEventListener('DOMContentLoaded', function() {
-    const results = JSON.parse(sessionStorage.getItem('quizResults') || '{}');
+    console.log('Quiz results page loaded');
 
-    // Debug: Log the results data to console
-    console.log('Quiz Results Data:', results);
-
-    if (Object.keys(results).length === 0) {
-        // No results found, show error message
-        document.querySelector('.results-container').innerHTML = `
-            <div class="max-w-md mx-auto text-center text-white">
-                <div class="results-card p-6">
-                    <i class="fas fa-exclamation-triangle text-yellow-500 text-4xl mb-4"></i>
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">No Results Found</h2>
-                    <p class="text-gray-600 mb-4">We couldn't find your quiz results. Please take the quiz again.</p>
-                    <a href="/dashboard/" class="action-btn">
-                        <i class="fas fa-home mr-2"></i>
-                        Back to Dashboard
-                    </a>
-                </div>
-            </div>
-        `;
-        return;
-    }
-
-    // Handle different data formats for compatibility
-    const score = results.score || 0;
-    const totalQuestions = results.total || results.totalQuestions || 0;
-    const percentage = results.percentage || 0;
-    const topicTitle = results.topicTitle || '{{ topic.title }}' || 'Quiz';
-
-    // Handle time data - support both formats
-    let totalTime = results.totalTime || results.timeSpent || 0;
-
-    // Update quiz title
-    document.getElementById('quiz-title').textContent =
-        `Here are your results for "${topicTitle}"`;
-
-    // Update score display
-    document.getElementById('score-percentage').textContent = percentage + '%';
-    document.getElementById('correct-count').textContent = score;
-    document.getElementById('total-questions').textContent = totalQuestions;
-
-    // Format time spent - Fix the NaN issue
-    const minutes = Math.floor(totalTime / 60);
-    const seconds = totalTime % 60;
-    document.getElementById('time-spent').textContent =
-        `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-    // Update score circle styling and performance badge
-    const scoreCircle = document.getElementById('score-circle');
-    const performanceBadge = document.getElementById('performance-badge');
-    const percentage = results.percentage || 0;
-
-    // Remove default class
-    scoreCircle.classList.remove('score-good');
-
-    if (percentage >= 90) {
-        scoreCircle.classList.add('score-excellent');
-        performanceBadge.textContent = 'Excellent!';
-        performanceBadge.className = 'inline-block px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800';
-    } else if (percentage >= 80) {
-        scoreCircle.classList.add('score-good');
-        performanceBadge.textContent = 'Good Job!';
-        performanceBadge.className = 'inline-block px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800';
-    } else if (percentage >= 60) {
-        scoreCircle.classList.add('score-fair');
-        performanceBadge.textContent = 'Well Done!';
-        performanceBadge.className = 'inline-block px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800';
-    } else {
-        scoreCircle.classList.add('score-poor');
-        performanceBadge.textContent = 'Keep Trying!';
-        performanceBadge.className = 'inline-block px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800';
-    }
-
-    // Update pass/fail status
-    const passStatus = document.getElementById('pass-status');
-    const statusCard = document.getElementById('status-card');
-    const continueBtn = document.getElementById('continue-btn');
-
-    if (percentage >= 70) {
-        passStatus.innerHTML = '<i class="fas fa-check mr-1"></i>Passed! You can continue to the next topic.';
-        statusCard.className = 'mb-4 p-3 rounded-lg bg-green-50 border border-green-200';
-        passStatus.className = 'text-sm font-semibold text-green-800';
-        continueBtn.style.display = 'flex';
-    } else {
-        passStatus.innerHTML = '<i class="fas fa-times mr-1"></i>Not passed. Review the materials and try again.';
-        statusCard.className = 'mb-4 p-3 rounded-lg bg-red-50 border border-red-200';
-        passStatus.className = 'text-sm font-semibold text-red-800';
-        continueBtn.style.display = 'none';
-    }
-
-    // Show achievement for high scores
-    const achievementCard = document.getElementById('achievement-card');
-    if (percentage >= 90) {
-        achievementCard.classList.remove('hidden');
-        document.getElementById('achievement-text').textContent = 'Perfect Score! You mastered this topic!';
-    } else if (percentage >= 80) {
-        achievementCard.classList.remove('hidden');
-        document.getElementById('achievement-text').textContent = 'Great job! You have a strong understanding!';
-    }
-
-    // Update action button URLs
-    document.getElementById('retake-btn').href = window.location.pathname.replace('/result/', '/');
-    document.getElementById('study-btn').href = `{% url 'subjects:topic_detail' subject.id level.id topic.id %}`;
-    document.getElementById('dashboard-btn').href = '/dashboard/';
-    document.getElementById('subject-btn').href = `{% url 'subjects:level_detail' subject.id level.id %}`;
-
-    // Set up continue button functionality
-    setupContinueButton(percentage >= 70);
-
-    // Generate question review - handle both data formats
-    const quizResults = results.quizResults || results.answers || [];
-    generateQuestionReview(quizResults);
-
-    // Don't clear results from storage immediately - let user navigate back if needed
-    // sessionStorage.removeItem('quizResults');
+    // Clear any stored quiz results since we're now showing the results
+    sessionStorage.removeItem('quizResults');
 });
-
-function setupContinueButton(passed) {
-    const continueBtn = document.getElementById('continue-btn');
-    const continueText = document.getElementById('continue-text');
-
-    if (!passed) {
-        continueBtn.style.display = 'none';
-        return;
-    }
-
-    // Make API call to get next learning path
-    fetch('/content/api/next-learning-path/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCsrfToken()
-        },
-        body: JSON.stringify({
-            current_topic_id: '{{ topic.id }}',
-            current_subject_id: '{{ subject.id }}',
-            current_level_id: '{{ level.id }}'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const nextPath = data.next_path;
-
-            switch(nextPath.type) {
-                case 'next_topic':
-                    continueText.textContent = `Continue to: ${nextPath.title}`;
-                    continueBtn.href = nextPath.url;
-                    break;
-                case 'next_subject':
-                    continueText.textContent = `Start: ${nextPath.title}`;
-                    continueBtn.href = nextPath.url;
-                    break;
-                case 'next_level':
-                    continueText.textContent = `Advance to Grade ${nextPath.level_number}`;
-                    continueBtn.href = nextPath.url;
-                    // Show promotion message
-                    showPromotionMessage(nextPath.level_number);
-                    break;
-                case 'completed':
-                    continueText.textContent = 'Congratulations! All Complete';
-                    continueBtn.href = '/dashboard/';
-                    continueBtn.innerHTML = '<i class="fas fa-trophy mr-2"></i>View Achievements';
-                    break;
-                default:
-                    continueBtn.href = '/dashboard/';
-            }
-        } else {
-            // Fallback to dashboard if API fails
-            continueBtn.href = '/dashboard/';
-            continueText.textContent = 'Continue Learning';
-        }
-    })
-    .catch(error => {
-        console.error('Error getting next learning path:', error);
-        // Fallback to dashboard
-        continueBtn.href = '/dashboard/';
-        continueText.textContent = 'Continue Learning';
-    });
-}
-
-function showPromotionMessage(newLevel) {
-    const achievementCard = document.getElementById('achievement-card');
-    const achievementText = document.getElementById('achievement-text');
-
-    achievementCard.classList.remove('hidden');
-    achievementCard.className = 'mt-4 p-3 bg-green-50 border border-green-200 rounded-lg';
-    achievementText.innerHTML = `🎉 Congratulations! You've been promoted to Grade ${newLevel}!`;
-
-    // Update the trophy icon to a graduation cap
-    const icon = achievementCard.querySelector('i');
-    icon.className = 'fas fa-graduation-cap text-green-600 mr-2';
-}
-
-// Helper function to get CSRF token (same as in quiz.html)
-function getCsrfToken() {
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    if (csrfMeta) {
-        return csrfMeta.getAttribute('content');
-    }
-
-    // Fallback: try to get from cookie
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'csrftoken') {
-            return value;
-        }
-    }
-
-    // Last fallback: try to get from Django's template variable
-    return '{{ csrf_token }}';
-}
-
-function generateQuestionReview(quizResults) {
-    const container = document.getElementById('questions-container');
-
-    if (!quizResults || quizResults.length === 0) {
-        container.innerHTML = '<p class="text-gray-600 text-center">No question details available.</p>';
-        return;
-    }
-
-    let html = '';
-
-    quizResults.forEach((result, index) => {
-        const isCorrect = result.isCorrect;
-        const question = result.question;
-        const selectedChoice = result.selectedChoice;
-        const correctChoice = result.correctChoice;
-
-        html += `
-            <div class="question-card ${isCorrect ? 'correct' : 'incorrect'} mb-4">
-                <div class="flex items-start justify-between mb-3">
-                    <h3 class="font-bold text-base">Question ${index + 1}</h3>
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-                        isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }">
-                        <i class="fas ${isCorrect ? 'fa-check' : 'fa-times'} mr-1"></i>
-                        ${isCorrect ? 'Correct' : 'Incorrect'}
-                    </span>
-                </div>
-
-                <p class="text-gray-800 mb-3 text-sm">${question.text}</p>
-
-                <div class="space-y-2 mb-3">
-                    ${selectedChoice ? `
-                        <div class="answer-option ${isCorrect ? 'correct' : 'incorrect'} user-selected">
-                            <i class="fas ${isCorrect ? 'fa-check' : 'fa-times'} mr-2"></i>
-                            Your answer: ${selectedChoice.text}
-                        </div>
-                    ` : `
-                        <div class="answer-option incorrect">
-                            <i class="fas fa-clock mr-2"></i>
-                            No answer selected (Time expired)
-                        </div>
-                    `}
-
-                    ${!isCorrect ? `
-                        <div class="answer-option correct">
-                            <i class="fas fa-check mr-2"></i>
-                            Correct answer: ${correctChoice.text}
-                        </div>
-                    ` : ''}
-                </div>
-
-                ${question.explanation ? `
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p class="text-sm text-blue-800">
-                            <strong>Explanation:</strong> ${question.explanation}
-                        </p>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-    });
-
-    container.innerHTML = html;
-}
 </script>
 {% endblock %}

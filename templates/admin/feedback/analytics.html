@@ -1,0 +1,345 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Feedback Analytics{% endblock %}
+{% block page_title %}Feedback Analytics{% endblock %}
+
+{% block extrahead %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .analytics-card {
+        transition: all 0.3s ease;
+        border-radius: 8px;
+    }
+    .analytics-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .metric-card {
+        background: linear-gradient(135deg, var(--color-start), var(--color-end));
+        color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 1rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:feedback_list' %}">Feedback</a></li>
+                    <li class="breadcrumb-item active">Analytics</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0">Feedback Analytics</h1>
+            <p class="text-muted">Insights and trends from user feedback</p>
+        </div>
+        <div>
+            <a href="{% url 'core:feedback_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Feedback
+            </a>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="metric-card" style="--color-start: #3b82f6; --color-end: #1d4ed8;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ total_feedback }}</h3>
+                        <p class="mb-0 opacity-90">Total Feedback</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card" style="--color-start: #10b981; --color-end: #059669;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ resolved_feedback }}</h3>
+                        <p class="mb-0 opacity-90">Resolved</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card" style="--color-start: #f59e0b; --color-end: #d97706;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ unresolved_feedback }}</h3>
+                        <p class="mb-0 opacity-90">Unresolved</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card" style="--color-start: #8b5cf6; --color-end: #7c3aed;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">{{ avg_rating }}</h3>
+                        <p class="mb-0 opacity-90">Avg Rating</p>
+                    </div>
+                    <div class="fs-1 opacity-75">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Feedback Over Time -->
+        <div class="col-lg-8">
+            <div class="card analytics-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Feedback Over Time (Last 30 Days)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="feedbackOverTimeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback by Type -->
+        <div class="col-lg-4">
+            <div class="card analytics-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Feedback by Type
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="feedbackByTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Distribution and Top Issues -->
+    <div class="row mb-4">
+        <!-- Rating Distribution -->
+        <div class="col-lg-6">
+            <div class="card analytics-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-star me-2"></i>
+                        Rating Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="ratingDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Issues -->
+        <div class="col-lg-6">
+            <div class="card analytics-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Top Unresolved Issues
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if top_issues %}
+                    <div class="list-group list-group-flush">
+                        {% for issue in top_issues %}
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ issue.get_feedback_type_display }}</h6>
+                                    <p class="mb-1 text-muted">{{ issue.message|truncatewords:15 }}</p>
+                                    <small class="text-muted">{{ issue.created_at|date:"M d, Y" }}</small>
+                                </div>
+                                <div class="ms-3">
+                                    {% if issue.rating %}
+                                    <div class="text-warning">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= issue.rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                        <h6>No Unresolved Issues</h6>
+                        <p class="text-muted">All bug reports have been resolved!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card analytics-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Recent Activity (Last 7 Days)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-primary">{{ recent_feedback }}</h4>
+                                <p class="mb-0">New Feedback</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-success">{{ resolved_feedback }}</h4>
+                                <p class="mb-0">Total Resolved</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <h4 class="text-info">{{ avg_rating }}</h4>
+                                <p class="mb-0">Average Rating</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Feedback Over Time Chart
+    const timeCtx = document.getElementById('feedbackOverTimeChart').getContext('2d');
+    new Chart(timeCtx, {
+        type: 'line',
+        data: {
+            labels: {{ feedback_over_time|safe }}.map(item => item.date),
+            datasets: [{
+                label: 'Feedback Count',
+                data: {{ feedback_over_time|safe }}.map(item => item.count),
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+
+    // Feedback by Type Chart
+    const typeCtx = document.getElementById('feedbackByTypeChart').getContext('2d');
+    const typeData = {{ feedback_by_type|safe }};
+    new Chart(typeCtx, {
+        type: 'doughnut',
+        data: {
+            labels: typeData.map(item => item.feedback_type.replace('_', ' ').toUpperCase()),
+            datasets: [{
+                data: typeData.map(item => item.count),
+                backgroundColor: ['#ef4444', '#3b82f6', '#8b5cf6', '#06b6d4']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Rating Distribution Chart
+    const ratingCtx = document.getElementById('ratingDistributionChart').getContext('2d');
+    const ratingData = {{ rating_distribution|safe }};
+    new Chart(ratingCtx, {
+        type: 'bar',
+        data: {
+            labels: ratingData.map(item => item.rating + ' Star' + (item.rating > 1 ? 's' : '')),
+            datasets: [{
+                label: 'Count',
+                data: ratingData.map(item => item.count),
+                backgroundColor: '#f59e0b',
+                borderColor: '#d97706',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -109,7 +109,7 @@
                                         <i class="fas fa-eye me-2"></i>
                                         Preview
                                     </button>
-                                    <button type="submit" class="btn btn-success">
+                                    <button type="submit" class="btn btn-success" id="submitBtn">
                                         <i class="fas fa-save me-2"></i>
                                         Create Study Note
                                     </button>
@@ -232,6 +232,29 @@ function previewNote() {
 // Initialize topic creation toggle on page load
 document.addEventListener('DOMContentLoaded', function() {
     toggleTopicCreation();
+
+    // Prevent duplicate form submissions
+    const form = document.querySelector('form');
+    const submitBtn = document.getElementById('submitBtn');
+    let isSubmitting = false;
+
+    form.addEventListener('submit', function(e) {
+        if (isSubmitting) {
+            e.preventDefault();
+            return false;
+        }
+
+        isSubmitting = true;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+
+        // Re-enable after 5 seconds as a fallback
+        setTimeout(() => {
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Create Study Note';
+        }, 5000);
+    });
 });
 </script>
 {% endblock %}

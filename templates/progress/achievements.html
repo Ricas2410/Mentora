@@ -5,197 +5,333 @@
 {% block extra_css %}
 <style>
     .achievement-card {
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        border-radius: 16px;
     }
+
     .achievement-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        transform: translateY(-2px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
+
     .achievement-earned {
-        background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-        border: 2px solid #F59E0B;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #f59e0b 100%);
+        border: 2px solid #f59e0b;
+        box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.3);
     }
+
     .achievement-locked {
-        background: #F9FAFB;
-        border: 2px solid #E5E7EB;
-        opacity: 0.7;
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        border: 2px solid #e5e7eb;
+        opacity: 0.8;
     }
+
     .achievement-icon {
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         margin: 0 auto 1rem;
+        position: relative;
     }
+
     .achievement-earned .achievement-icon {
-        background: linear-gradient(135deg, #F59E0B, #D97706);
+        background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
-        box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.39);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
     }
+
     .achievement-locked .achievement-icon {
-        background: #E5E7EB;
-        color: #9CA3AF;
+        background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+        color: #9ca3af;
     }
-    .achievement-progress {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #F59E0B, #D97706);
-        transition: width 0.3s ease;
-    }
+
     .sparkle {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        color: #F59E0B;
+        top: 12px;
+        right: 12px;
+        color: #f59e0b;
         animation: sparkle 2s infinite;
+        font-size: 1.2rem;
     }
+
     @keyframes sparkle {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(1.2); }
+        0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        50% { opacity: 0.7; transform: scale(1.1) rotate(180deg); }
+    }
+
+    .stats-card {
+        background: linear-gradient(135deg, var(--tw-gradient-from), var(--tw-gradient-to));
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-tab {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        padding: 8px 16px;
+        font-weight: 500;
+    }
+
+    .category-tab.active {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+    }
+
+    @media (max-width: 768px) {
+        .achievement-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+        }
+
+        .sparkle {
+            top: 8px;
+            right: 8px;
+            font-size: 1rem;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold mb-4">🏆 Your Achievements</h1>
-        <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
-            Celebrate your learning milestones and unlock new badges as you progress through your educational journey.
-        </p>
-    </div>
-
-    <!-- Achievement Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <div class="stat bg-gradient-to-br from-warning to-orange-500 text-white shadow-xl rounded-lg">
-            <div class="stat-figure text-white/80">
-                <i class="fas fa-trophy text-3xl"></i>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div class="container mx-auto px-4 py-6 md:py-8">
+        <!-- Header -->
+        <div class="text-center mb-8 md:mb-12">
+            <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-4 shadow-lg">
+                <i class="fas fa-trophy text-white text-2xl md:text-3xl"></i>
             </div>
-            <div class="stat-title text-white/90">Total Earned</div>
-            <div class="stat-value">{{ achievements_earned }}</div>
-            <div class="stat-desc text-white/80">earned so far</div>
-        </div>
-        
-        <div class="stat bg-gradient-to-br from-success to-green-600 text-white shadow-xl rounded-lg">
-            <div class="stat-figure text-white/80">
-                <i class="fas fa-star text-3xl"></i>
-            </div>
-            <div class="stat-title text-white/90">Points Earned</div>
-            <div class="stat-value">{{ total_points }}</div>
-            <div class="stat-desc text-white/80">achievement points</div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Your Achievements
+            </h1>
+            <p class="text-base md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Celebrate your learning milestones and unlock new badges as you progress through your educational journey.
+            </p>
         </div>
 
-        <div class="stat bg-gradient-to-br from-primary to-blue-600 text-white shadow-xl rounded-lg">
-            <div class="stat-figure text-white/80">
-                <i class="fas fa-calendar text-3xl"></i>
+        <!-- Achievement Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8 md:mb-12">
+            <div class="stats-card bg-gradient-to-br from-yellow-400 to-orange-500 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-trophy text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ achievements_earned }}</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">Earned</div>
+                </div>
             </div>
-            <div class="stat-title text-white/90">This Month</div>
-            <div class="stat-value">{{ this_month_achievements }}</div>
-            <div class="stat-desc text-white/80">new achievements</div>
+
+            <div class="stats-card bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-star text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ total_points }}</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">Points</div>
+                </div>
+            </div>
+
+            <div class="stats-card bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-calendar text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ this_month_achievements }}</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">This Month</div>
+                </div>
+            </div>
+
+            <div class="stats-card bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-xl p-4 md:p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center mb-2 md:mb-3">
+                        <i class="fas fa-medal text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-2xl md:text-3xl font-bold mb-1">{{ rare_achievements }}</div>
+                    <div class="text-xs md:text-sm opacity-90 font-medium">Rare</div>
+                </div>
+            </div>
         </div>
 
-        <div class="stat bg-gradient-to-br from-secondary to-purple-600 text-white shadow-xl rounded-lg">
-            <div class="stat-figure text-white/80">
-                <i class="fas fa-medal text-3xl"></i>
-            </div>
-            <div class="stat-title text-white/90">Rarity</div>
-            <div class="stat-value">{{ rare_achievements }}</div>
-            <div class="stat-desc text-white/80">rare badges earned</div>
+        <!-- Achievement Categories -->
+        <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-6 md:mb-8">
+            <button class="category-tab active" onclick="showCategory('all', this)">
+                <i class="fas fa-th-large mr-2"></i>All
+            </button>
+            <button class="category-tab" onclick="showCategory('learning', this)">
+                <i class="fas fa-book mr-2"></i>Learning
+            </button>
+            <button class="category-tab" onclick="showCategory('progress', this)">
+                <i class="fas fa-chart-line mr-2"></i>Progress
+            </button>
+            <button class="category-tab" onclick="showCategory('social', this)">
+                <i class="fas fa-users mr-2"></i>Social
+            </button>
+            <button class="category-tab" onclick="showCategory('special', this)">
+                <i class="fas fa-star mr-2"></i>Special
+            </button>
         </div>
-    </div>
 
-    <!-- Achievement Categories -->
-    <div class="tabs tabs-boxed mb-8 justify-center">
-        <a class="tab tab-active" onclick="showCategory('all')">All</a>
-        <a class="tab" onclick="showCategory('learning')">Learning</a>
-        <a class="tab" onclick="showCategory('progress')">Progress</a>
-        <a class="tab" onclick="showCategory('social')">Social</a>
-        <a class="tab" onclick="showCategory('special')">Special</a>
-    </div>
-
-    <!-- Achievements Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="achievements-grid">
-
-        {% for achievement in achievements %}
-        <!-- {{ achievement.title }} Achievement -->
-        <div class="achievement-card {% if achievement.earned %}achievement-earned{% else %}achievement-locked{% endif %} p-6 rounded-lg" data-category="{{ achievement.category }}">
-            {% if achievement.earned %}
-                <div class="sparkle">✨</div>
-            {% endif %}
-            <div class="achievement-icon">
-                <i class="{{ achievement.icon }}"></i>
-            </div>
-            <h3 class="font-bold text-lg text-center mb-2">{{ achievement.title }}</h3>
-            <p class="text-sm text-center text-base-content/70 mb-3">{{ achievement.description }}</p>
-            <div class="text-center">
-                <div class="badge {% if achievement.earned %}badge-warning{% else %}badge-ghost{% endif %}">+{{ achievement.points }} points</div>
-            </div>
-            <div class="text-xs text-center mt-2 {% if achievement.earned %}text-success{% else %}text-base-content/50{% endif %}">
+        <!-- Achievements Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6" id="achievements-grid">
+            {% for achievement in achievements %}
+            <!-- {{ achievement.title }} Achievement -->
+            <div class="achievement-card {% if achievement.earned %}achievement-earned{% else %}achievement-locked{% endif %} p-4 md:p-6" data-category="{{ achievement.category }}">
                 {% if achievement.earned %}
-                    <i class="fas fa-check mr-1"></i>
-                    Earned on {{ achievement.earned_date|date:"M d, Y" }}
-                {% else %}
-                    <i class="fas fa-lock mr-1"></i>
-                    Not earned yet
+                    <div class="sparkle">✨</div>
                 {% endif %}
+                <div class="achievement-icon">
+                    <i class="{{ achievement.icon }}"></i>
+                </div>
+                <h3 class="font-bold text-base md:text-lg text-center mb-2 leading-tight">{{ achievement.title }}</h3>
+                <p class="text-xs md:text-sm text-center text-gray-600 mb-3 leading-relaxed">{{ achievement.description }}</p>
+                <div class="text-center mb-3">
+                    <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {% if achievement.earned %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-600{% endif %}">
+                        <i class="fas fa-coins mr-1"></i>
+                        +{{ achievement.points }} points
+                    </div>
+                </div>
+                <div class="text-xs text-center {% if achievement.earned %}text-green-600{% else %}text-gray-500{% endif %}">
+                    {% if achievement.earned %}
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            <span>{{ achievement.earned_date|date:"M d, Y" }}</span>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-lock mr-1"></i>
+                            <span>Not earned yet</span>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
+            {% empty %}
+            <!-- No achievements yet -->
+            <div class="col-span-full text-center py-12 md:py-16">
+                <div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-trophy text-3xl md:text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">No Achievements Yet</h3>
+                <p class="text-gray-500 mb-4">Start learning to unlock your first achievements!</p>
+                <a href="{% url 'core:dashboard' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-play mr-2"></i>
+                    Start Learning
+                </a>
+            </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <!-- No achievements yet -->
-        <div class="col-span-full text-center py-12">
-            <i class="fas fa-trophy text-6xl text-base-content/30 mb-4"></i>
-            <h3 class="text-xl font-bold text-base-content/70 mb-2">No Achievements Yet</h3>
-            <p class="text-base-content/50">Start learning to unlock your first achievements!</p>
-        </div>
-        {% endfor %}
-    </div>
 
-    <!-- Achievement Tips -->
-    <div class="card bg-base-100 shadow-xl mt-12">
-        <div class="card-body">
-            <h2 class="card-title">
-                <i class="fas fa-lightbulb text-warning mr-2"></i>
-                Tips for Earning Achievements
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <div>
-                    <h3 class="font-bold mb-2">Study Consistently</h3>
-                    <ul class="text-sm space-y-1 text-base-content/70">
-                        <li>• Set a daily study schedule</li>
-                        <li>• Aim for at least 15-30 minutes per day</li>
-                        <li>• Use the calendar to track your streak</li>
+        <!-- Achievement Tips -->
+        <div class="bg-white rounded-2xl shadow-xl mt-8 md:mt-12 p-6 md:p-8">
+            <div class="text-center mb-6 md:mb-8">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-full mb-3">
+                    <i class="fas fa-lightbulb text-yellow-600 text-xl"></i>
+                </div>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">Tips for Earning Achievements</h2>
+                <p class="text-gray-600">Follow these strategies to unlock more badges and earn points</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 md:p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-calendar-check text-white text-sm"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900">Study Consistently</h3>
+                    </div>
+                    <ul class="text-sm space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                            <span>Set a daily study schedule</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                            <span>Aim for at least 30-60 minutes per day</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                            <span>Use the calendar to track your streak</span>
+                        </li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="font-bold mb-2">Challenge Yourself</h3>
-                    <ul class="text-sm space-y-1 text-base-content/70">
-                        <li>• Try to score higher on retakes</li>
-                        <li>• Complete quizzes quickly but accurately</li>
-                        <li>• Read all study materials thoroughly</li>
+
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 md:p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-target text-white text-sm"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900">Challenge Yourself</h3>
+                    </div>
+                    <ul class="text-sm space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                            <span>Try to score higher on retakes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                            <span>Complete quizzes quickly but accurately</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                            <span>Read all study materials thoroughly</span>
+                        </li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="font-bold mb-2">Explore Different Times</h3>
-                    <ul class="text-sm space-y-1 text-base-content/70">
-                        <li>• Try studying in the morning</li>
-                        <li>• Experiment with evening sessions</li>
-                        <li>• Find your most productive time</li>
+
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 md:p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-clock text-white text-sm"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900">Explore Different Times</h3>
+                    </div>
+                    <ul class="text-sm space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-purple-500 mr-2 mt-1 text-xs"></i>
+                            <span>Try studying in the morning</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-purple-500 mr-2 mt-1 text-xs"></i>
+                            <span>Experiment with evening sessions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-purple-500 mr-2 mt-1 text-xs"></i>
+                            <span>Find your most productive time</span>
+                        </li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="font-bold mb-2">Complete Everything</h3>
-                    <ul class="text-sm space-y-1 text-base-content/70">
-                        <li>• Finish all topics in each level</li>
-                        <li>• Don't skip any study materials</li>
-                        <li>• Take all available quizzes and tests</li>
+
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 md:p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-tasks text-white text-sm"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900">Complete Everything</h3>
+                    </div>
+                    <ul class="text-sm space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-orange-500 mr-2 mt-1 text-xs"></i>
+                            <span>Finish all topics in each level</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-orange-500 mr-2 mt-1 text-xs"></i>
+                            <span>Don't skip any study materials</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-orange-500 mr-2 mt-1 text-xs"></i>
+                            <span>Take all available quizzes and tests</span>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -204,33 +340,82 @@
 </div>
 
 <script>
-function showCategory(category) {
+function showCategory(category, button) {
     // Update active tab
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('tab-active');
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.classList.remove('active');
     });
-    event.target.classList.add('tab-active');
-    
-    // Show/hide achievements
+    button.classList.add('active');
+
+    // Show/hide achievements with animation
     const achievements = document.querySelectorAll('.achievement-card');
-    achievements.forEach(achievement => {
+    achievements.forEach((achievement, index) => {
         if (category === 'all' || achievement.dataset.category === category) {
             achievement.style.display = 'block';
+            // Stagger animation
+            setTimeout(() => {
+                achievement.style.opacity = '1';
+                achievement.style.transform = 'translateY(0)';
+            }, index * 50);
         } else {
-            achievement.style.display = 'none';
+            achievement.style.opacity = '0';
+            achievement.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                achievement.style.display = 'none';
+            }, 300);
         }
     });
 }
 
 // Add click handlers for achievement details
-document.querySelectorAll('.achievement-card').forEach(card => {
-    card.addEventListener('click', function() {
-        const title = this.querySelector('h3').textContent;
-        const description = this.querySelector('p').textContent;
-        const isEarned = this.classList.contains('achievement-earned');
-        
-        // You could show a modal with more details here
-        console.log(`Clicked on ${title}: ${description} (${isEarned ? 'Earned' : 'Not earned'})`);
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize achievement animations
+    const achievements = document.querySelectorAll('.achievement-card');
+    achievements.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.3s ease';
+
+        // Stagger initial animation
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+
+        // Add click handler
+        card.addEventListener('click', function() {
+            const title = this.querySelector('h3').textContent;
+            const description = this.querySelector('p').textContent;
+            const isEarned = this.classList.contains('achievement-earned');
+
+            // Add a subtle click effect
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(0) scale(1)';
+            }, 150);
+
+            console.log(`Clicked on ${title}: ${description} (${isEarned ? 'Earned' : 'Not earned'})`);
+        });
+    });
+
+    // Add scroll reveal animation for stats cards
+    const statsCards = document.querySelectorAll('.stats-card');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    statsCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
     });
 });
 </script>

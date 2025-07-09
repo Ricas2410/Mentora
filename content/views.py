@@ -97,12 +97,23 @@ class QuizView(TemplateView):
                     'current_class': topic.class_level.name
                 }
 
+        # Calculate time limits - use admin setting or fallback to 45 seconds per question
+        total_quiz_time = quiz_settings['quiz_time_limit']
+        if total_quiz_time <= 0:
+            # Fallback: 45 seconds per question
+            total_quiz_time = quiz_data['total_questions'] * 45
+
+        question_time = quiz_settings['question_time_limit']
+        if question_time <= 0:
+            # Fallback: 45 seconds per question
+            question_time = 45
+
         # Create quiz info for the template using admin settings
         quiz_info = {
             'title': f"{topic.title} Quiz",
             'description': f"Test your knowledge of {topic.title}",
-            'time_limit': quiz_settings['quiz_time_limit'],  # Use admin setting
-            'question_time_limit': quiz_settings['question_time_limit'],  # Individual question time
+            'time_limit': total_quiz_time,  # Use calculated time
+            'question_time_limit': question_time,  # Individual question time
             'explanation_display_time': quiz_settings.get('explanation_display_time', 5),  # Explanation time
             'questions_count': quiz_data['total_questions'],
             'has_questions': quiz_data['total_questions'] > 0,
@@ -174,20 +185,149 @@ class QuizResultView(TemplateView):
     template_name = 'content/quiz_result.html'
 
     def get_context_data(self, **kwargs):
+        import logging
         context = super().get_context_data(**kwargs)
         quiz_id = kwargs.get('quiz_id')
+        logger = logging.getLogger('quiz_debug')
+        logger.info(f"QuizResultView: quiz_id from kwargs: {quiz_id}")
 
-        # Get topic from quiz_id (which is actually topic_id in our URL pattern)
-        topic = get_object_or_404(Topic, id=quiz_id, is_active=True)
+        # Debug: Check if quiz exists
+        quiz_exists = Quiz.objects.filter(id=quiz_id).exists()
+        logger.info(f"QuizResultView: Quiz exists: {quiz_exists}")
 
-        context['topic'] = topic
-        context['subject'] = topic.class_level.subject
-        context['level'] = topic.class_level
+        try:
+            quiz = get_object_or_404(Quiz, id=quiz_id)
+            logger.info(f"QuizResultView: Found quiz: {quiz}")
+        except Exception as e:
+            logger.error(f"QuizResultView: Could not find Quiz with id {quiz_id}. Error: {e}")
+            context['error'] = f"Quiz not found for id: {quiz_id}. Error: {e}"
+            return context
+
+        # Only allow the user who took the quiz to view the result
+        if self.request.user != quiz.user:
+            logger.warning(f"QuizResultView: Unauthorized access attempt by user {self.request.user} for quiz {quiz_id}")
+            context['error'] = "You are not authorized to view this quiz result."
+            return context
+
+        # Get all answers for this quiz
+        answers = quiz.quiz_answers.select_related('question').all()
+        logger.info(f"QuizResultView: Found {answers.count()} answers for quiz {quiz_id}")
+
+        # Debug: Log quiz details
+        logger.info(f"QuizResultView: Quiz details - Score: {quiz.score}, Total: {quiz.total_points}, Percentage: {quiz.percentage}")
+        logger.info(f"QuizResultView: Quiz topic: {quiz.topic}")
+
+        # Prepare question review data
+        question_reviews = []
+        for answer in answers:
+            question = answer.question
+            # For MCQ, get choices and correct choice
+            choices = question.get_choices() if hasattr(question, 'get_choices') else []
+            correct_choice = question.get_correct_choice() if hasattr(question, 'get_correct_choice') else None
+            # For text/short answer, get correct answer(s)
+            correct_answers = question.get_acceptable_answers_list() if hasattr(question, 'get_acceptable_answers_list') else []
+
+            logger.debug(f"QuizResultView: Question {question.id if hasattr(question, 'id') else str(question)}: user_answer={answer.user_answer}, is_correct={answer.is_correct}")
+
+            question_reviews.append({
+                'question_text': getattr(question, 'question_text', str(question)),
+                'user_answer': answer.user_answer,
+                'is_correct': answer.is_correct,
+                'choices': choices,
+                'correct_choice': correct_choice,
+                'correct_answers': correct_answers,
+                'question_type': getattr(question, 'question_type', 'unknown'),
+                'explanation': getattr(question, 'explanation', ''),
+            })
+
+        # Format time display
+        time_taken = quiz.time_taken
+        if time_taken >= 60:
+            minutes = time_taken // 60
+            seconds = time_taken % 60
+            time_display = f"{minutes}:{seconds:02d}"
+        else:
+            time_display = f"{time_taken}s"
+
+        # Quiz stats
+        context['quiz'] = quiz
+        context['quiz_id'] = str(quiz.id)  # Ensure quiz_id is always available for templates
+        context['score'] = quiz.score
+        context['total'] = quiz.total_points
+        context['percentage'] = quiz.percentage
+        context['time_taken'] = quiz.time_taken
+        context['time_display'] = time_display
+        context['question_reviews'] = question_reviews
+
+        # Use admin settings for pass percentage
+        from admin_panel.utils import get_quiz_settings
+        quiz_settings = get_quiz_settings()
+        pass_percentage = quiz_settings['minimum_pass_percentage']
+        context['passed'] = quiz.percentage >= pass_percentage
+        context['pass_percentage'] = pass_percentage
+
+        # Safely set topic, subject, and level with proper error handling
+        try:
+            context['topic'] = quiz.topic if quiz.topic else None
+            if quiz.topic and hasattr(quiz.topic, 'class_level') and quiz.topic.class_level:
+                context['subject'] = quiz.topic.class_level.subject if hasattr(quiz.topic.class_level, 'subject') else None
+                context['level'] = quiz.topic.class_level
+            else:
+                context['subject'] = None
+                context['level'] = None
+            logger.info(f"QuizResultView: Topic: {quiz.topic}, Subject: {context['subject']}, Level: {context['level']}")
+        except Exception as e:
+            logger.error(f"QuizResultView: Error setting topic/subject/level context: {e}")
+            context['topic'] = None
+            context['subject'] = None
+            context['level'] = None
+
+        logger.info(f"QuizResultView: Returning context for quiz {quiz_id}")
         return context
 
 
 class TestView(TemplateView):
     template_name = 'content/test.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        topic_id = kwargs.get('topic_id')
+        topic = get_object_or_404(Topic, id=topic_id, is_active=True)
+
+        # Get test settings from admin
+        from admin_panel.utils import get_quiz_settings
+        test_settings = get_quiz_settings()
+
+        # Get test statistics
+        stats = get_quiz_statistics(topic)
+        total_available = stats['total_questions']
+
+        # Use admin settings for number of questions
+        recommended_questions = min(test_settings['test_questions_per_topic'], total_available) if total_available > 0 else test_settings['test_questions_per_topic']
+
+        # Calculate time limits - use admin setting or fallback to 45 seconds per question
+        total_test_time = test_settings['test_time_limit']
+        if total_test_time <= 0:
+            # Fallback: 45 seconds per question
+            total_test_time = recommended_questions * 45
+
+        # Create test info for the template
+        test_info = {
+            'title': f"{topic.title} Test",
+            'description': f"Comprehensive test for {topic.title}",
+            'time_limit': total_test_time,
+            'questions_count': recommended_questions,
+            'has_questions': total_available > 0,
+            'total_available': total_available,
+            'minimum_pass_percentage': test_settings['minimum_pass_percentage'],
+        }
+
+        context['topic'] = topic
+        context['subject'] = topic.class_level.subject
+        context['level'] = topic.class_level
+        context['test_info'] = test_info
+        context['show_login_prompt'] = not self.request.user.is_authenticated
+        return context
 
 
 class TakeTestView(TemplateView):
@@ -216,6 +356,11 @@ class ExamView(TemplateView):
         exam_questions_per_level = settings.get('exam_questions_per_level', 30)
         exam_time_limit = settings.get('exam_time_limit', 3600)  # seconds
         pass_percentage = settings.get('minimum_pass_percentage', 60)
+
+        # Calculate time limit with fallback
+        if exam_time_limit <= 0:
+            # Fallback: 45 seconds per question
+            exam_time_limit = exam_questions_per_level * 45
 
         # Count total available questions across all topics
         total_available_questions = Question.objects.filter(
@@ -267,6 +412,11 @@ class TakeExamView(TemplateView):
         exam_questions_per_level = settings.get('exam_questions_per_level', 30)
         exam_time_limit = settings.get('exam_time_limit', 3600)  # seconds
         pass_percentage = settings.get('minimum_pass_percentage', 60)
+
+        # Calculate time limit with fallback
+        if exam_time_limit <= 0:
+            # Fallback: 45 seconds per question
+            exam_time_limit = exam_questions_per_level * 45
 
         # Get all questions from all topics in this level
         all_questions = Question.objects.filter(
@@ -545,6 +695,7 @@ def submit_quiz(request):
             score=correct_answers,
             total_points=total_questions,
             percentage=percentage,
+            time_taken=time_taken,
             attempt_number=attempt_number,
             is_completed=True,
             completed_at=timezone.now()
@@ -863,6 +1014,45 @@ def get_next_learning_path(request):
             'success': False,
             'error': str(e)
         }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+@login_required
+def get_latest_quiz_result(request, topic_id):
+    """Get the latest quiz result for a topic"""
+    try:
+        from subjects.models import Topic
+
+        # Get the topic
+        topic = get_object_or_404(Topic, id=topic_id, is_active=True)
+
+        # Get the latest quiz for this user and topic
+        latest_quiz = Quiz.objects.filter(
+            user=request.user,
+            topic=topic,
+            is_completed=True
+        ).order_by('-completed_at').first()
+
+        if latest_quiz:
+            return JsonResponse({
+                'success': True,
+                'quiz_result': {
+                    'score': latest_quiz.score,
+                    'total_questions': latest_quiz.total_questions,
+                    'percentage': latest_quiz.percentage,
+                    'time_taken': 0,  # Time taken not stored in current model
+                    'completed_at': latest_quiz.completed_at.isoformat() if latest_quiz.completed_at else None
+                }
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'message': 'No quiz results found for this topic'
+            })
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 @csrf_exempt

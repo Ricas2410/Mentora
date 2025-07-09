@@ -26,6 +26,7 @@
             <!-- Modal Content -->
             <div class="p-6">
                 <form id="feedback-form" class="space-y-6">
+                    {% csrf_token %}
                     <!-- Star Rating -->
                     <div class="text-center">
                         <div class="flex justify-center space-x-2 mb-4">
@@ -47,6 +48,17 @@
                         </div>
                         <input type="hidden" id="rating-value" name="rating" value="">
                     </div>
+
+                    <!-- Email for Anonymous Users -->
+                    {% if not user.is_authenticated %}
+                    <div>
+                        <label for="feedback-email" class="block text-sm font-semibold text-gray-700 mb-2">Email (optional):</label>
+                        <input type="email" id="feedback-email" name="email"
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition-all"
+                               placeholder="your.email@example.com">
+                        <p class="text-xs text-gray-500 mt-1">We'll use this to follow up on your feedback if needed</p>
+                    </div>
+                    {% endif %}
 
                     <!-- Feedback Type -->
                     <div>
@@ -198,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const feedbackForm = document.getElementById('feedback-form');
     const starRatings = document.querySelectorAll('.star-rating');
     const ratingValue = document.getElementById('rating-value');
-    const feedbackToast = document.getElementById('feedback-toast');
+    // feedbackToast element will be created dynamically
     const submitText = document.getElementById('submit-text');
     const loadingIcon = document.getElementById('loading-icon');
 
@@ -300,34 +312,67 @@ document.addEventListener('DOMContentLoaded', function() {
             include_screenshot: document.getElementById('include-screenshot').checked
         };
 
+        // Add email for anonymous users
+        const emailField = document.getElementById('feedback-email');
+        if (emailField) {
+            formData.email = emailField.value.trim();
+        }
+
+        // Get CSRF token
+        function getCSRFToken() {
+            // Try multiple ways to get CSRF token
+            let token = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!token) {
+                token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            }
+            if (!token) {
+                // Try to get from cookies
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'csrftoken') {
+                        token = value;
+                        break;
+                    }
+                }
+            }
+            return token || '';
+        }
+
         // Submit to backend
         fetch('{% url "core:submit_feedback" %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                'X-CSRFToken': getCSRFToken()
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             // Reset loading state
             submitText.textContent = 'Send Feedback';
             loadingIcon.classList.add('hidden');
 
-            if (data.success) {
+            if (data && data.success) {
                 // Close modal
                 closeFeedbackModal();
 
                 // Show success toast
                 showSuccessToast();
+
+                // Reset form
+                resetForm();
             } else {
-                alert(data.message || 'Error submitting feedback');
+                alert(data?.message || 'Error submitting feedback');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-
             // Reset loading state
             submitText.textContent = 'Send Feedback';
             loadingIcon.classList.add('hidden');
@@ -354,10 +399,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show success toast
     function showSuccessToast() {
-        feedbackToast.style.transform = 'translateX(0)';
-        
+        // Create toast element dynamically
+        const toast = document.createElement('div');
+        toast.id = 'feedback-success-toast';
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+        toast.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>Thank you for your feedback!</span>
+            </div>
+        `;
+
+        // Add to page
+        document.body.appendChild(toast);
+
+        // Show toast with animation
         setTimeout(() => {
-            feedbackToast.style.transform = 'translateX(100%)';
+            toast.style.transform = 'translateX(0)';
+        }, 100);
+
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 300);
         }, 3000);
     }
 

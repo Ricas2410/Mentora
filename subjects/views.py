@@ -268,7 +268,7 @@ class ClassLevelDetailView(TemplateView):
                         user=self.request.user,
                         topic=topic
                     )
-                    progress_percentage = int(topic_progress.progress_percentage) if topic_progress.progress_percentage else 0
+                    progress_percentage = int(topic_progress.completion_percentage) if topic_progress.completion_percentage else 0
                     is_completed = topic_progress.is_completed
                 except TopicProgress.DoesNotExist:
                     progress_percentage = 0

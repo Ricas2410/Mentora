@@ -359,6 +359,13 @@
             </div>
 
             <div class="nav-item">
+                <a href="{% url 'core:feedback_list' %}" class="nav-link {% if 'feedback' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-comments"></i>
+                    User Feedback
+                </a>
+            </div>
+
+            <div class="nav-item">
                 <a href="{% url 'admin_panel:topics' %}" class="nav-link {% if 'topics' in request.resolver_match.url_name %}active{% endif %}">
                     <i class="fas fa-list"></i>
                     Topics

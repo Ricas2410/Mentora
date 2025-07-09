@@ -259,6 +259,9 @@ class UserFeedback(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True)
 
+    # For anonymous users
+    email = models.EmailField(blank=True, help_text="Email for anonymous feedback")
+
     # Feedback details
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     feedback_type = models.CharField(max_length=20, choices=FEEDBACK_TYPES, default='general')
@@ -285,7 +288,12 @@ class UserFeedback(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        user_display = self.user.email if self.user else 'Anonymous'
+        if self.user:
+            user_display = self.user.email
+        elif self.email:
+            user_display = self.email
+        else:
+            user_display = 'Anonymous'
         return f"{user_display} - {self.get_feedback_type_display()} ({self.rating}★)"
 
     @property

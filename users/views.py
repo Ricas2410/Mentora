@@ -7,6 +7,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db import transaction
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.utils import timezone
 from .models import User, EmailVerification, PasswordReset
 from .forms import UserProfileForm, PasswordChangeForm
 
@@ -20,6 +23,12 @@ class RegisterView(View):
         return render(request, self.template_name)
 
     def post(self, request):
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Registration POST request from {request.get_host()}")
+        logger.info(f"User agent: {request.META.get('HTTP_USER_AGENT', 'Unknown')}")
+        logger.info(f"Referer: {request.META.get('HTTP_REFERER', 'None')}")
+
         try:
             # Get form data
             first_name = request.POST.get('first_name', '').strip()
@@ -75,7 +84,7 @@ class RegisterView(View):
                 try:
                     verification = EmailVerification.create_verification(user)
                     # Send verification email
-                    email_sent = self.send_verification_email(user, verification)
+                    email_sent = self.send_verification_email(user, verification, request)
 
                     if email_sent:
                         messages.success(request,
@@ -98,16 +107,27 @@ class RegisterView(View):
             messages.error(request, 'An error occurred during registration. Please try again.')
             return render(request, self.template_name)
 
-    def send_verification_email(self, user, verification):
+    def send_verification_email(self, user, verification, request=None):
         """Send email verification"""
         try:
             from django.template.loader import render_to_string
             from django.core.mail import EmailMultiAlternatives
             from django.conf import settings
 
-            # Get domain and protocol from settings
-            domain = settings.SITE_DOMAIN
-            protocol = settings.SITE_PROTOCOL
+            # Get domain and protocol from settings or request
+            try:
+                # Try to get from request first (most reliable for production)
+                if request:
+                    domain = request.get_host()
+                    protocol = 'https' if request.is_secure() else 'http'
+                else:
+                    # Fallback to settings
+                    domain = settings.SITE_DOMAIN
+                    protocol = settings.SITE_PROTOCOL
+            except:
+                # Final fallback
+                domain = settings.SITE_DOMAIN
+                protocol = settings.SITE_PROTOCOL
 
             # Build verification URL
             verification_url = f"{protocol}://{domain}/auth/verify-email/{verification.token}/"
@@ -137,6 +157,7 @@ class RegisterView(View):
             # Log success
             print(f"✅ Verification email sent to: {user.email}")
             print(f"🔗 Verification URL: {verification_url}")
+            print(f"🌐 Domain used: {domain}, Protocol: {protocol}")
 
             return True
 
@@ -331,8 +352,13 @@ class VerifyEmailView(View):
             # Check if already used
             if verification.is_used:
                 print(f"⚠️ Verification already used")
-                messages.error(request, 'This verification link has already been used.')
-                return redirect('users:login')
+                # Check if user is already verified
+                if verification.user.is_email_verified:
+                    messages.info(request, 'Your email is already verified! You can log in to your account.')
+                    return redirect('users:login')
+                else:
+                    messages.error(request, 'This verification link has already been used. Please request a new verification email.')
+                    return redirect('users:resend_verification')
 
             # Check if expired
             if verification.is_expired():
@@ -344,11 +370,20 @@ class VerifyEmailView(View):
             user = verification.user
             print(f"👤 Verifying email for user: {user.email}")
 
-            user.is_email_verified = True
-            user.save()
+            # Use transaction to ensure both operations succeed together
+            from django.db import transaction
+            with transaction.atomic():
+                user.is_email_verified = True
+                user.save(update_fields=['is_email_verified'])
 
-            verification.is_used = True
-            verification.save()
+                verification.is_used = True
+                verification.save(update_fields=['is_used'])
+
+                # Mark all other verification tokens for this user as used
+                EmailVerification.objects.filter(
+                    user=user,
+                    is_used=False
+                ).exclude(id=verification.id).update(is_used=True)
 
             print(f"✅ Email verified successfully for: {user.email}")
             messages.success(request, 'Your email has been verified successfully!')
@@ -391,11 +426,12 @@ class ResendVerificationView(View):
                 messages.info(request, 'Your email is already verified.')
                 return redirect('users:login')
 
-            # Create new verification
+            # Create new verification (this will invalidate old ones)
             verification = EmailVerification.create_verification(user)
+            print(f"🔄 Created new verification token for {user.email}: {verification.token}")
 
             # Send verification email
-            email_sent = self.send_verification_email(user, verification)
+            email_sent = self.send_verification_email(user, verification, request)
 
             if email_sent:
                 messages.success(request, 'Verification email sent! Please check your inbox.')
@@ -411,16 +447,27 @@ class ResendVerificationView(View):
             messages.error(request, 'Failed to send verification email. Please try again.')
             return render(request, self.template_name)
 
-    def send_verification_email(self, user, verification):
+    def send_verification_email(self, user, verification, request=None):
         """Send email verification"""
         try:
             from django.template.loader import render_to_string
             from django.core.mail import EmailMultiAlternatives
             from django.conf import settings
 
-            # Get domain and protocol from settings
-            domain = settings.SITE_DOMAIN
-            protocol = settings.SITE_PROTOCOL
+            # Get domain and protocol from settings or request
+            try:
+                # Try to get from request first (most reliable for production)
+                if request:
+                    domain = request.get_host()
+                    protocol = 'https' if request.is_secure() else 'http'
+                else:
+                    # Fallback to settings
+                    domain = settings.SITE_DOMAIN
+                    protocol = settings.SITE_PROTOCOL
+            except:
+                # Final fallback
+                domain = settings.SITE_DOMAIN
+                protocol = settings.SITE_PROTOCOL
 
             # Build verification URL
             verification_url = f"{protocol}://{domain}/auth/verify-email/{verification.token}/"
@@ -450,6 +497,7 @@ class ResendVerificationView(View):
             # Log success
             print(f"✅ Verification email sent to: {user.email}")
             print(f"🔗 Verification URL: {verification_url}")
+            print(f"🌐 Domain used: {domain}, Protocol: {protocol}")
 
             return True
 
@@ -480,7 +528,7 @@ class PasswordResetView(View):
             reset = PasswordReset.create_reset(user, self.get_client_ip(request))
 
             # Send reset email
-            self.send_reset_email(user, reset)
+            self.send_reset_email(user, reset, request)
 
             messages.success(request, 'Password reset instructions have been sent to your email.')
             return redirect('users:password_reset_sent')
@@ -502,9 +550,24 @@ class PasswordResetView(View):
             ip = request.META.get('REMOTE_ADDR')
         return ip
 
-    def send_reset_email(self, user, reset):
+    def send_reset_email(self, user, reset, request=None):
         """Send password reset email"""
         try:
+            # Get domain and protocol from settings or request
+            try:
+                if request:
+                    domain = request.get_host()
+                    protocol = 'https' if request.is_secure() else 'http'
+                else:
+                    domain = settings.SITE_DOMAIN
+                    protocol = settings.SITE_PROTOCOL
+            except:
+                domain = settings.SITE_DOMAIN
+                protocol = settings.SITE_PROTOCOL
+
+            # Build reset URL
+            reset_url = f"{protocol}://{domain}/auth/password-reset-confirm/{reset.token}/"
+
             subject = 'Reset Your Pentora Password'
             message = f"""
             Hello {user.first_name},
@@ -513,7 +576,7 @@ class PasswordResetView(View):
 
             Click the link below to reset your password:
 
-            http://127.0.0.1:8000/auth/password-reset-confirm/{reset.token}/
+            {reset_url}
 
             This link will expire in 1 hour for security reasons.
 
@@ -530,6 +593,11 @@ class PasswordResetView(View):
                 [user.email],
                 fail_silently=False,
             )
+
+            # Log success
+            print(f"✅ Password reset email sent to: {user.email}")
+            print(f"🔗 Reset URL: {reset_url}")
+            print(f"🌐 Domain used: {domain}, Protocol: {protocol}")
         except Exception as e:
             print(f"Failed to send password reset email: {e}")
 

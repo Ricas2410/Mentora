@@ -183,22 +183,48 @@ def get_quiz_settings():
     try:
         site_settings = SiteSettings.get_settings()
         return {
+            # Quiz settings
             'quiz_time_limit': site_settings.quiz_time_limit,
             'quiz_questions_per_topic': site_settings.quiz_questions_per_topic,
             'question_time_limit': site_settings.question_time_limit,
+            'explanation_display_time': site_settings.explanation_display_time,
+
+            # Test settings
+            'test_questions_per_topic': site_settings.test_questions_per_topic,
+            'test_time_limit': site_settings.test_time_limit,
+
+            # Exam settings
+            'exam_questions_per_level': site_settings.exam_questions_per_level,
+            'exam_time_limit': site_settings.exam_time_limit,
+
+            # General settings
             'minimum_pass_percentage': site_settings.minimum_pass_percentage,
-            'show_correct_answers': site_settings.show_correct_answers,
-            'shuffle_questions': site_settings.shuffle_questions,
-            'shuffle_answers': site_settings.shuffle_answers,
-            'allow_question_skip': site_settings.allow_question_skip,
-            'show_progress_bar': site_settings.show_progress_bar,
+
+            # Default quiz behavior settings (not stored in DB yet)
+            'show_correct_answers': True,
+            'shuffle_questions': True,
+            'shuffle_answers': True,
+            'allow_question_skip': False,
+            'show_progress_bar': True,
         }
-    except:
+    except Exception as e:
         # Fallback settings
         return {
+            # Quiz settings
             'quiz_time_limit': 300,
             'quiz_questions_per_topic': 10,
             'question_time_limit': 45,
+            'explanation_display_time': 5,
+
+            # Test settings
+            'test_questions_per_topic': 20,
+            'test_time_limit': 1800,
+
+            # Exam settings
+            'exam_questions_per_level': 30,
+            'exam_time_limit': 3600,
+
+            # General settings
             'minimum_pass_percentage': 60,
             'show_correct_answers': True,
             'shuffle_questions': True,

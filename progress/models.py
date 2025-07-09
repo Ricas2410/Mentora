@@ -193,7 +193,9 @@ class TopicProgress(models.Model):
         self.test_completed = True
 
         # Check if topic is completed (notes read, quiz and test completed with passing scores)
-        passing_score = 60  # Minimum 60% to pass
+        from admin_panel.utils import get_quiz_settings
+        quiz_settings = get_quiz_settings()
+        passing_score = quiz_settings['minimum_pass_percentage']
 
         if (self.notes_read and
             self.quiz_completed and
