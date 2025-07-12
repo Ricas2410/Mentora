@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
     path('about/', views.AboutView.as_view(), name='about'),
+    path('about-pentora-ghana/', views.AboutPentoraGhanaView.as_view(), name='about_pentora_ghana'),
     path('contact/', views.ContactView.as_view(), name='contact'),
     path('help/', views.HelpView.as_view(), name='help'),
     path('privacy/', views.PrivacyView.as_view(), name='privacy'),

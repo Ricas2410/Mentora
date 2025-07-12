@@ -380,9 +380,16 @@
             </div>
 
             <div class="nav-item">
-                <a href="{% url 'admin_panel:questions' %}" class="nav-link {% if 'questions' in request.resolver_match.url_name %}active{% endif %}">
+                <a href="{% url 'admin_panel:questions' %}" class="nav-link {% if 'questions' in request.resolver_match.url_name and 'duplicate' not in request.resolver_match.url_name %}active{% endif %}">
                     <i class="fas fa-question-circle"></i>
                     Questions
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="{% url 'admin_panel:duplicate_questions' %}" class="nav-link {% if 'duplicate' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-copy"></i>
+                    Duplicate Questions
                 </a>
             </div>
 

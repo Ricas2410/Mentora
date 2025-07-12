@@ -664,6 +664,13 @@ class TermsView(TemplateView):
     """
     template_name = 'core/terms.html'
 
+
+class AboutPentoraGhanaView(TemplateView):
+    """
+    About Pentora Ghana page - Enhanced branding and SEO
+    """
+    template_name = 'core/about_pentora_ghana.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 

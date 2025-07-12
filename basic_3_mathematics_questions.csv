@@ -1,0 +1,161 @@
+subject_name,class_level_name,topic_title,question_text,question_type,correct_answer,explanation,difficulty,points,time_limit,choice_a,choice_b,choice_c,choice_d
+Mathematics,Basic 3,Number and Numeration,What is the place value of 4 in 342?,multiple_choice,c,In 342 the digit 4 is in the tens place so its place value is 40.,medium,10,60,4,400,40,4000
+Mathematics,Basic 3,Number and Numeration,Write 200 + 30 + 5 in standard form.,multiple_choice,b,Adding the place values: 200 + 30 + 5 = 235.,easy,10,45,253,235,325,352
+Mathematics,Basic 3,Number and Numeration,What is the value of the digit 6 in 164?,multiple_choice,a,The digit 6 is in the tens place so its value is 60.,medium,10,60,60,6,600,16
+Mathematics,Basic 3,Number and Numeration,Round 127 to the nearest ten.,multiple_choice,c,127 rounded to the nearest ten is 130 because 7 ≥ 5.,medium,10,75,120,125,130,140
+Mathematics,Basic 3,Number and Numeration,Which number comes next: 5 10 15 20 ___?,multiple_choice,d,The sequence increases by 5 each time so 20 + 5 = 25.,easy,10,45,22,23,24,25
+Mathematics,Basic 3,Number and Numeration,What is the largest 2-digit number you can make with 3 and 7?,multiple_choice,a,To make the largest number arrange digits in descending order: 73.,medium,10,75,73,37,70,30
+Mathematics,Basic 3,Number and Numeration,Compare: 234 ___ 243,multiple_choice,b,234 is less than 243 because 34 < 43 in the last two digits.,easy,10,45,>,<,=,≥
+Mathematics,Basic 3,Number and Numeration,What is 100 + 20 + 3 in words?,multiple_choice,c,123 in words is one hundred and twenty-three.,medium,10,90,One hundred twenty-three,One hundred two three,One hundred and twenty-three,One twenty-three
+Mathematics,Basic 3,Number and Numeration,Which is the smallest: 123 132 213 231?,multiple_choice,a,Comparing from left to right 123 is the smallest.,medium,10,75,123,132,213,231
+Mathematics,Basic 3,Number and Numeration,What is the expanded form of 156?,multiple_choice,d,156 = 100 + 50 + 6 in expanded form.,medium,10,75,100 + 50 + 5,100 + 5 + 6,10 + 50 + 6,100 + 50 + 6
+Mathematics,Basic 3,Number and Numeration,Count by 2s: 2 4 6 8 ___,multiple_choice,c,Counting by 2s: 8 + 2 = 10.,easy,10,30,9,11,10,12
+Mathematics,Basic 3,Number and Numeration,Count by 5s: 5 10 15 ___,multiple_choice,b,Counting by 5s: 15 + 5 = 20.,easy,10,30,18,20,25,30
+Mathematics,Basic 3,Number and Numeration,What number is 10 more than 45?,multiple_choice,d,45 + 10 = 55.,easy,10,45,35,40,50,55
+Mathematics,Basic 3,Number and Numeration,What number is 10 less than 67?,multiple_choice,a,67 - 10 = 57.,easy,10,45,57,77,60,70
+Mathematics,Basic 3,Number and Numeration,Which number is between 45 and 55?,multiple_choice,c,50 is between 45 and 55.,easy,10,60,40,60,50,65
+Mathematics,Basic 3,Basic Operations,What is 23 + 45?,multiple_choice,c,Adding: 23 + 45 = 68.,easy,10,60,58,67,68,78
+Mathematics,Basic 3,Basic Operations,Find: 89 - 34,multiple_choice,b,Subtracting: 89 - 34 = 55.,medium,10,75,45,55,65,75
+Mathematics,Basic 3,Basic Operations,What is 6 × 7?,multiple_choice,d,Multiplying: 6 × 7 = 42.,medium,10,90,35,40,41,42
+Mathematics,Basic 3,Basic Operations,Calculate: 48 ÷ 6,multiple_choice,a,Dividing: 48 ÷ 6 = 8.,easy,10,60,8,9,10,12
+Mathematics,Basic 3,Basic Operations,What is 15 × 3?,multiple_choice,c,Multiplying: 15 × 3 = 45.,easy,10,45,35,40,45,50
+Mathematics,Basic 3,Basic Operations,Find: 123 + 45,multiple_choice,b,Adding: 123 + 45 = 168.,medium,10,90,158,168,178,188
+Mathematics,Basic 3,Basic Operations,What is 200 - 67?,multiple_choice,d,Subtracting: 200 - 67 = 133.,medium,10,75,123,143,153,133
+Mathematics,Basic 3,Basic Operations,Calculate: 8 × 9,multiple_choice,a,Multiplying: 8 × 9 = 72.,medium,10,90,72,63,81,90
+Mathematics,Basic 3,Basic Operations,What is 56 ÷ 7?,multiple_choice,c,Dividing: 56 ÷ 7 = 8.,medium,10,75,6,7,8,9
+Mathematics,Basic 3,Basic Operations,Find the sum of 34 and 25.,multiple_choice,b,Sum means addition: 34 + 25 = 59.,medium,10,60,49,59,69,79
+Mathematics,Basic 3,Basic Operations,What is 12 × 4?,multiple_choice,a,Multiplying: 12 × 4 = 48.,easy,10,60,48,44,52,56
+Mathematics,Basic 3,Basic Operations,Find: 100 - 37,multiple_choice,c,Subtracting: 100 - 37 = 63.,medium,10,75,53,73,63,83
+Mathematics,Basic 3,Basic Operations,What is 9 × 6?,multiple_choice,b,Multiplying: 9 × 6 = 54.,medium,10,75,48,54,63,72
+Mathematics,Basic 3,Basic Operations,Calculate: 72 ÷ 8,multiple_choice,d,Dividing: 72 ÷ 8 = 9.,medium,10,75,6,7,8,9
+Mathematics,Basic 3,Basic Operations,What is the difference between 85 and 29?,multiple_choice,c,Difference means subtraction: 85 - 29 = 56.,medium,10,90,46,66,56,76
+Mathematics,Basic 3,Fractions,What fraction of the shape is shaded if 1 out of 3 parts is shaded?,multiple_choice,c,If 1 out of 3 parts is shaded the fraction is 1/3.,easy,10,60,1/2,2/3,1/3,3/1
+Mathematics,Basic 3,Fractions,Which fraction is larger: 1/2 or 1/4?,multiple_choice,a,1/2 is larger than 1/4 because half is more than quarter.,medium,10,75,1/2,1/4,They are equal,Cannot tell
+Mathematics,Basic 3,Fractions,What is 1/2 + 1/2?,multiple_choice,b,Adding fractions with same denominator: 1/2 + 1/2 = 2/2 = 1.,medium,10,60,1/2,1,2/4,3/2
+Mathematics,Basic 3,Fractions,Which is smaller: 1/3 or 1/2?,multiple_choice,a,1/3 is smaller than 1/2 because one-third is less than one-half.,medium,10,75,1/3,1/2,They are equal,Cannot tell
+Mathematics,Basic 3,Fractions,What is 1/4 + 1/4?,multiple_choice,c,Adding fractions with same denominator: 1/4 + 1/4 = 2/4 = 1/2.,medium,10,60,1/4,1/8,1/2,3/4
+Mathematics,Basic 3,Fractions,What fraction of 6 is 2?,multiple_choice,d,2 out of 6 is 2/6 = 1/3 when simplified.,medium,10,75,1/2,2/6,1/6,1/3
+Mathematics,Basic 3,Fractions,What is 1/2 of 8?,multiple_choice,c,1/2 of 8 = 8 ÷ 2 = 4.,easy,10,45,2,3,4,6
+Mathematics,Basic 3,Fractions,Which fraction equals 1/2?,multiple_choice,b,2/4 = 1/2 when simplified.,medium,10,60,1/4,2/4,1/3,3/4
+Mathematics,Basic 3,Fractions,What is 3/4 - 1/4?,multiple_choice,c,Subtracting fractions with same denominator: 3/4 - 1/4 = 2/4 = 1/2.,medium,10,60,1/4,3/4,1/2,2/4
+Mathematics,Basic 3,Fractions,What is 1/3 of 9?,multiple_choice,a,1/3 of 9 = 9 ÷ 3 = 3.,easy,10,45,3,6,9,12
+Mathematics,Basic 3,Measurement - Length,How many centimeters are in 1 meter?,multiple_choice,c,1 meter = 100 centimeters.,easy,10,30,10,50,100,1000
+Mathematics,Basic 3,Measurement - Length,What is 50 cm in meters?,multiple_choice,b,50 cm = 50 ÷ 100 = 0.5 meters.,medium,10,60,0.05 m,0.5 m,5 m,50 m
+Mathematics,Basic 3,Measurement - Length,How many millimeters are in 1 cm?,multiple_choice,d,1 cm = 10 millimeters.,medium,10,45,1 mm,5 mm,100 mm,10 mm
+Mathematics,Basic 3,Measurement - Length,Which is longer: 50 cm or 1 m?,multiple_choice,a,1 m = 100 cm which is longer than 50 cm.,medium,10,75,1 m,50 cm,They are equal,Cannot tell
+Mathematics,Basic 3,Measurement - Length,What is the perimeter of a rectangle with length 4 cm and width 2 cm?,multiple_choice,c,Perimeter = 2(length + width) = 2(4 + 2) = 12 cm.,medium,10,75,8 cm,10 cm,12 cm,16 cm
+Mathematics,Basic 3,Measurement - Length,How many meters are in 500 meters?,multiple_choice,d,500 meters is already in meters so it's 500 meters.,easy,10,60,5 m,50 m,5000 m,500 m
+Mathematics,Basic 3,Measurement - Length,What is 20 mm in centimeters?,multiple_choice,b,20 mm = 20 ÷ 10 = 2 cm.,medium,10,60,0.2 cm,2 cm,20 cm,200 cm
+Mathematics,Basic 3,Measurement - Length,Find the perimeter of a square with side 3 cm.,multiple_choice,a,Perimeter of square = 4 × side = 4 × 3 = 12 cm.,easy,10,60,12 cm,9 cm,15 cm,6 cm
+Mathematics,Basic 3,Measurement - Length,Which unit is best for measuring the length of a pencil?,multiple_choice,b,Centimeters are appropriate for measuring a pencil's length.,easy,10,45,Millimeters,Centimeters,Meters,Kilometers
+Mathematics,Basic 3,Measurement - Length,What is 1 m + 20 cm in centimeters?,multiple_choice,c,1 m = 100 cm so 100 cm + 20 cm = 120 cm.,hard,15,90,110 cm,115 cm,120 cm,125 cm
+Mathematics,Basic 3,Measurement - Mass,How many grams are in 1 kilogram?,multiple_choice,d,1 kilogram = 1000 grams.,easy,10,30,10,100,500,1000
+Mathematics,Basic 3,Measurement - Mass,What is 500 g in kilograms?,multiple_choice,b,500 g = 500 ÷ 1000 = 0.5 kg.,medium,10,60,0.05 kg,0.5 kg,5 kg,50 kg
+Mathematics,Basic 3,Measurement - Mass,Which is heavier: 800 g or 1 kg?,multiple_choice,a,1 kg = 1000 g which is heavier than 800 g.,medium,10,75,1 kg,800 g,They are equal,Cannot tell
+Mathematics,Basic 3,Measurement - Mass,What is 200 g + 300 g?,multiple_choice,c,200 g + 300 g = 500 g.,easy,10,45,400 g,450 g,500 g,600 g
+Mathematics,Basic 3,Measurement - Mass,How many grams are in 0.2 kg?,multiple_choice,b,0.2 kg = 0.2 × 1000 = 200 g.,medium,10,60,20 g,200 g,2000 g,20000 g
+Mathematics,Basic 3,Measurement - Mass,Which unit is best for measuring the mass of a book?,multiple_choice,c,Grams are the most appropriate unit for measuring a book's mass.,easy,10,45,Kilograms,Tonnes,Grams,Milligrams
+Mathematics,Basic 3,Measurement - Mass,What is 1 kg - 200 g in grams?,multiple_choice,d,1 kg = 1000 g so 1000 g - 200 g = 800 g.,medium,10,75,600 g,700 g,900 g,800 g
+Mathematics,Basic 3,Measurement - Mass,Convert 1.2 kg to grams.,multiple_choice,a,1.2 kg = 1.2 × 1000 = 1200 g.,medium,10,60,1200 g,120 g,12 g,12000 g
+Mathematics,Basic 3,Measurement - Mass,What is the total mass of 2 bags each weighing 100 g?,multiple_choice,b,Total mass = 2 × 100 g = 200 g.,medium,10,60,150 g,200 g,250 g,300 g
+Mathematics,Basic 3,Measurement - Mass,How many 100 g packets can be made from 500 g of rice?,multiple_choice,c,Number of packets = 500 ÷ 100 = 5.,medium,10,90,3,4,5,6
+Mathematics,Basic 3,Measurement - Capacity,How many milliliters are in 1 liter?,multiple_choice,d,1 liter = 1000 milliliters.,easy,10,30,10,100,500,1000
+Mathematics,Basic 3,Measurement - Capacity,What is 500 ml in liters?,multiple_choice,b,500 ml = 500 ÷ 1000 = 0.5 liters.,medium,10,60,0.05 L,0.5 L,5 L,50 L
+Mathematics,Basic 3,Measurement - Capacity,Which is more: 800 ml or 1 L?,multiple_choice,a,1 L = 1000 ml which is more than 800 ml.,medium,10,75,1 L,800 ml,They are equal,Cannot tell
+Mathematics,Basic 3,Measurement - Capacity,What is 300 ml + 200 ml?,multiple_choice,c,300 ml + 200 ml = 500 ml.,easy,10,45,400 ml,450 ml,500 ml,600 ml
+Mathematics,Basic 3,Measurement - Capacity,How many 50 ml cups can be filled from 500 ml of juice?,multiple_choice,c,Number of cups = 500 ÷ 50 = 10.,medium,10,90,8,9,10,11
+Mathematics,Basic 3,Measurement - Capacity,Which unit is best for measuring the capacity of a bottle?,multiple_choice,b,Milliliters are the most appropriate unit for a bottle.,easy,10,45,Liters,Milliliters,Kiloliters,Centiliters
+Mathematics,Basic 3,Measurement - Capacity,What is 1 L - 300 ml in milliliters?,multiple_choice,d,1 L = 1000 ml so 1000 ml - 300 ml = 700 ml.,medium,10,75,600 ml,800 ml,900 ml,700 ml
+Mathematics,Basic 3,Measurement - Capacity,Convert 0.3 L to milliliters.,multiple_choice,c,0.3 L = 0.3 × 1000 = 300 ml.,medium,10,60,30 ml,3 ml,300 ml,3000 ml
+Mathematics,Basic 3,Measurement - Capacity,What is the total capacity of 4 bottles each holding 200 ml?,multiple_choice,b,Total capacity = 4 × 200 ml = 800 ml.,medium,10,75,600 ml,800 ml,1000 ml,1200 ml
+Mathematics,Basic 3,Measurement - Capacity,How many liters are in 2000 ml?,multiple_choice,a,2000 ml = 2000 ÷ 1000 = 2 L.,medium,10,60,2 L,20 L,200 L,0.2 L
+Mathematics,Basic 3,Measurement - Time,How many minutes are in 1 hour?,multiple_choice,c,1 hour = 60 minutes.,easy,10,30,30,50,60,100
+Mathematics,Basic 3,Measurement - Time,What is 1 hour 15 minutes in minutes?,multiple_choice,d,1 hour = 60 minutes so 60 + 15 = 75 minutes.,medium,10,75,65 min,70 min,80 min,75 min
+Mathematics,Basic 3,Measurement - Time,How many seconds are in 1 minute?,multiple_choice,b,1 minute = 60 seconds.,medium,10,60,50 sec,60 sec,70 sec,100 sec
+Mathematics,Basic 3,Measurement - Time,What time is 30 minutes after 1:15?,multiple_choice,c,1:15 + 30 minutes = 1:45.,medium,10,75,1:30,1:35,1:45,2:15
+Mathematics,Basic 3,Measurement - Time,How many hours are in 1 day?,multiple_choice,a,1 day = 24 hours.,easy,10,30,24,12,48,60
+Mathematics,Basic 3,Measurement - Time,What is 60 minutes in hours?,multiple_choice,b,60 minutes = 1 hour.,medium,10,75,30 minutes,1 hour,2 hours,90 minutes
+Mathematics,Basic 3,Measurement - Time,If a class starts at 8:00 AM and lasts 30 minutes what time does it end?,multiple_choice,d,8:00 AM + 30 minutes = 8:30 AM.,medium,10,75,8:15 AM,8:20 AM,8:25 AM,8:30 AM
+Mathematics,Basic 3,Measurement - Time,How many days are in 1 week?,multiple_choice,c,1 week = 7 days.,easy,10,45,5,6,7,8
+Mathematics,Basic 3,Measurement - Time,What is the duration from 9:00 AM to 10:30 AM?,multiple_choice,a,From 9:00 AM to 10:30 AM is 1 hour 30 minutes.,medium,10,90,1 hour 30 minutes,1 hour,2 hours,30 minutes
+Mathematics,Basic 3,Measurement - Time,How many minutes are in half an hour?,multiple_choice,b,Half an hour = 30 minutes.,easy,10,30,15,30,45,60
+Mathematics,Basic 3,Geometry - Shapes,How many sides does a triangle have?,multiple_choice,c,A triangle has 3 sides.,easy,10,30,2,4,3,5
+Mathematics,Basic 3,Geometry - Shapes,What is a shape with 4 sides called?,multiple_choice,b,A shape with 4 sides is called a quadrilateral.,easy,10,45,Triangle,Quadrilateral,Pentagon,Hexagon
+Mathematics,Basic 3,Geometry - Shapes,How many corners does a rectangle have?,multiple_choice,d,A rectangle has 4 corners (vertices).,easy,10,45,2,3,5,4
+Mathematics,Basic 3,Geometry - Shapes,What is the name of a shape with no corners?,multiple_choice,a,A circle has no corners.,medium,10,60,Circle,Square,Triangle,Rectangle
+Mathematics,Basic 3,Geometry - Shapes,How many sides does a square have?,multiple_choice,c,A square has 4 sides.,easy,10,45,2,3,4,5
+Mathematics,Basic 3,Geometry - Shapes,Which shape has all sides equal?,multiple_choice,d,A square has all sides equal.,easy,10,60,Rectangle,Triangle,Circle,Square
+Mathematics,Basic 3,Geometry - Shapes,How many sides does a pentagon have?,multiple_choice,a,A pentagon has 5 sides.,medium,10,45,5,6,7,8
+Mathematics,Basic 3,Geometry - Shapes,What is a line that goes up and down called?,multiple_choice,b,A vertical line goes up and down.,medium,10,75,Horizontal line,Vertical line,Curved line,Zigzag line
+Mathematics,Basic 3,Geometry - Shapes,Which shape is round?,multiple_choice,c,A circle is round.,easy,10,45,Square,Triangle,Circle,Rectangle
+Mathematics,Basic 3,Geometry - Shapes,How many sides does a hexagon have?,multiple_choice,b,A hexagon has 6 sides.,medium,10,45,5,6,7,8
+Mathematics,Basic 3,Geometry - Area and Perimeter,What is the area of a rectangle with length 3 cm and width 2 cm?,multiple_choice,c,Area of rectangle = length × width = 3 × 2 = 6 cm².,medium,10,75,4 cm²,5 cm²,6 cm²,8 cm²
+Mathematics,Basic 3,Geometry - Area and Perimeter,What is the perimeter of a square with side 2 cm?,multiple_choice,b,Perimeter of square = 4 × side = 4 × 2 = 8 cm.,easy,10,60,6 cm,8 cm,10 cm,12 cm
+Mathematics,Basic 3,Geometry - Area and Perimeter,Find the area of a square with side 4 cm.,multiple_choice,d,Area of square = side × side = 4 × 4 = 16 cm².,medium,10,60,12 cm²,14 cm²,15 cm²,16 cm²
+Mathematics,Basic 3,Geometry - Area and Perimeter,What is the perimeter of a triangle with sides 2 cm 3 cm and 4 cm?,multiple_choice,a,Perimeter = sum of all sides = 2 + 3 + 4 = 9 cm.,easy,10,60,9 cm,10 cm,11 cm,24 cm
+Mathematics,Basic 3,Geometry - Area and Perimeter,Find the area of a rectangle with length 5 m and width 1 m.,multiple_choice,c,Area = length × width = 5 × 1 = 5 m².,medium,10,60,4 m²,6 m²,5 m²,10 m²
+Mathematics,Basic 3,Geometry - Area and Perimeter,What is the perimeter of a rectangle with length 5 cm and width 3 cm?,multiple_choice,b,Perimeter = 2(length + width) = 2(5 + 3) = 16 cm.,medium,10,75,14 cm,16 cm,18 cm,20 cm
+Mathematics,Basic 3,Geometry - Area and Perimeter,If a square has perimeter 8 cm what is the length of each side?,multiple_choice,d,If perimeter = 8 cm then each side = 8 ÷ 4 = 2 cm.,medium,10,75,1 cm,3 cm,4 cm,2 cm
+Mathematics,Basic 3,Geometry - Area and Perimeter,Find the area of a square with perimeter 12 cm.,multiple_choice,a,If perimeter = 12 cm then side = 3 cm. Area = 3 × 3 = 9 cm².,hard,15,90,9 cm²,12 cm²,16 cm²,36 cm²
+Mathematics,Basic 3,Geometry - Area and Perimeter,A rectangular garden is 6 m long and 4 m wide. What is its area?,multiple_choice,b,Area = length × width = 6 × 4 = 24 m².,medium,10,75,20 m²,24 m²,28 m²,30 m²
+Mathematics,Basic 3,Geometry - Area and Perimeter,What is the perimeter of a square garden with side 5 m?,multiple_choice,c,Perimeter = 4 × side = 4 × 5 = 20 m.,easy,10,60,15 m,25 m,20 m,10 m
+Mathematics,Basic 3,Data Handling,What is the mode in this set of data: 1 3 1 5 1 7?,multiple_choice,c,The mode is the number that appears most frequently. 1 appears three times.,medium,10,75,3,5,1,7
+Mathematics,Basic 3,Data Handling,Find the range of: 3 6 8 4 10,multiple_choice,b,Range = highest value - lowest value = 10 - 3 = 7.,medium,10,75,6,7,8,9
+Mathematics,Basic 3,Data Handling,In a pictograph if one symbol represents 2 items how many items do 3 symbols represent?,multiple_choice,b,3 symbols × 2 items per symbol = 6 items.,easy,10,60,5,6,7,8
+Mathematics,Basic 3,Data Handling,What is the median of: 1 2 3 4 5?,multiple_choice,c,The median is the middle value when arranged in order. The middle value is 3.,medium,10,75,2,2.5,3,4
+Mathematics,Basic 3,Data Handling,If a bar graph shows that 3 students like red and 5 like blue how many more like blue?,multiple_choice,d,5 - 3 = 2 more students like blue.,easy,10,60,1,3,4,2
+Mathematics,Basic 3,Data Handling,What type of graph uses bars to show data?,multiple_choice,a,A bar graph uses bars to represent data.,medium,10,75,Bar graph,Line graph,Pie chart,Pictograph
+Mathematics,Basic 3,Data Handling,Find the mode of: 2 4 2 6 8 2 5,multiple_choice,b,The mode is 2 because it appears three times more than any other number.,medium,10,75,4,2,6,5
+Mathematics,Basic 3,Data Handling,What is the range of: 5 8 12 15 20?,multiple_choice,d,Range = 20 - 5 = 15.,medium,10,60,5,10,12,15
+Mathematics,Basic 3,Data Handling,How many students like apples if the pictograph shows 4 apple symbols and each symbol represents 2 students?,multiple_choice,c,4 symbols × 2 students = 8 students.,medium,10,90,6,7,8,10
+Mathematics,Basic 3,Data Handling,What is the total if we add: 2 + 3 + 4 + 1?,multiple_choice,a,Adding: 2 + 3 + 4 + 1 = 10.,easy,10,60,10,11,12,13
+Mathematics,Basic 3,Money,How many 5 pesewa coins make 50 pesewas?,multiple_choice,d,50 ÷ 5 = 10 coins.,medium,10,75,5,8,12,10
+Mathematics,Basic 3,Money,What is GH¢ 1.50 + GH¢ 2.25?,multiple_choice,b,Adding: GH¢ 1.50 + GH¢ 2.25 = GH¢ 3.75.,medium,10,60,GH¢ 3.25,GH¢ 3.75,GH¢ 4.25,GH¢ 4.75
+Mathematics,Basic 3,Money,How much change will you get from GH¢ 5 if you buy something for GH¢ 2?,multiple_choice,c,Change = GH¢ 5 - GH¢ 2 = GH¢ 3.,medium,10,75,GH¢ 2,GH¢ 2.50,GH¢ 3,GH¢ 4
+Mathematics,Basic 3,Money,What is the total value of 2 GH¢ 1 coins and 1 50 pesewa coin?,multiple_choice,a,2 × GH¢ 1 + 50p = GH¢ 2 + GH¢ 0.50 = GH¢ 2.50.,medium,10,90,GH¢ 2.50,GH¢ 3.00,GH¢ 3.50,GH¢ 4.00
+Mathematics,Basic 3,Money,How many 10 pesewa coins equal 1 cedi?,multiple_choice,c,GH¢ 1 = 100 pesewas. 100 ÷ 10 = 10 coins.,medium,10,60,5,8,10,12
+Mathematics,Basic 3,Money,What is GH¢ 4.75 - GH¢ 2.25?,multiple_choice,b,Subtracting: GH¢ 4.75 - GH¢ 2.25 = GH¢ 2.50.,medium,10,75,GH¢ 2.25,GH¢ 2.50,GH¢ 2.75,GH¢ 3.00
+Mathematics,Basic 3,Money,If you buy 3 items each costing 50p how much do you pay?,multiple_choice,d,3 × 50p = 150p = GH¢ 1.50.,medium,10,60,GH¢ 1.00,GH¢ 1.25,GH¢ 2.00,GH¢ 1.50
+Mathematics,Basic 3,Money,What is the value of 1 GH¢ 2 coin and 2 GH¢ 1 coins?,multiple_choice,a,GH¢ 2 + 2 × GH¢ 1 = GH¢ 2 + GH¢ 2 = GH¢ 4.,medium,10,90,GH¢ 4.00,GH¢ 3.00,GH¢ 5.00,GH¢ 6.00
+Mathematics,Basic 3,Money,How much more is GH¢ 6.50 than GH¢ 4.25?,multiple_choice,c,GH¢ 6.50 - GH¢ 4.25 = GH¢ 2.25.,medium,10,75,GH¢ 2.00,GH¢ 2.15,GH¢ 2.25,GH¢ 2.75
+Mathematics,Basic 3,Money,If a toy costs GH¢ 2.50 and you pay with GH¢ 5 what change do you get?,multiple_choice,b,Change = GH¢ 5.00 - GH¢ 2.50 = GH¢ 2.50.,easy,10,60,GH¢ 2.00,GH¢ 2.50,GH¢ 3.00,GH¢ 3.50
+Mathematics,Basic 3,Patterns and Sequences,What comes next: 1 2 3 4 ___?,multiple_choice,c,The pattern increases by 1 each time so 4 + 1 = 5.,easy,10,45,6,7,5,8
+Mathematics,Basic 3,Patterns and Sequences,Find the missing number: 2 4 6 ___ 10,multiple_choice,b,The pattern increases by 2 each time so the missing number is 8.,easy,10,60,7,8,9,12
+Mathematics,Basic 3,Patterns and Sequences,What is the rule for: 1 2 4 8 16?,multiple_choice,d,Each number is multiplied by 2 to get the next number.,medium,10,90,Add 1,Add 2,Subtract 1,Multiply by 2
+Mathematics,Basic 3,Patterns and Sequences,Continue the pattern: 10 20 30 40 ___,multiple_choice,a,The pattern increases by 10 each time so 40 + 10 = 50.,medium,10,60,50,60,70,80
+Mathematics,Basic 3,Patterns and Sequences,What comes next: 20 18 16 14 ___?,multiple_choice,b,The pattern decreases by 2 each time so 14 - 2 = 12.,medium,10,60,10,12,15,16
+Mathematics,Basic 3,Patterns and Sequences,Find the pattern: 1 3 5 7 9 ___,multiple_choice,c,These are odd numbers increasing by 2 so next is 9 + 2 = 11.,medium,10,75,10,12,11,13
+Mathematics,Basic 3,Patterns and Sequences,What is the 4th term in: 5 10 15 ___?,multiple_choice,d,The pattern increases by 5 each time so the 4th term is 15 + 5 = 20.,medium,10,75,18,19,25,20
+Mathematics,Basic 3,Patterns and Sequences,Complete: 30 25 20 15 ___,multiple_choice,a,The pattern decreases by 5 each time so 15 - 5 = 10.,easy,10,45,10,12,5,20
+Mathematics,Basic 3,Patterns and Sequences,What comes next: 2 4 6 8 ___?,multiple_choice,c,These are even numbers increasing by 2 so next is 8 + 2 = 10.,medium,10,60,9,11,10,12
+Mathematics,Basic 3,Patterns and Sequences,Find the missing term: 15 12 9 ___ 3,multiple_choice,b,The pattern decreases by 3 each time so the missing number is 6.,medium,10,60,5,6,7,8
+Mathematics,Basic 3,Problem Solving,A basket contains 12 oranges. If 4 oranges are eaten how many are left?,multiple_choice,c,12 - 4 = 8 oranges are left.,easy,10,45,6,7,8,9
+Mathematics,Basic 3,Problem Solving,Tom has 2 bags with 5 marbles in each bag. How many marbles does he have in total?,multiple_choice,b,2 × 5 = 10 marbles in total.,medium,10,60,8,10,12,15
+Mathematics,Basic 3,Problem Solving,A teacher has 18 books. She puts them equally into 3 boxes. How many books are in each box?,multiple_choice,c,18 ÷ 3 = 6 books in each box.,medium,10,75,5,7,6,9
+Mathematics,Basic 3,Problem Solving,Jane buys 2 pencils at 25p each. How much does she pay in total?,multiple_choice,d,2 × 25p = 50p.,medium,10,60,40p,45p,55p,50p
+Mathematics,Basic 3,Problem Solving,A rectangle has length 6 cm and width 2 cm. What is its perimeter?,multiple_choice,a,Perimeter = 2(6 + 2) = 2(8) = 16 cm.,medium,10,90,16 cm,14 cm,18 cm,20 cm
+Mathematics,Basic 3,Problem Solving,There are 15 students in a class. If 7 are girls how many are boys?,multiple_choice,b,15 - 7 = 8 boys.,easy,10,45,6,8,9,10
+Mathematics,Basic 3,Problem Solving,A car travels 20 km in 1 hour. How far will it travel in 2 hours?,multiple_choice,c,20 × 2 = 40 km.,medium,10,75,30 km,35 km,40 km,45 km
+Mathematics,Basic 3,Problem Solving,David has GH¢ 8. He spends GH¢ 3 on food and GH¢ 2 on books. How much is left?,multiple_choice,d,GH¢ 8 - GH¢ 3 - GH¢ 2 = GH¢ 3.,medium,10,90,GH¢ 2,GH¢ 4,GH¢ 5,GH¢ 3
+Mathematics,Basic 3,Problem Solving,A school has 4 classes with 10 students in each class. How many students are there in total?,multiple_choice,a,4 × 10 = 40 students.,medium,10,75,40,35,45,50
+Mathematics,Basic 3,Problem Solving,If 2 apples cost GH¢ 4 how much does 1 apple cost?,multiple_choice,b,GH¢ 4 ÷ 2 = GH¢ 2 per apple.,medium,10,75,GH¢ 1,GH¢ 2,GH¢ 3,GH¢ 6
+Mathematics,Basic 3,Simple Multiplication Tables,What is 3 × 4?,multiple_choice,c,3 × 4 = 12.,easy,10,30,10,11,12,15
+Mathematics,Basic 3,Simple Multiplication Tables,What is 5 × 6?,multiple_choice,d,5 × 6 = 30.,easy,10,30,25,28,32,30
+Mathematics,Basic 3,Simple Multiplication Tables,What is 4 × 7?,multiple_choice,b,4 × 7 = 28.,easy,10,30,24,28,32,35
+Mathematics,Basic 3,Simple Multiplication Tables,What is 6 × 5?,multiple_choice,a,6 × 5 = 30.,easy,10,30,30,35,40,25
+Mathematics,Basic 3,Simple Multiplication Tables,What is 2 × 8?,multiple_choice,c,2 × 8 = 16.,easy,10,30,14,15,16,18
+Mathematics,Basic 3,Simple Multiplication Tables,What is 7 × 3?,multiple_choice,b,7 × 3 = 21.,easy,10,30,18,21,24,28
+Mathematics,Basic 3,Simple Multiplication Tables,What is 4 × 4?,multiple_choice,d,4 × 4 = 16.,easy,10,30,12,14,15,16
+Mathematics,Basic 3,Simple Multiplication Tables,What is 5 × 5?,multiple_choice,a,5 × 5 = 25.,easy,10,30,25,30,35,20
+Mathematics,Basic 3,Simple Multiplication Tables,What is 6 × 6?,multiple_choice,c,6 × 6 = 36.,easy,10,30,30,35,36,42
+Mathematics,Basic 3,Simple Multiplication Tables,What is 8 × 3?,multiple_choice,b,8 × 3 = 24.,easy,10,30,21,24,27,32
+Mathematics,Basic 3,Division Facts,What is 12 ÷ 3?,multiple_choice,d,12 ÷ 3 = 4.,easy,10,30,2,3,5,4
+Mathematics,Basic 3,Division Facts,What is 15 ÷ 5?,multiple_choice,a,15 ÷ 5 = 3.,easy,10,30,3,4,5,6
+Mathematics,Basic 3,Division Facts,What is 20 ÷ 4?,multiple_choice,c,20 ÷ 4 = 5.,easy,10,30,4,6,5,8
+Mathematics,Basic 3,Division Facts,What is 18 ÷ 6?,multiple_choice,b,18 ÷ 6 = 3.,easy,10,30,2,3,4,6
+Mathematics,Basic 3,Division Facts,What is 21 ÷ 3?,multiple_choice,a,21 ÷ 3 = 7.,easy,10,30,7,6,8,9
+Mathematics,Basic 3,Division Facts,What is 24 ÷ 4?,multiple_choice,d,24 ÷ 4 = 6.,easy,10,30,5,7,8,6
+Mathematics,Basic 3,Division Facts,What is 16 ÷ 2?,multiple_choice,c,16 ÷ 2 = 8.,easy,10,30,6,7,8,9
+Mathematics,Basic 3,Division Facts,What is 25 ÷ 5?,multiple_choice,b,25 ÷ 5 = 5.,easy,10,30,4,5,6,7
+Mathematics,Basic 3,Division Facts,What is 30 ÷ 6?,multiple_choice,a,30 ÷ 6 = 5.,easy,10,30,5,6,7,8
+Mathematics,Basic 3,Division Facts,What is 28 ÷ 4?,multiple_choice,d,28 ÷ 4 = 7.,easy,10,30,6,8,9,7

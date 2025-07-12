@@ -31,6 +31,7 @@ urlpatterns = [
     path('questions/create/', views.CreateQuestionView.as_view(), name='create_question'),
     path('questions/<uuid:question_id>/edit/', views.EditQuestionView.as_view(), name='edit_question'),
     path('questions/<uuid:question_id>/delete/', views.DeleteQuestionView.as_view(), name='delete_question'),
+    path('questions/duplicates/', views.DuplicateQuestionsView.as_view(), name='duplicate_questions'),
 
     # Study Notes Management
     path('study-notes/', views.ManageStudyNotesView.as_view(), name='manage_study_notes'),
@@ -69,4 +70,6 @@ urlpatterns = [
     path('api/levels/', views.LevelsAPIView.as_view(), name='api_levels'),
     path('api/topics/', views.TopicsAPIView.as_view(), name='api_topics'),
     path('api/questions/', views.QuestionsAPIView.as_view(), name='api_questions'),
+    path('api/duplicates/detect/', views.DetectDuplicatesAPIView.as_view(), name='api_detect_duplicates'),
+    path('api/duplicates/delete/', views.DeleteDuplicatesAPIView.as_view(), name='api_delete_duplicates'),
 ]

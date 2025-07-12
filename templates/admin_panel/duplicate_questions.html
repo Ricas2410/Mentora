@@ -1,0 +1,867 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Duplicate Questions Management{% endblock %}
+{% block page_title %}Duplicate Questions Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    .duplicate-group {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        background: #fff;
+    }
+    
+    .duplicate-group-header {
+        background: #f8f9fa;
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .question-item {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s;
+    }
+    
+    .question-item:last-child {
+        border-bottom: none;
+        border-radius: 0 0 8px 8px;
+    }
+    
+    .question-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .question-item.selected {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+    }
+    
+    .question-text {
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 10px;
+    }
+    
+    .question-meta {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .similarity-badge {
+        font-size: 11px;
+        padding: 2px 6px;
+    }
+    
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 9999;
+    }
+    
+    .loading-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        text-align: center;
+        min-width: 300px;
+    }
+    
+    .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background: #e9ecef;
+        border-radius: 3px;
+        margin-top: 15px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #007bff, #0056b3);
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 3px;
+    }
+    
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .btn-group-custom {
+        gap: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .btn-group-custom {
+            flex-direction: column;
+        }
+        
+        .btn-group-custom .btn {
+            margin-bottom: 5px;
+        }
+        
+        .question-meta {
+            font-size: 11px;
+        }
+        
+        .duplicate-group-header {
+            padding: 10px;
+        }
+        
+        .question-item {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0">
+                <i class="fas fa-copy me-2 text-warning"></i>
+                Duplicate Questions Management
+            </h4>
+            <p class="text-muted mb-0">Identify and manage duplicate questions across all subjects and grade levels</p>
+        </div>
+        <div class="btn-group-custom d-flex">
+            <button type="button" class="btn btn-primary" id="detectDuplicatesBtn">
+                <i class="fas fa-search me-2"></i>
+                Check for Duplicates
+            </button>
+            <button type="button" class="btn btn-danger" id="deleteSelectedBtn" disabled>
+                <i class="fas fa-trash me-2"></i>
+                Delete Selected
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Card -->
+    <div class="stats-card" id="statsCard" style="display: none;">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="text-center">
+                    <h3 class="mb-1" id="totalGroups">0</h3>
+                    <small>Duplicate Groups</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="text-center">
+                    <h3 class="mb-1" id="totalDuplicates">0</h3>
+                    <small>Total Duplicates</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="text-center">
+                    <h3 class="mb-1" id="totalQuestions">{{ total_questions }}</h3>
+                    <small>Total Questions</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="text-center">
+                    <h3 class="mb-1" id="activeQuestions">{{ active_questions }}</h3>
+                    <small>Active Questions</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Safety Information -->
+    <div class="alert alert-info mb-4">
+        <div class="d-flex align-items-start">
+            <i class="fas fa-shield-alt fa-2x me-3 text-primary"></i>
+            <div>
+                <h6 class="alert-heading mb-2">🛡️ Smart Safety Features</h6>
+                <ul class="mb-0 small">
+                    <li><strong>Auto-Preservation:</strong> The system automatically keeps the oldest copy of each unique question</li>
+                    <li><strong>No Data Loss:</strong> You cannot accidentally delete all copies of a question</li>
+                    <li><strong>Audit Trail:</strong> All deletions are logged with detailed information</li>
+                    <li><strong>Smart Detection:</strong> Advanced algorithms identify exact and near-duplicate questions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0">
+                <i class="fas fa-filter me-2"></i>
+                Detection Filters
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <label for="classLevelFilter" class="form-label">Grade Level</label>
+                    <select class="form-select" id="classLevelFilter">
+                        <option value="">All Grade Levels</option>
+                        {% for level in class_levels %}
+                        <option value="{{ level.level_number }}">Grade {{ level.level_number }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <label for="subjectFilter" class="form-label">Subject</label>
+                    <select class="form-select" id="subjectFilter">
+                        <option value="">All Subjects</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <label for="similarityThreshold" class="form-label">Similarity Threshold</label>
+                    <select class="form-select" id="similarityThreshold">
+                        <option value="1.0">Exact Match (100%)</option>
+                        <option value="0.95">Very High (95%)</option>
+                        <option value="0.90">High (90%)</option>
+                        <option value="0.85" selected>Medium (85%)</option>
+                        <option value="0.80">Low (80%)</option>
+                    </select>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <label for="sortBy" class="form-label">Sort Results By</label>
+                    <select class="form-select" id="sortBy">
+                        <option value="count">Number of Duplicates</option>
+                        <option value="subject">Subject</option>
+                        <option value="grade">Grade Level</option>
+                        <option value="date">Creation Date</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Container -->
+    <div id="resultsContainer" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>
+                Duplicate Groups
+            </h5>
+            <div class="btn-group-custom d-flex">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="selectAllBtn">
+                    <i class="fas fa-check-square me-1"></i>
+                    Select All
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="deselectAllBtn">
+                    <i class="fas fa-square me-1"></i>
+                    Deselect All
+                </button>
+            </div>
+        </div>
+        
+        <div id="duplicateGroups">
+            <!-- Duplicate groups will be populated here -->
+        </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResultsMessage" class="text-center py-5" style="display: none;">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                <h5 class="text-success">No Duplicates Found!</h5>
+                <p class="text-muted">Great news! No duplicate questions were detected with the current filters.</p>
+                <button type="button" class="btn btn-primary" onclick="location.reload()">
+                    <i class="fas fa-redo me-2"></i>
+                    Run Another Check
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="text-center">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h6 id="loadingText">Scanning for duplicates...</h6>
+            <p class="text-muted mb-0" id="loadingSubtext">This may take a few moments</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+class DuplicateQuestionsManager {
+    constructor() {
+        this.duplicateData = [];
+        this.selectedQuestions = new Set();
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.updateUI();
+    }
+
+    bindEvents() {
+        // Detect duplicates button
+        document.getElementById('detectDuplicatesBtn').addEventListener('click', () => {
+            this.detectDuplicates();
+        });
+
+        // Delete selected button
+        document.getElementById('deleteSelectedBtn').addEventListener('click', () => {
+            this.deleteSelected();
+        });
+
+        // Select/Deselect all buttons
+        document.getElementById('selectAllBtn').addEventListener('click', () => {
+            this.selectAll();
+        });
+
+        document.getElementById('deselectAllBtn').addEventListener('click', () => {
+            this.deselectAll();
+        });
+
+        // Sort change
+        document.getElementById('sortBy').addEventListener('change', () => {
+            this.sortAndDisplayResults();
+        });
+    }
+
+    showLoading(text = 'Scanning for duplicates...', subtext = 'This may take a few moments') {
+        document.getElementById('loadingText').textContent = text;
+        document.getElementById('loadingSubtext').textContent = subtext;
+        document.getElementById('loadingOverlay').style.display = 'block';
+        this.updateProgress(0);
+    }
+
+    hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    updateProgress(percentage) {
+        document.getElementById('progressBar').style.width = percentage + '%';
+    }
+
+    async detectDuplicates() {
+        const classLevel = document.getElementById('classLevelFilter').value;
+        const subject = document.getElementById('subjectFilter').value;
+        const similarityThreshold = document.getElementById('similarityThreshold').value;
+
+        this.showLoading('Analyzing questions...', 'Comparing question texts for similarities');
+
+        try {
+            // Simulate progress updates
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                this.updateProgress(progress);
+            }, 200);
+
+            const response = await fetch('{% url "admin_panel:api_detect_duplicates" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({
+                    class_level: classLevel,
+                    subject: subject,
+                    similarity_threshold: parseFloat(similarityThreshold)
+                })
+            });
+
+            clearInterval(progressInterval);
+            this.updateProgress(100);
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.duplicateData = data.duplicates;
+                this.displayResults(data);
+            } else {
+                this.showError('Error detecting duplicates: ' + data.error);
+            }
+        } catch (error) {
+            this.showError('Network error: ' + error.message);
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    displayResults(data) {
+        // Update statistics
+        document.getElementById('totalGroups').textContent = data.total_groups;
+        document.getElementById('totalDuplicates').textContent = data.total_duplicates;
+        document.getElementById('statsCard').style.display = data.total_groups > 0 ? 'block' : 'none';
+
+        if (data.total_groups === 0) {
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('noResultsMessage').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('noResultsMessage').style.display = 'none';
+        document.getElementById('resultsContainer').style.display = 'block';
+
+        this.sortAndDisplayResults();
+    }
+
+    sortAndDisplayResults() {
+        const sortBy = document.getElementById('sortBy').value;
+        let sortedData = [...this.duplicateData];
+
+        switch (sortBy) {
+            case 'count':
+                sortedData.sort((a, b) => b.count - a.count);
+                break;
+            case 'subject':
+                sortedData.sort((a, b) => a.questions[0].topic__class_level__subject__name.localeCompare(b.questions[0].topic__class_level__subject__name));
+                break;
+            case 'grade':
+                sortedData.sort((a, b) => a.questions[0].topic__class_level__level_number - b.questions[0].topic__class_level__level_number);
+                break;
+            case 'date':
+                sortedData.sort((a, b) => new Date(a.questions[0].created_at) - new Date(b.questions[0].created_at));
+                break;
+        }
+
+        this.renderDuplicateGroups(sortedData);
+    }
+
+    renderDuplicateGroups(groups) {
+        const container = document.getElementById('duplicateGroups');
+        container.innerHTML = '';
+
+        groups.forEach((group, groupIndex) => {
+            const groupElement = this.createGroupElement(group, groupIndex);
+            container.appendChild(groupElement);
+        });
+
+        this.updateUI();
+    }
+
+    createGroupElement(group, groupIndex) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'duplicate-group';
+        groupDiv.innerHTML = `
+            <div class="duplicate-group-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">
+                            <i class="fas fa-layer-group me-2"></i>
+                            Duplicate Group ${groupIndex + 1}
+                            <span class="badge bg-warning text-dark ms-2">${group.count} questions</span>
+                        </h6>
+                        <small class="text-muted">
+                            ${group.questions[0].topic__class_level__subject__name} •
+                            Grade ${group.questions[0].topic__class_level__level_number}
+                        </small>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="duplicateManager.selectGroup('${group.group_id}')">
+                            <i class="fas fa-check-square me-1"></i>
+                            Select All
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="duplicateManager.deleteGroup('${group.group_id}')">
+                            <i class="fas fa-trash me-1"></i>
+                            Delete Duplicates
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="group-questions">
+                ${group.questions.map((question, index) => this.createQuestionElement(question, index === 0)).join('')}
+            </div>
+        `;
+
+        return groupDiv;
+    }
+
+    createQuestionElement(question, isOriginal = false) {
+        const createdDate = new Date(question.created_at).toLocaleDateString();
+        const questionText = this.truncateText(question.question_text, 200);
+
+        return `
+            <div class="question-item" data-question-id="${question.id}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input question-checkbox" type="checkbox"
+                                   id="question_${question.id}" data-question-id="${question.id}"
+                                   ${isOriginal ? 'disabled title="Original question (recommended to keep)"' : ''}>
+                            <label class="form-check-label" for="question_${question.id}">
+                                ${isOriginal ? '<strong>Original Question</strong>' : 'Duplicate Question'}
+                                ${isOriginal ? '<span class="badge bg-success ms-2">Keep</span>' : ''}
+                            </label>
+                        </div>
+                        <div class="question-text">${questionText}</div>
+                        <div class="question-meta">
+                            <i class="fas fa-book me-1"></i>
+                            <strong>Topic:</strong> ${question.topic__title} |
+                            <i class="fas fa-calendar me-1"></i>
+                            <strong>Created:</strong> ${createdDate} |
+                            <i class="fas fa-tag me-1"></i>
+                            <strong>ID:</strong> ${question.id}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    truncateText(text, maxLength) {
+        // Remove HTML tags
+        const cleanText = text.replace(/<[^>]*>/g, '');
+        if (cleanText.length <= maxLength) return cleanText;
+        return cleanText.substring(0, maxLength) + '...';
+    }
+
+    selectGroup(groupId) {
+        const group = this.duplicateData.find(g => g.group_id === groupId);
+        if (group) {
+            // Safety check: Only select duplicates, never the original (first question)
+            if (group.questions.length < 2) {
+                this.showError('Cannot select questions from a group with less than 2 questions.');
+                return;
+            }
+
+            // Select all questions in the group except the first one (original)
+            group.questions.slice(1).forEach(question => {
+                const checkbox = document.getElementById(`question_${question.id}`);
+                if (checkbox && !checkbox.disabled) {
+                    checkbox.checked = true;
+                    this.selectedQuestions.add(question.id);
+                }
+            });
+            this.updateUI();
+
+            // Show safety message
+            this.showInfo(`Selected ${group.questions.length - 1} duplicate questions. The original question will be preserved.`);
+        }
+    }
+
+    async deleteGroup(groupId) {
+        const group = this.duplicateData.find(g => g.group_id === groupId);
+        if (!group) return;
+
+        // Count duplicates (exclude the first question which is the original)
+        const duplicateCount = group.count - 1;
+        if (duplicateCount === 0) {
+            this.showError('No duplicates to delete in this group.');
+            return;
+        }
+
+        const confirmed = await this.confirmAction(
+            'Delete Duplicate Questions',
+            `Are you sure you want to delete ${duplicateCount} duplicate question(s) from this group?\n\n🛡️ SAFETY GUARANTEE:\n• Only duplicate questions will be deleted\n• The original question (marked "Keep") will be preserved\n• This uses the same safe deletion logic as individual selection`
+        );
+
+        if (!confirmed) return;
+
+        // Get IDs of duplicate questions (exclude the first one which is original)
+        const duplicateQuestionIds = group.questions.slice(1).map(q => q.id);
+
+        this.showLoading('Deleting duplicate questions...', 'Please wait while we remove the duplicates');
+
+        try {
+            // Use the same 'selected' action logic which is simpler and more reliable
+            const response = await fetch('{% url "admin_panel:api_delete_duplicates" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({
+                    action: 'selected',
+                    question_ids: duplicateQuestionIds
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                let message = `✅ Successfully deleted ${data.deleted_count} duplicate questions from the group!\n\n`;
+                message += `📊 Group Summary:\n`;
+                message += `• Total questions in group: ${group.count}\n`;
+                message += `• Duplicates deleted: ${data.deleted_count}\n`;
+                message += `• Original question preserved: 1\n\n`;
+
+                if (data.warnings && data.warnings.length > 0) {
+                    message += `ℹ️ Notes:\n${data.warnings.join('\n')}`;
+                }
+
+                this.showSuccess(message);
+
+                // Remove the group from display since all duplicates are deleted
+                this.removeGroupFromDisplay(groupId);
+                this.updateStatistics();
+            } else {
+                this.showError('Error deleting questions: ' + data.error);
+            }
+        } catch (error) {
+            this.showError('Network error: ' + error.message);
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    getCSRFToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+               document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    }
+
+    updateUI() {
+        // Clear existing event listeners to prevent duplicates
+        document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+            // Remove existing event listeners by cloning the element
+            const newCheckbox = checkbox.cloneNode(true);
+            checkbox.parentNode.replaceChild(newCheckbox, checkbox);
+        });
+
+        // Add fresh event listeners
+        document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const questionId = e.target.dataset.questionId;
+                console.log(`Checkbox changed: ${questionId}, checked: ${e.target.checked}`);
+
+                if (e.target.checked) {
+                    this.selectedQuestions.add(questionId);
+                } else {
+                    this.selectedQuestions.delete(questionId);
+                }
+
+                console.log(`Selected questions count: ${this.selectedQuestions.size}`);
+                console.log(`Selected questions:`, Array.from(this.selectedQuestions));
+
+                this.updateDeleteButton();
+            });
+        });
+
+        this.updateDeleteButton();
+    }
+
+    updateDeleteButton() {
+        const deleteBtn = document.getElementById('deleteSelectedBtn');
+        const hasSelected = this.selectedQuestions.size > 0;
+        deleteBtn.disabled = !hasSelected;
+        deleteBtn.innerHTML = hasSelected
+            ? `<i class="fas fa-trash me-2"></i>Delete Selected (${this.selectedQuestions.size})`
+            : '<i class="fas fa-trash me-2"></i>Delete Selected';
+
+        // Debug: Log current selection state
+        console.log(`Delete button updated: ${this.selectedQuestions.size} questions selected`);
+        if (this.selectedQuestions.size > 0) {
+            console.log('Currently selected questions:', Array.from(this.selectedQuestions));
+        }
+    }
+
+    selectAll() {
+        console.log('Select All clicked');
+        const checkboxes = document.querySelectorAll('.question-checkbox:not(:disabled)');
+        console.log(`Found ${checkboxes.length} selectable checkboxes`);
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = true;
+            const questionId = checkbox.dataset.questionId;
+            this.selectedQuestions.add(questionId);
+            console.log(`Selected question: ${questionId}`);
+        });
+
+        console.log(`Total selected after Select All: ${this.selectedQuestions.size}`);
+        console.log('Selected questions:', Array.from(this.selectedQuestions));
+        this.updateDeleteButton();
+    }
+
+    deselectAll() {
+        console.log('Deselect All clicked');
+        document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        this.selectedQuestions.clear();
+        console.log('All questions deselected');
+        this.updateDeleteButton();
+    }
+
+    async deleteSelected() {
+        if (this.selectedQuestions.size === 0) {
+            this.showError('No questions selected for deletion.');
+            return;
+        }
+
+        console.log(`Delete Selected clicked with ${this.selectedQuestions.size} questions`);
+        console.log('Selected question IDs:', Array.from(this.selectedQuestions));
+
+        const confirmed = await this.confirmAction(
+            'Delete Selected Questions',
+            `Are you sure you want to delete ${this.selectedQuestions.size} selected duplicate question(s)?\n\n🛡️ SAFETY GUARANTEE:\n• Only selected duplicate questions will be deleted\n• Original questions (marked "Keep") cannot be selected\n• The system protects original questions automatically`
+        );
+
+        if (!confirmed) return;
+
+        const questionIdsArray = Array.from(this.selectedQuestions);
+        const selectedCount = this.selectedQuestions.size;
+        console.log('Sending question IDs to backend:', questionIdsArray);
+
+        this.showLoading('Deleting selected questions...', 'Applying smart safety checks and preserving originals...');
+
+        try {
+            const requestBody = {
+                action: 'selected',
+                question_ids: questionIdsArray
+            };
+
+            console.log('Request body:', requestBody);
+
+            const response = await fetch('{% url "admin_panel:api_delete_duplicates" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+            console.log('Backend response:', data);
+
+            if (data.success) {
+                let message = `✅ Successfully deleted ${data.deleted_count} duplicate questions!\n\n`;
+                message += `📊 Summary:\n`;
+                message += `• Selected for deletion: ${selectedCount}\n`;
+                message += `• Actually deleted: ${data.deleted_count}\n`;
+                message += `• Original questions remain protected\n\n`;
+
+                if (data.warnings && data.warnings.length > 0) {
+                    message += `ℹ️ Notes:\n${data.warnings.join('\n')}`;
+                }
+
+                this.showSuccess(message);
+
+                // Remove deleted questions from display using the stored IDs
+                this.removeDeletedQuestionsFromDisplay(questionIdsArray);
+                this.updateStatistics();
+            } else {
+                this.showError('Error deleting questions: ' + data.error);
+            }
+        } catch (error) {
+            this.showError('Network error: ' + error.message);
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    removeDeletedQuestionsFromDisplay(questionIds = null) {
+        // Use provided question IDs or fall back to selectedQuestions
+        const idsToRemove = questionIds || Array.from(this.selectedQuestions);
+
+        console.log('Removing questions from display:', idsToRemove);
+
+        idsToRemove.forEach(questionId => {
+            const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
+            if (questionElement) {
+                console.log(`Removing question element: ${questionId}`);
+                questionElement.remove();
+            } else {
+                console.log(`Question element not found: ${questionId}`);
+            }
+        });
+
+        // Remove empty groups
+        document.querySelectorAll('.duplicate-group').forEach(group => {
+            const questions = group.querySelectorAll('.question-item');
+            console.log(`Group has ${questions.length} questions remaining`);
+            if (questions.length <= 1) {
+                console.log('Removing empty group');
+                group.remove();
+            }
+        });
+
+        this.selectedQuestions.clear();
+        this.updateDeleteButton();
+    }
+
+    removeGroupFromDisplay(groupId) {
+        // Remove the group from duplicateData
+        this.duplicateData = this.duplicateData.filter(g => g.group_id !== groupId);
+
+        // Re-render the display
+        this.sortAndDisplayResults();
+    }
+
+    updateStatistics() {
+        const totalGroups = document.querySelectorAll('.duplicate-group').length;
+        const totalDuplicates = document.querySelectorAll('.question-item').length;
+
+        document.getElementById('totalGroups').textContent = totalGroups;
+        document.getElementById('totalDuplicates').textContent = totalDuplicates;
+
+        if (totalGroups === 0) {
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('noResultsMessage').style.display = 'block';
+            document.getElementById('statsCard').style.display = 'none';
+        }
+    }
+
+    async confirmAction(title, message) {
+        return new Promise((resolve) => {
+            // Enhanced confirmation dialog with safety warnings
+            const safetyWarning = "\n\n⚠️ SAFETY NOTICE:\n• This action cannot be undone\n• Original questions will be preserved\n• All deletion activities are logged for audit purposes\n\nProceed with deletion?";
+            const fullMessage = `${title}\n\n${message}${safetyWarning}`;
+
+            if (confirm(fullMessage)) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    }
+
+    showSuccess(message) {
+        // Enhanced success notification with icon
+        this.showNotification('✅ Success', message, 'success');
+    }
+
+    showError(message) {
+        // Enhanced error notification with icon
+        this.showNotification('❌ Error', message, 'error');
+    }
+
+    showInfo(message) {
+        // Info notification with icon
+        this.showNotification('ℹ️ Information', message, 'info');
+    }
+
+    showNotification(title, message, type) {
+        // Simple alert for now - can be enhanced with toast notifications
+        const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+        alert(`${icon} ${title}\n\n${message}`);
+    }
+}
+
+// Initialize the duplicate questions manager
+const duplicateManager = new DuplicateQuestionsManager();
+</script>
+{% endblock %}

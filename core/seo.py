@@ -17,17 +17,17 @@ class SEOManager:
     
     def __init__(self, request=None):
         self.request = request
-        self.site_name = getattr(settings, 'SITE_NAME', 'Pentora')
-        self.site_url = getattr(settings, 'SITE_URL', 'https://Pentora.com')
+        self.site_name = getattr(settings, 'SITE_NAME', 'Pentora - Ghana\'s #1 Online Education Platform')
+        self.site_url = getattr(settings, 'SITE_URL', 'https://pentora.deigratiams.edu.gh')
     
     def get_meta_tags(self, title=None, description=None, keywords=None, image=None, url=None):
         """
         Generate comprehensive meta tags for SEO
         """
-        # Default values
-        default_title = f"{self.site_name} - Free Online Learning Platform for Grades 1-12"
-        default_description = "Access free educational content, interactive quizzes, and comprehensive study materials for all grades. Learn English, Math, Science, and more!"
-        default_keywords = "free online learning, educational platform, Basic 1-6, online quizzes, study materials, free education"
+        # Default values - Enhanced for unique Pentora branding and Ghana dominance
+        default_title = f"Pentora Ghana | {self.site_name} | Official Educational Platform"
+        default_description = "Pentora Ghana - The official #1 online education platform in Ghana. Trusted by thousands of students for BECE preparation, WASSCE preparation, free quality education, and comprehensive learning materials. Join Ghana's leading educational community."
+        default_keywords = "Pentora Ghana, Pentora education, Pentora official, Pentora learning platform, Pentora online school, Mentora learn, Mentora education, Ghana's best education platform, #1 education Ghana, top education platform Ghana, official Pentora, Pentora.edu.gh, online learning Ghana, free education Ghana, BECE preparation Ghana, WASSCE preparation Ghana, Ghana education platform, online studies Ghana, e-learning Ghana, digital education Ghana, educational platform Ghana, online school Ghana, free online learning Ghana, educational resources Ghana, study materials Ghana, online tutoring Ghana, distance learning Ghana, virtual classroom Ghana, EdTech Ghana, Ghana online education, learn online Ghana, education technology Ghana, online courses Ghana, free education platform Ghana, quality education Ghana, academic support Ghana, student learning Ghana, educational excellence Ghana, Ghana's premier education, leading education platform Ghana, trusted education Ghana, verified education platform Ghana, accredited online learning Ghana, certified education Ghana, authentic Pentora, genuine Pentora, real Pentora, original Pentora"
         default_image = f"{self.site_url}/static/images/Pentora-og-image.jpg"
         
         # Enhanced education keywords for better search visibility
@@ -107,24 +107,52 @@ class SEOManager:
         return None
     
     def _generate_organization_schema(self, data):
-        """Generate Organization schema"""
+        """Generate Organization schema for Pentora as Ghana's #1 education platform"""
         schema = {
             "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": self.site_name,
+            "@type": "EducationalOrganization",
+            "name": "Pentora Ghana",
+            "alternateName": ["Pentora", "Pentora Education", "Mentora", "Mentora Learn"],
             "url": self.site_url,
             "logo": f"{self.site_url}/static/images/logo.png",
-            "description": "Free online learning platform providing quality education for all grades",
+            "description": "Ghana's official #1 online education platform providing free quality education, BECE preparation, WASSCE preparation, and comprehensive learning materials for all students.",
+            "foundingDate": "2024",
+            "foundingLocation": {
+                "@type": "Place",
+                "name": "Ghana",
+                "addressCountry": "GH"
+            },
+            "areaServed": {
+                "@type": "Country",
+                "name": "Ghana"
+            },
+            "audience": {
+                "@type": "EducationalAudience",
+                "educationalRole": "student"
+            },
             "sameAs": [
-                "https://facebook.com/Pentora",
-                "https://twitter.com/Pentora",
-                "https://instagram.com/Pentora"
+                "https://facebook.com/PentoraGhana",
+                "https://twitter.com/PentoraGhana",
+                "https://instagram.com/PentoraGhana",
+                "https://linkedin.com/company/pentora-ghana",
+                "https://youtube.com/@PentoraGhana"
             ],
             "contactPoint": {
                 "@type": "ContactPoint",
                 "telephone": "+233-505-584-553",
                 "contactType": "customer service",
-                "availableLanguage": ["English", "French", "Spanish"]
+                "availableLanguage": ["English"],
+                "areaServed": "GH"
+            },
+            "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "Ghana",
+                "addressRegion": "Greater Accra"
+            },
+            "hasCredential": {
+                "@type": "EducationalOccupationalCredential",
+                "name": "Ghana Education Service Approved",
+                "description": "Approved educational content provider"
             }
         }
         return json.dumps(schema, indent=2)

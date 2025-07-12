@@ -30,8 +30,7 @@ class PentoraUXEnhancements {
         // Add ARIA labels where missing
         this.addAriaLabels();
         
-        // Setup high contrast mode toggle
-        this.setupHighContrastMode();
+        // High contrast mode toggle removed
     }
 
     addSkipLinks() {
@@ -105,42 +104,7 @@ class PentoraUXEnhancements {
         return iconLabels[iconClass] || null;
     }
 
-    setupHighContrastMode() {
-        const toggleButton = document.createElement('button');
-        toggleButton.innerHTML = '<i class="fas fa-adjust"></i>';
-        toggleButton.className = 'fixed bottom-4 left-4 bg-gray-800 text-white p-3 rounded-full shadow-lg z-50 hover:bg-gray-700 transition-colors';
-        toggleButton.setAttribute('aria-label', 'Toggle high contrast mode');
-        toggleButton.title = 'Toggle high contrast mode';
-        
-        toggleButton.addEventListener('click', () => {
-            document.body.classList.toggle('high-contrast');
-            const isHighContrast = document.body.classList.contains('high-contrast');
-            localStorage.setItem('high-contrast', isHighContrast);
-        });
 
-        // Restore saved preference
-        if (localStorage.getItem('high-contrast') === 'true') {
-            document.body.classList.add('high-contrast');
-        }
-
-        document.body.appendChild(toggleButton);
-
-        // Add high contrast styles
-        const highContrastStyles = document.createElement('style');
-        highContrastStyles.textContent = `
-            .high-contrast {
-                filter: contrast(150%) brightness(110%);
-            }
-            .high-contrast img {
-                filter: contrast(120%);
-            }
-            .high-contrast .text-gray-500,
-            .high-contrast .text-gray-600 {
-                color: #000 !important;
-            }
-        `;
-        document.head.appendChild(highContrastStyles);
-    }
 
     setupInteractiveElements() {
         // Add loading states to buttons
@@ -517,9 +481,8 @@ class PentoraUXEnhancements {
     }
 
     setupScrollEnhancements() {
-        // Add scroll-to-top button
-        this.addScrollToTopButton();
-        
+        // Scroll-to-top button removed
+
         // Add scroll progress indicator
         this.addScrollProgressIndicator();
     }

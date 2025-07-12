@@ -1,0 +1,161 @@
+subject_name,class_level_name,topic_title,question_text,question_type,correct_answer,explanation,difficulty,points,time_limit,choice_a,choice_b,choice_c,choice_d
+Mathematics,Basic 5,Number and Numeration,What is the place value of 6 in 3642?,multiple_choice,c,In 3642 the digit 6 is in the hundreds place so its place value is 600.,medium,10,60,6,60,600,6000
+Mathematics,Basic 5,Number and Numeration,Write 2000 + 400 + 30 + 5 in standard form.,multiple_choice,b,Adding the place values: 2000 + 400 + 30 + 5 = 2435.,easy,10,45,2345,2435,2534,2543
+Mathematics,Basic 5,Number and Numeration,What is the value of the digit 8 in 1847?,multiple_choice,a,The digit 8 is in the hundreds place so its value is 800.,medium,10,60,800,80,8,8000
+Mathematics,Basic 5,Number and Numeration,Round 2367 to the nearest ten.,multiple_choice,c,2367 rounded to the nearest ten is 2370 because 7 ≥ 5.,medium,10,75,2360,2365,2370,2400
+Mathematics,Basic 5,Number and Numeration,Which number comes next: 15 20 25 30 ___?,multiple_choice,d,The sequence increases by 5 each time so 30 + 5 = 35.,easy,10,45,32,33,34,35
+Mathematics,Basic 5,Number and Numeration,What is the largest 3-digit number you can make with 4 7 2?,multiple_choice,a,To make the largest number arrange digits in descending order: 742.,medium,10,75,742,724,472,427
+Mathematics,Basic 5,Number and Numeration,Compare: 2345 ___ 2354,multiple_choice,b,2345 is less than 2354 because 45 < 54 in the last two digits.,easy,10,45,>,<,=,≥
+Mathematics,Basic 5,Number and Numeration,What is 1000 + 200 + 30 + 4 in words?,multiple_choice,c,1234 in words is one thousand two hundred and thirty-four.,medium,10,90,One thousand two hundred thirty-four,One thousand two hundred four,One thousand two hundred and thirty-four,One thousand two thirty-four
+Mathematics,Basic 5,Number and Numeration,Which is the smallest: 1234 1243 1324 1342?,multiple_choice,a,Comparing from left to right 1234 is the smallest.,medium,10,75,1234,1243,1324,1342
+Mathematics,Basic 5,Number and Numeration,What is the expanded form of 3456?,multiple_choice,d,3456 = 3000 + 400 + 50 + 6 in expanded form.,medium,10,75,3000 + 400 + 5 + 6,3000 + 40 + 50 + 6,300 + 400 + 50 + 6,3000 + 400 + 50 + 6
+Mathematics,Basic 5,Basic Operations,What is 234 + 567?,multiple_choice,c,Adding: 234 + 567 = 801.,easy,10,60,791,800,801,811
+Mathematics,Basic 5,Basic Operations,Find: 800 - 345,multiple_choice,b,Subtracting: 800 - 345 = 455.,medium,10,75,445,455,465,555
+Mathematics,Basic 5,Basic Operations,What is 24 × 13?,multiple_choice,d,Multiplying: 24 × 13 = 312.,medium,10,90,302,310,315,312
+Mathematics,Basic 5,Basic Operations,Calculate: 96 ÷ 8,multiple_choice,a,Dividing: 96 ÷ 8 = 12.,easy,10,60,12,14,16,18
+Mathematics,Basic 5,Basic Operations,What is 15 × 6?,multiple_choice,c,Multiplying: 15 × 6 = 90.,easy,10,45,80,85,90,95
+Mathematics,Basic 5,Basic Operations,Find: 456 + 234 + 110,multiple_choice,b,Adding: 456 + 234 + 110 = 800.,medium,10,90,790,800,810,820
+Mathematics,Basic 5,Basic Operations,What is 1000 - 567?,multiple_choice,d,Subtracting: 1000 - 567 = 433.,medium,10,75,423,443,453,433
+Mathematics,Basic 5,Basic Operations,Calculate: 18 × 15,multiple_choice,a,Multiplying: 18 × 15 = 270.,medium,10,90,270,260,280,250
+Mathematics,Basic 5,Basic Operations,What is 144 ÷ 12?,multiple_choice,c,Dividing: 144 ÷ 12 = 12.,medium,10,75,10,11,12,14
+Mathematics,Basic 5,Basic Operations,Find the sum of 123 and 456.,multiple_choice,b,Sum means addition: 123 + 456 = 579.,medium,10,60,569,579,589,599
+Mathematics,Basic 5,Fractions,What fraction of the shape is shaded if 2 out of 6 parts are shaded?,multiple_choice,c,If 2 out of 6 parts are shaded the fraction is 2/6 = 1/3.,medium,10,75,2/4,1/2,1/3,2/3
+Mathematics,Basic 5,Fractions,Which fraction is equivalent to 2/4?,multiple_choice,a,2/4 = 1/2 when simplified by dividing both parts by 2.,medium,10,60,1/2,1/3,2/3,3/4
+Mathematics,Basic 5,Fractions,What is 1/3 + 1/3?,multiple_choice,b,Adding fractions with same denominator: 1/3 + 1/3 = 2/3.,medium,10,60,1/3,2/3,1/6,3/3
+Mathematics,Basic 5,Fractions,Which is larger: 1/2 or 1/4?,multiple_choice,a,1/2 is larger than 1/4 because 2 parts out of 4 is more than 1 part out of 4.,medium,10,75,1/2,1/4,They are equal,Cannot tell
+Mathematics,Basic 5,Fractions,What is 3/5 - 1/5?,multiple_choice,c,Subtracting fractions with same denominator: 3/5 - 1/5 = 2/5.,medium,10,60,1/5,3/5,2/5,4/5
+Mathematics,Basic 5,Fractions,What fraction of 12 is 3?,multiple_choice,d,3 out of 12 is 3/12 = 1/4 when simplified.,medium,10,75,1/3,1/2,3/4,1/4
+Mathematics,Basic 5,Fractions,Simplify: 4/8,multiple_choice,a,4/8 = 1/2 when both numerator and denominator are divided by 4.,medium,10,60,1/2,2/4,4/8,8/4
+Mathematics,Basic 5,Fractions,What is 1/2 of 16?,multiple_choice,c,1/2 of 16 = 16 ÷ 2 = 8.,easy,10,45,6,7,8,9
+Mathematics,Basic 5,Fractions,Which fraction is closest to 1/2?,multiple_choice,b,3/6 = 1/2 exactly so it's closest to 1/2.,medium,10,75,1/4,3/6,1/8,1/3
+Mathematics,Basic 5,Fractions,What is 1/4 + 1/4 + 1/4?,multiple_choice,c,Adding: 1/4 + 1/4 + 1/4 = 3/4.,medium,10,75,1/4,2/4,3/4,4/4
+Mathematics,Basic 5,Decimals,What is 0.3 as a fraction?,multiple_choice,b,0.3 = 3/10 as a fraction.,medium,10,60,1/3,3/10,1/10,3/1
+Mathematics,Basic 5,Decimals,Which is larger: 0.5 or 0.05?,multiple_choice,a,0.5 is larger than 0.05 because 0.5 = 0.50 and 50 > 5.,medium,10,60,0.5,0.05,They are equal,Cannot tell
+Mathematics,Basic 5,Decimals,What is 2.4 + 1.3?,multiple_choice,c,Adding decimals: 2.4 + 1.3 = 3.7.,easy,10,60,3.1,3.5,3.7,4.7
+Mathematics,Basic 5,Decimals,Round 3.67 to 1 decimal place.,multiple_choice,b,3.67 rounded to 1 decimal place is 3.7 because 7 ≥ 5.,medium,10,75,3.6,3.7,3.8,4.0
+Mathematics,Basic 5,Decimals,What is 4.0 - 1.6?,multiple_choice,d,Subtracting decimals: 4.0 - 1.6 = 2.4.,medium,10,60,2.0,2.2,2.3,2.4
+Mathematics,Basic 5,Decimals,Convert 1/2 to a decimal.,multiple_choice,c,1/2 = 1 ÷ 2 = 0.5.,medium,10,75,0.2,0.25,0.5,1.2
+Mathematics,Basic 5,Decimals,What is 0.2 + 0.3?,multiple_choice,a,Adding decimals: 0.2 + 0.3 = 0.5.,easy,10,45,0.5,0.23,0.6,1.0
+Mathematics,Basic 5,Decimals,Which decimal is equivalent to 5/10?,multiple_choice,b,5/10 = 0.5 as a decimal.,easy,10,45,0.05,0.5,5.0,50
+Mathematics,Basic 5,Decimals,What is 1.2 × 2?,multiple_choice,c,Multiplying: 1.2 × 2 = 2.4.,medium,10,60,2.2,2.3,2.4,2.6
+Mathematics,Basic 5,Decimals,Order from smallest to largest: 0.2 0.02 0.22,multiple_choice,d,Ordering: 0.02 < 0.2 < 0.22.,medium,10,90,0.2 0.02 0.22,0.22 0.2 0.02,0.2 0.22 0.02,0.02 0.2 0.22
+Mathematics,Basic 5,Percentages,What is 25% as a fraction?,multiple_choice,c,25% = 25/100 = 1/4 when simplified.,medium,10,60,1/5,1/3,1/4,2/5
+Mathematics,Basic 5,Percentages,What is 50% of 20?,multiple_choice,b,50% of 20 = 50/100 × 20 = 10.,easy,10,45,5,10,15,20
+Mathematics,Basic 5,Percentages,Convert 0.5 to a percentage.,multiple_choice,c,0.5 = 50/100 = 50%.,medium,10,60,5%,25%,50%,500%
+Mathematics,Basic 5,Percentages,What percentage is 1/5?,multiple_choice,a,1/5 = 20/100 = 20%.,medium,10,60,20%,25%,40%,50%
+Mathematics,Basic 5,Percentages,What is 10% of 30?,multiple_choice,a,10% of 30 = 10/100 × 30 = 3.,easy,10,45,3,6,10,30
+Mathematics,Basic 5,Percentages,If 10 out of 50 students are absent what percentage are present?,multiple_choice,d,If 10 are absent then 40 are present. 40/50 = 80%.,medium,10,90,20%,60%,70%,80%
+Mathematics,Basic 5,Percentages,What is 100% as a fraction?,multiple_choice,c,100% = 100/100 = 1.,easy,10,45,1/10,1/100,1,10
+Mathematics,Basic 5,Percentages,What percentage is 2/5?,multiple_choice,b,2/5 = 40/100 = 40%.,medium,10,75,30%,40%,50%,60%
+Mathematics,Basic 5,Percentages,What is 25% of 40?,multiple_choice,a,25% of 40 = 25/100 × 40 = 10.,medium,10,60,10,15,20,25
+Mathematics,Basic 5,Percentages,Convert 20% to a decimal.,multiple_choice,c,20% = 20/100 = 0.20 = 0.2.,medium,10,60,0.02,0.002,0.2,2.0
+Mathematics,Basic 5,Measurement - Length,How many centimeters are in 1 meter?,multiple_choice,c,1 meter = 100 centimeters.,easy,10,30,10,50,100,1000
+Mathematics,Basic 5,Measurement - Length,What is 150 cm in meters?,multiple_choice,b,150 cm = 150 ÷ 100 = 1.5 meters.,medium,10,60,1.05 m,1.5 m,15 m,150 m
+Mathematics,Basic 5,Measurement - Length,How many millimeters are in 3 cm?,multiple_choice,d,3 cm = 3 × 10 = 30 millimeters.,medium,10,45,3 mm,10 mm,20 mm,30 mm
+Mathematics,Basic 5,Measurement - Length,Which is longer: 1.2 m or 110 cm?,multiple_choice,a,1.2 m = 120 cm which is longer than 110 cm.,medium,10,75,1.2 m,110 cm,They are equal,Cannot tell
+Mathematics,Basic 5,Measurement - Length,What is the perimeter of a rectangle with length 6 cm and width 4 cm?,multiple_choice,c,Perimeter = 2(length + width) = 2(6 + 4) = 20 cm.,medium,10,75,16 cm,18 cm,20 cm,24 cm
+Mathematics,Basic 5,Measurement - Length,How many meters are in 2 kilometers?,multiple_choice,d,2 kilometers = 2 × 1000 = 2000 meters.,medium,10,60,20 m,200 m,20000 m,2000 m
+Mathematics,Basic 5,Measurement - Length,What is 45 mm in centimeters?,multiple_choice,b,45 mm = 45 ÷ 10 = 4.5 cm.,medium,10,60,0.45 cm,4.5 cm,45 cm,450 cm
+Mathematics,Basic 5,Measurement - Length,Find the perimeter of a square with side 5 cm.,multiple_choice,a,Perimeter of square = 4 × side = 4 × 5 = 20 cm.,easy,10,60,20 cm,15 cm,25 cm,10 cm
+Mathematics,Basic 5,Measurement - Length,Which unit is best for measuring the height of a person?,multiple_choice,b,Meters or centimeters are appropriate for measuring human height.,easy,10,45,Millimeters,Meters,Kilometers,Inches
+Mathematics,Basic 5,Measurement - Length,What is 1.8 m + 25 cm in centimeters?,multiple_choice,c,1.8 m = 180 cm so 180 cm + 25 cm = 205 cm.,hard,15,90,195 cm,200 cm,205 cm,210 cm
+Mathematics,Basic 5,Measurement - Mass,How many grams are in 1 kilogram?,multiple_choice,d,1 kilogram = 1000 grams.,easy,10,30,10,100,500,1000
+Mathematics,Basic 5,Measurement - Mass,What is 1500 g in kilograms?,multiple_choice,b,1500 g = 1500 ÷ 1000 = 1.5 kg.,medium,10,60,1.05 kg,1.5 kg,15 kg,150 kg
+Mathematics,Basic 5,Measurement - Mass,Which is heavier: 1.3 kg or 1250 g?,multiple_choice,a,1.3 kg = 1300 g which is heavier than 1250 g.,medium,10,75,1.3 kg,1250 g,They are equal,Cannot tell
+Mathematics,Basic 5,Measurement - Mass,What is 500 g + 300 g?,multiple_choice,c,500 g + 300 g = 800 g.,easy,10,45,600 g,700 g,800 g,900 g
+Mathematics,Basic 5,Measurement - Mass,How many grams are in 0.8 kg?,multiple_choice,b,0.8 kg = 0.8 × 1000 = 800 g.,medium,10,60,80 g,800 g,8000 g,80000 g
+Mathematics,Basic 5,Measurement - Mass,Which unit is best for measuring the mass of an apple?,multiple_choice,c,Grams are the most appropriate unit for measuring an apple's mass.,easy,10,45,Kilograms,Tonnes,Grams,Milligrams
+Mathematics,Basic 5,Measurement - Mass,What is 2 kg - 300 g in grams?,multiple_choice,d,2 kg = 2000 g so 2000 g - 300 g = 1700 g.,medium,10,75,1400 g,1600 g,1800 g,1700 g
+Mathematics,Basic 5,Measurement - Mass,Convert 2.4 kg to grams.,multiple_choice,a,2.4 kg = 2.4 × 1000 = 2400 g.,medium,10,60,2400 g,240 g,24 g,24000 g
+Mathematics,Basic 5,Measurement - Mass,What is the total mass of 4 books each weighing 200 g?,multiple_choice,b,Total mass = 4 × 200 g = 800 g.,medium,10,60,600 g,800 g,1000 g,1200 g
+Mathematics,Basic 5,Measurement - Mass,How many 250 g packets can be made from 2 kg of rice?,multiple_choice,c,2 kg = 2000 g. Number of packets = 2000 ÷ 250 = 8.,medium,10,90,6,7,8,9
+Mathematics,Basic 5,Measurement - Capacity,How many milliliters are in 1 liter?,multiple_choice,d,1 liter = 1000 milliliters.,easy,10,30,10,100,500,1000
+Mathematics,Basic 5,Measurement - Capacity,What is 1200 ml in liters?,multiple_choice,b,1200 ml = 1200 ÷ 1000 = 1.2 liters.,medium,10,60,1.02 L,1.2 L,12 L,120 L
+Mathematics,Basic 5,Measurement - Capacity,Which is more: 1.8 L or 1750 ml?,multiple_choice,a,1.8 L = 1800 ml which is more than 1750 ml.,medium,10,75,1.8 L,1750 ml,They are equal,Cannot tell
+Mathematics,Basic 5,Measurement - Capacity,What is 600 ml + 400 ml?,multiple_choice,c,600 ml + 400 ml = 1000 ml = 1 L.,easy,10,45,800 ml,900 ml,1000 ml,1100 ml
+Mathematics,Basic 5,Measurement - Capacity,How many 200 ml cups can be filled from 1.5 liters of juice?,multiple_choice,c,1.5 L = 1500 ml. Number of cups = 1500 ÷ 200 = 7.5 ≈ 7 full cups.,medium,10,90,6,7,7,8
+Mathematics,Basic 5,Measurement - Capacity,Which unit is best for measuring the capacity of a small bottle?,multiple_choice,b,Milliliters are the most appropriate unit for a small bottle.,easy,10,45,Liters,Milliliters,Kiloliters,Centiliters
+Mathematics,Basic 5,Measurement - Capacity,What is 2 L - 300 ml in milliliters?,multiple_choice,d,2 L = 2000 ml so 2000 ml - 300 ml = 1700 ml.,medium,10,75,1400 ml,1600 ml,1800 ml,1700 ml
+Mathematics,Basic 5,Measurement - Capacity,Convert 0.6 L to milliliters.,multiple_choice,c,0.6 L = 0.6 × 1000 = 600 ml.,medium,10,60,60 ml,6 ml,600 ml,6000 ml
+Mathematics,Basic 5,Measurement - Capacity,What is the total capacity of 3 bottles each holding 400 ml?,multiple_choice,b,Total capacity = 3 × 400 ml = 1200 ml = 1.2 L.,medium,10,75,1 L,1.2 L,1.5 L,2 L
+Mathematics,Basic 5,Measurement - Capacity,How many liters are in 2500 ml?,multiple_choice,a,2500 ml = 2500 ÷ 1000 = 2.5 L.,medium,10,60,2.5 L,25 L,250 L,0.25 L
+Mathematics,Basic 5,Measurement - Time,How many minutes are in 1 hour?,multiple_choice,c,1 hour = 60 minutes.,easy,10,30,30,50,60,100
+Mathematics,Basic 5,Measurement - Time,What is 1 hour 45 minutes in minutes?,multiple_choice,d,1 hour = 60 minutes so 60 + 45 = 105 minutes.,medium,10,75,95 min,100 min,110 min,105 min
+Mathematics,Basic 5,Measurement - Time,How many seconds are in 2 minutes?,multiple_choice,b,2 minutes = 2 × 60 = 120 seconds.,medium,10,60,100 sec,120 sec,140 sec,200 sec
+Mathematics,Basic 5,Measurement - Time,What time is 30 minutes after 1:45?,multiple_choice,c,1:45 + 30 minutes = 2:15.,medium,10,75,2:00,2:10,2:15,2:30
+Mathematics,Basic 5,Measurement - Time,How many hours are in 1 day?,multiple_choice,a,1 day = 24 hours.,easy,10,30,24,12,48,60
+Mathematics,Basic 5,Measurement - Time,What is 75 minutes in hours and minutes?,multiple_choice,b,75 minutes = 1 hour 15 minutes.,medium,10,75,1 hour 5 minutes,1 hour 15 minutes,1 hour 25 minutes,1 hour 30 minutes
+Mathematics,Basic 5,Measurement - Time,If a class starts at 8:30 AM and lasts 1 hour 30 minutes what time does it end?,multiple_choice,d,8:30 AM + 1 hour 30 minutes = 10:00 AM.,medium,10,75,9:30 AM,9:45 AM,9:60 AM,10:00 AM
+Mathematics,Basic 5,Measurement - Time,How many days are in 3 weeks?,multiple_choice,c,3 weeks = 3 × 7 = 21 days.,easy,10,45,18,20,21,24
+Mathematics,Basic 5,Measurement - Time,What is the duration from 9:20 AM to 11:50 AM?,multiple_choice,a,From 9:20 AM to 11:50 AM is 2 hours 30 minutes.,medium,10,90,2 hours 30 minutes,2 hours 20 minutes,3 hours,3 hours 30 minutes
+Mathematics,Basic 5,Measurement - Time,How many minutes are in quarter of an hour?,multiple_choice,b,Quarter of an hour = 15 minutes.,easy,10,30,10,15,20,30
+Mathematics,Basic 5,Geometry - Shapes,How many sides does a triangle have?,multiple_choice,c,A triangle has 3 sides.,easy,10,30,2,4,3,5
+Mathematics,Basic 5,Geometry - Shapes,What is a quadrilateral?,multiple_choice,b,A quadrilateral is a shape with 4 sides.,easy,10,45,Shape with 3 sides,Shape with 4 sides,Shape with 5 sides,Shape with 6 sides
+Mathematics,Basic 5,Geometry - Shapes,How many corners does a rectangle have?,multiple_choice,d,A rectangle has 4 corners (vertices).,easy,10,45,2,3,5,4
+Mathematics,Basic 5,Geometry - Shapes,What is the name of a 5-sided shape?,multiple_choice,a,A 5-sided shape is called a pentagon.,medium,10,60,Pentagon,Hexagon,Octagon,Decagon
+Mathematics,Basic 5,Geometry - Shapes,How many sides does a hexagon have?,multiple_choice,c,A hexagon has 6 sides.,medium,10,45,4,5,6,8
+Mathematics,Basic 5,Geometry - Shapes,What type of angle is 90 degrees?,multiple_choice,b,A 90-degree angle is a right angle.,medium,10,60,Acute angle,Right angle,Obtuse angle,Straight angle
+Mathematics,Basic 5,Geometry - Shapes,Which shape has all sides equal and all angles equal?,multiple_choice,d,A square has all sides equal and all angles equal (90 degrees).,easy,10,60,Rectangle,Triangle,Circle,Square
+Mathematics,Basic 5,Geometry - Shapes,How many sides does an octagon have?,multiple_choice,c,An octagon has 8 sides.,medium,10,45,6,7,8,9
+Mathematics,Basic 5,Geometry - Shapes,What is a line of symmetry?,multiple_choice,a,A line of symmetry divides a shape into two identical halves.,medium,10,90,Line that divides shape into identical halves,Any straight line,Line around the shape,Line through the center
+Mathematics,Basic 5,Geometry - Shapes,Which angle is less than 90 degrees?,multiple_choice,a,An acute angle is less than 90 degrees.,medium,10,75,Acute angle,Right angle,Obtuse angle,Straight angle
+Mathematics,Basic 5,Geometry - Area and Perimeter,What is the area of a rectangle with length 5 cm and width 3 cm?,multiple_choice,c,Area of rectangle = length × width = 5 × 3 = 15 cm².,medium,10,75,12 cm²,14 cm²,15 cm²,16 cm²
+Mathematics,Basic 5,Geometry - Area and Perimeter,What is the perimeter of a square with side 4 cm?,multiple_choice,b,Perimeter of square = 4 × side = 4 × 4 = 16 cm.,easy,10,60,12 cm,16 cm,20 cm,24 cm
+Mathematics,Basic 5,Geometry - Area and Perimeter,Find the area of a square with side 6 cm.,multiple_choice,d,Area of square = side × side = 6 × 6 = 36 cm².,medium,10,60,24 cm²,30 cm²,32 cm²,36 cm²
+Mathematics,Basic 5,Geometry - Area and Perimeter,What is the perimeter of a triangle with sides 2 cm 3 cm and 4 cm?,multiple_choice,a,Perimeter = sum of all sides = 2 + 3 + 4 = 9 cm.,easy,10,60,9 cm,10 cm,11 cm,24 cm
+Mathematics,Basic 5,Geometry - Area and Perimeter,Find the area of a rectangle with length 7 m and width 2 m.,multiple_choice,c,Area = length × width = 7 × 2 = 14 m².,medium,10,60,12 m²,13 m²,14 m²,15 m²
+Mathematics,Basic 5,Geometry - Area and Perimeter,What is the perimeter of a rectangle with length 8 cm and width 5 cm?,multiple_choice,b,Perimeter = 2(length + width) = 2(8 + 5) = 26 cm.,medium,10,75,24 cm,26 cm,28 cm,30 cm
+Mathematics,Basic 5,Geometry - Area and Perimeter,If a square has perimeter 16 cm what is the length of each side?,multiple_choice,d,If perimeter = 16 cm then each side = 16 ÷ 4 = 4 cm.,medium,10,75,2 cm,3 cm,5 cm,4 cm
+Mathematics,Basic 5,Geometry - Area and Perimeter,Find the area of a square with perimeter 20 cm.,multiple_choice,a,If perimeter = 20 cm then side = 5 cm. Area = 5 × 5 = 25 cm².,hard,15,90,25 cm²,20 cm²,30 cm²,100 cm²
+Mathematics,Basic 5,Geometry - Area and Perimeter,What is the area of a rectangle if its perimeter is 18 cm and width is 3 cm?,multiple_choice,c,If perimeter = 18 and width = 3 then length = 6. Area = 6 × 3 = 18 cm².,hard,15,120,15 cm²,16 cm²,18 cm²,21 cm²
+Mathematics,Basic 5,Geometry - Area and Perimeter,A rectangular field is 10 m long and 6 m wide. What is its area?,multiple_choice,b,Area = length × width = 10 × 6 = 60 m².,medium,10,75,56 m²,60 m²,64 m²,70 m²
+Mathematics,Basic 5,Data Handling,What is the mode in this set of data: 3 5 3 7 3 9?,multiple_choice,c,The mode is the number that appears most frequently. 3 appears three times.,medium,10,75,5,7,3,9
+Mathematics,Basic 5,Data Handling,Find the range of: 6 10 12 8 14,multiple_choice,b,Range = highest value - lowest value = 14 - 6 = 8.,medium,10,75,7,8,9,10
+Mathematics,Basic 5,Data Handling,What is the mean of: 2 4 6 8?,multiple_choice,c,Mean = (2 + 4 + 6 + 8) ÷ 4 = 20 ÷ 4 = 5.,medium,10,75,4,4.5,5,6
+Mathematics,Basic 5,Data Handling,In a pictograph if one symbol represents 4 items how many items do 3 symbols represent?,multiple_choice,b,3 symbols × 4 items per symbol = 12 items.,easy,10,60,8,12,16,20
+Mathematics,Basic 5,Data Handling,What is the median of: 2 5 8 11 14?,multiple_choice,c,The median is the middle value when arranged in order. The middle value is 8.,medium,10,75,5,7,8,11
+Mathematics,Basic 5,Data Handling,If a bar graph shows that 6 students like football and 9 like basketball how many more like basketball?,multiple_choice,d,9 - 6 = 3 more students like basketball.,easy,10,60,2,4,5,3
+Mathematics,Basic 5,Data Handling,What type of graph is best for showing how data changes over time?,multiple_choice,b,A line graph is best for showing changes over time.,medium,10,90,Bar graph,Line graph,Pie chart,Pictograph
+Mathematics,Basic 5,Data Handling,Find the mode of: 4 6 4 8 9 4 7,multiple_choice,b,The mode is 4 because it appears three times more than any other number.,medium,10,75,6,4,8,7
+Mathematics,Basic 5,Data Handling,What is the range of: 12 18 22 26 30?,multiple_choice,d,Range = 30 - 12 = 18.,medium,10,60,12,16,20,18
+Mathematics,Basic 5,Data Handling,If the mean of 3 numbers is 5 what is their sum?,multiple_choice,c,If mean = 5 and there are 3 numbers then sum = 5 × 3 = 15.,hard,15,90,12,14,15,18
+Mathematics,Basic 5,Money,How many 25 pesewa coins make GH¢ 1?,multiple_choice,d,GH¢ 1 = 100 pesewas. 100 ÷ 25 = 4 coins.,medium,10,75,2,3,5,4
+Mathematics,Basic 5,Money,What is GH¢ 3.50 + GH¢ 2.25?,multiple_choice,b,Adding: GH¢ 3.50 + GH¢ 2.25 = GH¢ 5.75.,medium,10,60,GH¢ 5.25,GH¢ 5.75,GH¢ 6.25,GH¢ 6.75
+Mathematics,Basic 5,Money,How much change will you get from GH¢ 5 if you buy something for GH¢ 3.25?,multiple_choice,c,Change = GH¢ 5.00 - GH¢ 3.25 = GH¢ 1.75.,medium,10,75,GH¢ 1.25,GH¢ 1.50,GH¢ 1.75,GH¢ 2.25
+Mathematics,Basic 5,Money,What is the total value of 2 GH¢ 1 coins and 3 50 pesewa coins?,multiple_choice,a,2 × GH¢ 1 + 3 × 50p = GH¢ 2 + GH¢ 1.50 = GH¢ 3.50.,medium,10,90,GH¢ 3.50,GH¢ 4.00,GH¢ 4.50,GH¢ 5.00
+Mathematics,Basic 5,Money,How many 10 pesewa coins equal GH¢ 1?,multiple_choice,c,GH¢ 1 = 100 pesewas. 100 ÷ 10 = 10 coins.,medium,10,60,5,8,10,12
+Mathematics,Basic 5,Money,What is GH¢ 8.75 - GH¢ 5.50?,multiple_choice,b,Subtracting: GH¢ 8.75 - GH¢ 5.50 = GH¢ 3.25.,medium,10,75,GH¢ 3.00,GH¢ 3.25,GH¢ 3.50,GH¢ 4.25
+Mathematics,Basic 5,Money,If you buy 2 items each costing GH¢ 1.50 how much do you pay?,multiple_choice,d,2 × GH¢ 1.50 = GH¢ 3.00.,medium,10,60,GH¢ 2.50,GH¢ 2.75,GH¢ 3.50,GH¢ 3.00
+Mathematics,Basic 5,Money,What is the value of 1 GH¢ 2 note 2 GH¢ 1 coins and 4 50 pesewa coins?,multiple_choice,a,GH¢2 + 2×GH¢1 + 4×50p = GH¢2 + GH¢2 + GH¢2 = GH¢6.,hard,15,120,GH¢ 6.00,GH¢ 5.50,GH¢ 7.00,GH¢ 8.00
+Mathematics,Basic 5,Money,How much more is GH¢ 12.50 than GH¢ 9.25?,multiple_choice,c,GH¢ 12.50 - GH¢ 9.25 = GH¢ 3.25.,medium,10,75,GH¢ 3.00,GH¢ 3.15,GH¢ 3.25,GH¢ 3.75
+Mathematics,Basic 5,Money,If a pen costs GH¢ 1.25 and you pay with GH¢ 2 what change do you get?,multiple_choice,b,Change = GH¢ 2.00 - GH¢ 1.25 = GH¢ 0.75.,easy,10,60,GH¢ 0.50,GH¢ 0.75,GH¢ 1.00,GH¢ 1.25
+Mathematics,Basic 5,Patterns and Sequences,What comes next: 4 8 12 16 ___?,multiple_choice,c,The pattern increases by 4 each time so 16 + 4 = 20.,easy,10,45,18,19,20,24
+Mathematics,Basic 5,Patterns and Sequences,Find the missing number: 2 4 6 ___ 10,multiple_choice,b,The pattern increases by 2 each time so the missing number is 8.,easy,10,60,7,8,9,12
+Mathematics,Basic 5,Patterns and Sequences,What is the rule for: 3 6 12 24 48?,multiple_choice,d,Each number is multiplied by 2 to get the next number.,medium,10,90,Add 3,Add 6,Subtract 3,Multiply by 2
+Mathematics,Basic 5,Patterns and Sequences,Continue the pattern: 1 3 5 7 ___,multiple_choice,a,The pattern increases by 2 each time so 7 + 2 = 9.,medium,10,60,9,10,11,12
+Mathematics,Basic 5,Patterns and Sequences,What comes next: 40 35 30 25 ___?,multiple_choice,b,The pattern decreases by 5 each time so 25 - 5 = 20.,medium,10,60,15,20,22,30
+Mathematics,Basic 5,Patterns and Sequences,Find the pattern: 2 4 6 8 10 ___,multiple_choice,c,These are even numbers increasing by 2 so next is 10 + 2 = 12.,medium,10,75,11,14,12,16
+Mathematics,Basic 5,Patterns and Sequences,What is the 5th term in: 3 6 9 12 ___?,multiple_choice,d,The pattern increases by 3 each time so the 5th term is 12 + 3 = 15.,medium,10,75,13,14,16,15
+Mathematics,Basic 5,Patterns and Sequences,Complete: 80 70 60 50 ___,multiple_choice,a,The pattern decreases by 10 each time so 50 - 10 = 40.,easy,10,45,40,45,55,60
+Mathematics,Basic 5,Patterns and Sequences,What comes next: 1 4 9 16 ___?,multiple_choice,c,These are perfect squares: 1² 2² 3² 4² so next is 5² = 25.,hard,15,90,20,24,25,30
+Mathematics,Basic 5,Patterns and Sequences,Find the missing term: 20 15 10 ___ 0,multiple_choice,b,The pattern decreases by 5 each time so the missing number is 5.,medium,10,60,3,5,8,10
+Mathematics,Basic 5,Problem Solving,A bag contains 18 sweets. If 6 sweets are eaten how many are left?,multiple_choice,c,18 - 6 = 12 sweets are left.,easy,10,45,10,11,12,14
+Mathematics,Basic 5,Problem Solving,Peter has 4 boxes with 8 marbles in each box. How many marbles does he have in total?,multiple_choice,b,4 × 8 = 32 marbles in total.,medium,10,60,28,32,36,40
+Mathematics,Basic 5,Problem Solving,A baker has 36 cakes. He puts them equally into 6 boxes. How many cakes are in each box?,multiple_choice,c,36 ÷ 6 = 6 cakes in each box.,medium,10,75,4,5,6,7
+Mathematics,Basic 5,Problem Solving,Jane buys 3 books at GH¢ 5 each. How much does she pay in total?,multiple_choice,d,3 × GH¢ 5 = GH¢ 15.,medium,10,60,GH¢ 12,GH¢ 13,GH¢ 14,GH¢ 15
+Mathematics,Basic 5,Problem Solving,A rectangle has length 12 cm and width 5 cm. What is its perimeter?,multiple_choice,a,Perimeter = 2(12 + 5) = 2(17) = 34 cm.,medium,10,90,34 cm,32 cm,36 cm,38 cm
+Mathematics,Basic 5,Problem Solving,There are 28 students in a class. If 12 are girls how many are boys?,multiple_choice,b,28 - 12 = 16 boys.,easy,10,45,14,16,18,20
+Mathematics,Basic 5,Problem Solving,A car travels 40 km in 1 hour. How far will it travel in 3 hours?,multiple_choice,c,40 × 3 = 120 km.,medium,10,75,100 km,110 km,120 km,130 km
+Mathematics,Basic 5,Problem Solving,David has GH¢ 20. He spends GH¢ 8 on food and GH¢ 5 on transport. How much is left?,multiple_choice,d,GH¢ 20 - GH¢ 8 - GH¢ 5 = GH¢ 7.,medium,10,90,GH¢ 5,GH¢ 6,GH¢ 8,GH¢ 7
+Mathematics,Basic 5,Problem Solving,A school has 6 classes with 20 students in each class. How many students are there in total?,multiple_choice,a,6 × 20 = 120 students.,medium,10,75,120,100,140,160
+Mathematics,Basic 5,Problem Solving,If 4 oranges cost GH¢ 8 how much does 1 orange cost?,multiple_choice,b,GH¢ 8 ÷ 4 = GH¢ 2 per orange.,medium,10,75,GH¢ 1,GH¢ 2,GH¢ 3,GH¢ 4
+Mathematics,Basic 5,Simple Multiplication Tables,What is 6 × 7?,multiple_choice,c,6 × 7 = 42.,easy,10,30,36,40,42,48
+Mathematics,Basic 5,Simple Multiplication Tables,What is 8 × 9?,multiple_choice,d,8 × 9 = 72.,easy,10,30,64,68,70,72
+Mathematics,Basic 5,Simple Multiplication Tables,What is 7 × 8?,multiple_choice,b,7 × 8 = 56.,easy,10,30,48,56,64,72
+Mathematics,Basic 5,Simple Multiplication Tables,What is 9 × 6?,multiple_choice,a,9 × 6 = 54.,easy,10,30,54,56,63,64
+Mathematics,Basic 5,Simple Multiplication Tables,What is 5 × 9?,multiple_choice,c,5 × 9 = 45.,easy,10,30,40,42,45,50
+Mathematics,Basic 5,Simple Multiplication Tables,What is 12 × 4?,multiple_choice,b,12 × 4 = 48.,easy,10,30,44,48,52,56
+Mathematics,Basic 5,Simple Multiplication Tables,What is 7 × 6?,multiple_choice,d,7 × 6 = 42.,easy,10,30,35,36,40,42
+Mathematics,Basic 5,Simple Multiplication Tables,What is 8 × 8?,multiple_choice,a,8 × 8 = 64.,easy,10,30,64,68,72,80
+Mathematics,Basic 5,Simple Multiplication Tables,What is 9 × 9?,multiple_choice,c,9 × 9 = 81.,easy,10,30,72,80,81,90
+Mathematics,Basic 5,Simple Multiplication Tables,What is 11 × 6?,multiple_choice,b,11 × 6 = 66.,medium,10,45,60,66,72,76

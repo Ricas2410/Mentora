@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Pentora - Free Online Learning Platform for Grades 1-12 {% endblock %}
-{% block description %}Free online education for Grades 1-12 with interactive quizzes and study materials. Learn English, Math, Science, and more on any device.{% endblock %}
-{% block keywords %}free online learning, educational platform, grades 1-12, online quizzes, study materials, English learning, Mathematics, Science, Social Studies, ICT, Life Skills, free education, mobile learning, K-12 education{% endblock %}
+{% block title %}Pentora Ghana | Official #1 Online Education Platform | Trusted by Thousands{% endblock %}
+{% block description %}Pentora Ghana - The official #1 online education platform in Ghana. Trusted by thousands of students for BECE preparation, WASSCE preparation, free quality education, and comprehensive learning materials. Join Ghana's leading educational community.{% endblock %}
+{% block keywords %}Pentora Ghana, Pentora education, Pentora official, official Pentora, Pentora learning platform, Pentora online school, #1 education Ghana, Ghana's best education platform, top education platform Ghana, Pentora.edu.gh, Mentora learn, Mentora education, online learning Ghana, free education Ghana, BECE preparation Ghana, WASSCE preparation Ghana, Ghana education platform, trusted education Ghana, verified education platform Ghana, authentic Pentora, genuine Pentora{% endblock %}
 
-{% block og_title %}Pentora - Free Online Learning Platform for All Grades{% endblock %}
-{% block og_description %}Access free educational content, interactive quizzes, and comprehensive study materials for Grades 1-12. Learn English, Math, Science, and more on any device!{% endblock %}
+{% block og_title %}Pentora Ghana | Official #1 Online Education Platform{% endblock %}
+{% block og_description %}Pentora Ghana - The official #1 online education platform in Ghana. Trusted by thousands of students for BECE preparation, WASSCE preparation, and comprehensive learning materials.{% endblock %}
 
 {% block extra_js %}
 <!-- Structured Data for SEO -->
@@ -13,8 +13,9 @@
 {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "name": "Pentora Learning Platform",
-  "description": "Free online learning platform offering comprehensive educational content for Grades 1-12 with interactive quizzes and study materials.",
+  "name": "Pentora Ghana",
+  "alternateName": ["Pentora", "Pentora Education", "Mentora", "Mentora Learn", "Official Pentora"],
+  "description": "Ghana's official #1 online education platform providing free quality education, BECE preparation, WASSCE preparation, and comprehensive learning materials. Trusted by thousands of students across Ghana.",
   "url": "{{ request.build_absolute_uri }}",
   "logo": "{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/Pentora-logo.png' %}",
   "sameAs": [

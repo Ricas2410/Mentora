@@ -1,0 +1,161 @@
+subject_name,class_level_name,topic_title,question_text,question_type,correct_answer,explanation,difficulty,points,time_limit,choice_a,choice_b,choice_c,choice_d
+Mathematics,Basic 4,Number and Numeration,What is the place value of 5 in 1523?,multiple_choice,c,In 1523 the digit 5 is in the hundreds place so its place value is 500.,medium,10,60,5,50,500,5000
+Mathematics,Basic 4,Number and Numeration,Write 1000 + 200 + 30 + 4 in standard form.,multiple_choice,b,Adding the place values: 1000 + 200 + 30 + 4 = 1234.,easy,10,45,1243,1234,1324,1432
+Mathematics,Basic 4,Number and Numeration,What is the value of the digit 7 in 1742?,multiple_choice,a,The digit 7 is in the hundreds place so its value is 700.,medium,10,60,700,70,7,7000
+Mathematics,Basic 4,Number and Numeration,Round 1456 to the nearest ten.,multiple_choice,c,1456 rounded to the nearest ten is 1460 because 6 ≥ 5.,medium,10,75,1450,1455,1460,1500
+Mathematics,Basic 4,Number and Numeration,Which number comes next: 10 15 20 25 ___?,multiple_choice,d,The sequence increases by 5 each time so 25 + 5 = 30.,easy,10,45,27,28,29,30
+Mathematics,Basic 4,Number and Numeration,What is the largest 3-digit number you can make with 2 5 8?,multiple_choice,a,To make the largest number arrange digits in descending order: 852.,medium,10,75,852,825,582,528
+Mathematics,Basic 4,Number and Numeration,Compare: 1234 ___ 1243,multiple_choice,b,1234 is less than 1243 because 34 < 43 in the last two digits.,easy,10,45,>,<,=,≥
+Mathematics,Basic 4,Number and Numeration,What is 800 + 60 + 5 in words?,multiple_choice,c,865 in words is eight hundred and sixty-five.,medium,10,90,Eight hundred sixty-five,Eight hundred six five,Eight hundred and sixty-five,Eight sixty-five
+Mathematics,Basic 4,Number and Numeration,Which is the smallest: 1234 1324 1243 1342?,multiple_choice,a,Comparing from left to right 1234 is the smallest.,medium,10,75,1234,1324,1243,1342
+Mathematics,Basic 4,Number and Numeration,What is the expanded form of 2456?,multiple_choice,d,2456 = 2000 + 400 + 50 + 6 in expanded form.,medium,10,75,2000 + 400 + 5 + 6,2000 + 40 + 50 + 6,200 + 400 + 50 + 6,2000 + 400 + 50 + 6
+Mathematics,Basic 4,Basic Operations,What is 123 + 456?,multiple_choice,c,Adding: 123 + 456 = 579.,easy,10,60,569,578,579,589
+Mathematics,Basic 4,Basic Operations,Find: 500 - 234,multiple_choice,b,Subtracting: 500 - 234 = 266.,medium,10,75,256,266,276,366
+Mathematics,Basic 4,Basic Operations,What is 12 × 11?,multiple_choice,d,Multiplying: 12 × 11 = 132.,medium,10,90,122,130,131,132
+Mathematics,Basic 4,Basic Operations,Calculate: 84 ÷ 7,multiple_choice,a,Dividing: 84 ÷ 7 = 12.,easy,10,60,12,13,14,15
+Mathematics,Basic 4,Basic Operations,What is 25 × 4?,multiple_choice,c,Multiplying: 25 × 4 = 100.,easy,10,45,90,95,100,105
+Mathematics,Basic 4,Basic Operations,Find: 234 + 156 + 110,multiple_choice,b,Adding: 234 + 156 + 110 = 500.,medium,10,90,490,500,510,520
+Mathematics,Basic 4,Basic Operations,What is 800 - 345?,multiple_choice,d,Subtracting: 800 - 345 = 455.,medium,10,75,445,465,475,455
+Mathematics,Basic 4,Basic Operations,Calculate: 15 × 12,multiple_choice,a,Multiplying: 15 × 12 = 180.,medium,10,90,180,170,190,160
+Mathematics,Basic 4,Basic Operations,What is 96 ÷ 8?,multiple_choice,c,Dividing: 96 ÷ 8 = 12.,medium,10,75,10,11,12,13
+Mathematics,Basic 4,Basic Operations,Find the difference between 567 and 234.,multiple_choice,b,Difference means subtraction: 567 - 234 = 333.,medium,10,60,323,333,343,353
+Mathematics,Basic 4,Fractions,What fraction of the circle is shaded if 1 out of 4 parts is shaded?,multiple_choice,c,If 1 out of 4 parts is shaded the fraction is 1/4.,easy,10,60,1/2,1/3,1/4,2/4
+Mathematics,Basic 4,Fractions,Which fraction is equivalent to 1/2?,multiple_choice,a,2/4 = 1/2 when simplified by dividing both parts by 2.,medium,10,60,2/4,1/3,1/4,3/6
+Mathematics,Basic 4,Fractions,What is 1/4 + 1/4?,multiple_choice,b,Adding fractions with same denominator: 1/4 + 1/4 = 2/4 = 1/2.,medium,10,60,1/4,1/2,2/8,3/4
+Mathematics,Basic 4,Fractions,Which is larger: 1/2 or 1/3?,multiple_choice,a,1/2 is larger than 1/3 because 2 parts out of 4 is more than 1 part out of 3.,medium,10,75,1/2,1/3,They are equal,Cannot tell
+Mathematics,Basic 4,Fractions,What is 3/4 - 1/4?,multiple_choice,c,Subtracting fractions with same denominator: 3/4 - 1/4 = 2/4 = 1/2.,medium,10,60,1/4,3/4,1/2,2/4
+Mathematics,Basic 4,Fractions,What fraction of 8 is 2?,multiple_choice,d,2 out of 8 is 2/8 = 1/4 when simplified.,medium,10,75,1/2,1/3,2/8,1/4
+Mathematics,Basic 4,Fractions,Simplify: 2/4,multiple_choice,a,2/4 = 1/2 when both numerator and denominator are divided by 2.,medium,10,60,1/2,2/4,1/4,4/2
+Mathematics,Basic 4,Fractions,What is 1/2 of 12?,multiple_choice,c,1/2 of 12 = 12 ÷ 2 = 6.,easy,10,45,4,5,6,7
+Mathematics,Basic 4,Fractions,Which fraction is equal to 1/2?,multiple_choice,b,2/4 = 1/2 when simplified.,medium,10,60,1/4,2/4,1/3,3/4
+Mathematics,Basic 4,Fractions,What is 1/3 + 1/3?,multiple_choice,c,Adding: 1/3 + 1/3 = 2/3.,medium,10,60,1/3,1/6,2/3,3/3
+Mathematics,Basic 4,Decimals,What is 0.2 as a fraction?,multiple_choice,b,0.2 = 2/10 = 1/5 when simplified.,medium,10,60,1/2,1/5,2/1,1/10
+Mathematics,Basic 4,Decimals,Which is larger: 0.3 or 0.03?,multiple_choice,a,0.3 is larger than 0.03 because 0.3 = 0.30 and 30 > 3.,medium,10,60,0.3,0.03,They are equal,Cannot tell
+Mathematics,Basic 4,Decimals,What is 1.2 + 0.5?,multiple_choice,c,Adding decimals: 1.2 + 0.5 = 1.7.,easy,10,60,1.0,1.5,1.7,2.7
+Mathematics,Basic 4,Decimals,Round 2.67 to 1 decimal place.,multiple_choice,b,2.67 rounded to 1 decimal place is 2.7 because 7 ≥ 5.,medium,10,75,2.6,2.7,2.8,3.0
+Mathematics,Basic 4,Decimals,What is 3.0 - 1.5?,multiple_choice,d,Subtracting decimals: 3.0 - 1.5 = 1.5.,medium,10,60,1.0,1.2,1.4,1.5
+Mathematics,Basic 4,Decimals,Convert 1/4 to a decimal.,multiple_choice,c,1/4 = 1 ÷ 4 = 0.25.,medium,10,75,0.2,0.4,0.25,1.4
+Mathematics,Basic 4,Decimals,What is 0.1 + 0.2?,multiple_choice,a,Adding decimals: 0.1 + 0.2 = 0.3.,easy,10,45,0.3,0.12,0.4,1.0
+Mathematics,Basic 4,Decimals,Which decimal is equivalent to 3/10?,multiple_choice,b,3/10 = 0.3 as a decimal.,easy,10,45,0.03,0.3,3.0,30
+Mathematics,Basic 4,Decimals,What is 0.5 × 2?,multiple_choice,c,Multiplying: 0.5 × 2 = 1.0.,medium,10,60,0.7,0.8,1.0,1.5
+Mathematics,Basic 4,Decimals,Order from smallest to largest: 0.1 0.01 0.11,multiple_choice,d,Ordering: 0.01 < 0.1 < 0.11.,medium,10,90,0.1 0.01 0.11,0.11 0.1 0.01,0.1 0.11 0.01,0.01 0.1 0.11
+Mathematics,Basic 4,Measurement - Length,How many centimeters are in 1 meter?,multiple_choice,c,1 meter = 100 centimeters.,easy,10,30,10,50,100,1000
+Mathematics,Basic 4,Measurement - Length,What is 120 cm in meters?,multiple_choice,b,120 cm = 120 ÷ 100 = 1.2 meters.,medium,10,60,1.02 m,1.2 m,12 m,120 m
+Mathematics,Basic 4,Measurement - Length,How many millimeters are in 2 cm?,multiple_choice,d,2 cm = 2 × 10 = 20 millimeters.,medium,10,45,2 mm,10 mm,15 mm,20 mm
+Mathematics,Basic 4,Measurement - Length,Which is longer: 1 m or 90 cm?,multiple_choice,a,1 m = 100 cm which is longer than 90 cm.,medium,10,75,1 m,90 cm,They are equal,Cannot tell
+Mathematics,Basic 4,Measurement - Length,What is the perimeter of a rectangle with length 5 cm and width 3 cm?,multiple_choice,c,Perimeter = 2(length + width) = 2(5 + 3) = 16 cm.,medium,10,75,13 cm,15 cm,16 cm,18 cm
+Mathematics,Basic 4,Measurement - Length,How many meters are in 1 kilometer?,multiple_choice,d,1 kilometer = 1000 meters.,medium,10,60,10 m,100 m,500 m,1000 m
+Mathematics,Basic 4,Measurement - Length,What is 35 mm in centimeters?,multiple_choice,b,35 mm = 35 ÷ 10 = 3.5 cm.,medium,10,60,0.35 cm,3.5 cm,35 cm,350 cm
+Mathematics,Basic 4,Measurement - Length,Find the perimeter of a square with side 4 cm.,multiple_choice,a,Perimeter of square = 4 × side = 4 × 4 = 16 cm.,easy,10,60,16 cm,12 cm,20 cm,8 cm
+Mathematics,Basic 4,Measurement - Length,Which unit is best for measuring the length of a book?,multiple_choice,b,Centimeters are appropriate for measuring a book's length.,easy,10,45,Millimeters,Centimeters,Meters,Kilometers
+Mathematics,Basic 4,Measurement - Length,What is 1.5 m + 30 cm in centimeters?,multiple_choice,c,1.5 m = 150 cm so 150 cm + 30 cm = 180 cm.,hard,15,90,170 cm,175 cm,180 cm,185 cm
+Mathematics,Basic 4,Measurement - Mass,How many grams are in 1 kilogram?,multiple_choice,d,1 kilogram = 1000 grams.,easy,10,30,10,100,500,1000
+Mathematics,Basic 4,Measurement - Mass,What is 1200 g in kilograms?,multiple_choice,b,1200 g = 1200 ÷ 1000 = 1.2 kg.,medium,10,60,1.02 kg,1.2 kg,12 kg,120 kg
+Mathematics,Basic 4,Measurement - Mass,Which is heavier: 1 kg or 900 g?,multiple_choice,a,1 kg = 1000 g which is heavier than 900 g.,medium,10,75,1 kg,900 g,They are equal,Cannot tell
+Mathematics,Basic 4,Measurement - Mass,What is 400 g + 300 g?,multiple_choice,c,400 g + 300 g = 700 g.,easy,10,45,600 g,650 g,700 g,800 g
+Mathematics,Basic 4,Measurement - Mass,How many grams are in 0.5 kg?,multiple_choice,b,0.5 kg = 0.5 × 1000 = 500 g.,medium,10,60,50 g,500 g,5000 g,50000 g
+Mathematics,Basic 4,Measurement - Mass,Which unit is best for measuring the mass of a pencil?,multiple_choice,c,Grams are the most appropriate unit for measuring a pencil's mass.,easy,10,45,Kilograms,Tonnes,Grams,Milligrams
+Mathematics,Basic 4,Measurement - Mass,What is 2 kg - 200 g in grams?,multiple_choice,d,2 kg = 2000 g so 2000 g - 200 g = 1800 g.,medium,10,75,1600 g,1700 g,1900 g,1800 g
+Mathematics,Basic 4,Measurement - Mass,Convert 1.5 kg to grams.,multiple_choice,a,1.5 kg = 1.5 × 1000 = 1500 g.,medium,10,60,1500 g,150 g,15 g,15000 g
+Mathematics,Basic 4,Measurement - Mass,What is the total mass of 3 bags each weighing 150 g?,multiple_choice,b,Total mass = 3 × 150 g = 450 g.,medium,10,60,400 g,450 g,500 g,550 g
+Mathematics,Basic 4,Measurement - Mass,How many 200 g packets can be made from 1 kg of sugar?,multiple_choice,c,1 kg = 1000 g. Number of packets = 1000 ÷ 200 = 5.,medium,10,90,3,4,5,6
+Mathematics,Basic 4,Measurement - Capacity,How many milliliters are in 1 liter?,multiple_choice,d,1 liter = 1000 milliliters.,easy,10,30,10,100,500,1000
+Mathematics,Basic 4,Measurement - Capacity,What is 800 ml in liters?,multiple_choice,b,800 ml = 800 ÷ 1000 = 0.8 liters.,medium,10,60,0.08 L,0.8 L,8 L,80 L
+Mathematics,Basic 4,Measurement - Capacity,Which is more: 1 L or 900 ml?,multiple_choice,a,1 L = 1000 ml which is more than 900 ml.,medium,10,75,1 L,900 ml,They are equal,Cannot tell
+Mathematics,Basic 4,Measurement - Capacity,What is 500 ml + 300 ml?,multiple_choice,c,500 ml + 300 ml = 800 ml.,easy,10,45,700 ml,750 ml,800 ml,850 ml
+Mathematics,Basic 4,Measurement - Capacity,How many 100 ml cups can be filled from 1 liter of water?,multiple_choice,c,1 L = 1000 ml. Number of cups = 1000 ÷ 100 = 10.,medium,10,90,8,9,10,11
+Mathematics,Basic 4,Measurement - Capacity,Which unit is best for measuring the capacity of a cup?,multiple_choice,b,Milliliters are the most appropriate unit for a cup.,easy,10,45,Liters,Milliliters,Kiloliters,Centiliters
+Mathematics,Basic 4,Measurement - Capacity,What is 1 L - 200 ml in milliliters?,multiple_choice,d,1 L = 1000 ml so 1000 ml - 200 ml = 800 ml.,medium,10,75,600 ml,700 ml,900 ml,800 ml
+Mathematics,Basic 4,Measurement - Capacity,Convert 0.4 L to milliliters.,multiple_choice,c,0.4 L = 0.4 × 1000 = 400 ml.,medium,10,60,40 ml,4 ml,400 ml,4000 ml
+Mathematics,Basic 4,Measurement - Capacity,What is the total capacity of 2 bottles each holding 300 ml?,multiple_choice,b,Total capacity = 2 × 300 ml = 600 ml.,medium,10,75,500 ml,600 ml,700 ml,800 ml
+Mathematics,Basic 4,Measurement - Capacity,How many liters are in 1500 ml?,multiple_choice,a,1500 ml = 1500 ÷ 1000 = 1.5 L.,medium,10,60,1.5 L,15 L,150 L,0.15 L
+Mathematics,Basic 4,Measurement - Time,How many minutes are in 1 hour?,multiple_choice,c,1 hour = 60 minutes.,easy,10,30,30,50,60,100
+Mathematics,Basic 4,Measurement - Time,What is 1 hour 30 minutes in minutes?,multiple_choice,d,1 hour = 60 minutes so 60 + 30 = 90 minutes.,medium,10,75,80 min,85 min,95 min,90 min
+Mathematics,Basic 4,Measurement - Time,How many seconds are in 1 minute?,multiple_choice,b,1 minute = 60 seconds.,medium,10,60,50 sec,60 sec,70 sec,100 sec
+Mathematics,Basic 4,Measurement - Time,What time is 15 minutes after 2:30?,multiple_choice,c,2:30 + 15 minutes = 2:45.,medium,10,75,2:35,2:40,2:45,3:00
+Mathematics,Basic 4,Measurement - Time,How many hours are in 1 day?,multiple_choice,a,1 day = 24 hours.,easy,10,30,24,12,48,60
+Mathematics,Basic 4,Measurement - Time,What is 90 minutes in hours and minutes?,multiple_choice,b,90 minutes = 1 hour 30 minutes.,medium,10,75,1 hour 20 minutes,1 hour 30 minutes,1 hour 40 minutes,2 hours
+Mathematics,Basic 4,Measurement - Time,If a lesson starts at 9:00 AM and lasts 45 minutes what time does it end?,multiple_choice,d,9:00 AM + 45 minutes = 9:45 AM.,medium,10,75,9:30 AM,9:35 AM,9:40 AM,9:45 AM
+Mathematics,Basic 4,Measurement - Time,How many days are in 2 weeks?,multiple_choice,c,2 weeks = 2 × 7 = 14 days.,easy,10,45,12,13,14,15
+Mathematics,Basic 4,Measurement - Time,What is the duration from 10:15 AM to 11:45 AM?,multiple_choice,a,From 10:15 AM to 11:45 AM is 1 hour 30 minutes.,medium,10,90,1 hour 30 minutes,1 hour 15 minutes,2 hours,2 hours 30 minutes
+Mathematics,Basic 4,Measurement - Time,How many minutes are in half an hour?,multiple_choice,b,Half an hour = 30 minutes.,easy,10,30,15,30,45,60
+Mathematics,Basic 4,Geometry - Shapes,How many sides does a triangle have?,multiple_choice,c,A triangle has 3 sides.,easy,10,30,2,4,3,5
+Mathematics,Basic 4,Geometry - Shapes,What is a shape with 4 sides called?,multiple_choice,b,A shape with 4 sides is called a quadrilateral.,easy,10,45,Triangle,Quadrilateral,Pentagon,Hexagon
+Mathematics,Basic 4,Geometry - Shapes,How many corners does a square have?,multiple_choice,d,A square has 4 corners (vertices).,easy,10,45,2,3,5,4
+Mathematics,Basic 4,Geometry - Shapes,What is the name of a 5-sided shape?,multiple_choice,a,A 5-sided shape is called a pentagon.,medium,10,60,Pentagon,Hexagon,Octagon,Decagon
+Mathematics,Basic 4,Geometry - Shapes,How many sides does a circle have?,multiple_choice,d,A circle has no straight sides; it is round.,medium,10,60,1,2,3,0
+Mathematics,Basic 4,Geometry - Shapes,What type of angle is 90 degrees?,multiple_choice,b,A 90-degree angle is a right angle.,medium,10,60,Acute angle,Right angle,Obtuse angle,Straight angle
+Mathematics,Basic 4,Geometry - Shapes,Which shape has all sides equal?,multiple_choice,d,A square has all sides equal.,easy,10,60,Rectangle,Triangle,Circle,Square
+Mathematics,Basic 4,Geometry - Shapes,How many sides does a rectangle have?,multiple_choice,c,A rectangle has 4 sides.,easy,10,45,2,3,4,5
+Mathematics,Basic 4,Geometry - Shapes,What is a line that goes straight across?,multiple_choice,a,A horizontal line goes straight across.,medium,10,75,Horizontal line,Vertical line,Curved line,Zigzag line
+Mathematics,Basic 4,Geometry - Shapes,Which angle is less than 90 degrees?,multiple_choice,a,An acute angle is less than 90 degrees.,medium,10,75,Acute angle,Right angle,Obtuse angle,Straight angle
+Mathematics,Basic 4,Geometry - Area and Perimeter,What is the area of a rectangle with length 4 cm and width 2 cm?,multiple_choice,c,Area of rectangle = length × width = 4 × 2 = 8 cm².,medium,10,75,6 cm²,7 cm²,8 cm²,10 cm²
+Mathematics,Basic 4,Geometry - Area and Perimeter,What is the perimeter of a square with side 3 cm?,multiple_choice,b,Perimeter of square = 4 × side = 4 × 3 = 12 cm.,easy,10,60,9 cm,12 cm,15 cm,18 cm
+Mathematics,Basic 4,Geometry - Area and Perimeter,Find the area of a square with side 5 cm.,multiple_choice,d,Area of square = side × side = 5 × 5 = 25 cm².,medium,10,60,20 cm²,22 cm²,24 cm²,25 cm²
+Mathematics,Basic 4,Geometry - Area and Perimeter,What is the perimeter of a triangle with sides 2 cm 3 cm and 4 cm?,multiple_choice,a,Perimeter = sum of all sides = 2 + 3 + 4 = 9 cm.,easy,10,60,9 cm,10 cm,11 cm,24 cm
+Mathematics,Basic 4,Geometry - Area and Perimeter,Find the area of a rectangle with length 6 m and width 2 m.,multiple_choice,c,Area = length × width = 6 × 2 = 12 m².,medium,10,60,10 m²,11 m²,12 m²,14 m²
+Mathematics,Basic 4,Geometry - Area and Perimeter,What is the perimeter of a rectangle with length 6 cm and width 4 cm?,multiple_choice,b,Perimeter = 2(length + width) = 2(6 + 4) = 20 cm.,medium,10,75,18 cm,20 cm,22 cm,24 cm
+Mathematics,Basic 4,Geometry - Area and Perimeter,If a square has perimeter 12 cm what is the length of each side?,multiple_choice,d,If perimeter = 12 cm then each side = 12 ÷ 4 = 3 cm.,medium,10,75,2 cm,4 cm,5 cm,3 cm
+Mathematics,Basic 4,Geometry - Area and Perimeter,Find the area of a square with perimeter 16 cm.,multiple_choice,a,If perimeter = 16 cm then side = 4 cm. Area = 4 × 4 = 16 cm².,hard,15,90,16 cm²,12 cm²,20 cm²,64 cm²
+Mathematics,Basic 4,Geometry - Area and Perimeter,What is the area of a rectangle if its perimeter is 14 cm and width is 2 cm?,multiple_choice,c,If perimeter = 14 and width = 2 then length = 5. Area = 5 × 2 = 10 cm².,hard,15,120,8 cm²,9 cm²,10 cm²,12 cm²
+Mathematics,Basic 4,Geometry - Area and Perimeter,A rectangular garden is 8 m long and 5 m wide. What is its area?,multiple_choice,b,Area = length × width = 8 × 5 = 40 m².,medium,10,75,35 m²,40 m²,45 m²,50 m²
+Mathematics,Basic 4,Data Handling,What is the mode in this set of data: 2 4 2 6 2 8?,multiple_choice,c,The mode is the number that appears most frequently. 2 appears three times.,medium,10,75,4,6,2,8
+Mathematics,Basic 4,Data Handling,Find the range of: 5 8 10 6 12,multiple_choice,b,Range = highest value - lowest value = 12 - 5 = 7.,medium,10,75,6,7,8,9
+Mathematics,Basic 4,Data Handling,What is the mean of: 2 4 6?,multiple_choice,c,Mean = (2 + 4 + 6) ÷ 3 = 12 ÷ 3 = 4.,medium,10,75,3,3.5,4,5
+Mathematics,Basic 4,Data Handling,In a pictograph if one symbol represents 3 items how many items do 4 symbols represent?,multiple_choice,b,4 symbols × 3 items per symbol = 12 items.,easy,10,60,9,12,15,16
+Mathematics,Basic 4,Data Handling,What is the median of: 1 3 5 7 9?,multiple_choice,c,The median is the middle value when arranged in order. The middle value is 5.,medium,10,75,3,4,5,7
+Mathematics,Basic 4,Data Handling,If a bar graph shows that 4 students like apples and 7 like oranges how many more like oranges?,multiple_choice,d,7 - 4 = 3 more students like oranges.,easy,10,60,2,4,5,3
+Mathematics,Basic 4,Data Handling,What type of graph uses pictures to show data?,multiple_choice,a,A pictograph uses pictures or symbols to represent data.,medium,10,75,Pictograph,Bar graph,Line graph,Pie chart
+Mathematics,Basic 4,Data Handling,Find the mode of: 3 5 3 7 9 3 6,multiple_choice,b,The mode is 3 because it appears three times more than any other number.,medium,10,75,5,3,7,6
+Mathematics,Basic 4,Data Handling,What is the range of: 10 15 20 25 30?,multiple_choice,d,Range = 30 - 10 = 20.,medium,10,60,10,15,25,20
+Mathematics,Basic 4,Data Handling,If the mean of 2 numbers is 4 what is their sum?,multiple_choice,c,If mean = 4 and there are 2 numbers then sum = 4 × 2 = 8.,hard,15,90,6,7,8,10
+Mathematics,Basic 4,Money,How many 10 pesewa coins make GH¢ 1?,multiple_choice,d,GH¢ 1 = 100 pesewas. 100 ÷ 10 = 10 coins.,medium,10,75,5,8,12,10
+Mathematics,Basic 4,Money,What is GH¢ 2.50 + GH¢ 1.25?,multiple_choice,b,Adding: GH¢ 2.50 + GH¢ 1.25 = GH¢ 3.75.,medium,10,60,GH¢ 3.25,GH¢ 3.75,GH¢ 4.25,GH¢ 4.75
+Mathematics,Basic 4,Money,How much change will you get from GH¢ 5 if you buy something for GH¢ 2.50?,multiple_choice,c,Change = GH¢ 5.00 - GH¢ 2.50 = GH¢ 2.50.,medium,10,75,GH¢ 2.00,GH¢ 2.25,GH¢ 2.50,GH¢ 3.00
+Mathematics,Basic 4,Money,What is the total value of 3 GH¢ 1 coins and 2 50 pesewa coins?,multiple_choice,a,3 × GH¢ 1 + 2 × 50p = GH¢ 3 + GH¢ 1 = GH¢ 4.,medium,10,90,GH¢ 4.00,GH¢ 4.50,GH¢ 5.00,GH¢ 5.50
+Mathematics,Basic 4,Money,How many 5 pesewa coins equal 50 pesewas?,multiple_choice,c,50 ÷ 5 = 10 coins.,medium,10,60,5,8,10,12
+Mathematics,Basic 4,Money,What is GH¢ 6.75 - GH¢ 3.25?,multiple_choice,b,Subtracting: GH¢ 6.75 - GH¢ 3.25 = GH¢ 3.50.,medium,10,75,GH¢ 3.25,GH¢ 3.50,GH¢ 3.75,GH¢ 4.00
+Mathematics,Basic 4,Money,If you buy 2 items each costing GH¢ 1.25 how much do you pay?,multiple_choice,d,2 × GH¢ 1.25 = GH¢ 2.50.,medium,10,60,GH¢ 2.00,GH¢ 2.25,GH¢ 2.75,GH¢ 2.50
+Mathematics,Basic 4,Money,What is the value of 1 GH¢ 2 coin and 3 GH¢ 1 coins?,multiple_choice,a,GH¢ 2 + 3 × GH¢ 1 = GH¢ 2 + GH¢ 3 = GH¢ 5.,medium,10,90,GH¢ 5.00,GH¢ 4.00,GH¢ 6.00,GH¢ 7.00
+Mathematics,Basic 4,Money,How much more is GH¢ 8.50 than GH¢ 5.25?,multiple_choice,c,GH¢ 8.50 - GH¢ 5.25 = GH¢ 3.25.,medium,10,75,GH¢ 3.00,GH¢ 3.15,GH¢ 3.25,GH¢ 3.75
+Mathematics,Basic 4,Money,If a book costs GH¢ 3.50 and you pay with GH¢ 5 what change do you get?,multiple_choice,b,Change = GH¢ 5.00 - GH¢ 3.50 = GH¢ 1.50.,easy,10,60,GH¢ 1.00,GH¢ 1.50,GH¢ 2.00,GH¢ 2.50
+Mathematics,Basic 4,Patterns and Sequences,What comes next: 2 4 6 8 ___?,multiple_choice,c,The pattern increases by 2 each time so 8 + 2 = 10.,easy,10,45,9,11,10,12
+Mathematics,Basic 4,Patterns and Sequences,Find the missing number: 1 3 5 ___ 9,multiple_choice,b,The pattern increases by 2 each time so the missing number is 7.,easy,10,60,6,7,8,10
+Mathematics,Basic 4,Patterns and Sequences,What is the rule for: 2 4 8 16 32?,multiple_choice,d,Each number is multiplied by 2 to get the next number.,medium,10,90,Add 2,Add 4,Subtract 2,Multiply by 2
+Mathematics,Basic 4,Patterns and Sequences,Continue the pattern: 5 10 15 20 ___,multiple_choice,a,The pattern increases by 5 each time so 20 + 5 = 25.,medium,10,60,25,26,27,30
+Mathematics,Basic 4,Patterns and Sequences,What comes next: 30 25 20 15 ___?,multiple_choice,b,The pattern decreases by 5 each time so 15 - 5 = 10.,medium,10,60,5,10,12,20
+Mathematics,Basic 4,Patterns and Sequences,Find the pattern: 1 2 4 5 7 8 ___,multiple_choice,c,The pattern alternates: +1 +2 +1 +2 +1 so next is 8 + 2 = 10.,hard,15,90,9,11,10,12
+Mathematics,Basic 4,Patterns and Sequences,What is the 4th term in: 3 6 9 ___?,multiple_choice,d,The pattern increases by 3 each time so the 4th term is 9 + 3 = 12.,medium,10,75,10,11,13,12
+Mathematics,Basic 4,Patterns and Sequences,Complete: 50 40 30 20 ___,multiple_choice,a,The pattern decreases by 10 each time so 20 - 10 = 10.,easy,10,45,10,15,25,30
+Mathematics,Basic 4,Patterns and Sequences,What comes next: 1 1 2 3 5 ___?,multiple_choice,c,This is the Fibonacci sequence where each number is the sum of the two before it: 3 + 5 = 8.,hard,15,120,6,7,8,9
+Mathematics,Basic 4,Patterns and Sequences,Find the missing term: 12 10 8 ___ 4,multiple_choice,b,The pattern decreases by 2 each time so the missing number is 6.,medium,10,60,5,6,7,8
+Mathematics,Basic 4,Problem Solving,A box contains 15 balls. If 6 balls are taken out how many are left?,multiple_choice,c,15 - 6 = 9 balls are left.,easy,10,45,8,10,9,11
+Mathematics,Basic 4,Problem Solving,Mary has 3 bags with 6 sweets in each bag. How many sweets does she have in total?,multiple_choice,b,3 × 6 = 18 sweets in total.,medium,10,60,15,18,21,24
+Mathematics,Basic 4,Problem Solving,A farmer has 24 chickens. He puts them equally into 4 pens. How many chickens are in each pen?,multiple_choice,c,24 ÷ 4 = 6 chickens in each pen.,medium,10,75,5,7,6,8
+Mathematics,Basic 4,Problem Solving,John buys 4 pencils at 50p each. How much does he pay in total?,multiple_choice,d,4 × 50p = 200p = GH¢ 2.00.,medium,10,75,GH¢ 1.50,GH¢ 1.75,GH¢ 1.80,GH¢ 2.00
+Mathematics,Basic 4,Problem Solving,A rectangle has length 8 cm and width 3 cm. What is its perimeter?,multiple_choice,a,Perimeter = 2(8 + 3) = 2(11) = 22 cm.,medium,10,90,22 cm,20 cm,24 cm,26 cm
+Mathematics,Basic 4,Problem Solving,There are 20 students in a class. If 8 are boys how many are girls?,multiple_choice,b,20 - 8 = 12 girls.,easy,10,45,10,12,14,16
+Mathematics,Basic 4,Problem Solving,A car travels 30 km in 1 hour. How far will it travel in 2 hours?,multiple_choice,c,30 × 2 = 60 km.,medium,10,75,50 km,55 km,60 km,65 km
+Mathematics,Basic 4,Problem Solving,Sarah has GH¢ 10. She spends GH¢ 4 on food and GH¢ 3 on books. How much is left?,multiple_choice,d,GH¢ 10 - GH¢ 4 - GH¢ 3 = GH¢ 3.,medium,10,90,GH¢ 2,GH¢ 4,GH¢ 5,GH¢ 3
+Mathematics,Basic 4,Problem Solving,A school has 5 classes with 15 students in each class. How many students are there in total?,multiple_choice,a,5 × 15 = 75 students.,medium,10,75,75,70,80,85
+Mathematics,Basic 4,Problem Solving,If 3 mangoes cost GH¢ 6 how much does 1 mango cost?,multiple_choice,b,GH¢ 6 ÷ 3 = GH¢ 2 per mango.,medium,10,75,GH¢ 1,GH¢ 2,GH¢ 3,GH¢ 18
+Mathematics,Basic 4,Simple Multiplication Tables,What is 4 × 6?,multiple_choice,c,4 × 6 = 24.,easy,10,30,20,22,24,26
+Mathematics,Basic 4,Simple Multiplication Tables,What is 7 × 5?,multiple_choice,d,7 × 5 = 35.,easy,10,30,30,32,34,35
+Mathematics,Basic 4,Simple Multiplication Tables,What is 6 × 8?,multiple_choice,b,6 × 8 = 48.,easy,10,30,42,48,54,56
+Mathematics,Basic 4,Simple Multiplication Tables,What is 9 × 4?,multiple_choice,a,9 × 4 = 36.,easy,10,30,36,40,45,54
+Mathematics,Basic 4,Simple Multiplication Tables,What is 3 × 9?,multiple_choice,c,3 × 9 = 27.,easy,10,30,24,25,27,30
+Mathematics,Basic 4,Simple Multiplication Tables,What is 8 × 7?,multiple_choice,b,8 × 7 = 56.,easy,10,30,49,56,63,64
+Mathematics,Basic 4,Simple Multiplication Tables,What is 5 × 6?,multiple_choice,d,5 × 6 = 30.,easy,10,30,25,28,32,30
+Mathematics,Basic 4,Simple Multiplication Tables,What is 7 × 7?,multiple_choice,a,7 × 7 = 49.,easy,10,30,49,56,42,35
+Mathematics,Basic 4,Simple Multiplication Tables,What is 8 × 9?,multiple_choice,c,8 × 9 = 72.,easy,10,30,64,70,72,81
+Mathematics,Basic 4,Simple Multiplication Tables,What is 6 × 6?,multiple_choice,b,6 × 6 = 36.,easy,10,30,30,36,42,48
+Mathematics,Basic 4,Division Facts,What is 24 ÷ 6?,multiple_choice,d,24 ÷ 6 = 4.,easy,10,30,3,5,6,4
+Mathematics,Basic 4,Division Facts,What is 35 ÷ 7?,multiple_choice,a,35 ÷ 7 = 5.,easy,10,30,5,6,7,8
+Mathematics,Basic 4,Division Facts,What is 48 ÷ 8?,multiple_choice,c,48 ÷ 8 = 6.,easy,10,30,5,7,6,8
+Mathematics,Basic 4,Division Facts,What is 36 ÷ 9?,multiple_choice,b,36 ÷ 9 = 4.,easy,10,30,3,4,5,6
+Mathematics,Basic 4,Division Facts,What is 27 ÷ 3?,multiple_choice,a,27 ÷ 3 = 9.,easy,10,30,9,8,7,6
+Mathematics,Basic 4,Division Facts,What is 56 ÷ 7?,multiple_choice,d,56 ÷ 7 = 8.,easy,10,30,6,7,9,8
+Mathematics,Basic 4,Division Facts,What is 30 ÷ 5?,multiple_choice,c,30 ÷ 5 = 6.,easy,10,30,5,7,6,8
+Mathematics,Basic 4,Division Facts,What is 49 ÷ 7?,multiple_choice,b,49 ÷ 7 = 7.,easy,10,30,6,7,8,9
+Mathematics,Basic 4,Division Facts,What is 72 ÷ 8?,multiple_choice,a,72 ÷ 8 = 9.,easy,10,30,9,8,7,6
+Mathematics,Basic 4,Division Facts,What is 42 ÷ 6?,multiple_choice,d,42 ÷ 6 = 7.,easy,10,30,6,8,9,7

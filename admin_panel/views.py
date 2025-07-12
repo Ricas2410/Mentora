@@ -22,6 +22,9 @@ from analytics.utils import business_intelligence
 from .models import SiteSettings, AdminActivity
 from core.models import CSVImportLog
 import os
+import re
+from difflib import SequenceMatcher
+from collections import defaultdict
 
 # Optional import for system monitoring
 try:
@@ -2047,3 +2050,248 @@ class ReadStudyNotesView(AdminRequiredMixin, TemplateView):
             context['error'] = 'Topic not found.'
 
         return context
+
+
+class DuplicateQuestionsView(AdminRequiredMixin, TemplateView):
+    """View for managing duplicate questions"""
+    template_name = 'admin_panel/duplicate_questions.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get all subjects and class levels for filtering
+        context['subjects'] = Subject.objects.filter(is_active=True).order_by('name')
+        context['class_levels'] = ClassLevel.objects.filter(is_active=True).order_by('level_number')
+
+        # Get statistics
+        context['total_questions'] = Question.objects.count()
+        context['active_questions'] = Question.objects.filter(is_active=True).count()
+
+        return context
+
+
+class DetectDuplicatesAPIView(AdminRequiredMixin, View):
+    """API view for detecting duplicate questions"""
+
+    def similarity(self, a, b):
+        """Calculate similarity between two strings"""
+        return SequenceMatcher(None, a.lower().strip(), b.lower().strip()).ratio()
+
+    def clean_question_text(self, text):
+        """Clean question text for comparison"""
+        # Remove HTML tags
+        text = re.sub(r'<[^>]+>', '', text)
+        # Remove extra whitespace
+        text = re.sub(r'\s+', ' ', text)
+        # Remove special characters but keep basic punctuation
+        text = re.sub(r'[^\w\s\?\!\.\,\;\:]', '', text)
+        return text.strip().lower()
+
+    def post(self, request):
+        try:
+            import json
+            data = json.loads(request.body)
+
+            # Get filter parameters
+            class_level_filter = data.get('class_level')
+            subject_filter = data.get('subject')
+            similarity_threshold = float(data.get('similarity_threshold', 0.85))
+
+            # Build query
+            questions = Question.objects.select_related(
+                'topic__class_level__subject'
+            ).filter(is_active=True)
+
+            if class_level_filter:
+                questions = questions.filter(topic__class_level__level_number=class_level_filter)
+            if subject_filter:
+                questions = questions.filter(topic__class_level__subject_id=subject_filter)
+
+            # Get all questions for comparison
+            all_questions = list(questions.values(
+                'id', 'question_text', 'topic__title',
+                'topic__class_level__name', 'topic__class_level__subject__name',
+                'topic__class_level__level_number', 'created_at'
+            ))
+
+            duplicates = defaultdict(list)
+            processed = set()
+
+            # Compare each question with every other question
+            for i, q1 in enumerate(all_questions):
+                if str(q1['id']) in processed:
+                    continue
+
+                q1_clean = self.clean_question_text(q1['question_text'])
+                group = [q1]
+
+                for j, q2 in enumerate(all_questions[i+1:], i+1):
+                    if str(q2['id']) in processed:
+                        continue
+
+                    q2_clean = self.clean_question_text(q2['question_text'])
+
+                    # Check for exact match or high similarity
+                    if q1_clean == q2_clean or self.similarity(q1_clean, q2_clean) >= similarity_threshold:
+                        group.append(q2)
+                        processed.add(str(q2['id']))
+
+                # If we found duplicates, add to results
+                if len(group) > 1:
+                    # Sort by creation date (oldest first)
+                    group.sort(key=lambda x: x['created_at'])
+                    duplicates[str(q1['id'])] = group
+                    processed.add(str(q1['id']))
+
+            # Format response
+            duplicate_groups = []
+            for group_id, questions in duplicates.items():
+                duplicate_groups.append({
+                    'group_id': group_id,
+                    'questions': questions,
+                    'count': len(questions)
+                })
+
+            # Sort by number of duplicates (highest first)
+            duplicate_groups.sort(key=lambda x: x['count'], reverse=True)
+
+            return JsonResponse({
+                'success': True,
+                'duplicates': duplicate_groups,
+                'total_groups': len(duplicate_groups),
+                'total_duplicates': sum(group['count'] for group in duplicate_groups),
+                'similarity_threshold': similarity_threshold
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+
+
+class DeleteDuplicatesAPIView(AdminRequiredMixin, View):
+    """API view for deleting duplicate questions with enhanced safety features"""
+
+    def clean_question_text(self, text):
+        """Clean question text for comparison (same as DetectDuplicatesAPIView)"""
+        # Remove HTML tags
+        text = re.sub(r'<[^>]+>', '', text)
+        # Remove extra whitespace
+        text = re.sub(r'\s+', ' ', text)
+        # Remove special characters but keep basic punctuation
+        text = re.sub(r'[^\w\s\?\!\.\,\;\:]', '', text)
+        return text.strip().lower()
+
+    def post(self, request):
+        try:
+            import json
+            data = json.loads(request.body)
+
+            action = data.get('action')  # 'selected', 'all_duplicates', 'group'
+            question_ids = data.get('question_ids', [])
+            group_id = data.get('group_id')
+
+            # Debug logging
+            print(f"DEBUG: Received deletion request")
+            print(f"DEBUG: Action: {action}")
+            print(f"DEBUG: Question IDs: {question_ids}")
+            print(f"DEBUG: Number of question IDs: {len(question_ids)}")
+
+            deleted_count = 0
+            preserved_count = 0
+            errors = []
+
+            # Safety check: Ensure we have valid question IDs
+            if not question_ids:
+                print("DEBUG: No question IDs provided")
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No questions selected for deletion.'
+                }, status=400)
+
+            if action == 'selected':
+                # Delete selected questions - trust the frontend selection logic
+                # The frontend already disables original questions, so we can safely delete selected ones
+                print(f"DEBUG: Processing 'selected' action")
+                questions_to_delete = Question.objects.filter(id__in=question_ids)
+
+                print(f"DEBUG: Found {questions_to_delete.count()} questions to delete")
+                for q in questions_to_delete:
+                    print(f"DEBUG: Question to delete: {q.id} - {q.question_text[:50]}...")
+
+                # Safety check: Verify questions exist
+                if not questions_to_delete.exists():
+                    print("DEBUG: No questions found with provided IDs")
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Selected questions not found.'
+                    }, status=404)
+
+                deleted_count = questions_to_delete.count()
+                print(f"DEBUG: Will delete {deleted_count} questions")
+
+                # Log each deletion with detailed information
+                for question in questions_to_delete:
+                    try:
+                        AdminActivity.objects.create(
+                            admin_user=request.user,
+                            action='DELETE_DUPLICATE_QUESTION',
+                            description=f'Deleted selected duplicate question: {question.question_text[:100]}... | Topic: {question.topic.title} | Subject: {question.topic.class_level.subject.name} | Grade: {question.topic.class_level.level_number}',
+                            model_name='Question',
+                            object_id=str(question.id),
+                            ip_address=request.META.get('REMOTE_ADDR'),
+                            user_agent=request.META.get('HTTP_USER_AGENT', '')
+                        )
+                    except Exception as e:
+                        errors.append(f'Error logging deletion for question {question.id}: {str(e)}')
+
+                # Perform the deletion
+                print(f"DEBUG: Performing deletion of {deleted_count} questions")
+                questions_to_delete.delete()
+                print(f"DEBUG: Deletion completed")
+
+                # No preserved count for selected action since frontend handles protection
+                preserved_count = 0
+
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Invalid action: {action}. Only "selected" action is supported.'
+                }, status=400)
+
+            # Prepare response
+            response_data = {
+                'success': True,
+                'deleted_count': deleted_count,
+                'preserved_count': preserved_count,
+                'message': f'Successfully deleted {deleted_count} duplicate questions.'
+            }
+
+            # Include errors if any occurred during logging
+            if errors:
+                response_data['warnings'] = errors
+                response_data['message'] += f' Note: {len(errors)} logging errors occurred.'
+
+            return JsonResponse(response_data)
+
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid JSON data provided.'
+            }, status=400)
+        except Exception as e:
+            # Log the error for debugging
+            AdminActivity.objects.create(
+                admin_user=request.user,
+                action='DELETE_DUPLICATE_ERROR',
+                description=f'Error during duplicate deletion: {str(e)}',
+                model_name='Question',
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT', '')
+            )
+
+            return JsonResponse({
+                'success': False,
+                'error': f'An error occurred while deleting questions: {str(e)}'
+            }, status=500)

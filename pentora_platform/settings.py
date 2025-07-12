@@ -16,7 +16,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-p%50(al(pq=t*ta4hstiz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,pentora.fly.dev,*.fly.dev', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,pentora.fly.dev,*.fly.dev,pentora.deigratiams.edu.gh,*.deigratiams.edu.gh', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # CSRF and CORS settings for production
 CSRF_TRUSTED_ORIGINS = [
@@ -297,8 +297,8 @@ if DEBUG:
     SITE_DOMAIN = config('SITE_DOMAIN', default='localhost:8000')
     SITE_PROTOCOL = config('SITE_PROTOCOL', default='http')
 else:
-    # Production settings - auto-detect from allowed hosts
-    SITE_DOMAIN = config('SITE_DOMAIN', default='pentora.fly.dev')
+    # Production settings - prioritize .edu.gh domain for better educational credibility
+    SITE_DOMAIN = config('SITE_DOMAIN', default='pentora.deigratiams.edu.gh')
     SITE_PROTOCOL = config('SITE_PROTOCOL', default='https')
 
 # WWW Redirect Configuration
@@ -309,6 +309,13 @@ APPEND_SLASH = True
 USE_ETAGS = True
 USE_L10N = True
 USE_TZ = True
+
+# SEO Configuration
+SITE_NAME = config('SITE_NAME', default='Pentora - Ghana\'s Leading Online Education Platform')
+if DEBUG:
+    SITE_URL = config('SITE_URL', default=f'{SITE_PROTOCOL}://{SITE_DOMAIN}')
+else:
+    SITE_URL = config('SITE_URL', default=f'{SITE_PROTOCOL}://{SITE_DOMAIN}')
 
 # Custom Error Pages
 HANDLER404 = 'core.views.custom_404_view'
