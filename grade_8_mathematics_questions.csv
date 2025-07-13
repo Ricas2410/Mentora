@@ -225,3 +225,67 @@ Mathematics,Grade 8,Pythagorean Theorem,What is a Pythagorean triple?,multiple_c
 Mathematics,Grade 8,Pythagorean Theorem,Which is a common Pythagorean triple?,multiple_choice,b,The triple (3 4 5) is a common Pythagorean triple since 3² + 4² = 5².,hard,10,150,(1 2 3),(3 4 5),(2 3 4),(5 6 7)
 Mathematics,Grade 8,Pythagorean Theorem,How can you use the Pythagorean Theorem to find distance?,multiple_choice,c,You can find distance between two points using the theorem as the basis for distance formula.,hard,10,180,Only for measuring height,Only for measuring width,Find distance between points using theorem as basis for distance formula,Cannot be used for distance
 Mathematics,Grade 8,Pythagorean Theorem,What type of triangle satisfies the Pythagorean Theorem?,multiple_choice,a,Only right triangles satisfy the Pythagorean Theorem.,medium,10,90,Only right triangles,All triangles,Only equilateral triangles,Only isosceles triangles
+
+
+
+
+Mathematics,Grade 7,Number Operations,What is the place value of 7 in 47,832?,multiple_choice,b,In 47832 the digit 7 is in the thousands place so its place value is 7000.,easy,10,45,700,7000,70,7
+Mathematics,Grade 7,Number Operations,Round 3,847 to the nearest hundred.,multiple_choice,c,Look at the tens digit (4). Since 4 < 5 round down to 3800.,easy,10,45,3000,3900,3800,4000
+Mathematics,Grade 7,Number Operations,What is the expanded form of 5,629?,multiple_choice,a,5629 = 5000 + 600 + 20 + 9 showing each digit's place value.,medium,10,75,5000 + 600 + 20 + 9,5 + 6 + 2 + 9,50 + 60 + 20 + 9,500 + 60 + 2 + 9
+Mathematics,Grade 7,Number Operations,Which number is written in standard form?,multiple_choice,d,Standard form is the usual way of writing numbers with digits in their place value positions.,easy,10,45,Three thousand forty-five,3000 + 40 + 5,3 thousands 4 tens 5 ones,3045
+Mathematics,Grade 7,Number Operations,What is the word form of 8,507?,multiple_choice,b,8507 is written as eight thousand five hundred seven in words.,medium,10,60,Eight thousand fifty-seven,Eight thousand five hundred seven,Eight thousand five hundred seventy,Eighty-five hundred seven
+Mathematics,Grade 7,Number Operations,Compare: 4,567 __ 4,576,multiple_choice,a,Compare digits from left to right. In the tens place 6 < 7 so 4567 < 4576.,medium,10,60,<,>,=,≤
+Mathematics,Grade 7,Number Operations,Order from least to greatest: 2,341  2,431  2,314,multiple_choice,c,Compare thousands (same) hundreds (same) tens: 1 < 3 < 4 so 2314 < 2341 < 2431.,medium,10,90,2431  2341  2314,2341  2314  2431,2314  2341  2431,2314  2431  2341
+Mathematics,Grade 7,Number Operations,What is 456 + 789?,multiple_choice,b,Add column by column: 6+9=15 (write 5 carry 1) 5+8+1=14 (write 4 carry 1) 4+7+1=12. Answer: 1245.,easy,10,60,1235,1245,1345,1145
+Mathematics,Grade 7,Number Operations,What is 1,000 - 347?,multiple_choice,c,Borrow from thousands: 1000 becomes 0999. Then 9-7=2 9-4=5 9-3=6 0-0=0. Answer: 653.,medium,10,75,663,643,653,753
+Mathematics,Grade 7,Number Operations,What is 23 × 45?,multiple_choice,a,23 × 45: (23 × 5) + (23 × 40) = 115 + 920 = 1035.,medium,10,90,1035,1025,1135,1045
+Mathematics,Grade 7,Number Operations,What is 144 ÷ 12?,multiple_choice,d,144 ÷ 12 = 12 because 12 × 12 = 144.,easy,10,45,10,11,13,12
+Mathematics,Grade 7,Number Operations,What is the remainder when 17 is divided by 5?,multiple_choice,b,17 ÷ 5 = 3 remainder 2 because 5 × 3 = 15 and 17 - 15 = 2.,medium,10,60,1,2,3,4
+Mathematics,Grade 7,Number Operations,Which number is divisible by 3?,multiple_choice,c,A number is divisible by 3 if the sum of its digits is divisible by 3. For 126: 1+2+6=9 and 9÷3=3.,medium,10,75,125,127,126,128
+Mathematics,Grade 7,Number Operations,Which number is divisible by 9?,multiple_choice,a,A number is divisible by 9 if the sum of its digits is divisible by 9. For 234: 2+3+4=9 and 9÷9=1.,medium,10,75,234,235,236,237
+Mathematics,Grade 7,Number Operations,What is the rule for divisibility by 2?,multiple_choice,d,A number is divisible by 2 if it ends in 0 2 4 6 or 8 (even numbers).,easy,10,60,Sum of digits is even,First digit is even,All digits are even,Last digit is even
+Mathematics,Grade 7,Number Operations,What is the rule for divisibility by 5?,multiple_choice,b,A number is divisible by 5 if it ends in 0 or 5.,easy,10,45,Ends in 0,Ends in 0 or 5,Sum of digits is 5,All digits are 5
+Mathematics,Grade 7,Number Operations,What is the rule for divisibility by 10?,multiple_choice,c,A number is divisible by 10 if it ends in 0.,easy,10,30,Sum of digits is 10,First digit is 1,Ends in 0,All digits are 0
+Mathematics,Grade 7,Number Operations,Find the missing number: 15 + __ = 23,multiple_choice,a,23 - 15 = 8 so the missing number is 8.,easy,10,45,8,7,9,6
+Mathematics,Grade 7,Number Operations,Find the missing number: __ × 6 = 42,multiple_choice,b,42 ÷ 6 = 7 so the missing number is 7.,easy,10,45,6,7,8,9
+Mathematics,Grade 7,Number Operations,What is 2³?,multiple_choice,c,2³ = 2 × 2 × 2 = 8.,easy,10,30,6,4,8,16
+Mathematics,Grade 7,Number Operations,What is 5²?,multiple_choice,d,5² = 5 × 5 = 25.,easy,10,30,10,15,20,25
+Mathematics,Grade 7,Number Operations,What is the square root of 36?,multiple_choice,a,√36 = 6 because 6 × 6 = 36.,easy,10,30,6,7,8,9
+Mathematics,Grade 7,Number Operations,What is the square root of 49?,multiple_choice,b,√49 = 7 because 7 × 7 = 49.,easy,10,30,6,7,8,9
+Mathematics,Grade 7,Number Operations,Which number is a perfect square?,multiple_choice,c,64 is a perfect square because 8 × 8 = 64.,medium,10,60,60,62,64,66
+Mathematics,Grade 7,Number Operations,What is 10⁴?,multiple_choice,d,10⁴ = 10 × 10 × 10 × 10 = 10000.,medium,10,45,1000,4000,40,10000
+Mathematics,Grade 7,Number Operations,What does the exponent tell us in 3⁵?,multiple_choice,b,The exponent 5 tells us to multiply 3 by itself 5 times.,medium,10,60,Add 3 five times,Multiply 3 by itself 5 times,Multiply 3 by 5,Divide 3 by 5
+Mathematics,Grade 7,Number Operations,What is 4⁰?,multiple_choice,a,Any number to the power of 0 equals 1.,medium,10,45,1,0,4,Undefined
+Mathematics,Grade 7,Number Operations,What is 7¹?,multiple_choice,c,Any number to the power of 1 equals itself.,easy,10,30,0,1,7,49
+Mathematics,Grade 7,Number Operations,Estimate: 298 + 403,multiple_choice,b,Round to nearest hundred: 300 + 400 = 700.,easy,10,45,600,700,800,900
+Mathematics,Grade 7,Number Operations,Estimate: 52 × 19,multiple_choice,c,Round to nearest ten: 50 × 20 = 1000.,medium,10,60,900,950,1000,1100
+Mathematics,Grade 7,Number Operations,What is the order of operations?,multiple_choice,a,BODMAS/PEMDAS: Brackets/Parentheses Orders/Exponents Division/Multiplication Addition/Subtraction.,hard,10,120,BODMAS or PEMDAS,Left to right always,Addition first always,Multiplication first always
+Mathematics,Grade 7,Number Operations,Calculate: 2 + 3 × 4,multiple_choice,d,Follow order of operations: 3 × 4 = 12 then 2 + 12 = 14.,medium,10,75,20,24,11,14
+Mathematics,Grade 7,Number Operations,Calculate: (5 + 3) × 2,multiple_choice,b,Brackets first: 5 + 3 = 8 then 8 × 2 = 16.,medium,10,60,13,16,18,11
+Mathematics,Grade 7,Number Operations,Calculate: 20 ÷ 4 + 3,multiple_choice,a,Division first: 20 ÷ 4 = 5 then 5 + 3 = 8.,medium,10,60,8,5,23,2
+Mathematics,Grade 7,Number Operations,Calculate: 15 - 2 × 3,multiple_choice,c,Multiplication first: 2 × 3 = 6 then 15 - 6 = 9.,medium,10,75,39,13,9,6
+Mathematics,Grade 7,Number Operations,What is a factor?,multiple_choice,d,A factor is a number that divides evenly into another number.,easy,10,60,A number that is added,A number that is subtracted,A number that is multiplied,A number that divides evenly into another
+Mathematics,Grade 7,Number Operations,What are the factors of 12?,multiple_choice,b,Factors of 12 are numbers that divide 12 evenly: 1 2 3 4 6 12.,medium,10,90,1 2 6 12,1 2 3 4 6 12,2 4 6 12,1 3 4 12
+Mathematics,Grade 7,Number Operations,What is a multiple?,multiple_choice,a,A multiple is the result of multiplying a number by a whole number.,easy,10,75,Result of multiplying a number by a whole number,A number with many parts,A number that is added many times,A very large number
+Mathematics,Grade 7,Number Operations,What are the first 5 multiples of 4?,multiple_choice,c,Multiples of 4: 4×1=4 4×2=8 4×3=12 4×4=16 4×5=20.,medium,10,90,1 2 3 4 5,4 8 12 16,4 8 12 16 20,0 4 8 12 16
+Mathematics,Grade 7,Number Operations,What is the greatest common factor (GCF) of 12 and 18?,multiple_choice,d,Factors of 12: 1 2 3 4 6 12. Factors of 18: 1 2 3 6 9 18. Common factors: 1 2 3 6. GCF = 6.,hard,10,120,2,3,4,6
+Mathematics,Grade 7,Number Operations,What is the least common multiple (LCM) of 4 and 6?,multiple_choice,b,Multiples of 4: 4 8 12 16... Multiples of 6: 6 12 18... First common multiple is 12.,hard,10,120,10,12,18,24
+Mathematics,Grade 7,Number Operations,Which number is prime?,multiple_choice,c,A prime number has exactly two factors: 1 and itself. 13 has only factors 1 and 13.,medium,10,75,12,15,13,14
+Mathematics,Grade 7,Number Operations,Which number is composite?,multiple_choice,a,A composite number has more than two factors. 15 has factors 1 3 5 15.,medium,10,75,15,17,19,23
+Mathematics,Grade 7,Number Operations,What is the prime factorization of 12?,multiple_choice,d,12 = 4 × 3 = 2² × 3.,hard,10,90,2 × 6,3 × 4,2 × 2 × 2,2² × 3
+Mathematics,Grade 7,Number Operations,Is 1 a prime number?,multiple_choice,b,No 1 is neither prime nor composite because it has only one factor (itself).,medium,10,60,Yes,No,Sometimes,Depends on context
+Mathematics,Grade 7,Number Operations,What is the smallest prime number?,multiple_choice,a,2 is the smallest prime number and the only even prime number.,easy,10,45,2,1,3,0
+Mathematics,Grade 7,Number Operations,What makes 2 special among prime numbers?,multiple_choice,c,2 is the only even prime number; all other primes are odd.,medium,10,90,It's the largest,It's the smallest,It's the only even prime,It has the most factors
+Mathematics,Grade 7,Number Operations,How do you test if a number is prime?,multiple_choice,b,Test if any number from 2 to the square root divides it evenly.,hard,10,150,Divide by all smaller numbers,Test divisibility from 2 to square root,Check if it's odd,See if it ends in certain digits
+Mathematics,Grade 7,Number Operations,What is 456 rounded to the nearest ten?,multiple_choice,d,Look at the ones digit (6). Since 6 ≥ 5 round up to 460.,easy,10,45,450,455,465,460
+Mathematics,Grade 7,Number Operations,What is 7,834 rounded to the nearest thousand?,multiple_choice,b,Look at the hundreds digit (8). Since 8 ≥ 5 round up to 8000.,medium,10,60,7000,8000,7800,8800
+Mathematics,Grade 7,Number Operations,When do you round up?,multiple_choice,c,Round up when the digit to the right is 5 or greater.,easy,10,60,Always,Never,When digit to right is 5 or greater,When digit to right is less than 5
+Mathematics,Grade 7,Number Operations,When do you round down?,multiple_choice,a,Round down when the digit to the right is less than 5.,easy,10,60,When digit to right is less than 5,When digit to right is 5 or greater,Always,Never
+Mathematics,Grade 7,Number Operations,What happens to digits to the right when rounding?,multiple_choice,d,Digits to the right of the rounding place become zeros.,medium,10,75,They stay the same,They increase by 1,They are removed,They become zeros
+Mathematics,Grade 7,Number Operations,Round 2,967 to the nearest hundred.,multiple_choice,b,Look at tens digit (6). Since 6 ≥ 5 round up to 3000.,medium,10,60,2900,3000,2970,2960
+Mathematics,Grade 7,Number Operations,What is mental math?,multiple_choice,a,Mental math is doing calculations in your head without paper or calculator.,easy,10,60,Doing calculations in your head,Using a calculator,Writing everything down,Guessing the answer
+Mathematics,Grade 7,Number Operations,What is a good strategy for adding 99 to a number?,multiple_choice,c,Add 100 then subtract 1: easier than adding 99 directly.,medium,10,90,Add 90 then 9,Subtract 1 then add 100,Add 100 then subtract 1,Break into 50 + 49
+Mathematics,Grade 7,Number Operations,How can you multiply by 25 mentally?,multiple_choice,b,Multiply by 100 then divide by 4 since 25 = 100 ÷ 4.,hard,10,120,Multiply by 20 then add 5,Multiply by 100 then divide by 4,Add the number 25 times,Multiply by 5 then by 5
+Mathematics,Grade 7,Number Operations,What's an easy way to multiply by 11?,multiple_choice,d,For 2-digit numbers add the digits and put the sum in the middle.,hard,10,150,Multiply by 10 then add 1,Add the number 11 times,Multiply by 12 then subtract,Add digits and put sum in middle
+Mathematics,Grade 7,Number Operations,How do you check if your addition is correct?,multiple_choice,a,Add in reverse order or subtract one addend from the sum.,medium,10,90,Add in reverse order or use subtraction,Multiply the numbers,Divide the sum,Estimate only
+

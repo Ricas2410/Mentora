@@ -12,14 +12,16 @@ class CSVImporter:
     Utility class for importing educational content from CSV files
     """
 
-    def __init__(self, import_type, file_content, user=None):
+    def __init__(self, import_type, file_content, user=None, import_mode='strict'):
         self.import_type = import_type
         self.file_content = file_content
         self.user = user
+        self.import_mode = import_mode  # 'strict' or 'partial'
         self.log = None
         self.errors = []
         self.successful_rows = 0
         self.failed_rows = 0
+        self.skipped_rows = []  # For partial import mode
 
     def import_data(self):
         """Main import method"""
@@ -149,9 +151,33 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                     row_validation['status'] = 'error'
 
                 # Validate question type
-                question_type = row.get('question_type', '').lower()
-                if question_type and question_type not in ['multiple_choice', 'fill_blank', 'true_false', 'short_answer']:
-                    row_validation['issues'].append(f"Invalid question type: {question_type}")
+                question_type = row.get('question_type', '').strip().lower()
+                valid_question_types = ['multiple_choice', 'fill_blank', 'true_false', 'short_answer']
+
+                if not question_type:
+                    row_validation['issues'].append("Missing question type")
+                    row_validation['status'] = 'error'
+                elif question_type not in valid_question_types:
+                    # Handle common variations and provide helpful suggestions
+                    suggestions = {
+                        'mc': 'multiple_choice',
+                        'multiple': 'multiple_choice',
+                        'choice': 'multiple_choice',
+                        'mcq': 'multiple_choice',
+                        'fill': 'fill_blank',
+                        'blank': 'fill_blank',
+                        'tf': 'true_false',
+                        'boolean': 'true_false',
+                        'short': 'short_answer',
+                        'essay': 'short_answer',
+                        'text': 'short_answer'
+                    }
+
+                    suggestion = suggestions.get(question_type, None)
+                    if suggestion:
+                        row_validation['issues'].append(f"Invalid question type: '{question_type}'. Did you mean '{suggestion}'?")
+                    else:
+                        row_validation['issues'].append(f"Invalid question type: '{question_type}'. Must be one of: {', '.join(valid_question_types)}")
                     row_validation['status'] = 'error'
 
                 # Check question type specific requirements
@@ -205,12 +231,14 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
             # Summary statistics
             error_count = sum(1 for result in preview_data['validation_results'] if result['status'] == 'error')
             warning_count = sum(1 for result in preview_data['validation_results'] if result['warnings'])
+            valid_rows = len(csv_data) - error_count
 
             preview_data['summary'] = {
                 'total_rows': len(csv_data),
                 'rows_with_errors': error_count,
                 'rows_with_warnings': warning_count,
-                'estimated_success_rate': max(0, (len(csv_data) - error_count) / len(csv_data) * 100) if csv_data else 0
+                'valid_rows': valid_rows,
+                'estimated_success_rate': max(0, valid_rows / len(csv_data) * 100) if csv_data else 0
             }
 
             return preview_data
@@ -219,9 +247,18 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
             raise ValueError(f"Failed to generate preview: {str(e)}")
 
     def import_questions(self, csv_data):
-        """Import questions from CSV with proper hierarchy validation"""
+        """Optimized bulk import of questions from CSV with proper hierarchy validation"""
         required_fields = ['subject_name', 'class_level_name', 'topic_title', 'question_text', 'question_type']
 
+        print(f"🚀 Starting optimized bulk import of {len(csv_data)} questions...")
+
+        # Pre-process and validate all data first
+        validated_data = []
+        subjects_cache = {}
+        class_levels_cache = {}
+        topics_cache = {}
+
+        # Phase 1: Validate and prepare all data
         for row_num, row in enumerate(csv_data, 1):
             try:
                 # Validate required fields
@@ -231,126 +268,336 @@ Available Topics: {', '.join([f'{topic[0]} ({topic[1]} - {topic[2]})' for topic 
                     raise ValueError(f"Missing required fields: {', '.join(missing_fields)}. Available fields: {', '.join(available_fields)}")
 
                 # Validate question type and required fields
-                question_type = row['question_type'].lower()
-                if question_type not in ['multiple_choice', 'fill_blank', 'true_false', 'short_answer']:
-                    raise ValueError(f"Invalid question type: {question_type}. Must be one of: multiple_choice, fill_blank, true_false, short_answer")
+                question_type = row.get('question_type', '').strip().lower()
+                valid_question_types = ['multiple_choice', 'fill_blank', 'true_false', 'short_answer']
 
-                # Find or create subject (with proper name cleaning)
-                subject_name = row['subject_name'].strip()
-                subject = Subject.objects.filter(name__iexact=subject_name).first()
-                if not subject:
-                    # Auto-create missing subject
-                    subject = Subject.objects.create(
-                        name=subject_name,
-                        description=f"Auto-created subject for {subject_name}",
-                        icon='📚',
-                        color='#3B82F6',
-                        order=Subject.objects.count() + 1,
-                        is_active=True
-                    )
-                    self.log.add_info(f"Auto-created subject: '{subject.name}'")
+                if not question_type:
+                    raise ValueError("Missing question type field")
+                elif question_type not in valid_question_types:
+                    # Handle common variations and provide helpful suggestions
+                    suggestions = {
+                        'mc': 'multiple_choice',
+                        'multiple': 'multiple_choice',
+                        'choice': 'multiple_choice',
+                        'mcq': 'multiple_choice',
+                        'fill': 'fill_blank',
+                        'blank': 'fill_blank',
+                        'tf': 'true_false',
+                        'boolean': 'true_false',
+                        'short': 'short_answer',
+                        'essay': 'short_answer',
+                        'text': 'short_answer'
+                    }
 
-                # Find or create class level within the subject (with proper name cleaning)
-                class_level_name = row['class_level_name'].strip()
-                class_level = ClassLevel.objects.filter(
-                    subject=subject,
-                    name__iexact=class_level_name
-                ).first()
-                if not class_level:
-                    # Auto-create missing class level
-                    # Extract level number from name (e.g., "Grade 1" -> 1, "Class 5" -> 5)
-                    import re
-                    level_match = re.search(r'\d+', class_level_name)
-                    level_number = int(level_match.group()) if level_match else ClassLevel.objects.filter(subject=subject).count() + 1
+                    suggestion = suggestions.get(question_type, None)
+                    if suggestion:
+                        raise ValueError(f"Invalid question type: '{question_type}'. Did you mean '{suggestion}'? Valid types: {', '.join(valid_question_types)}")
+                    else:
+                        raise ValueError(f"Invalid question type: '{question_type}'. Must be one of: {', '.join(valid_question_types)}")
 
-                    class_level = ClassLevel.objects.create(
-                        subject=subject,
-                        name=class_level_name,
-                        level_number=level_number,
-                        description=f"Auto-created class level for {class_level_name}",
-                        pass_percentage=60,
-                        is_active=True
-                    )
-                    self.log.add_info(f"Auto-created class level: '{class_level.name}' in {subject.name}")
-
-                # Find or create topic within the class level
-                topic = Topic.objects.filter(
-                    class_level=class_level,
-                    title__iexact=row['topic_title']
-                ).first()
-                if not topic:
-                    # Auto-create missing topic
-                    topic = Topic.objects.create(
-                        class_level=class_level,
-                        title=row['topic_title'].strip(),
-                        description=f"Auto-created topic for {row['topic_title']}",
-                        order=Topic.objects.filter(class_level=class_level).count() + 1,
-                        difficulty_level='beginner',
-                        estimated_duration=30,
-                        is_active=True
-                    )
-                    self.log.add_info(f"Auto-created topic: '{topic.title}' in {subject.name} - {class_level.name}")
-
-                # Validate question type specific requirements
-                if question_type == 'multiple_choice':
-                    if not row.get('correct_answer'):
-                        raise ValueError("Multiple choice questions require 'correct_answer' field (a, b, c, or d)")
-                    if row['correct_answer'].lower() not in ['a', 'b', 'c', 'd']:
-                        raise ValueError("Multiple choice 'correct_answer' must be a, b, c, or d")
-
-                    # Check if at least 2 choices are provided
-                    choices_provided = sum(1 for choice in ['choice_a', 'choice_b', 'choice_c', 'choice_d'] if row.get(choice, '').strip())
-                    if choices_provided < 2:
-                        raise ValueError("Multiple choice questions require at least 2 answer choices")
-
-                elif question_type in ['fill_blank', 'short_answer']:
-                    if not row.get('correct_answer'):
-                        raise ValueError(f"{question_type} questions require 'correct_answer' field")
-
-                elif question_type == 'true_false':
-                    if row.get('correct_answer', '').lower() not in ['true', 'false', 't', 'f', '1', '0']:
-                        raise ValueError("True/False questions require 'correct_answer' to be true/false, t/f, or 1/0")
-
-                with transaction.atomic():
-                    # Create question
-                    question = Question.objects.create(
-                        topic=topic,
-                        question_text=row['question_text'].strip(),
-                        question_type=question_type,
-                        correct_answer=row.get('correct_answer', '').strip(),
-                        explanation=row.get('explanation', '').strip(),
-                        difficulty=row.get('difficulty', 'medium').lower(),
-                        points=int(row.get('points', 1)),
-                        time_limit=int(row.get('time_limit', 45)),
-                        created_by=self.user
-                    )
-
-                    # Create answer choices for multiple choice questions
-                    if question.question_type == 'multiple_choice':
-                        choices = [
-                            ('a', row.get('choice_a', '').strip()),
-                            ('b', row.get('choice_b', '').strip()),
-                            ('c', row.get('choice_c', '').strip()),
-                            ('d', row.get('choice_d', '').strip())
-                        ]
-
-                        for choice_value, choice_text in choices:
-                            if choice_text:
-                                AnswerChoice.objects.create(
-                                    question=question,
-                                    choice_text=choice_text,
-                                    is_correct=(choice_value == row['correct_answer'].lower()),
-                                    order=ord(choice_value) - ord('a')
-                                )
-
-                self.successful_rows += 1
+                # Store validated row data
+                validated_data.append({
+                    'row_num': row_num,
+                    'subject_name': row['subject_name'].strip(),
+                    'class_level_name': row['class_level_name'].strip(),
+                    'topic_title': row['topic_title'].strip(),
+                    'question_text': row['question_text'].strip(),
+                    'question_type': question_type,
+                    'correct_answer': row.get('correct_answer', '').strip(),
+                    'explanation': row.get('explanation', '').strip(),
+                    'difficulty': row.get('difficulty', 'medium').lower(),
+                    'points': int(row.get('points', 1)),
+                    'time_limit': int(row.get('time_limit', 45)),
+                    'choice_a': row.get('choice_a', '').strip(),
+                    'choice_b': row.get('choice_b', '').strip(),
+                    'choice_c': row.get('choice_c', '').strip(),
+                    'choice_d': row.get('choice_d', '').strip(),
+                })
 
             except Exception as e:
                 self.failed_rows += 1
                 error_msg = f"Row {row_num}: {str(e)}"
-                self.errors.append(error_msg)
+                if self.import_mode == 'partial':
+                    self.skipped_rows.append({
+                        'row_number': row_num,
+                        'error': str(e),
+                        'data': dict(row)
+                    })
+                    if self.log:
+                        self.log.add_warning(f"Skipped {error_msg}")
+                else:
+                    self.errors.append(error_msg)
+                    if self.log:
+                        self.log.add_error(error_msg)
+
+        print(f"📋 Validated {len(validated_data)} questions, {self.failed_rows} failed validation")
+
+        # Phase 2: Bulk create hierarchy (subjects, class levels, topics)
+        if self.log:
+            self.log.add_info("Phase 2: Creating hierarchy (subjects, class levels, topics)")
+        self._bulk_create_hierarchy(validated_data, subjects_cache, class_levels_cache, topics_cache)
+
+        # Phase 3: Bulk create questions and answer choices
+        if self.log:
+            self.log.add_info("Phase 3: Bulk creating questions and answer choices")
+        self._bulk_create_questions(validated_data, topics_cache)
+
+    def _bulk_create_hierarchy(self, validated_data, subjects_cache, class_levels_cache, topics_cache):
+        """Bulk create subjects, class levels, and topics"""
+        print("🏗️ Creating hierarchy (subjects, class levels, topics)...")
+
+        # Collect unique hierarchy items
+        unique_subjects = set()
+        unique_class_levels = set()
+        unique_topics = set()
+
+        for data in validated_data:
+            unique_subjects.add(data['subject_name'])
+            unique_class_levels.add((data['subject_name'], data['class_level_name']))
+            unique_topics.add((data['subject_name'], data['class_level_name'], data['topic_title']))
+
+        # Bulk create subjects
+        existing_subjects = {s.name.lower(): s for s in Subject.objects.all()}
+        subjects_to_create = []
+
+        for subject_name in unique_subjects:
+            if subject_name.lower() not in existing_subjects:
+                subjects_to_create.append(Subject(
+                    name=subject_name,
+                    description=f"Auto-created subject for {subject_name}",
+                    icon='📚',
+                    color='#3B82F6',
+                    order=len(existing_subjects) + len(subjects_to_create) + 1,
+                    is_active=True
+                ))
+
+        if subjects_to_create:
+            Subject.objects.bulk_create(subjects_to_create)
+            print(f"✅ Created {len(subjects_to_create)} new subjects")
+            if self.log:
+                self.log.add_info(f"Created {len(subjects_to_create)} new subjects: {[s.name for s in subjects_to_create]}")
+
+        # Refresh subjects cache
+        for subject in Subject.objects.all():
+            subjects_cache[subject.name.lower()] = subject
+
+        # Bulk create class levels
+        existing_class_levels = {(cl.subject.name.lower(), cl.name.lower()): cl for cl in ClassLevel.objects.select_related('subject')}
+        class_levels_to_create = []
+
+        for subject_name, class_level_name in unique_class_levels:
+            key = (subject_name.lower(), class_level_name.lower())
+            if key not in existing_class_levels:
+                subject = subjects_cache[subject_name.lower()]
+
+                # Extract level number from name
+                import re
+                level_match = re.search(r'\d+', class_level_name)
+                level_number = int(level_match.group()) if level_match else ClassLevel.objects.filter(subject=subject).count() + 1
+
+                class_levels_to_create.append(ClassLevel(
+                    subject=subject,
+                    name=class_level_name,
+                    level_number=level_number,
+                    description=f"Auto-created class level for {class_level_name}",
+                    pass_percentage=60,
+                    is_active=True
+                ))
+
+        if class_levels_to_create:
+            ClassLevel.objects.bulk_create(class_levels_to_create)
+            print(f"✅ Created {len(class_levels_to_create)} new class levels")
+
+        # Refresh class levels cache
+        for class_level in ClassLevel.objects.select_related('subject'):
+            key = (class_level.subject.name.lower(), class_level.name.lower())
+            class_levels_cache[key] = class_level
+
+        # Bulk create topics
+        existing_topics = {(t.class_level.subject.name.lower(), t.class_level.name.lower(), t.title.lower()): t
+                          for t in Topic.objects.select_related('class_level__subject')}
+        topics_to_create = []
+
+        for subject_name, class_level_name, topic_title in unique_topics:
+            key = (subject_name.lower(), class_level_name.lower(), topic_title.lower())
+            if key not in existing_topics:
+                class_level = class_levels_cache[(subject_name.lower(), class_level_name.lower())]
+
+                topics_to_create.append(Topic(
+                    class_level=class_level,
+                    title=topic_title,
+                    description=f"Auto-created topic for {topic_title}",
+                    order=Topic.objects.filter(class_level=class_level).count() + 1,
+                    difficulty_level='beginner',
+                    estimated_duration=30,
+                    is_active=True
+                ))
+
+        if topics_to_create:
+            Topic.objects.bulk_create(topics_to_create)
+            print(f"✅ Created {len(topics_to_create)} new topics")
+
+        # Refresh topics cache
+        for topic in Topic.objects.select_related('class_level__subject'):
+            key = (topic.class_level.subject.name.lower(), topic.class_level.name.lower(), topic.title.lower())
+            topics_cache[key] = topic
+    def _bulk_create_questions(self, validated_data, topics_cache):
+        """Bulk create questions and answer choices"""
+        print(f"📝 Bulk creating {len(validated_data)} questions...")
+
+        questions_to_create = []
+        answer_choices_to_create = []
+
+        # Prepare questions for bulk creation
+        for data in validated_data:
+            try:
+                # Get topic from cache
+                topic_key = (data['subject_name'].lower(), data['class_level_name'].lower(), data['topic_title'].lower())
+                topic = topics_cache.get(topic_key)
+
+                if not topic:
+                    raise ValueError(f"Topic not found: {data['topic_title']}")
+
+                # Validate question type specific requirements
+                if data['question_type'] == 'multiple_choice':
+                    if not data['correct_answer']:
+                        raise ValueError("Multiple choice questions require 'correct_answer' field (a, b, c, or d)")
+                    if data['correct_answer'].lower() not in ['a', 'b', 'c', 'd']:
+                        raise ValueError("Multiple choice 'correct_answer' must be a, b, c, or d")
+
+                    # Check if at least 2 choices are provided
+                    choices_provided = sum(1 for choice in [data['choice_a'], data['choice_b'], data['choice_c'], data['choice_d']] if choice)
+                    if choices_provided < 2:
+                        raise ValueError("Multiple choice questions require at least 2 answer choices")
+
+                elif data['question_type'] in ['fill_blank', 'short_answer']:
+                    if not data['correct_answer']:
+                        raise ValueError(f"{data['question_type']} questions require 'correct_answer' field")
+
+                elif data['question_type'] == 'true_false':
+                    if data['correct_answer'].lower() not in ['true', 'false', 't', 'f', '1', '0']:
+                        raise ValueError("True/False questions require 'correct_answer' to be true/false, t/f, or 1/0")
+
+                # Create question object (not saved yet)
+                question = Question(
+                    topic=topic,
+                    question_text=data['question_text'],
+                    question_type=data['question_type'],
+                    correct_answer=data['correct_answer'],
+                    explanation=data['explanation'],
+                    difficulty=data['difficulty'],
+                    points=data['points'],
+                    time_limit=data['time_limit'],
+                    created_by=self.user
+                )
+
+                questions_to_create.append((question, data))
+
+            except Exception as e:
+                self.failed_rows += 1
+                error_msg = f"Row {data['row_num']}: {str(e)}"
+                if self.import_mode == 'partial':
+                    self.skipped_rows.append({
+                        'row_number': data['row_num'],
+                        'error': str(e),
+                        'data': data
+                    })
+                    if self.log:
+                        self.log.add_warning(f"Skipped {error_msg}")
+                else:
+                    self.errors.append(error_msg)
+                    if self.log:
+                        self.log.add_error(error_msg)
+
+        # Bulk create questions in chunks for better performance
+        chunk_size = 500  # Process 500 questions at a time
+        total_chunks = (len(questions_to_create) + chunk_size - 1) // chunk_size
+
+        for chunk_num in range(total_chunks):
+            start_idx = chunk_num * chunk_size
+            end_idx = min(start_idx + chunk_size, len(questions_to_create))
+            chunk = questions_to_create[start_idx:end_idx]
+
+            print(f"📦 Processing chunk {chunk_num + 1}/{total_chunks} ({len(chunk)} questions)")
+
+            try:
+                with transaction.atomic():
+                    # Extract just the question objects for bulk_create
+                    questions_only = [item[0] for item in chunk]
+                    created_questions = Question.objects.bulk_create(questions_only)
+
+                    # Create answer choices for multiple choice questions
+                    choices_batch = []
+                    for i, (question, data) in enumerate(chunk):
+                        created_question = created_questions[i]
+
+                        if data['question_type'] == 'multiple_choice':
+                            choices = [
+                                ('a', data['choice_a']),
+                                ('b', data['choice_b']),
+                                ('c', data['choice_c']),
+                                ('d', data['choice_d'])
+                            ]
+
+                            for choice_value, choice_text in choices:
+                                if choice_text:
+                                    choices_batch.append(AnswerChoice(
+                                        question=created_question,
+                                        choice_text=choice_text,
+                                        is_correct=(choice_value == data['correct_answer'].lower()),
+                                        order=ord(choice_value) - ord('a')
+                                    ))
+
+                    # Bulk create answer choices
+                    if choices_batch:
+                        AnswerChoice.objects.bulk_create(choices_batch)
+
+                    self.successful_rows += len(chunk)
+                    print(f"✅ Successfully created {len(chunk)} questions with answer choices")
+
+                    if self.log:
+                        self.log.add_info(f"Chunk {chunk_num + 1}/{total_chunks}: Created {len(chunk)} questions")
+
+            except Exception as e:
+                # Handle chunk failure
+                print(f"❌ Error creating chunk {chunk_num + 1}: {str(e)}")
                 if self.log:
-                    self.log.add_error(error_msg)
+                    self.log.add_error(f"Chunk {chunk_num + 1} failed: {str(e)}")
+
+                # Add failed questions to error tracking
+                for question, data in chunk:
+                    self.failed_rows += 1
+                    error_msg = f"Row {data['row_num']}: Chunk creation failed - {str(e)}"
+                    self.errors.append(error_msg)
+
+        print(f"🎉 Bulk import completed! {self.successful_rows} questions created successfully")
+
+        # Update log status and return results
+        if self.log:
+            if self.failed_rows == 0 and len(self.skipped_rows) == 0:
+                self.log.status = 'completed'
+                self.log.success_message = f"Successfully imported {self.successful_rows} questions"
+            else:
+                self.log.status = 'completed_with_errors'
+                if self.import_mode == 'partial':
+                    self.log.success_message = f"Successfully imported {self.successful_rows} questions, skipped {len(self.skipped_rows)} with errors"
+                else:
+                    self.log.error_message = f"Imported {self.successful_rows} questions, {self.failed_rows} failed"
+
+            self.log.successful_rows = self.successful_rows
+            self.log.failed_rows = self.failed_rows if self.import_mode == 'strict' else len(self.skipped_rows)
+            self.log.save()
+
+        return {
+            'success': True,
+            'total_processed': self.successful_rows + self.failed_rows + len(self.skipped_rows),
+            'successful_rows': self.successful_rows,
+            'failed_rows': self.failed_rows,
+            'skipped_rows': len(self.skipped_rows),
+            'errors': self.errors,
+            'skipped_details': self.skipped_rows,
+            'import_mode': self.import_mode
+        }
 
     def import_study_notes(self, csv_data):
         """Import study notes from CSV with proper hierarchy validation"""

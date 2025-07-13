@@ -546,10 +546,15 @@ class ManageQuestionsView(AdminRequiredMixin, TemplateView):
             '-created_at'
         )
 
-        # Pagination
-        paginator = Paginator(questions, 20)
+        # Optimized pagination with larger page sizes for better performance
+        page_size = min(int(self.request.GET.get('page_size', 100)), 500)  # Default 100, max 500
+        paginator = Paginator(questions, page_size)
         page_number = self.request.GET.get('page')
-        context['questions'] = paginator.get_page(page_number)
+        page_obj = paginator.get_page(page_number)
+
+        context['questions'] = page_obj
+        context['page_size'] = page_size
+        context['total_questions'] = paginator.count
 
         # Get hierarchical filter options - distinct grade levels only
         # Group by level_number to avoid duplicates across subjects
@@ -941,8 +946,35 @@ class CSVImportView(AdminRequiredMixin, TemplateView):
             })
 
         try:
-            # Read CSV content
-            file_content = csv_file.read().decode('utf-8')
+            # Try multiple encodings to handle different file formats
+            file_content = None
+            encoding_used = None
+
+            # List of encodings to try in order
+            encodings_to_try = [
+                'utf-8',           # Standard UTF-8
+                'utf-8-sig',       # UTF-8 with BOM (Excel often saves this way)
+                'latin1',          # Windows-1252 / ISO-8859-1
+                'cp1252',          # Windows-1252 (common in Windows Excel)
+                'iso-8859-1',      # ISO Latin-1
+                'ascii'            # Basic ASCII
+            ]
+
+            csv_bytes = csv_file.read()
+
+            for encoding in encodings_to_try:
+                try:
+                    file_content = csv_bytes.decode(encoding)
+                    encoding_used = encoding
+                    break
+                except UnicodeDecodeError:
+                    continue
+
+            if file_content is None:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Unable to read file. The file may contain unsupported characters or be corrupted. Please save your CSV file as UTF-8 encoding or try removing special characters.'
+                })
 
             # Parse and validate CSV
             from core.utils.csv_import import CSVImporter
@@ -951,15 +983,15 @@ class CSVImportView(AdminRequiredMixin, TemplateView):
             # Get preview data
             preview_data = importer.get_preview_data()
 
+            # Add encoding info to response for debugging
+            preview_data['encoding_info'] = {
+                'detected_encoding': encoding_used,
+                'file_size_bytes': len(csv_bytes)
+            }
+
             return JsonResponse({
                 'success': True,
                 'preview_data': preview_data
-            })
-
-        except UnicodeDecodeError:
-            return JsonResponse({
-                'success': False,
-                'error': 'Invalid file encoding. Please ensure the file is saved as UTF-8.'
             })
         except Exception as e:
             return JsonResponse({
@@ -978,38 +1010,105 @@ class CSVImportView(AdminRequiredMixin, TemplateView):
         if form.is_valid():
             csv_file = form.cleaned_data['csv_file']
             target_class_levels = form.cleaned_data['target_class_levels']
+            import_mode = request.POST.get('import_mode', 'strict')  # Get import mode
 
             try:
-                # Read CSV content
-                file_content = csv_file.read().decode('utf-8')
+                # Try multiple encodings to handle different file formats
+                file_content = None
+                encoding_used = None
 
-                # Import questions
+                # List of encodings to try in order
+                encodings_to_try = [
+                    'utf-8',           # Standard UTF-8
+                    'utf-8-sig',       # UTF-8 with BOM (Excel often saves this way)
+                    'latin1',          # Windows-1252 / ISO-8859-1
+                    'cp1252',          # Windows-1252 (common in Windows Excel)
+                    'iso-8859-1',      # ISO Latin-1
+                    'ascii'            # Basic ASCII
+                ]
+
+                csv_bytes = csv_file.read()
+
+                for encoding in encodings_to_try:
+                    try:
+                        file_content = csv_bytes.decode(encoding)
+                        encoding_used = encoding
+                        break
+                    except UnicodeDecodeError:
+                        continue
+
+                if file_content is None:
+                    messages.error(request, 'Unable to read file. The file may contain unsupported characters or be corrupted. Please save your CSV file as UTF-8 encoding or try removing special characters.')
+                    return redirect('admin_panel:csv_import')
+
+                # Import questions with specified mode and progress tracking
                 from core.utils.csv_import import CSVImporter
-                importer = CSVImporter('questions', file_content, request.user)
+                import time
+
+                start_time = time.time()
+                print(f"🚀 Starting CSV import with mode: {import_mode}")
+
+                importer = CSVImporter('questions', file_content, request.user, import_mode)
                 result = importer.import_data()
+
+                end_time = time.time()
+                import_duration = end_time - start_time
+                print(f"⏱️ Import completed in {import_duration:.2f} seconds")
+
+                # Add performance info to result
+                result['import_duration'] = round(import_duration, 2)
+                result['questions_per_second'] = round(result.get('successful_rows', 0) / import_duration, 2) if import_duration > 0 else 0
 
                 if result['success']:
                     # Log successful import activity
                     AdminActivity.objects.create(
                         admin_user=request.user,
                         action='CSV_IMPORT',
-                        description=f'Imported questions: {result["successful_rows"]} successful, {result["failed_rows"]} failed',
+                        description=f'Imported questions (Mode: {import_mode}): {result["successful_rows"]} successful, {result.get("skipped_rows", result["failed_rows"])} skipped/failed',
                         model_name='CSVImport',
                         ip_address=request.META.get('REMOTE_ADDR'),
                         user_agent=request.META.get('HTTP_USER_AGENT', '')
                     )
 
-                    if result["failed_rows"] > 0:
-                        messages.warning(
-                            request,
-                            f'Import partially completed! {result["successful_rows"]} questions imported. '
-                            f'{result["failed_rows"]} failed. Check the import log for details.'
-                        )
+                    # Handle different import modes and results
+                    if import_mode == 'partial':
+                        if result.get("skipped_rows", 0) > 0:
+                            messages.success(
+                                request,
+                                f'✅ Partial import completed! {result["successful_rows"]} questions imported successfully. '
+                                f'{result["skipped_rows"]} rows with errors were skipped. '
+                                f'⚡ Performance: {result["import_duration"]}s ({result["questions_per_second"]} questions/sec)'
+                            )
+
+                            # Show details about skipped rows
+                            if result.get('skipped_details'):
+                                skipped_summary = []
+                                for skip in result['skipped_details'][:3]:  # Show first 3 errors
+                                    skipped_summary.append(f"Row {skip['row_number']}: {skip['error']}")
+                                if len(result['skipped_details']) > 3:
+                                    skipped_summary.append(f"... and {len(result['skipped_details']) - 3} more errors")
+
+                                messages.info(request, f"📋 Skipped rows details:\n• " + "\n• ".join(skipped_summary))
+                        else:
+                            messages.success(
+                                request,
+                                f'✅ Import completed successfully! {result["successful_rows"]} questions imported. '
+                                f'⚡ Performance: {result["import_duration"]}s ({result["questions_per_second"]} questions/sec)'
+                            )
                     else:
-                        messages.success(
-                            request,
-                            f'Import completed successfully! {result["successful_rows"]} questions imported.'
-                        )
+                        # Strict mode
+                        if result["failed_rows"] > 0:
+                            messages.warning(
+                                request,
+                                f'⚠️ Import partially completed! {result["successful_rows"]} questions imported. '
+                                f'{result["failed_rows"]} failed. Check the import log for details.'
+                            )
+                        else:
+                            messages.success(
+                                request,
+                                f'✅ Import completed successfully! {result["successful_rows"]} questions imported. '
+                                f'⚡ Performance: {result["import_duration"]}s ({result["questions_per_second"]} questions/sec)'
+                            )
                 else:
                     messages.error(request, f'Import failed: {result["error"]}')
 
@@ -2071,7 +2170,11 @@ class DuplicateQuestionsView(AdminRequiredMixin, TemplateView):
 
 
 class DetectDuplicatesAPIView(AdminRequiredMixin, View):
-    """API view for detecting duplicate questions"""
+    """Optimized API view for detecting duplicate questions with real-time progress"""
+
+    def __init__(self):
+        super().__init__()
+        self.progress_data = {}  # Store progress for each request
 
     def similarity(self, a, b):
         """Calculate similarity between two strings"""
@@ -2090,14 +2193,18 @@ class DetectDuplicatesAPIView(AdminRequiredMixin, View):
     def post(self, request):
         try:
             import json
+            import time
             data = json.loads(request.body)
 
             # Get filter parameters
             class_level_filter = data.get('class_level')
             subject_filter = data.get('subject')
             similarity_threshold = float(data.get('similarity_threshold', 0.85))
+            request_id = data.get('request_id', 'default')
 
-            # Build query
+            print(f"🔍 Starting optimized duplicate detection with threshold: {similarity_threshold}")
+
+            # Build optimized query with select_related for better performance
             questions = Question.objects.select_related(
                 'topic__class_level__subject'
             ).filter(is_active=True)
@@ -2107,63 +2214,67 @@ class DetectDuplicatesAPIView(AdminRequiredMixin, View):
             if subject_filter:
                 questions = questions.filter(topic__class_level__subject_id=subject_filter)
 
-            # Get all questions for comparison
-            all_questions = list(questions.values(
-                'id', 'question_text', 'topic__title',
-                'topic__class_level__name', 'topic__class_level__subject__name',
-                'topic__class_level__level_number', 'created_at'
-            ))
+            # Count total questions first
+            total_count = questions.count()
+            print(f"📊 Found {total_count} questions to analyze")
 
-            duplicates = defaultdict(list)
-            processed = set()
-
-            # Compare each question with every other question
-            for i, q1 in enumerate(all_questions):
-                if str(q1['id']) in processed:
-                    continue
-
-                q1_clean = self.clean_question_text(q1['question_text'])
-                group = [q1]
-
-                for j, q2 in enumerate(all_questions[i+1:], i+1):
-                    if str(q2['id']) in processed:
-                        continue
-
-                    q2_clean = self.clean_question_text(q2['question_text'])
-
-                    # Check for exact match or high similarity
-                    if q1_clean == q2_clean or self.similarity(q1_clean, q2_clean) >= similarity_threshold:
-                        group.append(q2)
-                        processed.add(str(q2['id']))
-
-                # If we found duplicates, add to results
-                if len(group) > 1:
-                    # Sort by creation date (oldest first)
-                    group.sort(key=lambda x: x['created_at'])
-                    duplicates[str(q1['id'])] = group
-                    processed.add(str(q1['id']))
-
-            # Format response
-            duplicate_groups = []
-            for group_id, questions in duplicates.items():
-                duplicate_groups.append({
-                    'group_id': group_id,
-                    'questions': questions,
-                    'count': len(questions)
+            if total_count < 2:
+                return JsonResponse({
+                    'success': True,
+                    'duplicates': [],
+                    'total_groups': 0,
+                    'total_duplicates': 0,
+                    'similarity_threshold': similarity_threshold,
+                    'processing_time': 0,
+                    'questions_analyzed': total_count
                 })
 
-            # Sort by number of duplicates (highest first)
-            duplicate_groups.sort(key=lambda x: x['count'], reverse=True)
+            # Use optimized duplicate detector
+            from .duplicate_detector import OptimizedDuplicateDetector
+
+            def progress_callback(message, percentage):
+                """Store progress for potential real-time updates"""
+                self.progress_data[request_id] = {
+                    'message': message,
+                    'percentage': percentage,
+                    'timestamp': time.time()
+                }
+                print(f"📈 Progress: {percentage:.1f}% - {message}")
+
+            detector = OptimizedDuplicateDetector(
+                similarity_threshold=similarity_threshold,
+                chunk_size=min(1000, total_count // 10 + 100)  # Dynamic chunk size
+            )
+
+            start_time = time.time()
+            duplicate_groups = detector.find_duplicates_optimized(
+                questions,
+                progress_callback=progress_callback
+            )
+            end_time = time.time()
+
+            processing_time = end_time - start_time
+            total_duplicates = sum(group['count'] for group in duplicate_groups)
+
+            print(f"✅ Duplicate detection completed in {processing_time:.2f}s")
+            print(f"📋 Found {len(duplicate_groups)} groups with {total_duplicates} total duplicates")
 
             return JsonResponse({
                 'success': True,
                 'duplicates': duplicate_groups,
                 'total_groups': len(duplicate_groups),
-                'total_duplicates': sum(group['count'] for group in duplicate_groups),
-                'similarity_threshold': similarity_threshold
+                'total_duplicates': total_duplicates,
+                'similarity_threshold': similarity_threshold,
+                'processing_time': round(processing_time, 2),
+                'questions_analyzed': total_count,
+                'performance_stats': {
+                    'questions_per_second': round(total_count / processing_time, 2) if processing_time > 0 else 0,
+                    'optimization_used': 'hash_based_chunking'
+                }
             })
 
         except Exception as e:
+            print(f"❌ Error in duplicate detection: {str(e)}")
             return JsonResponse({
                 'success': False,
                 'error': str(e)
@@ -2184,6 +2295,7 @@ class DeleteDuplicatesAPIView(AdminRequiredMixin, View):
         return text.strip().lower()
 
     def post(self, request):
+        from django.db import transaction
         try:
             import json
             data = json.loads(request.body)
@@ -2211,47 +2323,33 @@ class DeleteDuplicatesAPIView(AdminRequiredMixin, View):
                 }, status=400)
 
             if action == 'selected':
-                # Delete selected questions - trust the frontend selection logic
-                # The frontend already disables original questions, so we can safely delete selected ones
-                print(f"DEBUG: Processing 'selected' action")
-                questions_to_delete = Question.objects.filter(id__in=question_ids)
+                # Optimized bulk deletion for selected questions
+                print(f"🗑️ Starting optimized bulk deletion of {len(question_ids)} questions...")
 
-                print(f"DEBUG: Found {questions_to_delete.count()} questions to delete")
-                for q in questions_to_delete:
-                    print(f"DEBUG: Question to delete: {q.id} - {q.question_text[:50]}...")
+                # Use bulk operations for much faster deletion
+                with transaction.atomic():
+                    # First, bulk delete answer choices
+                    answer_choices_deleted = AnswerChoice.objects.filter(question_id__in=question_ids).delete()
+                    print(f"✅ Deleted {answer_choices_deleted[0]} answer choices")
 
-                # Safety check: Verify questions exist
-                if not questions_to_delete.exists():
-                    print("DEBUG: No questions found with provided IDs")
-                    return JsonResponse({
-                        'success': False,
-                        'error': 'Selected questions not found.'
-                    }, status=404)
+                    # Then, bulk delete questions
+                    questions_deleted = Question.objects.filter(id__in=question_ids).delete()
+                    deleted_count = questions_deleted[0]
+                    print(f"✅ Deleted {deleted_count} questions")
 
-                deleted_count = questions_to_delete.count()
-                print(f"DEBUG: Will delete {deleted_count} questions")
+                # Log the bulk deletion activity
+                try:
+                    AdminActivity.objects.create(
+                        admin_user=request.user,
+                        action='BULK_DELETE_DUPLICATE_QUESTIONS',
+                        description=f'Bulk deleted {deleted_count} duplicate questions',
+                        model_name='Question',
+                        ip_address=request.META.get('REMOTE_ADDR'),
+                        user_agent=request.META.get('HTTP_USER_AGENT', '')
+                    )
+                except Exception as e:
+                    errors.append(f'Error logging bulk deletion: {str(e)}')
 
-                # Log each deletion with detailed information
-                for question in questions_to_delete:
-                    try:
-                        AdminActivity.objects.create(
-                            admin_user=request.user,
-                            action='DELETE_DUPLICATE_QUESTION',
-                            description=f'Deleted selected duplicate question: {question.question_text[:100]}... | Topic: {question.topic.title} | Subject: {question.topic.class_level.subject.name} | Grade: {question.topic.class_level.level_number}',
-                            model_name='Question',
-                            object_id=str(question.id),
-                            ip_address=request.META.get('REMOTE_ADDR'),
-                            user_agent=request.META.get('HTTP_USER_AGENT', '')
-                        )
-                    except Exception as e:
-                        errors.append(f'Error logging deletion for question {question.id}: {str(e)}')
-
-                # Perform the deletion
-                print(f"DEBUG: Performing deletion of {deleted_count} questions")
-                questions_to_delete.delete()
-                print(f"DEBUG: Deletion completed")
-
-                # No preserved count for selected action since frontend handles protection
                 preserved_count = 0
 
             else:

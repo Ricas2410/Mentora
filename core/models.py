@@ -177,6 +177,14 @@ class CSVImportLog(models.Model):
             self.error_log = f"INFO: {info_message}"
         self.save()
 
+    def add_warning(self, warning_message):
+        """Add warning message to the error log"""
+        if self.error_log:
+            self.error_log += f"\nWARNING: {warning_message}"
+        else:
+            self.error_log = f"WARNING: {warning_message}"
+        self.save()
+
 
 class HeroSection(models.Model):
     """

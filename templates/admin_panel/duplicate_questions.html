@@ -368,13 +368,19 @@ class DuplicateQuestionsManager {
         const classLevel = document.getElementById('classLevelFilter').value;
         const subject = document.getElementById('subjectFilter').value;
         const similarityThreshold = document.getElementById('similarityThreshold').value;
+        const requestId = 'duplicate_' + Date.now();
 
-        this.showLoading('Analyzing questions...', 'Comparing question texts for similarities');
+        this.showLoading('🔍 Starting optimized duplicate detection...', 'Using advanced algorithms for faster processing');
+
+        // Initialize progress tracking
+        let progressInterval = null;
 
         try {
+            const startTime = Date.now();
+
             // Simulate progress updates
             let progress = 0;
-            const progressInterval = setInterval(() => {
+            progressInterval = setInterval(() => {
                 progress += Math.random() * 15;
                 if (progress > 90) progress = 90;
                 this.updateProgress(progress);
@@ -389,11 +395,15 @@ class DuplicateQuestionsManager {
                 body: JSON.stringify({
                     class_level: classLevel,
                     subject: subject,
-                    similarity_threshold: parseFloat(similarityThreshold)
+                    similarity_threshold: parseFloat(similarityThreshold),
+                    request_id: requestId
                 })
             });
 
-            clearInterval(progressInterval);
+            // Clear progress interval
+            if (progressInterval) {
+                clearInterval(progressInterval);
+            }
             this.updateProgress(100);
 
             const data = await response.json();
@@ -401,10 +411,27 @@ class DuplicateQuestionsManager {
             if (data.success) {
                 this.duplicateData = data.duplicates;
                 this.displayResults(data);
+
+                // Show performance information
+                if (data.performance_stats) {
+                    const performanceInfo = `
+                        <strong>Detection Complete!</strong><br>
+                        📊 <strong>${data.total_groups}</strong> groups, <strong>${data.total_duplicates}</strong> duplicates found<br>
+                        ⚡ Processed <strong>${data.questions_analyzed}</strong> questions in <strong>${data.processing_time}s</strong><br>
+                        🚀 Speed: <strong>${data.performance_stats.questions_per_second}</strong> questions/sec
+                    `;
+                    this.showSuccess(performanceInfo);
+                }
+
+                console.log('🎉 Duplicate detection completed:', data);
             } else {
                 this.showError('Error detecting duplicates: ' + data.error);
             }
         } catch (error) {
+            // Clear progress interval on error
+            if (progressInterval) {
+                clearInterval(progressInterval);
+            }
             this.showError('Network error: ' + error.message);
         } finally {
             this.hideLoading();
@@ -855,9 +882,49 @@ class DuplicateQuestionsManager {
     }
 
     showNotification(title, message, type) {
-        // Simple alert for now - can be enhanced with toast notifications
+        // Create a proper HTML notification instead of alert
         const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
-        alert(`${icon} ${title}\n\n${message}`);
+
+        // Remove any existing notifications
+        const existingNotification = document.querySelector('.duplicate-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} duplicate-notification`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+        `;
+
+        notification.innerHTML = `
+            <div class="d-flex align-items-start">
+                <div class="me-2" style="font-size: 1.2em;">${icon}</div>
+                <div class="flex-grow-1">
+                    <strong>${title}</strong><br>
+                    <div style="margin-top: 5px;">${message}</div>
+                </div>
+                <button type="button" class="btn-close ms-2" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+
+        // Add to page
+        document.body.appendChild(notification);
+
+        // Auto-remove after 8 seconds for success, 12 seconds for errors
+        const autoRemoveTime = type === 'success' ? 8000 : 12000;
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, autoRemoveTime);
     }
 }
 

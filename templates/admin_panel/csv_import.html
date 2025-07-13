@@ -17,6 +17,7 @@
             <div class="card-body">
                 <form method="post" enctype="multipart/form-data" id="importForm">
                     {% csrf_token %}
+                    <input type="hidden" name="import_mode" id="importMode" value="strict">
 
                     <div class="mb-3">
                         <label for="{{ form.csv_file.id_for_label }}" class="form-label">
@@ -100,6 +101,10 @@
                             <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">
                                 <i class="fas fa-upload me-2"></i>
                                 <span id="submitText">Import Questions</span>
+                            </button>
+                            <button type="submit" id="partialSubmitBtn" class="btn btn-warning" style="display: none;">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <span id="partialSubmitText">Import Valid Questions Only</span>
                             </button>
                         </div>
                     </div>
@@ -274,6 +279,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const importForm = document.getElementById('importForm');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
+    const partialSubmitBtn = document.getElementById('partialSubmitBtn');
+    const partialSubmitText = document.getElementById('partialSubmitText');
     const uploadProgress = document.getElementById('uploadProgress');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
@@ -306,6 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             livePreview.style.display = 'none';
             submitBtn.style.display = 'none';
+            partialSubmitBtn.style.display = 'none';
             classLevelSelection.style.display = 'none';
         }
     });
@@ -329,27 +337,119 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Preview response:', data); // Debug log
+
             if (data.success) {
+                // Hide upload progress since preview is ready
+                uploadProgress.style.display = 'none';
+
                 displayLivePreview(data.preview_data);
 
-                // Show import button and class level selection if no critical errors
-                if (data.preview_data.summary.rows_with_errors === 0) {
+                // Show encoding info if available
+                if (data.preview_data.encoding_info) {
+                    console.log('File encoding:', data.preview_data.encoding_info.detected_encoding);
+                    if (data.preview_data.encoding_info.detected_encoding !== 'utf-8') {
+                        const encodingInfo = document.createElement('div');
+                        encodingInfo.className = 'alert alert-info mt-2';
+                        encodingInfo.innerHTML = `
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Encoding Info:</strong> File was read using ${data.preview_data.encoding_info.detected_encoding} encoding.
+                            For best compatibility, save your CSV files as UTF-8 encoding.
+                        `;
+                        livePreview.appendChild(encodingInfo);
+                    }
+                }
+
+                // Determine which buttons to show based on validation results
+                const summary = data.preview_data.summary || {};
+                const hasErrors = (summary.rows_with_errors || 0) > 0;
+                const hasValidRows = (summary.valid_rows || summary.total_rows || 0) > 0;
+                const totalRows = summary.total_rows || 0;
+
+                console.log('Preview analysis:', { hasErrors, hasValidRows, totalRows, summary }); // Debug log
+
+                // Always show class level selection if we have any rows
+                if (totalRows > 0) {
                     classLevelSelection.style.display = 'block';
-                    submitBtn.style.display = 'inline-block';
+
+                    if (!hasErrors) {
+                        // No errors - show normal import button
+                        console.log('Showing normal import button');
+                        submitBtn.style.display = 'inline-block';
+                        partialSubmitBtn.style.display = 'none';
+                    } else if (hasValidRows) {
+                        // Has errors but also has valid rows - show partial import option
+                        console.log('Showing partial import button');
+                        submitBtn.style.display = 'none';
+                        partialSubmitBtn.style.display = 'inline-block';
+
+                        // Update button text to show counts
+                        const validCount = summary.valid_rows || (totalRows - (summary.rows_with_errors || 0));
+                        const errorCount = summary.rows_with_errors || 0;
+                        partialSubmitText.textContent = `Import ${validCount} Valid Questions (Skip ${errorCount} with errors)`;
+                    } else {
+                        // All rows have errors - show neither button and hide class selection
+                        console.log('All rows have errors - hiding everything');
+                        classLevelSelection.style.display = 'none';
+                        submitBtn.style.display = 'none';
+                        partialSubmitBtn.style.display = 'none';
+
+                        // Show error message
+                        const errorAlert = document.createElement('div');
+                        errorAlert.className = 'alert alert-danger mt-3';
+                        errorAlert.innerHTML = `
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Cannot Import:</strong> All rows in your CSV file have validation errors.
+                            Please fix the errors and try again. Common issues include invalid question types,
+                            missing required fields, or incorrect data formats.
+                        `;
+
+                        // Remove any existing error alerts
+                        const existingAlert = document.querySelector('.alert-danger.mt-3');
+                        if (existingAlert) {
+                            existingAlert.remove();
+                        }
+
+                        // Add the error alert after the preview
+                        livePreview.appendChild(errorAlert);
+                    }
                 } else {
+                    // No rows at all
+                    console.log('No rows found - hiding everything');
                     classLevelSelection.style.display = 'none';
                     submitBtn.style.display = 'none';
+                    partialSubmitBtn.style.display = 'none';
                 }
             } else {
-                previewContent.innerHTML = `
+                let errorHtml = `
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         <strong>Preview Failed:</strong> ${data.error}
                     </div>
                 `;
+
+                // Add specific help for encoding errors
+                if (data.error.includes('encoding') || data.error.includes('UTF-8')) {
+                    errorHtml += `
+                        <div class="alert alert-info">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>How to Fix Encoding Issues:</strong>
+                            <ol class="mb-0 mt-2">
+                                <li><strong>Excel Users:</strong> Use "Save As" → "CSV UTF-8 (Comma delimited)"</li>
+                                <li><strong>Google Sheets:</strong> File → Download → "Comma Separated Values (.csv)"</li>
+                                <li><strong>Text Editors:</strong> Save with UTF-8 encoding</li>
+                                <li><strong>Special Characters:</strong> Remove or replace accented characters (é, ñ, etc.)</li>
+                                <li><strong>Alternative:</strong> Copy data to a new spreadsheet and save again</li>
+                            </ol>
+                        </div>
+                    `;
+                }
+
+                previewContent.innerHTML = errorHtml;
                 previewStats.textContent = 'Error';
                 classLevelSelection.style.display = 'none';
                 submitBtn.style.display = 'none';
+                partialSubmitBtn.style.display = 'none';
             }
         })
         .catch(error => {
@@ -363,10 +463,86 @@ document.addEventListener('DOMContentLoaded', function() {
             previewStats.textContent = 'Error';
             classLevelSelection.style.display = 'none';
             submitBtn.style.display = 'none';
+            partialSubmitBtn.style.display = 'none';
         });
     }
 
 
+
+    // Handle partial import button click
+    partialSubmitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('importMode').value = 'partial';
+        startImportWithProgress('partial');
+    });
+
+    // Handle normal import button click
+    submitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('importMode').value = 'strict';
+        startImportWithProgress('strict');
+    });
+
+    // Function to start import with progress bar
+    function startImportWithProgress(mode) {
+        // Validate class level selection
+        const selectedClassLevels = document.querySelectorAll('input[name="target_class_levels"]:checked');
+        if (selectedClassLevels.length === 0) {
+            alert('Please select at least one class level for import.');
+            return;
+        }
+
+        // Show progress bar
+        uploadProgress.style.display = 'block';
+        submitBtn.disabled = true;
+        partialSubmitBtn.disabled = true;
+
+        // Update button text based on mode
+        if (mode === 'partial') {
+            partialSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        } else {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        }
+
+        // Simulate progress (since we can't track actual server processing)
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress > 85) {
+                progress = 85;
+                clearInterval(progressInterval);
+                statusText.textContent = 'Finalizing import...';
+
+                // Complete progress after a short delay
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                    progressBar.setAttribute('aria-valuenow', 100);
+                    progressText.textContent = '100%';
+                    statusText.textContent = 'Import completed!';
+                }, 1000);
+            }
+
+            progressBar.style.width = progress + '%';
+            progressBar.setAttribute('aria-valuenow', progress);
+            progressText.textContent = Math.round(progress) + '%';
+
+            if (progress < 20) {
+                statusText.textContent = 'Uploading file...';
+            } else if (progress < 40) {
+                statusText.textContent = 'Validating data...';
+            } else if (progress < 60) {
+                statusText.textContent = 'Creating hierarchy (subjects, topics)...';
+            } else if (progress < 85) {
+                statusText.textContent = mode === 'partial' ? 'Bulk creating valid questions...' : 'Bulk creating questions...';
+            }
+        }, 300);
+
+        // Store interval for cleanup
+        window.importProgressInterval = progressInterval;
+
+        // Submit the form
+        importForm.submit();
+    }
 
     // Handle form submission with progress
     importForm.addEventListener('submit', function(e) {
@@ -385,42 +561,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Add action field to form for import
-        const actionInput = document.createElement('input');
-        actionInput.type = 'hidden';
-        actionInput.name = 'action';
-        actionInput.value = 'import';
-        importForm.appendChild(actionInput);
-
-        // Show progress bar
-        uploadProgress.style.display = 'block';
-        submitBtn.disabled = true;
-        submitText.textContent = 'Processing...';
-
-        // Simulate progress (since we can't track actual server processing)
-        let progress = 0;
-        const progressInterval = setInterval(() => {
-            progress += Math.random() * 15;
-            if (progress > 90) {
-                progress = 90;
-                clearInterval(progressInterval);
-                statusText.textContent = 'Finalizing import...';
-            }
-
-            progressBar.style.width = progress + '%';
-            progressBar.setAttribute('aria-valuenow', progress);
-            progressText.textContent = Math.round(progress) + '%';
-
-            if (progress < 30) {
-                statusText.textContent = 'Uploading file...';
-            } else if (progress < 60) {
-                statusText.textContent = 'Validating data...';
-            } else if (progress < 90) {
-                statusText.textContent = 'Processing questions...';
-            }
-        }, 200);
-
-        // The form will submit normally, and the page will reload with results
+        // Add action field to form for import if not already present
+        if (!document.querySelector('input[name="action"]')) {
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = 'import';
+            importForm.appendChild(actionInput);
+        }
     });
 
     // Function to display live preview with simple document format
@@ -430,9 +578,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const errorCount = previewData.summary.rows_with_errors;
         const warningCount = previewData.summary.rows_with_warnings;
 
+        const validRows = previewData.summary.valid_rows || (totalQuestions - errorCount);
+
         if (errorCount > 0) {
-            previewStats.textContent = `${totalQuestions} questions, ${errorCount} errors`;
-            previewStats.className = 'badge bg-danger ms-2';
+            if (validRows === 0) {
+                previewStats.textContent = `${totalQuestions} questions, ALL HAVE ERRORS - Cannot Import`;
+                previewStats.className = 'badge bg-danger ms-2';
+            } else {
+                previewStats.textContent = `${totalQuestions} questions, ${errorCount} errors, ${validRows} valid`;
+                previewStats.className = 'badge bg-warning ms-2';
+            }
         } else if (warningCount > 0) {
             previewStats.textContent = `${totalQuestions} questions, ${warningCount} warnings`;
             previewStats.className = 'badge bg-warning ms-2';
@@ -578,11 +733,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Reset form state if there are errors
-    {% if form.errors %}
+    // Function to reset progress bar and buttons
+    function resetImportState() {
         uploadProgress.style.display = 'none';
         submitBtn.disabled = false;
-        submitText.textContent = 'Import Questions';
+        partialSubmitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-upload me-2"></i><span id="submitText">Import Questions</span>';
+        partialSubmitBtn.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i><span id="partialSubmitText">Import Valid Questions Only</span>';
+
+        // Clear any progress intervals
+        if (window.importProgressInterval) {
+            clearInterval(window.importProgressInterval);
+        }
+
+        // Reset progress bar
+        progressBar.style.width = '0%';
+        progressBar.setAttribute('aria-valuenow', 0);
+        progressText.textContent = '0%';
+        statusText.textContent = 'Preparing upload...';
+    }
+
+    // Reset form state if there are errors
+    {% if form.errors %}
+        resetImportState();
     {% endif %}
 });
 </script>
